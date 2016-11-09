@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <include layout="@layout/include_head"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22px"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/rl_name"
+            android:layout_width="match_parent"
+            android:layout_height="97px">
+
+            <TextView
+                style="@style/register_row_title"
+                android:text="姓名"/>
+
+            <TextView
+                android:id="@+id/tv_name"
+                style="@style/regist_right_row"
+                android:background="@null"
+                android:text="请输入真实姓名"
+                android:inputType="text"/>
+
+            <ImageView
+                style="@style/person_info_arrow"
+                android:src="@mipmap/arrow_right"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_age"
+            android:layout_width="match_parent"
+            android:layout_height="97px">
+
+            <TextView
+                style="@style/register_row_title"
+                android:text="年龄"/>
+
+            <EditText
+                android:id="@+id/et_age"
+                style="@style/regist_right_row"
+                android:background="@null"
+                android:inputType="number"
+                android:text="请输入真实年龄"/>
+
+            <ImageView
+                style="@style/person_info_arrow"
+                android:src="@mipmap/arrow_right"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_play_age"
+            android:layout_width="match_parent"
+            android:layout_height="97px">
+
+            <TextView
+                style="@style/register_row_title"
+                android:text="玩龄"/>
+
+            <TextView
+                android:id="@+id/tv_play_age"
+                style="@style/regist_right_row"
+                android:inputType="number"
+                android:text="请输入真实玩龄"/>
+
+            <ImageView
+                style="@style/person_info_arrow"
+                android:src="@mipmap/arrow_right"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_location"
+            android:layout_width="match_parent"
+            android:layout_height="97px">
+
+            <TextView
+                style="@style/register_row_title"
+                android:text="所在地"/>
+
+            <TextView
+                android:id="@+id/tv_location"
+                style="@style/regist_right_row"
+                android:text="点击获取位置"/>
+
+            <ImageView
+                style="@style/person_info_arrow"
+                android:src="@mipmap/arrow_right"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_sex"
+            android:layout_width="match_parent"
+            android:layout_height="97px">
+
+            <TextView
+                style="@style/register_row_title"
+                android:text="性别"/>
+
+            <TextView
+                android:id="@+id/tv_sex"
+                style="@style/regist_right_row"
+                android:text="男"/>
+
+            <ImageView
+                style="@style/person_info_arrow"
+                android:src="@mipmap/arrow_right"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_game"
+            android:layout_width="match_parent"
+            android:layout_height="97px">
+
+            <TextView
+                style="@style/register_row_title"
+                android:text="常玩游戏"/>
+
+            <ImageView
+                style="@style/person_info_arrow"
+                android:src="@mipmap/arrow_right"/>
+
+            <LinearLayout
+                android:id="@+id/ll_game"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="78px"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/small_padding"
+                android:paddingTop="@dimen/small_padding"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/btn_enter"
+        android:layout_width="match_parent"
+        android:layout_height="100px"
+        android:background="#ffc000"
+        android:gravity="center"
+        android:text="进入战场"
+        android:textColor="@android:color/white"
+        android:textSize="38px"/>
+
+
+</LinearLayout>
+
+

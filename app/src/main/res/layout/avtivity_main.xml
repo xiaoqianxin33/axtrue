@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/vp_main"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+
+    <RadioGroup
+        android:id="@+id/rg_main"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#3A3837"
+        android:orientation="horizontal"
+        >
+
+        <RadioButton
+            android:id="@+id/rb_battlefield"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/main_battlefield_selector"
+            android:gravity="center"
+            android:text="@string/zhanchang"
+            android:textColor="@color/main_bottom_text_selector"
+            android:textSize="12sp"/>
+
+        <RadioButton
+            android:id="@+id/rb_circle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/main_circle_selector"
+            android:gravity="center"
+            android:text="@string/quanzi"
+            android:textColor="@color/main_bottom_text_selector"
+            android:textSize="12sp"/>
+
+        <RadioButton
+            android:id="@+id/rb_yuezhan"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/main_yuezhan_selector"
+            android:gravity="center"
+            android:text="@string/yuezhan2"
+            android:textColor="@color/main_bottom_text_selector"
+            android:textSize="12sp"/>
+
+        <RadioButton
+            android:id="@+id/rb_dynamic"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/main_dynamic_selector"
+            android:gravity="center"
+            android:text="动态"
+            android:textColor="@color/main_bottom_text_selector"
+            android:textSize="12sp"/>
+
+        <RadioButton
+            android:id="@+id/rb_wode"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/main_wode_selector"
+            android:gravity="center"
+            android:text="我的"
+            android:textColor="@color/main_bottom_text_selector"
+            android:textSize="12sp"/>
+
+    </RadioGroup>
+
+</LinearLayout>

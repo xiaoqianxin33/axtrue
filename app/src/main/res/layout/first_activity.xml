@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@mipmap/bg"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="3"
+        android:orientation="vertical"
+        android:layout_height="0dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2">
+
+            <ImageView
+                android:id="@+id/logo_first"
+                android:layout_width="@dimen/pic_logo_first"
+                android:layout_height="@dimen/pic_logo_first"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/logo"/>
+            <ImageView
+                android:id="@+id/logoname_first"
+
+                android:layout_below="@id/logo_first"
+                android:layout_centerHorizontal="true"
+                android:layout_width="@dimen/pic_logo_first"
+                android:layout_height="@dimen/pic_logo_first"
+                android:src="@mipmap/logoname"/>
+        </RelativeLayout>
+
+
+        <ImageView
+            android:layout_below="@id/logoname_first"
+            android:layout_centerHorizontal="true"
+            android:padding="@dimen/view_margin_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            android:src="@mipmap/xunduiyouzhaosaishi"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/suibiankankan_first"
+
+        style="@style/TextSize_14_color_white"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/EditText_vertical_height"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:text="@string/suibainkankan"
+        />
+    <LinearLayout
+        android:id="@+id/linear_bottom_first"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btnLogin_login_first"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/login"
+            android:background="@color/bantouming"
+            style="@style/TextSize_16_color_white"
+            android:layout_height="@dimen/button_height_first" />
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+           android:background="@color/white"
+            />
+        <Button
+            android:id="@+id/btn_register_first"
+            style="@style/TextSize_16_color_white"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@color/bantouming"
+
+            android:text="@string/register_register"
+            android:layout_height="@dimen/button_height_first" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

@@ -1,0 +1,72 @@
+package com.chinalooke.yuwan.activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.db.DBManager;
+import com.chinalooke.yuwan.model.GameMessage;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.List;
+
+public class SplashActivity extends AppCompatActivity {
+
+    private RequestQueue mQueue;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            finish();
+        }
+    };
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
+        mQueue = YuwanApplication.getQueue();
+        getGameMessage();
+        mHandler.sendEmptyMessageDelayed(1, 2000);
+    }
+
+    private void getGameMessage() {
+        String uri = Constant.HOST + "getGameList";
+        StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String substring = response.substring(11, 15);
+                if ("true".equals(substring)) {
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<GameMessage>() {
+                    }.getType();
+                    GameMessage mGameMessage = gson.fromJson(response, type);
+                    if (mGameMessage != null) {
+                        List<GameMessage.ResultBean> result = mGameMessage.getResult();
+                        DBManager dbManager = new DBManager(SplashActivity.this);
+                        dbManager.add(result);
+                        dbManager.closeDB();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        mQueue.add(stringRequest);
+    }
+}

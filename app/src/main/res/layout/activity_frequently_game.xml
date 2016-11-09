@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.chinalooke.yuwan.activity.FrequentlyGameActivity">
+
+    <include layout="@layout/include_head"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="58px"
+        android:layout_marginLeft="27px"
+        android:layout_marginRight="27px"
+        android:layout_marginTop="22px"
+        android:background="@drawable/game_searchview_shape">
+
+        <ImageView
+            android:id="@+id/iv_search"
+            android:layout_width="32px"
+            android:layout_height="32px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="26px"
+            android:src="@mipmap/search_icn"/>
+
+        <EditText
+            android:id="@+id/et_input"
+            android:layout_width="match_parent"
+            android:layout_height="58px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3px"
+            android:layout_toRightOf="@id/iv_search"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="搜索"
+            android:textSize="24px"/>
+
+    </RelativeLayout>
+
+
+    <GridView
+        android:id="@+id/gd_plusgame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:numColumns="4"/>
+
+    <Button
+        android:id="@+id/save_personal_info"
+        style="@style/TextSize_16_color_white"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/EditText_height"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="@dimen/button_margin"
+        android:layout_marginRight="@dimen/button_margin"
+        android:layout_marginTop="@dimen/EditText_vertical_top"
+        android:background="@drawable/login_corners_bg"
+        android:gravity="center"
+        android:text="@string/choice_game"/>
+
+
+</LinearLayout>

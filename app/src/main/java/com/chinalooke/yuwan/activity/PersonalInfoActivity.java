@@ -1,0 +1,570 @@
+package com.chinalooke.yuwan.activity;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.bigkoo.pickerview.OptionsPickerView;
+import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.db.DBManager;
+import com.chinalooke.yuwan.interf.UpdateGetCity;
+import com.chinalooke.yuwan.model.GameMessage;
+import com.chinalooke.yuwan.model.ResultDatas;
+import com.chinalooke.yuwan.model.UserInfo;
+import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.CityPicker;
+import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
+import com.chinalooke.yuwan.utils.MyUtils;
+import com.lljjcoder.citypickerview.widget.CityPickerView;
+import com.makeramen.roundedimageview.RoundedImageView;
+import com.zhy.autolayout.AutoLayoutActivity;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterView.OnItemClickListener, View.OnClickListener, UpdateGetCity, AMapLocationListener {
+    //返回
+    @Bind(R.id.back_personal_info)
+    ImageView mbackRegister;
+    //昵称
+
+    //跳过
+
+
+    @Bind(R.id.tv_title)
+    TextView mTvTitle;
+    @Bind(R.id.tv_skip)
+    TextView mTvSkip;
+    @Bind(R.id.tv_name)
+    EditText mEtName;
+    @Bind(R.id.tv_sex)
+    TextView mTvSex;
+    @Bind(R.id.et_play_age)
+    TextView mEtPlayAge;
+    @Bind(R.id.tv_location)
+    EditText mTvLocation;
+    @Bind(R.id.ll_game)
+    LinearLayout mLlGame;
+    @Bind(R.id.et_age)
+    EditText mEtAge;
+    @Bind(R.id.tv_play_age)
+    TextView mTvPlayAge;
+
+    private ArrayList<String> sexListDatas;
+    private ArrayList<String> playAgeListDatas;
+    private PopupWindow popupWindow;
+
+    private List<GameMessage.ResultBean> mChose = new ArrayList<>();
+    private CityPicker cityPicker;
+
+    private String mProvince;
+    private String mCity;
+    //定义PickerView
+    OptionsPickerView<String> pvOptions;
+    private String mCouny;
+
+    String niCeng;
+    String sexPersonalInfo;
+    String playAge;
+    String address;
+    String name;
+    String cardId;
+    String gerenShuoMing;
+    String gameId = "";
+    public AMapLocationClientOption mLocationOption = null;
+    //声明AMapLocationClient类对象
+    public AMapLocationClient mLocationClient = null;
+    UserInfo userInfo;
+    RequestQueue mQueue;
+    private Toast mToast;
+    private GameMessage mGameMessage;
+    private String[] mStrings;
+    private String mAge;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_personal_info);
+        ButterKnife.bind(this);
+        mQueue = Volley.newRequestQueue(this);
+        mToast = YuwanApplication.getToast();
+        initView();
+        initData();
+    }
+
+    private void initView() {
+        mTvTitle.setText("完善个人信息");
+        mTvSkip.setText("跳过");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+        if (mLocationClient != null) {
+            mLocationClient.stopLocation();
+            mLocationClient.onDestroy();
+        }
+    }
+
+    /**
+     * 初始化数据
+     */
+    private void initData() {
+        userInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
+        if (userInfo != null) {
+            mTvSkip.setVisibility(View.GONE);
+            String sex = userInfo.getSex();
+            if (!TextUtils.isEmpty(sex))
+                mTvSex.setText(sex);
+            if (!TextUtils.isEmpty(userInfo.getRealName()))
+                mEtName.setText(userInfo.getRealName());
+            if (!TextUtils.isEmpty(userInfo.getPlayAge()))
+                mTvPlayAge.setText(userInfo.getPlayAge());
+            if (!TextUtils.isEmpty(userInfo.getAddress()))
+                mTvLocation.setText(userInfo.getAddress());
+            String[] gameId = userInfo.getGameId();
+            DBManager dbManager = new DBManager(getApplicationContext());
+            for (String aGameId : gameId) {
+                GameMessage.ResultBean resultBean = dbManager.queryById(aGameId);
+                if (resultBean != null) {
+                    RoundedImageView imageView = new RoundedImageView(getApplicationContext());
+                    imageView.setOval(true);
+                    imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(50, 50));
+                    imageView.setImageURI(Uri.parse(resultBean.getThumb()));
+                    mLlGame.addView(imageView);
+                }
+            }
+        } else {
+            mTvSkip.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @OnClick({R.id.iv_back, R.id.tv_skip, R.id.rl_sex, R.id.rl_play_age, R.id.rl_location, R.id.rl_game, R.id.btn_enter})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_back:
+                finish();
+                break;
+            case R.id.tv_skip:
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            //点击性别
+            case R.id.rl_sex:
+                setSex();
+                MyUtils.hiddenKeyboard(this, view);
+                pvOptions.show();
+                break;
+            //点击玩龄
+            case R.id.rl_play_age:
+                setPlayAge();
+                MyUtils.hiddenKeyboard(this, view);
+                pvOptions.show();
+                break;
+            //点击位置
+            case R.id.rl_location:
+                MyUtils.hiddenKeyboard(this, view);
+                selectLocation();
+                break;
+            //添加常玩游戏
+            case R.id.rl_game:
+                Intent intent2 = new Intent(PersonalInfoActivity.this, FrequentlyGameActivity.class);
+                startActivityForResult(intent2, 0);
+                break;
+            //保存
+            case R.id.btn_enter:
+                savePersonalInfo();
+                break;
+//            //自动定位
+//            case R.id.auto_address_personal_info:
+//                getAutoAddress();
+//                break;
+
+
+        }
+    }
+
+    /**
+     * 保存个人信息
+     */
+    private void savePersonalInfo() {
+        sexPersonalInfo = mTvSex.getText().toString();
+        playAge = mEtPlayAge.getText().toString();
+        address = mTvLocation.getText().toString();
+        name = mEtName.getText().toString();
+        mAge = mEtAge.getText().toString();
+        if (TextUtils.isEmpty(name)) {
+            mEtName.setError("请输入姓名");
+            mEtName.requestFocus();
+        } else if (TextUtils.isEmpty(mAge)) {
+            mEtAge.setError("请输入您的真实年龄");
+            mEtAge.requestFocus();
+        } else if (TextUtils.isEmpty(address) || "点击获取位置".equals(address)) {
+            mToast.setText("请选择地址");
+            mToast.show();
+        } else if (mChose.size() == 0) {
+            mToast.setText("请选择常玩游戏");
+            mToast.show();
+        } else {
+            saveUserInfo();
+            submintSaveInfo();
+        }
+
+    }
+
+    private void saveUserInfo() {
+        userInfo.setAddress(address);
+        userInfo.setSex(sexPersonalInfo);
+        userInfo.setPlayAge(playAge);
+        userInfo.setRealName(name);
+        userInfo.setAge(mAge);
+        if (mStrings != null) {
+            userInfo.setGameId(mStrings);
+        }
+        try {
+            LoginUserInfoUtils.getLoginUserInfoUtils().saveLoginUserInfo(getApplicationContext(),
+                    LoginUserInfoUtils.KEY, userInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 提交保存信息
+     */
+    private void submintSaveInfo() {
+        //拼接接口信息
+        String[] gameId = userInfo.getGameId();
+        StringBuilder stringBuffer = new StringBuilder();
+        if (gameId != null) {
+            for (int i = 0; i < gameId.length; i++) {
+                if (i == gameId.length - 1) {
+                    stringBuffer.append(gameId[i]);
+                } else {
+                    stringBuffer.append(gameId[i]).append(",");
+                }
+            }
+        }
+        String updateUserInfo;
+        if (userInfo != null) {
+
+            //登录用户修改个人信息
+            updateUserInfo = Constant.HOST + "updateUserInfo&userId=" + userInfo.getUserId() + "&headImg=" + userInfo.getHeadImg()
+                    + "&nickName=" + userInfo.getNickName() + "&realName=" + userInfo.getRealName() + "&sex=" + userInfo.getSex() + "&age=" + userInfo.getAge()
+                    + "&playAge=" + userInfo.getPlayAge() + "&address=" + userInfo.getAddress() + "&slogan=" + userInfo.getSlogan() + "&cardNo=" + userInfo.getCardNo() + "&gameId=" + stringBuffer.toString();
+        } else {
+            //注册用户完善个人信息
+            Intent intent = getIntent();
+            String userId = intent.getStringExtra("userId");
+            String headImg = intent.getStringExtra("headImg");
+            String year = cardId.substring(6, 10);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+            Date date = new Date();
+            String formatDate = sdf.format(date);
+            int myage = Integer.parseInt(formatDate) - Integer.parseInt(year);
+            updateUserInfo = Constant.HOST + "updateUserInfo&userId=" + userId + "&headImg=" + headImg
+                    + "&nickName=" + niCeng + "&realName=" + name + "&sex=" + sexPersonalInfo + "&age=" + myage
+                    + "&playAge=" + playAge + "&address=" + address + "&slogan=" + gerenShuoMing + "&cardNo=" + cardId + "&gameId=" + stringBuffer.toString();
+        }
+        StringRequest stringRequest = new StringRequest(updateUserInfo,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("TAG", response);
+                        //解析数据
+
+                        if (response != null) {
+                            ResultDatas result = AnalysisJSON.getAnalysisJSON().AnalysisJSONResult(response);
+
+                            if (result != null) {
+                                if ("true".equals(result.getResult())) {
+                                    Log.d("TAG", "保存成功");
+                                    setSaveDialog("保存成功");
+
+                                } else {
+                                    Log.d("TAG", "false");
+                                    setSaveDialog("保存失败");
+                                }
+                            } else {
+                                Log.d("TAG", "result");
+                                setSaveDialog("保存失败");
+                            }
+                            System.out.println("----result----" + result.getResult());
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                setSaveDialog("保存失败");
+            }
+        });
+        mQueue.add(stringRequest);
+    }
+
+    /**
+     * 设置性别
+     */
+    private void setSex() {
+
+        //数据
+        sexListDatas = new ArrayList<String>();
+        sexListDatas.add("男");
+        sexListDatas.add("女");
+        //选项选择器
+        pvOptions = new OptionsPickerView<String>(this);
+        //三级联动效果
+        pvOptions.setPicker(sexListDatas);
+        //设置选择的三级单位
+//        pwOptions.setLabels("省", "市", "区");
+        pvOptions.setTitle("选择性别");
+        pvOptions.setCyclic(false);
+        //设置默认选中的三级项目
+        //监听确定选择按钮
+        pvOptions.setSelectOptions(1);
+        pvOptions.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
+            @Override
+            public void onOptionsSelect(int options1, int option2, int options3) {
+                //返回的分别是三个级别的选中位置
+                String tx = sexListDatas.get(options1);
+                mTvSex.setText(tx);
+
+            }
+        });
+
+    }
+
+    /**
+     * 设置年龄
+     */
+    private void setPlayAge() {
+
+        //数据
+        playAgeListDatas = new ArrayList<String>();
+        for (int i = 0; i <= 60; i++) {
+            playAgeListDatas.add("" + i);
+        }
+        //选项选择器
+        pvOptions = new OptionsPickerView<String>(this);
+        //三级联动效果
+        pvOptions.setPicker(playAgeListDatas);
+        //设置选择的三级单位
+        pvOptions.setTitle("选择玩龄");
+        pvOptions.setCyclic(false);
+        //设置默认选中的三级项目
+        //监听确定选择按钮
+        pvOptions.setSelectOptions(1);
+        pvOptions.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
+
+            @Override
+            public void onOptionsSelect(int options1, int option2, int options3) {
+                //返回的分别是三个级别的选中位置
+                String tx = playAgeListDatas.get(options1);
+                mEtPlayAge.setText(tx);
+
+            }
+        });
+    }
+
+    /* popuwindow内部的点击事件*/
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // msexPersonalInfo.setText(sexListDatas.get(position));
+    }
+
+
+    /**
+     * 更新城市信息
+     *
+     * @paramcity
+     * @paramid
+     */
+
+    public void updateCityInfo(String city, int id) {
+        Log.d("TAG", city + "id---" + id);
+        switch (id) {
+            case UpdateGetCity.PROVINCE_ID:
+                if (city != null || !"".equals(city))
+                    mProvince = city;
+                break;
+            case UpdateGetCity.CITY_ID:
+                if (city != null || !"".equals(city))
+                    this.mCity = city;
+                break;
+            case UpdateGetCity.COUNY_ID:
+                if (city != null || !"".equals(city))
+                    mCouny = city;
+                break;
+
+        }
+    }
+
+    private void selectLocation() {
+        CityPickerView cityPickerView = new CityPickerView(this);
+        cityPickerView.setTextColor(Color.BLACK);
+        cityPickerView.setTextSize(20);
+        cityPickerView.setVisibleItems(5);
+        cityPickerView.setIsCyclic(false);
+        cityPickerView.show();
+
+        cityPickerView.setOnCityItemClickListener(new CityPickerView.OnCityItemClickListener() {
+            @Override
+            public void onSelected(String... citySelected) {
+                mTvLocation.setText(citySelected[0] + citySelected[1] + citySelected[2]);
+            }
+        });
+
+
+    }
+
+    private void initPopupWindow(View view) {
+        // 创建一个popupWindow
+        popupWindow = new PopupWindow(view, LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                LinearLayoutCompat.LayoutParams.MATCH_PARENT);
+        // 设置事件处理
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        // 设置动画效果
+        popupWindow.setAnimationStyle(R.style.popupWindowAnimation);
+
+    }
+
+    /**
+     * 地址的设置
+     */
+//    private void setAddress() {
+//        maddressPersonalInfo.setText(mProvince + mCity + mCouny);
+//    }
+    private void getAutoAddress() {
+        //声明mLocationOption对象
+
+        mLocationClient = new AMapLocationClient(this);
+        //初始化定位参数
+        mLocationOption = new AMapLocationClientOption();
+        //设置定位监听
+        mLocationOption.setOnceLocation(true);
+
+        mLocationClient.setLocationListener(this);
+        //设置定位模式为高精度模式，Battery_Saving为低功耗模式，Device_Sensors是仅设备模式
+        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+        //设置定位间隔,单位毫秒,默认为2000ms
+        mLocationOption.setInterval(2000);
+        //设置定位参数
+        mLocationClient.setLocationOption(mLocationOption);
+        // 此方法为每隔固定时间会发起一次定位请求，为了减少电量消耗或网络流量消耗，
+        // 注意设置合适的定位时间的间隔（最小间隔支持为2000ms），并且在合适时间调用stopLocation()方法来取消定位请求
+        // 在定位结束后，在合适的生命周期调用onDestroy()方法
+        // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
+        //启动定位
+        mLocationClient.startLocation();
+    }
+
+    public void onLocationChanged(AMapLocation amapLocation) {
+        if (amapLocation != null) {
+            if (amapLocation.getErrorCode() == 0) {
+                //定位成功回调信息，设置相关消息
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = new Date(amapLocation.getTime());
+                String location = amapLocation.getProvince() + amapLocation.getCity() + amapLocation.getDistrict();
+                if (!TextUtils.isEmpty(location)) {
+//                    maddressPersonalInfo.setText(location);
+                }
+                df.format(date);//定位时间
+                Log.d("address", amapLocation.getLongitude() + "-----" + amapLocation.getLatitude());//获取纬度);
+            } else {
+                //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
+                Log.e("AmapError", "location Error, ErrCode:"
+                        + amapLocation.getErrorCode() + ", errInfo:"
+                        + amapLocation.getErrorInfo());
+            }
+        }
+    }
+
+
+    private void setSaveDialog(String result) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//设置对话框图标，可以使用自己的图片，Android本身也提供了一些图标供我们使用
+        builder.setIcon(android.R.drawable.ic_dialog_info);
+//设置对话框标题
+        builder.setTitle("提示");
+//设置对话框内的文本
+        builder.setMessage(result);
+//设置确定按钮，并给按钮设置一个点击侦听，注意这个OnClickListener使用的是DialogInterface类里的一个内部接口
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // 执行点击确定按钮的业务逻辑
+                if (userInfo != null) {
+                    Intent intent = new Intent(PersonalInfoActivity.this, WoDeZiLiaoActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Intent intent = new Intent(PersonalInfoActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
+//使用builder创建出对话框对象
+        AlertDialog dialog = builder.create();
+//显示对话框
+        dialog.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 1) {
+            mChose = (List<GameMessage.ResultBean>) data.getSerializableExtra("list");
+            for (GameMessage.ResultBean resultBean : mChose) {
+                String thumb = resultBean.getThumb();
+                RoundedImageView imageView = new RoundedImageView(getApplicationContext());
+                imageView.setImageURI(Uri.parse(thumb));
+                imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(50, 50));
+                imageView.setOval(true);
+                mLlGame.addView(imageView);
+            }
+            mStrings = new String[mChose.size()];
+            for (int i = 0; i < mChose.size(); i++) {
+                mStrings[i] = mChose.get(i).getGameId();
+            }
+        }
+    }
+}

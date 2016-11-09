@@ -1,0 +1,11 @@
+<resources>
+
+    <style name="AppTheme2" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:colorPrimaryDark">@color/actionbar_color</item>
+    </style>
+</resources>

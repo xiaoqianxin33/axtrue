@@ -1,0 +1,113 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <string name="app_name">雷熊</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="title_activity_login">LoginActivity</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="header_hint_refresh_normal">Pull to refresh</string>
+    <string name="header_hint_refresh_ready">Release to refresh</string>
+    <string name="header_hint_refresh_loading">Refreshing&#8230;</string>
+    <string name="header_hint_refresh_time">Time：</string>
+    <string name="footer_hint_load_normal">点击加载更多</string>
+    <string name="footer_hint_load_ready">Release to load more</string>
+
+    <!--firstActivity-->
+    <string name="suibainkankan">先随便看看</string>
+
+    <!--登录界面-->
+    <string name="input_phone">请输入手机号</string>
+    <string name="input_password">请输入密码</string>
+    <string name="forget_password">忘记密码 ?</string>
+    <string name="disanfangdenglu">第三方登录>></string>
+    <string name="login">登录</string>
+    <!--注册界面-->
+    <string name="input_verification_code">请输入验证码</string>
+    <string name="get_verification_code">获取短信验证码</string>
+    <string name="input_introduce_register">请输入介绍人手机号</string>
+    <string name="input_password_register">请填写密码</string>
+    <string name="input_repassword_register">请再次输入密码</string>
+    <string name="register_register">注册</string>
+    <string name="yuezhan">约战</string>
+    <string name="user_protocol">用户协议</string>
+
+    <!--   完善个人信息-->
+    <string name="title_personal_info">完善个人信息</string>
+    <string name="title_game_info">添加游戏</string>
+    <string name="tiaoguo_personal_info">跳过</string>
+    <string name="title_activity_personal_info">PersonalInfoActivity</string>
+    <string name="nicheng_personal_info">昵称：</string>
+    <string name="name_personal_info">真实姓名：</string>
+    <string name="sex_personal_info">性别：</string>
+    <string name="playage_personal_info">玩龄：</string>
+    <string name="address_personal_info">所在地：</string>
+    <string name="gerenshuoming_personal_info">个人说明：</string>
+    <string name="cardid_personal_info">身份证号：</string>
+    <string name="addGames_personal_info">添加常玩的游戏</string>
+    <string name="save_personal_info">保存</string>
+    <string name="choice_game">已选</string>
+    <string name="input_nicheng_personal_info">请填写昵称</string>
+    <string name="input_name_personal_info">请填写真实姓名</string>
+    <string name="input_playage_personal_info">请填写真实玩龄</string>
+    <string name="input_gerenshuoming_personal_info">请填写个人说明</string>
+    <string name="input_cardid_personal_info">请填写身份证号</string>
+    <string name="playgames_personal_info">常玩游戏：</string>
+    <!--忘记密码-->
+    <string name="find_password_forget">找回密码</string>
+    <string name="verification_code_forget">验证码：</string>
+    <string name="phone_forget">手机号：</string>
+    <string name="next_forget">下一步</string>
+    <!--重置密码-->
+    <string name="reset_password">重置密码</string>
+    <string name="new_password">新密码</string>
+    <string name="renew_password">确认密码</string>
+
+
+    <!-- 我的-->
+    <string name="wode_fragment">我的</string>
+    <string name="login_register_fragment">登录/注册</string>
+
+    <string name="yuwanshangcheng">鱼丸商城</string>
+    <string name="qiandaosongyuwan">签到送鱼丸</string>
+    <string name="wodexiaoxi_fragment">我的消息</string>
+    <string name="wodeliaotian_fragment">我的聊天</string>
+    <string name="wodeziliao_fragment">我的资料</string>
+    <string name="wodezhanji_fragment">我的战绩</string>
+    <string name="wodezhanyou_fragment">我的战友</string>
+    <string name="wodeyue_fragment">我的余额</string>
+    <string name="setting_fragment">设置</string>
+    <string name="cancel_fragment">注销</string>
+
+    <!-- 我的资料-->
+    <string name="gerenziliao_ziliao">个人资料</string>
+    <string name="edit_ziliao">编辑</string>
+
+    <string name="toxiang_ziliao">头像</string>
+    <string name="name_ziliao">姓名：</string>
+    <string name="age_ziliao">年龄：</string>
+    <string name="erweima_ziliao">二维码：</string>
+    <!--  约战-->
+
+    <string name="qiehuan">切换</string>
+    <string name="fabu">发布</string>
+    <string name="guizetishi">填写游戏规则</string>
+    <string name="circle_title">圈子</string>
+    <string name="nearby_circle">附近圈子</string>
+    <string name="more">更多</string>
+    <string name="my_circle">兴趣圈子</string>
+    <string name="MyCircle">我的圈子</string>
+    <string name="more_circle">更多圈子</string>
+    <string name="create_circle">创建新的圈子</string>
+    <string name="dynamic">动态</string>
+    <string name="with_me">与我相关</string>
+    <string name="zhanchang">战场</string>
+    <string name="quanzi">圈子</string>
+    <string name="yuezhan2">约战</string>
+
+
+</resources>

@@ -1,0 +1,280 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.chinalooke.yuwan.fragment.WodeFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+        <LinearLayout
+            android:id="@+id/ll_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:orientation="vertical" >
+
+            <!--标题   我的-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/EditText_vertical_height"
+                android:background="@color/black"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/EditText_height"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:text="@string/wode_fragment"
+                    android:textSize="@dimen/TextSize_18"
+                    />
+            </RelativeLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+            <!--页面-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical" >
+
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="200dp"
+                    android:background="@mipmap/link2"
+                 >
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="100.0dip"
+                        android:layout_weight="1"
+                      >
+                        <com.chinalooke.yuwan.view.CircleImageView
+                            android:id="@+id/icon_face_wode"
+                            android:layout_width="@dimen/touxiang_height_width_wode"
+                            android:layout_height="@dimen/touxiang_height_width_wode"
+                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                            app:border_color="@color/orange"
+                            app:border_width="1dp"
+                            android:src="@mipmap/yw80_orange"
+                            android:layout_centerVertical="true"
+                            />
+                        <TextView
+                            android:id="@+id/name__wode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/icon_face_wode"
+                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                            android:text="@string/login_register_fragment"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/TextSize_16"
+                            android:layout_centerVertical="true"
+                            />
+                        <TextView
+                            android:id="@+id/gerenshuoming__wode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/icon_face_wode"
+                            android:layout_below="@id/name__wode"
+                            android:textSize="@dimen/TextSize_12"
+                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                            android:text="@string/login_register_fragment"
+                            android:textColor="@color/white"
+                            android:layout_centerVertical="true"
+                            />
+                    </RelativeLayout>
+                    <LinearLayout
+                        android:id="@+id/linear_weode"
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+
+                        android:layout_height="wrap_content">
+                        <Button
+                            android:id="@+id/store_wode"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:text="@string/yuwanshangcheng"
+                            android:background="@color/bantouming"
+                            style="@style/TextSize_16_color_white"
+                            android:layout_height="@dimen/button_height_first" />
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/white"
+                            />
+                        <Button
+                            android:id="@+id/qiandao_wode"
+                            style="@style/TextSize_16_color_white"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:background="@color/bantouming"
+                            android:text="@string/qiandaosongyuwan"
+                            android:layout_height="@dimen/button_height_first" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <!--第一段-->
+     <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <!--我的消息-->
+                  <RelativeLayout
+                      android:id="@+id/xiaoxi_wode"
+                      style="@style/relativeLayout_wode">
+                        <ImageView
+                            android:id="@+id/icon_xiaoxi_wode"
+                                style="@style/icon_wode"
+                            android:src="@mipmap/wodexiaoxipng" />
+                        <TextView
+                            style="@style/Text_wode"
+                            android:layout_toRightOf="@id/icon_xiaoxi_wode"
+                            android:text="@string/wodexiaoxi_fragment" />
+
+                        <ImageView
+                                style="@style/more_wode"
+
+                            android:src="@mipmap/more" />
+                    </RelativeLayout>
+
+                    <TextView style="@style/TextLine_1" />
+                    <!--我的聊天-->
+                    <RelativeLayout
+                        android:id="@+id/liaotian_wode"
+                        style="@style/relativeLayout_wode">
+                        <ImageView
+                            android:id="@+id/icon_liaotian_wode"
+                            style="@style/icon_wode"
+                            android:src="@mipmap/wodeliaotian" />
+                        <TextView
+                            style="@style/Text_wode"
+                            android:layout_toRightOf="@id/icon_liaotian_wode"
+                            android:text="@string/wodeliaotian_fragment" />
+
+                        <ImageView
+                            style="@style/more_wode"
+                            android:src="@mipmap/more" />
+                    </RelativeLayout>
+                    <TextView style="@style/TextLine_1" />
+                    <!--我的资料-->
+                    <RelativeLayout
+                        android:id="@+id/ziliao_wode"
+                        style="@style/relativeLayout_wode">
+                        <ImageView
+                            android:id="@+id/icon_ziliao_wode"
+                            style="@style/icon_wode"
+                            android:src="@mipmap/wodeziliao" />
+                        <TextView
+                            style="@style/Text_wode"
+                            android:layout_toRightOf="@id/icon_ziliao_wode"
+                            android:text="@string/wodeziliao_fragment" />
+
+                        <ImageView
+                            style="@style/more_wode"
+                            android:src="@mipmap/more" />
+                    </RelativeLayout>
+                    <TextView style="@style/TextLine_10" />
+
+                    <!--我的战绩-->
+                    <RelativeLayout
+                        android:id="@+id/zhanji_wode"
+                        style="@style/relativeLayout_wode">
+                        <ImageView
+                            android:id="@+id/icon_zhanji_wode"
+                            style="@style/icon_wode"
+                            android:src="@mipmap/wodezhanji" />
+                        <TextView
+                            style="@style/Text_wode"
+                            android:layout_toRightOf="@id/icon_zhanji_wode"
+                            android:text="@string/wodezhanji_fragment" />
+
+                        <ImageView
+                            style="@style/more_wode"
+                            android:src="@mipmap/more" />
+                    </RelativeLayout>
+                    <TextView style="@style/TextLine_1" />
+
+                    <!--我的战友-->
+                    <RelativeLayout
+                        android:id="@+id/zhanyou_wode"
+                        style="@style/relativeLayout_wode">
+                        <ImageView
+                            android:id="@+id/icon_zhanyou_wode"
+                            style="@style/icon_wode"
+                            android:src="@mipmap/wodezhanyou" />
+                        <TextView
+                            style="@style/Text_wode"
+                            android:layout_toRightOf="@id/icon_zhanyou_wode"
+                            android:text="@string/wodezhanyou_fragment" />
+
+                        <ImageView
+                            style="@style/more_wode"
+                            android:src="@mipmap/more" />
+                    </RelativeLayout>
+                    <TextView style="@style/TextLine_1" />
+
+                    <!--我的余额-->
+                    <RelativeLayout
+                        android:id="@+id/yue_wode"
+                        style="@style/relativeLayout_wode">
+                        <ImageView
+                            android:id="@+id/icon_yue_wode"
+                            style="@style/icon_wode"
+                            android:src="@mipmap/wodeyue" />
+                        <TextView
+                            style="@style/Text_wode"
+                            android:layout_toRightOf="@id/icon_yue_wode"
+                            android:text="@string/wodeyue_fragment" />
+
+                        <ImageView
+                            style="@style/more_wode"
+                            android:src="@mipmap/more" />
+                    </RelativeLayout>
+                    <TextView style="@style/TextLine_10" />
+
+                    <!--设置-->
+                    <RelativeLayout
+                        android:id="@+id/setting_wode"
+                        style="@style/relativeLayout_wode">
+                        <ImageView
+                            android:id="@+id/icon_setting_wode"
+                            style="@style/icon_wode"
+                            android:src="@mipmap/wodesetting" />
+                        <TextView
+                            style="@style/Text_wode"
+                            android:layout_toRightOf="@id/icon_setting_wode"
+                            android:text="@string/setting_fragment" />
+                        <ImageView
+                            style="@style/more_wode"
+                            android:src="@mipmap/more" />
+                    </RelativeLayout>
+                    <TextView style="@style/TextLine_1" />
+                </LinearLayout>
+
+                    <!--注销-->
+                <Button
+                    android:id="@+id/btn_cancel_wode"
+                    style="@style/TextSize_16_color_white"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/EditText_height"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="@dimen/touxiang_height_width_wode"
+                    android:layout_marginLeft="@dimen/button_margin"
+                    android:layout_marginRight="@dimen/button_margin"
+                    android:layout_marginTop="@dimen/touxiang_height_width_wode"
+                    android:background="@drawable/login_corners_bg"
+                    android:gravity="center"
+                    android:text="@string/cancel_fragment" />
+        </LinearLayout>
+        </ScrollView>
+</LinearLayout>
+</FrameLayout>

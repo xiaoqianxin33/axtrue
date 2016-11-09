@@ -1,0 +1,209 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="com.chinalooke.yuwan.fragment.YueZhanFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/EditText_vertical_height"
+                android:background="@color/black"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/EditText_height"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="@string/yuezhan"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/TextSize_18"
+                    />
+
+            </RelativeLayout>
+
+
+            <!--游戏名称-->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/EditText_vertical_height"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    style="@style/left_img_yuezhan"
+                    android:src="@mipmap/game_name"
+                    />
+
+                <LinearLayout
+                    style="@style/right_linner_yuezhan">
+
+                    <Spinner
+                        android:id="@+id/game_name_yuezhan"
+                        style="@style/spinner_yuezhan"
+                        android:spinnerMode="dropdown"
+                        />
+
+                    <ImageView
+                        style="@style/right_img_yuezhan"
+                        android:background="@color/white"
+                        android:src="@mipmap/yuezhanjiantou"
+
+                        />
+                </LinearLayout>
+            </LinearLayout>
+            <!--时间-->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/EditText_vertical_height"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    style="@style/left_img_yuezhan"
+                    android:src="@mipmap/game_time"
+                    />
+
+                <LinearLayout
+                    style="@style/right_linner_yuezhan">
+
+                    <Spinner
+                        android:id="@+id/game_time_yuezhan"
+                        style="@style/spinner_yuezhan"
+                        />
+
+                    <ImageView
+                        style="@style/right_img_yuezhan"
+                        android:background="@color/white"
+                        android:src="@mipmap/yuezhanjiantou"
+
+                        />
+                </LinearLayout>
+            </LinearLayout>
+            <!--地点-->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/EditText_vertical_height"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    style="@style/left_img_yuezhan"
+                    android:src="@mipmap/game_address"
+                    />
+
+                <LinearLayout
+                    style="@style/right_linner_yuezhan">
+
+                    <Spinner
+                        android:id="@+id/game_address_yuezhan"
+                        style="@style/spinner_yuezhan"
+                        />
+
+                    <ImageView
+                        style="@style/right_img_yuezhan"
+
+                        android:src="@mipmap/yuezhanjiantou"
+
+                        />
+                </LinearLayout>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/input_padding_left"
+                    android:background="@drawable/login_corners_bg"
+                    android:text="@string/qiehuan"
+                    android:textColor="@color/white"/>
+            </LinearLayout>
+
+            <!--钱数-->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/EditText_vertical_height"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    style="@style/left_img_yuezhan"
+                    android:src="@mipmap/yuezhanjiangjin"
+                    />
+
+                <LinearLayout
+                    style="@style/right_linner_yuezhan">
+
+                    <Spinner
+                        android:id="@+id/game_price_yuezhan"
+                        style="@style/spinner_yuezhan"
+                        />
+
+                    <ImageView
+                        style="@style/right_img_yuezhan"
+                        android:background="@color/white"
+                        android:src="@mipmap/yuezhanjiantou"
+
+                        />
+                </LinearLayout>
+            </LinearLayout>
+            <!--人员-->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/EditText_vertical_height"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    style="@style/left_img_yuezhan"
+                    android:src="@mipmap/add_game_pernum"
+                    />
+
+                <ImageView
+                    style="@style/right_img_yuezhan"
+
+                    android:src="@mipmap/tianjiabai"
+
+                    />
+
+            </LinearLayout>
+
+            <!--游戏规则-->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/LinearLayout_input_vertical_height"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    style="@style/left_img_yuezhan"
+                    android:src="@mipmap/game_guize"
+                    />
+
+                <EditText
+                    style="@style/right_linner_yuezhan"
+                    android:layout_height="@dimen/LinearLayout_input_vertical_height"
+                    android:background="@color/white"
+                    android:gravity="top"
+                    android:hint="@string/guizetishi"/>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/save_personal_info"
+                style="@style/btn_submit"
+                android:layout_marginTop="@dimen/verification_code_button_margin"
+                android:text="@string/fabu"/>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

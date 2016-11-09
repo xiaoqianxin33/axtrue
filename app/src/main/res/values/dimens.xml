@@ -1,0 +1,48 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!--firstActivity-->
+    <dimen name="pic_logo_first">80dp</dimen>
+    <dimen name="button_height_first">48dp</dimen>
+    <!-- LoginActivity -->
+    <dimen name="back_height">35dp</dimen>
+    <dimen name="back_padding">10dp</dimen>
+    <dimen name="EditText_height">40dp</dimen>
+    <dimen name="EditText_vertical_height">48dp</dimen>
+    <dimen name="LinearLayout_input_vertical_height">98dp</dimen>
+    <dimen name="pic_margin">4dp</dimen>
+    <dimen name="view_margin_left">38dp</dimen>
+    <dimen name="EditText_Pic_height_or_width">29dp</dimen>
+    <dimen name="EditText_vertical_top">4dp</dimen>
+    <dimen name="input_padding_left">10dp</dimen>
+    <dimen name="input_padding_right">10dp</dimen>
+    <dimen name="button_margin">35dp</dimen>
+    <dimen name="disanfang_pic_height">45dp</dimen>
+    <dimen name="disanfang_pic_margin">45dp</dimen>
+    <!--注册页面-->
+    <dimen name="LinearLayout_input_vertical_height_register">244dp</dimen>
+    <dimen name="verification_code_button_margin">25dp</dimen>
+
+    <!--  完善个人信息-->
+    <dimen name="liner_padding_personal_info">10dp</dimen>
+
+    <!--我的-->
+    <dimen name="more_height_width_wode">14dp</dimen>
+    <dimen name="touxiang_height_width_wode">80dp</dimen>
+    <!-- 字体大小 -->
+    <dimen name="TextSize_18">18sp</dimen>
+    <dimen name="TextSize_16">16sp</dimen>
+    <dimen name="TextSize_14">14sp</dimen>
+    <dimen name="TextSize_12">12sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+
+    <dimen name="header_height">60dp</dimen>
+    <dimen name="footer_height">90dp</dimen>
+    <dimen name="footer_padding">10dp</dimen>
+    <dimen name="mid_padding">32px</dimen>
+    <dimen name="small_padding">20px</dimen>
+    <dimen name="register_text_size">32px</dimen>
+</resources>

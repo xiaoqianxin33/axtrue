@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="100dp"
+              android:layout_height="130dp"
+              android:layout_marginLeft="20dp"
+              android:layout_marginRight="20dp"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="190px"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/iv_gameimage"
+            android:layout_width="140px"
+            android:layout_height="140px"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/placeholder"/>
+
+        <ImageView
+            android:id="@+id/iv_check"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignBottom="@+id/iv_gameimage"
+            android:layout_alignEnd="@+id/iv_gameimage"
+            android:layout_marginBottom="2dp"
+            android:layout_marginRight="2dp"
+            android:src="@mipmap/gamecheck"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_game_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
+</LinearLayout>

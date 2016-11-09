@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="52dp"
+              android:background="@android:color/white"
+              android:orientation="horizontal">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_yuezhan_listview"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="8dp"
+            android:gravity="center"
+            android:text="约战方 :"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/TextSize_14"/>
+
+        <com.chinalooke.yuwan.view.RoundImageView
+            android:id="@+id/view"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="29dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/tv_yuezhan_listview"/>
+
+        <TextView
+            android:id="@+id/editText"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="30dp"
+            android:layout_toEndOf="@+id/view"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/TextSize_14"/>
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
+            android:layout_toEndOf="@+id/editText"
+            android:src="@mipmap/phone"/>
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imageView"
+            android:layout_marginStart="34dp"
+            android:layout_toEndOf="@+id/imageView"
+            android:src="@mipmap/unlocation"/>
+
+        <FrameLayout
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_alignBottom="@+id/view"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/view"
+            >
+
+            <TextView
+                android:id="@+id/tv_vacant"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/round_shape"
+                android:gravity="center"
+                android:text="空缺"
+                android:textColor="@android:color/white"/>
+
+            <ImageView
+                android:id="@+id/iv_crown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|top"
+                android:src="@mipmap/crown"/>
+        </FrameLayout>
+
+
+        <Button
+            android:id="@+id/button_join"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/editText"
+            android:background="@drawable/yuanjiao_shape"
+            android:text="点击加入"
+            android:textColor="@android:color/white"/>
+
+    </RelativeLayout>
+</LinearLayout>

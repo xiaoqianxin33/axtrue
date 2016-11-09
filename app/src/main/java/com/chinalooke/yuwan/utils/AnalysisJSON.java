@@ -1,0 +1,73 @@
+package com.chinalooke.yuwan.utils;
+
+import android.util.Log;
+
+import com.chinalooke.yuwan.model.ResultDatas;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Created by Administrator on 2016/8/23.
+ */
+
+/**
+ * 解析数据
+ */
+public class AnalysisJSON {
+    /**
+     * 解析登录注册返回的数据
+     * @paramdatas
+     * @return
+     */
+    private AnalysisJSON(){};
+    public static AnalysisJSON analysisJSON;
+
+    public static AnalysisJSON getAnalysisJSON() {
+        if (analysisJSON==null){
+            analysisJSON=new AnalysisJSON();
+        }else{
+            return analysisJSON;
+        }
+        return analysisJSON;
+    }
+
+    //解析手机号码是否注册
+    public ResultDatas AnalysisJSONResult(String datas){
+        JSONObject jsonObject;
+        ResultDatas result=null;
+        Log.d("TAG","++++"+datas);
+        try {
+            if(datas!=null){
+                 jsonObject = new JSONObject(datas);
+                result=new ResultDatas();
+                result.setSuccess(jsonObject.getString("Success"));
+                result.setMsg(jsonObject.getString("Msg"));
+                result.setResult(jsonObject.getString("Result"));
+                Log.d("TAG","++++"+result.getResult());
+
+
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.d("TAG", "解析错误");
+
+        }
+        return result;
+    }
+
+
+    public void getSubStringAddress(String address){
+        String []city=new String[3];
+        String province=address.substring(0,address.indexOf("省"));
+        if(province==null||"".equals(province)){
+             province=address.substring(0,address.indexOf("市"));
+        }
+    }
+
+
+
+
+}

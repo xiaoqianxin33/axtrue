@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="560px"
+                android:layout_height="366px"
+                android:background="@drawable/white_round_shape">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/mid_padding"
+        android:text="编辑姓名"
+        android:textColor="@color/black_word"
+        android:textSize="@dimen/mid_padding"/>
+
+    <EditText
+        android:id="@+id/et_input"
+        android:layout_width="match_parent"
+        android:layout_height="76px"
+        android:layout_marginLeft="30px"
+        android:layout_marginRight="30px"
+        android:layout_marginTop="116px"
+        android:background="@drawable/round_stoke_shape"
+        android:inputType="text"/>
+
+
+    <ImageView
+        android:id="@+id/iv_cancel"
+        android:layout_width="30px"
+        android:layout_height="30px"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="45px"
+        android:layout_marginTop="140px"
+        android:src="@mipmap/cancle"
+        android:visibility="gone"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70px"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="42px"
+        android:paddingLeft="28px"
+        android:paddingRight="28px">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="240px"
+            android:layout_height="match_parent"
+            android:background="@drawable/round_btn"
+            android:gravity="center"
+            android:text="取消"
+            android:textColor="#5d5d5d"
+            android:textSize="30px"/>
+
+        <Button
+            android:id="@+id/btn_ok"
+            android:layout_width="240px"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/round_btn"
+            android:gravity="center"
+            android:text="确定"
+            android:textColor="#ff8a0f"
+            android:textSize="30px"/>
+
+    </RelativeLayout>
+</RelativeLayout>

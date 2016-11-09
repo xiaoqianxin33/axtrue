@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="100px"
+    android:background="@color/actionbar_color">
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="36px"
+        android:layout_height="36px"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="30px"
+        android:src="@mipmap/left_arrow"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="注册"
+        android:textColor="@android:color/white"
+        android:textSize="34px"/>
+
+    <TextView
+        android:id="@+id/tv_skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="32px"
+        android:gravity="center_vertical"
+        android:textColor="#ffc000"
+        android:textSize="30px"/>
+
+</RelativeLayout>

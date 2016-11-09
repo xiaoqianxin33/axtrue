@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="80dp"
+              android:orientation="horizontal">
+
+    <RadioGroup
+        android:id="@+id/rg_battlefield"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@android:color/white"
+        android:orientation="horizontal"
+        android:paddingTop="8dp">
+
+
+        <RadioButton
+            android:id="@+id/rb_setout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@mipmap/setout"
+            android:gravity="center"
+            android:text="应战中"
+            android:textColor="@color/battlefield_text_selector"
+            android:textSize="14sp"/>
+
+        <RadioButton
+            android:id="@+id/rb_combat"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@mipmap/combat"
+            android:gravity="center"
+            android:text="进行中"
+            android:textColor="@color/battlefield_text_selector"
+            android:textSize="14sp"/>
+
+        <RadioButton
+            android:id="@+id/rb_finish"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@mipmap/finish"
+            android:gravity="center"
+            android:text="已结束"
+            android:textColor="@color/battlefield_text_selector"
+            android:textSize="14sp"/>
+    </RadioGroup>
+
+</LinearLayout>

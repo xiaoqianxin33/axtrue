@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <include layout="@layout/include_head"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20px"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="96px">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/mid_padding"
+                android:text="手机号"
+                android:textColor="@color/black_word"
+                android:textSize="@dimen/register_text_size"/>
+
+            <EditText
+                android:id="@+id/phone_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="230px"
+                android:hint="请输入手机号"
+                android:inputType="phone"
+                android:textColorHint="@color/hint_color"
+                android:textSize="28px"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="96px">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/mid_padding"
+                android:text="验证码"
+                android:textColor="@color/black_word"
+                android:textSize="32px"/>
+
+            <EditText
+                android:id="@+id/input_verification_code_register"
+                android:layout_width="300px"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="230px"
+                android:hint="请填写验证码"
+                android:inputType="number"
+                android:textColorHint="@color/hint_color"
+                android:textSize="28px"/>
+
+            <TextView
+                android:id="@+id/line1"
+                android:layout_width="1px"
+                android:layout_height="54px"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/input_verification_code_register"/>
+
+            <Button
+                android:id="@+id/btn__get_verification_code_register"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignBaseline="@+id/input_verification_code_register"
+                android:layout_alignBottom="@+id/input_verification_code_register"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10px"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="@dimen/verification_code_button_margin"
+                android:layout_marginTop="10px"
+                android:layout_toRightOf="@+id/line1"
+                android:background="@drawable/btn_get_verification_corners_bg"
+                android:gravity="center"
+                android:paddingLeft="@dimen/EditText_vertical_top"
+                android:paddingRight="@dimen/EditText_vertical_top"
+                android:text="@string/get_verification_code"
+                android:textColor="@color/orange"
+                android:textSize="20px"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="96px">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/mid_padding"
+                android:text="密码"
+                android:textColor="@color/black_word"
+                android:textSize="32px"/>
+
+            <EditText
+                android:id="@+id/password_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="230px"
+                android:hint="请填写密码"
+                android:inputType="textPassword"
+                android:textColorHint="@color/hint_color"
+                android:textSize="28px"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="96px">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/mid_padding"
+                android:text="确认密码"
+                android:textColor="@color/black_word"
+                android:textSize="32px"/>
+
+            <EditText
+                android:id="@+id/repassword_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="230px"
+                android:hint="请填写密码"
+                android:inputType="textPassword"
+                android:textColorHint="@color/hint_color"
+                android:textSize="28px"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="96px">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/mid_padding"
+                android:text="推荐人"
+                android:textColor="@color/black_word"
+                android:textSize="32px"/>
+
+            <EditText
+                android:id="@+id/introduce_sponsor_phone_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="230px"
+                android:hint="推荐人手机号（选填）"
+                android:inputType="phone"
+                android:textColorHint="@color/hint_color"
+                android:textSize="28px"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="46px"
+        android:layout_marginTop="@dimen/small_padding">
+
+        <CheckBox
+            android:id="@+id/checkbox_user_protocol_register"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/register_checkbox"
+            android:button="@null"
+            android:checked="false"
+            />
+
+        <TextView
+            android:id="@+id/tv_yuezhan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/small_padding"
+            android:layout_toRightOf="@id/checkbox_user_protocol_register"
+            android:text="《约战》"
+            android:textColor="@color/black_word"
+            android:textSize="28px"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/small_padding"
+            android:layout_toRightOf="@id/tv_yuezhan"
+            android:text="用户协议"
+            android:textColor="#fbcc2f"
+            android:textSize="28px"/>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_register_register"
+        android:layout_width="match_parent"
+        android:layout_height="90px"
+        android:layout_marginLeft="@dimen/mid_padding"
+        android:layout_marginRight="@dimen/mid_padding"
+        android:layout_marginTop="70px"
+        android:background="@mipmap/bottom"
+        android:text="下一步"
+        android:textColor="@android:color/white"
+        android:textSize="34px"/>
+
+</LinearLayout>

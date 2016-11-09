@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroud"
+    android:orientation="vertical"
+    tools:context="com.chinalooke.yuwan.activity.GameDeskActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/search"
+        >
+
+
+        <FrameLayout
+            android:id="@+id/iv_wirte_back"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="6dp"
+            android:clickable="true">
+
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp"
+                android:background="@mipmap/icon_back"/>
+
+
+        </FrameLayout>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:text="详情"
+            android:textColor="#FFFFFF"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_bkImage"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        >
+
+        <TextView
+            android:id="@+id/btn_desk"
+            android:layout_width="48dp"
+            android:layout_height="16dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/button_blue_shape"
+            android:gravity="center"
+            android:padding="1dp"
+            android:text="应战中"
+            android:textSize="12dp"/>
+
+        <TextView
+            android:id="@+id/tv_q"
+            android:layout_width="65dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:text="游戏  ："
+            android:textColor="@android:color/black"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tv_game_name"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/tv_q"
+            android:gravity="center_vertical"
+            android:text="英雄联盟"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"/>
+
+        <ImageView
+            android:id="@+id/iv_cup"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="26dp"
+            android:layout_toEndOf="@+id/btn_desk"
+            android:src="@mipmap/cup"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@+id/tv_winner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/btn_desk"
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@+id/iv_cup"
+            android:text="约战方"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/TextSize_14"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <com.chinalooke.yuwan.view.NoSlidingListView
+                android:id="@+id/lv_gamedesk_yuezhan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:divider="#00000000"
+                android:dividerHeight="0dip"
+                />
+
+            <com.chinalooke.yuwan.view.NoSlidingListView
+                android:id="@+id/lv_gamedesk_yingzhan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:divider="#00000000"
+                android:dividerHeight="0dip"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/white"
+                android:orientation="vertical"
+                android:paddingLeft="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.5"
+                        android:gravity="center_vertical"
+                        android:text="时间 :"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/TextSize_14"/>
+
+                    <TextView
+                        android:id="@+id/tv_time"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:gravity="center_vertical"
+                        android:text="时间 :"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/TextSize_14"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.5"
+                        android:gravity="center_vertical"
+                        android:text="奖金 :"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/TextSize_14"/>
+
+                    <TextView
+                        android:id="@+id/tv_pay"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:gravity="center_vertical"
+                        android:text="时间 :"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/TextSize_14"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.5"
+                        android:gravity="center_vertical"
+                        android:text="对战人数 :"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/TextSize_14"/>
+
+                    <TextView
+                        android:id="@+id/tv_number"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:gravity="center_vertical"
+                        android:text="时间 :"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/TextSize_14"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:paddingLeft="16dp"
+                android:paddingTop="8dp"
+                >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:gravity="center_vertical"
+                    android:text="详细规则 :"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/TextSize_14"/>
+
+                <TextView
+                    android:id="@+id/tv_rule"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="4"
+                    android:gravity="center_vertical"
+                    android:text="时间 :"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/TextSize_14"/>
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="@android:color/white"/>
+        </LinearLayout>
+
+
+    </ScrollView>
+
+</LinearLayout>
