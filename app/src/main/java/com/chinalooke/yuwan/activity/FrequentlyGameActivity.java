@@ -1,7 +1,6 @@
 package com.chinalooke.yuwan.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -9,7 +8,6 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -19,9 +17,7 @@ import android.widget.TextView;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.db.DBManager;
-import com.chinalooke.yuwan.model.Circle;
 import com.chinalooke.yuwan.model.GameMessage;
-import com.chinalooke.yuwan.utils.ImageUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
@@ -29,7 +25,6 @@ import com.zhy.autolayout.AutoLayoutActivity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +39,7 @@ public class FrequentlyGameActivity extends AutoLayoutActivity {
     @Bind(R.id.save_personal_info)
     Button mSavePersonalInfo;
     @Bind(R.id.tv_title)
-    Button mTvTitle;
+    TextView mTvTitle;
     @Bind(R.id.et_input)
     EditText mEtInput;
     private List<GameMessage.ResultBean> mResult = new ArrayList<>();

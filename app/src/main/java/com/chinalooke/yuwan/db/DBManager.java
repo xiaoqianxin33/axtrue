@@ -1,11 +1,9 @@
 package com.chinalooke.yuwan.db;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.chinalooke.yuwan.model.Game;
 import com.chinalooke.yuwan.model.GameMessage;
 
 import java.util.ArrayList;
@@ -18,11 +16,10 @@ import java.util.List;
 
 public class DBManager {
 
-    private DBHelper helper;
     private SQLiteDatabase db;
 
     public DBManager(Context context) {
-        helper = new DBHelper(context);
+        DBHelper helper = new DBHelper(context);
         //因为getWritableDatabase内部调用了mContext.openOrCreateDatabase(mName, 0, mFactory);
         //所以要确保context已初始化,我们可以把实例化DBManager的步骤放在Activity的onCreate里
         db = helper.getWritableDatabase();
@@ -32,7 +29,7 @@ public class DBManager {
         db.beginTransaction();  //开始事务
         try {
             for (GameMessage.ResultBean person : games) {
-                db.execSQL("INSERT INTO person VALUES(null, ?, ?, ?)", new Object[]{person.getName(), person.getGameId(), person.getThumb()});
+                db.execSQL("INSERT OR REPLACE INTO person VALUES(?,?,?)", new Object[]{person.getGameId(), person.getName(), person.getThumb()});
             }
             db.setTransactionSuccessful();  //设置事务成功完成
         } finally {
@@ -50,7 +47,7 @@ public class DBManager {
         while (c.moveToNext()) {
             GameMessage.ResultBean person = new GameMessage.ResultBean();
             person.setName(c.getString(c.getColumnIndex("name")));
-            person.setGameId(c.getString(c.getColumnIndex("id")));
+            person.setGameId(c.getString(c.getColumnIndex("gameId")));
             person.setThumb(c.getString(c.getColumnIndex("url")));
             persons.add(person);
         }
@@ -67,7 +64,7 @@ public class DBManager {
         Cursor c = queryTheCursorById(gameId);
         while (c.moveToNext()) {
             resultBean.setName(c.getString(c.getColumnIndex("name")));
-            resultBean.setGameId(c.getString(c.getColumnIndex("id")));
+            resultBean.setGameId(c.getString(c.getColumnIndex("gameId")));
             resultBean.setThumb(c.getString(c.getColumnIndex("url")));
         }
         c.close();
@@ -75,7 +72,7 @@ public class DBManager {
     }
 
     private Cursor queryTheCursorById(String gameId) {
-        return db.rawQuery("SELECT * FROM person where id=?", new String[]{gameId});
+        return db.rawQuery("SELECT * FROM person WHERE gameId=?", new String[]{gameId});
     }
 
 }

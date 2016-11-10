@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:tools="http://schemas.android.com/tools"
+       tools:showIn="@layout/activity_login">
+
+
+    <LinearLayout
+        android:id="@+id/weixin_login"
+        android:layout_width="97px"
+        android:layout_height="132px"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="98px"
+        android:layout_marginLeft="150px"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="86px"
+            android:layout_height="86px"
+            android:layout_gravity="center_horizontal"
+            android:src="@mipmap/weixin"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginTop="@dimen/small_padding"
+            android:text="微信登录"
+            android:textColor="#848787"
+            android:textSize="22px"/>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/weibo_login"
+        android:layout_width="97px"
+        android:layout_height="132px"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="98px"
+        android:layout_marginLeft="74px"
+        android:layout_toRightOf="@id/weixin_login"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="86px"
+            android:layout_height="86px"
+            android:layout_gravity="center_horizontal"
+            android:src="@mipmap/xinlang"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginTop="@dimen/small_padding"
+            android:text="微博登录"
+            android:textColor="#848787"
+            android:textSize="22px"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/QQ_login"
+        android:layout_width="97px"
+        android:layout_height="132px"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="98px"
+        android:layout_marginLeft="74px"
+        android:layout_toRightOf="@id/weibo_login"
+        android:orientation="vertical">
+
+
+        <ImageView
+            android:layout_width="86px"
+            android:layout_height="86px"
+            android:layout_gravity="center_horizontal"
+            android:src="@mipmap/qq"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginTop="@dimen/small_padding"
+            android:text="QQ登录"
+            android:textColor="#848787"
+            android:textSize="22px"/>
+
+
+    </LinearLayout>
+</merge>

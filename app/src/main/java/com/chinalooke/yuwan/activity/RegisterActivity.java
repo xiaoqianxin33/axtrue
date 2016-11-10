@@ -326,8 +326,5 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
             e.printStackTrace();
             Log.d("TAG", "解析失败");
         }
-
     }
-
-
 }

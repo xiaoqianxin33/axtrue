@@ -12,8 +12,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -41,8 +39,10 @@ import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.CityPicker;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
+import com.chinalooke.yuwan.view.EditNameDialog;
 import com.lljjcoder.citypickerview.widget.CityPickerView;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
 
 import java.io.IOException;
@@ -56,32 +56,23 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterView.OnItemClickListener, View.OnClickListener, UpdateGetCity, AMapLocationListener {
-    //返回
-    @Bind(R.id.back_personal_info)
-    ImageView mbackRegister;
-    //昵称
-
-    //跳过
-
 
     @Bind(R.id.tv_title)
     TextView mTvTitle;
     @Bind(R.id.tv_skip)
     TextView mTvSkip;
     @Bind(R.id.tv_name)
-    EditText mEtName;
+    TextView mEtName;
     @Bind(R.id.tv_sex)
     TextView mTvSex;
-    @Bind(R.id.et_play_age)
+    @Bind(R.id.tv_play_age)
     TextView mEtPlayAge;
     @Bind(R.id.tv_location)
-    EditText mTvLocation;
+    TextView mTvLocation;
     @Bind(R.id.ll_game)
     LinearLayout mLlGame;
     @Bind(R.id.et_age)
-    EditText mEtAge;
-    @Bind(R.id.tv_play_age)
-    TextView mTvPlayAge;
+    TextView mEtAge;
 
     private ArrayList<String> sexListDatas;
     private ArrayList<String> playAgeListDatas;
@@ -153,7 +144,7 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
             if (!TextUtils.isEmpty(userInfo.getRealName()))
                 mEtName.setText(userInfo.getRealName());
             if (!TextUtils.isEmpty(userInfo.getPlayAge()))
-                mTvPlayAge.setText(userInfo.getPlayAge());
+                mEtPlayAge.setText(userInfo.getPlayAge());
             if (!TextUtils.isEmpty(userInfo.getAddress()))
                 mTvLocation.setText(userInfo.getAddress());
             String[] gameId = userInfo.getGameId();
@@ -169,11 +160,22 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
                 }
             }
         } else {
+            userInfo = new UserInfo();
+            String userId = getIntent().getStringExtra("userId");
+            if (!TextUtils.isEmpty(userId)) {
+                userInfo.setUserId(userId);
+            }
+            String headImg = getIntent().getStringExtra("headImg");
+            if (!TextUtils.isEmpty(headImg)) {
+                userInfo.setHeadImg(headImg);
+            }
+
             mTvSkip.setVisibility(View.VISIBLE);
         }
     }
 
-    @OnClick({R.id.iv_back, R.id.tv_skip, R.id.rl_sex, R.id.rl_play_age, R.id.rl_location, R.id.rl_game, R.id.btn_enter})
+    @OnClick({R.id.iv_back, R.id.tv_skip, R.id.rl_sex, R.id.rl_play_age,
+            R.id.rl_name, R.id.rl_location, R.id.rl_game, R.id.btn_enter, R.id.rl_age})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
@@ -208,51 +210,99 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
                 break;
             //保存
             case R.id.btn_enter:
-                savePersonalInfo();
+                if (savePersonalInfo()) {
+                    submitSaveInfo();
+                }
                 break;
-//            //自动定位
-//            case R.id.auto_address_personal_info:
-//                getAutoAddress();
-//                break;
-
-
+            case R.id.rl_name:
+                showEditDialog();
+                break;
+            case R.id.rl_age:
+                setAge();
+                MyUtils.hiddenKeyboard(this, view);
+                pvOptions.show();
+                break;
         }
+    }
+
+    private void setAge() {
+        playAgeListDatas = new ArrayList<String>();
+        for (int i = 10; i <= 60; i++) {
+            playAgeListDatas.add("" + i);
+        }
+        //选项选择器
+        pvOptions = new OptionsPickerView<String>(this);
+        //三级联动效果
+        pvOptions.setPicker(playAgeListDatas);
+        //设置选择的三级单位
+        pvOptions.setTitle("选择玩龄");
+        pvOptions.setCyclic(false);
+        //设置默认选中的三级项目
+        //监听确定选择按钮
+        pvOptions.setSelectOptions(20);
+        pvOptions.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
+
+            @Override
+            public void onOptionsSelect(int options1, int option2, int options3) {
+                //返回的分别是三个级别的选中位置
+                String tx = playAgeListDatas.get(options1);
+                mEtAge.setText(tx);
+
+            }
+        });
+    }
+
+    private void showEditDialog() {
+        final EditNameDialog editNameDialog = new EditNameDialog(PersonalInfoActivity.this);
+        editNameDialog.setNoOnclickListener(new EditNameDialog.onNoOnclickListener() {
+            @Override
+            public void onNoClick() {
+                editNameDialog.dismiss();
+            }
+        });
+        editNameDialog.setYesOnclickListener(new EditNameDialog.onYesOnclickListener() {
+            @Override
+            public void onYesClick(String input) {
+                editNameDialog.dismiss();
+                if (!TextUtils.isEmpty(input)) {
+                    mEtName.setText(input);
+                }
+            }
+        });
     }
 
     /**
      * 保存个人信息
      */
-    private void savePersonalInfo() {
+    private boolean savePersonalInfo() {
         sexPersonalInfo = mTvSex.getText().toString();
         playAge = mEtPlayAge.getText().toString();
         address = mTvLocation.getText().toString();
         name = mEtName.getText().toString();
         mAge = mEtAge.getText().toString();
-        if (TextUtils.isEmpty(name)) {
-            mEtName.setError("请输入姓名");
-            mEtName.requestFocus();
-        } else if (TextUtils.isEmpty(mAge)) {
-            mEtAge.setError("请输入您的真实年龄");
-            mEtAge.requestFocus();
-        } else if (TextUtils.isEmpty(address) || "点击获取位置".equals(address)) {
-            mToast.setText("请选择地址");
-            mToast.show();
-        } else if (mChose.size() == 0) {
+        if (mChose.size() == 0) {
             mToast.setText("请选择常玩游戏");
             mToast.show();
-        } else {
-            saveUserInfo();
-            submintSaveInfo();
+            return false;
+        }
+        if (!TextUtils.isEmpty(name) && !"请输入真实姓名".equals(name)) {
+            userInfo.setRealName(name);
+        }
+        if (!TextUtils.isEmpty(mAge) && !"请输入真实年龄".equals(mAge)) {
+            userInfo.setAge(mAge);
+        }
+        if (!TextUtils.isEmpty(playAge) && !"请输入真实玩龄".equals(playAge)) {
+            userInfo.setPlayAge(playAge);
         }
 
-    }
+        if (!TextUtils.isEmpty(sexPersonalInfo)) {
+            userInfo.setSex(sexPersonalInfo);
+        }
 
-    private void saveUserInfo() {
-        userInfo.setAddress(address);
-        userInfo.setSex(sexPersonalInfo);
-        userInfo.setPlayAge(playAge);
-        userInfo.setRealName(name);
-        userInfo.setAge(mAge);
+        if (!TextUtils.isEmpty(address) && !"点击获取位置".equals(address)) {
+            userInfo.setAddress(address);
+        }
+
         if (mStrings != null) {
             userInfo.setGameId(mStrings);
         }
@@ -262,12 +312,14 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return true;
     }
+
 
     /**
      * 提交保存信息
      */
-    private void submintSaveInfo() {
+    private void submitSaveInfo() {
         //拼接接口信息
         String[] gameId = userInfo.getGameId();
         StringBuilder stringBuffer = new StringBuilder();
@@ -450,20 +502,6 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
             }
         });
 
-
-    }
-
-    private void initPopupWindow(View view) {
-        // 创建一个popupWindow
-        popupWindow = new PopupWindow(view, LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                LinearLayoutCompat.LayoutParams.MATCH_PARENT);
-        // 设置事件处理
-        popupWindow.setFocusable(true);
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
-        // 设置动画效果
-        popupWindow.setAnimationStyle(R.style.popupWindowAnimation);
-
     }
 
     /**
@@ -556,8 +594,8 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
             for (GameMessage.ResultBean resultBean : mChose) {
                 String thumb = resultBean.getThumb();
                 RoundedImageView imageView = new RoundedImageView(getApplicationContext());
-                imageView.setImageURI(Uri.parse(thumb));
-                imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(50, 50));
+                imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(70, 70));
+                Picasso.with(getApplicationContext()).load(thumb).resize(70, 70).centerCrop().into(imageView);
                 imageView.setOval(true);
                 mLlGame.addView(imageView);
             }

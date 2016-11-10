@@ -3,21 +3,19 @@ package com.chinalooke.yuwan.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.ResultDatas;
 import com.chinalooke.yuwan.model.UserInfo;
@@ -26,6 +24,7 @@ import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.Validator;
 import com.chinalooke.yuwan.view.LoadingProgressDialogView;
 import com.google.gson.Gson;
+import com.zhy.autolayout.AutoLayoutActivity;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -42,28 +41,16 @@ import cn.sharesdk.tencent.qq.QQ;
 import cn.sharesdk.wechat.friends.Wechat;
 
 
-public class LoginActivity extends AppCompatActivity implements PlatformActionListener {
+public class LoginActivity extends AutoLayoutActivity implements PlatformActionListener {
     //登录按钮
     @Bind(R.id.btn_login_login)
-    Button mbtnLoginLogin;
+    Button mBtnLoginLogin;
     //手机号码
     @Bind(R.id.phone_login)
-    EditText mphoneLogin;
+    EditText mEtPhone;
     //密码
     @Bind(R.id.password_login)
-    EditText mpasswordLogin;
-    //QQ
-    @Bind(R.id.QQ_login)
-    ImageView mQQLogin;
-    //微信
-    @Bind(R.id.weixin_login)
-    ImageView mWeixinLogin;
-    //微博
-    @Bind(R.id.weibo_login)
-    ImageView mWeiboLogin;
-    //忘记密码
-    @Bind(R.id.forget_pwd_login)
-    TextView forgetPwdLogin;
+    EditText mEtPassword;
     private String phone;
     private String passWord;
     private RequestQueue mQueue;
@@ -75,10 +62,32 @@ public class LoginActivity extends AppCompatActivity implements PlatformActionLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        mQueue = Volley.newRequestQueue(this);
+        mQueue = YuwanApplication.getQueue();
         //初始化Sharesdk;
         ShareSDK.initSDK(this);
+        initView();
+        initEvent();
+    }
 
+    private void initView() {
+        mBtnLoginLogin.setBackgroundColor(getResources().getColor(R.color.grey));
+        mBtnLoginLogin.setEnabled(false);
+    }
+
+    private void initEvent() {
+        mEtPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String phone = mEtPhone.getText().toString();
+                if (hasFocus && !TextUtils.isEmpty(phone)) {
+                    mBtnLoginLogin.setBackgroundColor(getResources().getColor(R.color.btn_yellow));
+                    mBtnLoginLogin.setEnabled(true);
+                } else {
+                    mBtnLoginLogin.setBackgroundColor(getResources().getColor(R.color.grey));
+                    mBtnLoginLogin.setEnabled(false);
+                }
+            }
+        });
     }
 
     @Override
@@ -93,11 +102,11 @@ public class LoginActivity extends AppCompatActivity implements PlatformActionLi
         switch (view.getId()) {
             //登录按钮
             case R.id.btn_login_login:
-                if(Validator.isNetworkAvailable(LoginActivity.this)) {
+                if (Validator.isNetworkAvailable(LoginActivity.this)) {
                     //判断是否网络未连接
                     handleLogin();
-                }else{
-                    Toast.makeText(LoginActivity.this,"亲掉线了，换个地方试试",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(LoginActivity.this, "亲掉线了，换个地方试试", Toast.LENGTH_SHORT).show();
                 }
                 break;
             //QQ登录
@@ -135,27 +144,26 @@ public class LoginActivity extends AppCompatActivity implements PlatformActionLi
      * 加载登录
      */
     private void handleLogin() {
-        phone = mphoneLogin.getText().toString();
-        passWord = mpasswordLogin.getText().toString();
+        phone = mEtPhone.getText().toString();
+        passWord = mEtPassword.getText().toString();
         if (phone.equals("")) {
-            mphoneLogin.setError("请输入手机号码");
-        } else
-        if (!Validator.getValidator().isMobile(phone))
-            mphoneLogin.setError("请输入正确的手机号码");
+            mEtPhone.setError("请输入手机号码");
+        } else if (!Validator.getValidator().isMobile(phone))
+            mEtPhone.setError("请输入正确的手机号码");
         else if ("".equals(passWord)) {
-            mpasswordLogin.setError("请输入密码");
+            mEtPassword.setError("请输入密码");
         } else {
             getHTTPIsPhoneExists();
             //弹出正在登陆
-            showMyDialog(mbtnLoginLogin);
-            mbtnLoginLogin.setClickable(false);
+            showMyDialog(mBtnLoginLogin);
+            mBtnLoginLogin.setClickable(false);
         }
 
     }
 
     //登陆成功跳转到首界面
-    private void loginSuccess(){
-        Intent intent =new Intent(LoginActivity.this,MainActivity.class);
+    private void loginSuccess() {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
     }
@@ -177,7 +185,7 @@ public class LoginActivity extends AppCompatActivity implements PlatformActionLi
                             if (result != null) {
                                 if ("true".equals(result.getSuccess()) && "false".equals(result.getResult())) {
                                     Log.d("TAG", "该号码未注册");
-                                    mphoneLogin.setError("该号码未注册，请先注册");
+                                    mEtPhone.setError("该号码未注册，请先注册");
                                     dialog.dismiss();
                                 }
                                 if ("true".equals(result.getSuccess()) && "true".equals(result.getResult())) {
@@ -185,7 +193,7 @@ public class LoginActivity extends AppCompatActivity implements PlatformActionLi
 
                                     if ("".equals(passWord)) {
                                         //判断密码是否为空
-                                        mpasswordLogin.setError("请输入密码");
+                                        mEtPassword.setError("请输入密码");
                                         dialog.dismiss();
                                     } else {
                                         //进行登录
@@ -232,13 +240,13 @@ public class LoginActivity extends AppCompatActivity implements PlatformActionLi
                                     //Gson解析
                                     Gson gson = new Gson();
 
-                                    UserInfo userInfo=gson.fromJson(result.getResult(), UserInfo.class);
-                                    if (userInfo!=null) {
+                                    UserInfo userInfo = gson.fromJson(result.getResult(), UserInfo.class);
+                                    if (userInfo != null) {
                                         LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo);//设置userInfo
                                         try {
-                                            LoginUserInfoUtils.getLoginUserInfoUtils().saveLoginUserInfo(LoginActivity.this,LoginUserInfoUtils.KEY,userInfo);
+                                            LoginUserInfoUtils.getLoginUserInfoUtils().saveLoginUserInfo(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo);
                                         } catch (IOException e) {
-                                            Log.d("TAG","-------存储失败");
+                                            Log.d("TAG", "-------存储失败");
                                             e.printStackTrace();
                                         }
                                     }
@@ -250,7 +258,7 @@ public class LoginActivity extends AppCompatActivity implements PlatformActionLi
                                 if ("false".equals(result.getSuccess())) {
                                     Log.d("TAG", "验证密码");
                                     dialog.dismiss();
-                                    mpasswordLogin.setError("密码输入错误");
+                                    mEtPassword.setError("密码输入错误");
 
                                 }
                             }
@@ -266,7 +274,7 @@ public class LoginActivity extends AppCompatActivity implements PlatformActionLi
                 Log.e("TAG", error.getMessage(), error);
                 dialog.dismiss();
                 Toast.makeText(LoginActivity.this, "服务器抽风了，一会儿再试试", Toast.LENGTH_SHORT).show();
-                mbtnLoginLogin.setClickable(true);
+                mBtnLoginLogin.setClickable(true);
             }
         });
         mQueue.add(stringRequest);
@@ -378,7 +386,7 @@ public class LoginActivity extends AppCompatActivity implements PlatformActionLi
             @Override
             public void run() {
 
-                mbtnLoginLogin.setClickable(true);
+                mBtnLoginLogin.setClickable(true);
             }
         }, 5000);
     }

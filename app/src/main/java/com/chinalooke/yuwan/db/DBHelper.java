@@ -31,11 +31,11 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS person" +
-                "(_id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR,id VARCHAR, url TEXT )");
+                "(gameId INTEGER PRIMARY KEY, name VARCHAR, url TEXT )");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("ALTER TABLE person ADD COLUMN other STRING");
+        db.execSQL("ALTER TABLE person ADD COLUMN other TEXT");
     }
 }
