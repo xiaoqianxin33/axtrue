@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_bind_phone"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.chinalooke.yuwan.activity.BindPhoneActivity">
 
     <include layout="@layout/include_head"/>
 
@@ -22,20 +26,20 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/mid_padding"
-            android:text="新密码"
+            android:text="手机号"
             android:textColor="@color/black_word"
             android:textSize="30px"/>
 
         <EditText
-            android:id="@+id/new_reset_password"
+            android:id="@+id/et_phone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_marginLeft="230px"
             android:background="@null"
             android:gravity="center_vertical"
-            android:hint="请输入新密码"
-            android:inputType="textPassword"
+            android:hint="请输入手机号"
+            android:inputType="phone"
             android:textSize="28px"/>
 
     </RelativeLayout>
@@ -58,21 +62,38 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/mid_padding"
-            android:text="确认密码"
+            android:text="验证码"
             android:textColor="@color/black_word"
             android:textSize="30px"/>
 
         <EditText
-            android:id="@+id/renew_reset_password"
+            android:id="@+id/et_code"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_marginLeft="230px"
             android:background="@null"
             android:gravity="center_vertical"
-            android:hint="确认密码"
-            android:inputType="textPassword"
+            android:hint="请填写验证码"
+            android:inputType="phone"
             android:textSize="28px"/>
+
+        <Button
+            android:id="@+id/btn_getCode"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10px"
+            android:layout_marginRight="@dimen/verification_code_button_margin"
+            android:layout_marginTop="10px"
+            android:background="@drawable/btn_get_verification_corners_bg"
+            android:gravity="center"
+            android:paddingLeft="@dimen/EditText_vertical_top"
+            android:paddingRight="@dimen/EditText_vertical_top"
+            android:text="@string/get_verification_code"
+            android:textColor="@color/orange"
+            android:textSize="20px"/>
 
     </RelativeLayout>
 
@@ -83,9 +104,9 @@
 
 
     <Button
-        android:id="@+id/btn_next_reset_password"
+        android:id="@+id/btn_bind_phone"
         style="@style/big_orange_btn"
         android:layout_marginTop="62px"
-        android:text="下一步"/>
+        android:text="绑定手机号"/>
 
 </LinearLayout>

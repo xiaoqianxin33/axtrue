@@ -1,5 +1,6 @@
 package com.chinalooke.yuwan.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -21,14 +23,17 @@ import com.chinalooke.yuwan.model.ResultDatas;
 import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
+import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.Validator;
 import com.chinalooke.yuwan.view.LoadingProgressDialogView;
 import com.google.gson.Gson;
 import com.zhy.autolayout.AutoLayoutActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.HashMap;
-
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -51,11 +56,16 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     //密码
     @Bind(R.id.password_login)
     EditText mEtPassword;
+    @Bind(R.id.tv_title)
+    TextView mTvTitle;
+    @Bind(R.id.tv_skip)
+    TextView mTvSkip;
     private String phone;
     private String passWord;
     private RequestQueue mQueue;
     //加载的弹出框
     private LoadingProgressDialogView dialog;
+    private Toast mToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +73,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         mQueue = YuwanApplication.getQueue();
+        mToast = YuwanApplication.getToast();
         //初始化Sharesdk;
         ShareSDK.initSDK(this);
         initView();
@@ -72,6 +83,9 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     private void initView() {
         mBtnLoginLogin.setBackgroundColor(getResources().getColor(R.color.grey));
         mBtnLoginLogin.setEnabled(false);
+        mTvTitle.setText("登录");
+        mTvSkip.setText("注册");
+        mTvSkip.setTextColor(getResources().getColor(R.color.unselectcolor));
     }
 
     private void initEvent() {
@@ -82,9 +96,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                 if (hasFocus && !TextUtils.isEmpty(phone)) {
                     mBtnLoginLogin.setBackgroundColor(getResources().getColor(R.color.btn_yellow));
                     mBtnLoginLogin.setEnabled(true);
-                } else {
-                    mBtnLoginLogin.setBackgroundColor(getResources().getColor(R.color.grey));
-                    mBtnLoginLogin.setEnabled(false);
                 }
             }
         });
@@ -93,11 +104,10 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //销毁ShareSDk
         ShareSDK.stopSDK();
     }
 
-    @OnClick({R.id.QQ_login, R.id.weixin_login, R.id.weibo_login, R.id.btn_login_login, R.id.back_login, R.id.forget_pwd_login})
+    @OnClick({R.id.QQ_login, R.id.weixin_login, R.id.weibo_login, R.id.btn_login_login, R.id.iv_back, R.id.forget_pwd_login})
     public void onClick(View view) {
         switch (view.getId()) {
             //登录按钮
@@ -106,7 +116,8 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                     //判断是否网络未连接
                     handleLogin();
                 } else {
-                    Toast.makeText(LoginActivity.this, "亲掉线了，换个地方试试", Toast.LENGTH_SHORT).show();
+                    mToast.setText("亲掉线了，换个地方试试");
+                    mToast.show();
                 }
                 break;
             //QQ登录
@@ -122,7 +133,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                 sinaLogin();
                 break;
             //返回按钮
-            case R.id.back_login:
+            case R.id.iv_back:
                 finish();
                 break;
             //忘记密码
@@ -148,10 +159,13 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
         passWord = mEtPassword.getText().toString();
         if (phone.equals("")) {
             mEtPhone.setError("请输入手机号码");
-        } else if (!Validator.getValidator().isMobile(phone))
+            mEtPhone.requestFocus();
+        } else if (!Validator.getValidator().isMobile(phone)) {
             mEtPhone.setError("请输入正确的手机号码");
-        else if ("".equals(passWord)) {
+            mEtPhone.requestFocus();
+        } else if ("".equals(passWord)) {
             mEtPassword.setError("请输入密码");
+            mEtPassword.requestFocus();
         } else {
             getHTTPIsPhoneExists();
             //弹出正在登陆
@@ -185,8 +199,22 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                             if (result != null) {
                                 if ("true".equals(result.getSuccess()) && "false".equals(result.getResult())) {
                                     Log.d("TAG", "该号码未注册");
-                                    mEtPhone.setError("该号码未注册，请先注册");
                                     dialog.dismiss();
+                                    MyUtils.showNorDialog(LoginActivity.this, "提示", "您的手机号码" + phone + "未注册雷熊，现在就注册么？",
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            }, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                    Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                                                    intent.putExtra("phone", phone);
+                                                    startActivity(intent);
+                                                }
+                                            });
                                 }
                                 if ("true".equals(result.getSuccess()) && "true".equals(result.getResult())) {
                                     Log.d("TAG", "验证密码");
@@ -222,7 +250,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     // 手机号验证通过后验证登录是否成功
     //网络获取  验证手机号是否注册
     private void getHTTPLoginSuccess() {
-
         String URLLogin = Constant.LOGIN_RESULT + "&" + Constant.PHONE + phone + "&" + Constant.PWD + passWord;
         Log.d("TAG", "登录网址----------" + URLLogin);
         StringRequest stringRequest = new StringRequest(URLLogin,
@@ -232,40 +259,8 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                         Log.d("TAG", response);
                         //解析数据
                         if (response != null) {
-
-                            ResultDatas result = AnalysisJSON.getAnalysisJSON().AnalysisJSONResult(response);
-                            if (result != null) {
-                                if ("true".equals(result.getSuccess())) {
-                                    Log.d("TAG", "登录成功");
-                                    //Gson解析
-                                    Gson gson = new Gson();
-
-                                    UserInfo userInfo = gson.fromJson(result.getResult(), UserInfo.class);
-                                    if (userInfo != null) {
-                                        LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo);//设置userInfo
-                                        try {
-                                            LoginUserInfoUtils.getLoginUserInfoUtils().saveLoginUserInfo(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo);
-                                        } catch (IOException e) {
-                                            Log.d("TAG", "-------存储失败");
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    Log.d("TAG", "用户名" + userInfo.getUserId() + userInfo.getCardNo());
-                                    dialog.dismiss();
-                                    loginSuccess();//调用登录成功方法
-
-                                }
-                                if ("false".equals(result.getSuccess())) {
-                                    Log.d("TAG", "验证密码");
-                                    dialog.dismiss();
-                                    mEtPassword.setError("密码输入错误");
-
-                                }
-                            }
-
+                            parseLoginJson(response);
                         }
-
-
                     }
                 }, new Response.ErrorListener() {
 
@@ -280,12 +275,42 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
         mQueue.add(stringRequest);
     }
 
+    private void parseLoginJson(String response) {
+        ResultDatas result = AnalysisJSON.getAnalysisJSON().AnalysisJSONResult(response);
+        if (result != null) {
+            if ("true".equals(result.getSuccess())) {
+                Log.d("TAG", "登录成功");
+                //Gson解析
+                Gson gson = new Gson();
+                UserInfo userInfo = gson.fromJson(result.getResult(), UserInfo.class);
+                if (userInfo != null) {
+                    LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo);//设置userInfo
+                    try {
+                        LoginUserInfoUtils.getLoginUserInfoUtils().saveLoginUserInfo(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo);
+                    } catch (IOException e) {
+                        Log.d("TAG", "-------存储失败");
+                        e.printStackTrace();
+                    }
+                }
+                Log.d("TAG", "用户名" + userInfo.getUserId() + userInfo.getCardNo());
+                dialog.dismiss();
+                loginSuccess();//调用登录成功方法
+
+            }
+            if ("false".equals(result.getSuccess())) {
+                Log.d("TAG", "验证密码");
+                dialog.dismiss();
+                mEtPassword.setError("密码输入错误");
+
+            }
+        }
+    }
+
     /**
      * QQ登录
      */
     private void QQLogin() {
         disanfangLogin(QQ.NAME);
-
     }
 
     /**
@@ -320,41 +345,78 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
             Log.i("TAG", "验证通-----------------过-----" + userName + password);
         } else {
             //没有通过验证
-
+            mToast.setText("验证失败，请重试");
+            mToast.show();
         }
         platform.showUser(null);//授权并获取用户信息
-
-    /*    private void authorize(Platform platform) {
-            if (platform == null) {
-                popupOthers();
-                return;
-            }
-//判断指定平台是否已经完成授权
-            if(plat.isAuthValid()) {
-                String userId = plat.getDb().getUserId();
-                if (userId != null) {
-                    UIHandler.sendEmptyMessage(MSG_USERID_FOUND, this);
-                    login(plat.getName(), userId, null);
-                    return;
-                }
-            }
-            plat.setPlatformActionListener(this);
-            // true不使用SSO授权，false使用SSO授权
-            plat.SSOSetting(true);
-            //获取用户资料
-            plat.showUser(null);
-        }*/
     }
 
 
     //授权完成
     @Override
     public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
-        String userName = platform.getDb().getUserName();//获取第三方平台显示的名称
-        String password = platform.getDb().getUserId();//获取第三方平台的密码
-        String userIcon = platform.getDb().getUserIcon();//获取第三方平台的头标
+//        String userName = platform.getDb().getUserName();//获取第三方平台显示的名称
+//        String password = platform.getDb().getUserId();//获取第三方平台的密码
+//        String userIcon = platform.getDb().getUserIcon();//获取第三方平台的头标
+        final String token = platform.getDb().getToken();
+        String uri = Constant.HOST + "isAuthExists&auth=" + token;
+        StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (!TextUtils.isEmpty(response)) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("Success");
+                        if (success) {
+                            String result = jsonObject.getString("Result");
+                            JSONObject jsonObject2 = new JSONObject(result);
+                            String phone = jsonObject2.getString("phone");
+                            getUserInfoWithAuth(phone, token);
+                        } else {
+                            String msg = jsonObject.getString("Msg");
+                            if ("无该签权".equals(msg)) {
+                                Intent intent = new Intent(LoginActivity.this, BindPhoneActivity.class);
+                                intent.putExtra("auth", token);
+                                startActivity(intent);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    mToast.setText("网速不给力啊，换个地方试试");
+                    mToast.show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mToast.setText("网速不给力啊，换个地方试试");
+                mToast.show();
+            }
+        });
+        mQueue.add(request);
+    }
 
-        Log.i("TAG", userName + "========" + password + "=====" + userIcon + "------" + i + "------" + hashMap.toString());
+    /**
+     * 获取第三方登录过的用户资料
+     */
+    private void getUserInfoWithAuth(String phone, String auth) {
+        String uri = Constant.HOST + "getUserInfoWithAuth&phone=" + phone + "&auth=" + auth;
+        StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                parseLoginJson(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mToast.setText("网速不给力啊，换个地方试试");
+                mToast.show();
+            }
+        });
+
+        mQueue.add(request);
     }
 
     //授权出错
@@ -366,14 +428,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     //取消授权
     @Override
     public void onCancel(Platform platform, int i) {
-
-    }
-
-    /**
-     * 返回按钮
-     */
-    private void backLogin() {
-
 
     }
 

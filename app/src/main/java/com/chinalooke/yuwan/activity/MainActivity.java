@@ -1,14 +1,14 @@
 package com.chinalooke.yuwan.activity;
 
 import android.Manifest;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -23,28 +23,38 @@ import com.chinalooke.yuwan.fragment.CircleFragment;
 import com.chinalooke.yuwan.fragment.DynamicFragment;
 import com.chinalooke.yuwan.fragment.WodeFragment;
 import com.chinalooke.yuwan.fragment.YueZhanFragment;
-import com.chinalooke.yuwan.utils.ImageUtils;
+import com.chinalooke.yuwan.utils.PreferenceUtils;
+import com.zhy.autolayout.AutoLayoutActivity;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends FragmentActivity implements AMapLocationListener, EasyPermissions.PermissionCallbacks {
+public class MainActivity extends AutoLayoutActivity implements AMapLocationListener, EasyPermissions.PermissionCallbacks {
 
-    @Bind(R.id.rg_main)
-    RadioGroup mRgMain;
-    @Bind(R.id.rb_battlefield)
-    RadioButton mRbBattlefield;
-    @Bind(R.id.rb_circle)
-    RadioButton mRbCircle;
-    @Bind(R.id.rb_yuezhan)
-    RadioButton mRbYuezhan;
-    @Bind(R.id.rb_dynamic)
-    RadioButton mRbDynamic;
-    @Bind(R.id.rb_wode)
-    RadioButton mRbWode;
+    @Bind(R.id.iv_zc)
+    ImageView mIvZc;
+    @Bind(R.id.tv_zc)
+    TextView mTvZc;
+    @Bind(R.id.iv_qz)
+    ImageView mIvQz;
+    @Bind(R.id.tv_qz)
+    TextView mTvQz;
+    @Bind(R.id.iv_yz)
+    ImageView mIvYz;
+    @Bind(R.id.tv_yz)
+    TextView mTvYz;
+    @Bind(R.id.iv_dt)
+    ImageView mIvDt;
+    @Bind(R.id.tv_dt)
+    TextView mTvDt;
+    @Bind(R.id.iv_wd)
+    ImageView mIvWd;
+    @Bind(R.id.tv_wd)
+    TextView mTvWd;
     private FragmentManager mFragmentManager;
     public RequestQueue mQueue;
     private AMapLocationClient mLocationClient;
@@ -67,7 +77,6 @@ public class MainActivity extends FragmentActivity implements AMapLocationListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.avtivity_main);
         ButterKnife.bind(this);
         mFragmentManager = getSupportFragmentManager();
@@ -78,13 +87,11 @@ public class MainActivity extends FragmentActivity implements AMapLocationListen
         mWodeFragment = new WodeFragment();
         mYueZhanFragment = new YueZhanFragment();
         mBlackFragment = new BlackFragment();
-        switchContent(mBlackFragment, mBattleFieldFragment);
-        requirPermisson();
+        requirePermission();
         initView();
-        initEvent();
     }
 
-    private void requirPermisson() {
+    private void requirePermission() {
         String[] perms = {Manifest.permission.ACCESS_COARSE_LOCATION};
         if (EasyPermissions.hasPermissions(this, perms)) {
             location();
@@ -97,73 +104,18 @@ public class MainActivity extends FragmentActivity implements AMapLocationListen
 
     private void location() {
         mLocationClient = new AMapLocationClient(this);
-        //初始化定位参数
         AMapLocationClientOption locationOption = new AMapLocationClientOption();
-        //设置定位监听
-
         locationOption.setOnceLocation(true);
         mLocationClient.setLocationListener(this);
-        //设置定位模式为高精度模式，Battery_Saving为低功耗模式，Device_Sensors是仅设备模式
         locationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-        //设置定位间隔,单位毫秒,默认为2000ms
         locationOption.setInterval(2000);
-        //设置定位参数
         mLocationClient.setLocationOption(locationOption);
-        // 此方法为每隔固定时间会发起一次定位请求，为了减少电量消耗或网络流量消耗，
-        // 注意设置合适的定位时间的间隔（最小间隔支持为2000ms），并且在合适时间调用stopLocation()方法来取消定位请求
-        // 在定位结束后，在合适的生命周期调用onDestroy()方法
-        // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
-        //启动定位
         mLocationClient.startLocation();
     }
 
     private void initView() {
-        Drawable drawable = ImageUtils.setDrwableSize(this, R.drawable.main_battlefield_selector, 32);
-        mRbBattlefield.setCompoundDrawables(null, drawable, null, null);
-        Drawable drawable1 = ImageUtils.setDrwableSize(this, R.drawable.main_circle_selector, 32);
-        mRbCircle.setCompoundDrawables(null, drawable1, null, null);
-        Drawable drawable2 = ImageUtils.setDrwableSize(this, R.drawable.main_yuezhan_selector, 32);
-        mRbYuezhan.setCompoundDrawables(null, drawable2, null, null);
-        Drawable drawable3 = ImageUtils.setDrwableSize(this, R.drawable.main_dynamic_selector, 32);
-        mRbDynamic.setCompoundDrawables(null, drawable3, null, null);
-        Drawable drawable4 = ImageUtils.setDrwableSize(this, R.drawable.main_wode_selector, 32);
-        mRbWode.setCompoundDrawables(null, drawable4, null, null);
-        mRgMain.check(R.id.rb_battlefield);
-    }
-
-    private void initEvent() {
-
-        mRgMain.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.rb_battlefield:
-                        if (mContent != null) {
-                            switchContent(mContent, mBattleFieldFragment);
-                        } else {
-                            switchContent(mBlackFragment, mBattleFieldFragment);
-                        }
-                        break;
-
-                    case R.id.rb_circle:
-                        switchContent(mContent, mCircleFragment);
-                        break;
-
-                    case R.id.rb_yuezhan:
-                        switchContent(mContent, mYueZhanFragment);
-                        break;
-
-                    case R.id.rb_dynamic:
-                        switchContent(mContent, mDynamicFragment);
-                        break;
-                    case R.id.rb_wode:
-                        switchContent(mContent, mWodeFragment);
-                        break;
-                }
-            }
-        });
-
-
+        switchContent(mBlackFragment, mBattleFieldFragment);
+        setSelected(1);
     }
 
     @Override
@@ -186,12 +138,14 @@ public class MainActivity extends FragmentActivity implements AMapLocationListen
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null) {
             mLongitude = aMapLocation.getLongitude();
+            PreferenceUtils.setPrefString(getApplicationContext(), "longitude", mLongitude + "");
             mLatitude = aMapLocation.getLatitude();
+            PreferenceUtils.setPrefString(getApplicationContext(), "latitude", mLongitude + "");
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
@@ -207,6 +161,46 @@ public class MainActivity extends FragmentActivity implements AMapLocationListen
     public void onPermissionsDenied(int requestCode, List<String> perms) {
 
     }
+
+    @OnClick({R.id.rl_zc, R.id.rl_qz, R.id.rl_yz, R.id.rl_dt, R.id.rl_wd})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.rl_zc:
+                setSelected(1);
+                switchContent(mContent, mBattleFieldFragment);
+                break;
+            case R.id.rl_qz:
+                setSelected(2);
+                switchContent(mContent, mCircleFragment);
+                break;
+            case R.id.rl_yz:
+                setSelected(3);
+                switchContent(mContent, mYueZhanFragment);
+                break;
+            case R.id.rl_dt:
+                setSelected(4);
+                switchContent(mContent, mDynamicFragment);
+                break;
+            case R.id.rl_wd:
+                setSelected(5);
+                switchContent(mContent, mWodeFragment);
+                break;
+        }
+    }
+
+    private void setSelected(int i) {
+        mIvZc.setSelected(i == 1);
+        mTvZc.setSelected(i == 1);
+        mIvQz.setSelected(i == 2);
+        mTvQz.setSelected(i == 2);
+        mIvYz.setSelected(i == 3);
+        mTvYz.setSelected(i == 3);
+        mIvDt.setSelected(i == 4);
+        mTvDt.setSelected(i == 4);
+        mIvWd.setSelected(i == 5);
+        mTvWd.setSelected(i == 5);
+    }
+
 
     public interface IOnFocusListenable {
         public void onWindowFocusChanged(boolean hasFocus);

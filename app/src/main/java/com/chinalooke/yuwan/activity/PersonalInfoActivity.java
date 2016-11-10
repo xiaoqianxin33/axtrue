@@ -86,15 +86,11 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
     //定义PickerView
     OptionsPickerView<String> pvOptions;
     private String mCouny;
-
-    String niCeng;
+    private String updateUserInfo = Constant.HOST + "updateUserInfo";
     String sexPersonalInfo;
     String playAge;
     String address;
     String name;
-    String cardId;
-    String gerenShuoMing;
-    String gameId = "";
     public AMapLocationClientOption mLocationOption = null;
     //声明AMapLocationClient类对象
     public AMapLocationClient mLocationClient = null;
@@ -136,41 +132,27 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
      */
     private void initData() {
         userInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
-        if (userInfo != null) {
-            mTvSkip.setVisibility(View.GONE);
-            String sex = userInfo.getSex();
-            if (!TextUtils.isEmpty(sex))
-                mTvSex.setText(sex);
-            if (!TextUtils.isEmpty(userInfo.getRealName()))
-                mEtName.setText(userInfo.getRealName());
-            if (!TextUtils.isEmpty(userInfo.getPlayAge()))
-                mEtPlayAge.setText(userInfo.getPlayAge());
-            if (!TextUtils.isEmpty(userInfo.getAddress()))
-                mTvLocation.setText(userInfo.getAddress());
-            String[] gameId = userInfo.getGameId();
-            DBManager dbManager = new DBManager(getApplicationContext());
-            for (String aGameId : gameId) {
-                GameMessage.ResultBean resultBean = dbManager.queryById(aGameId);
-                if (resultBean != null) {
-                    RoundedImageView imageView = new RoundedImageView(getApplicationContext());
-                    imageView.setOval(true);
-                    imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(50, 50));
-                    imageView.setImageURI(Uri.parse(resultBean.getThumb()));
-                    mLlGame.addView(imageView);
-                }
+        mTvSkip.setVisibility(View.GONE);
+        String sex = userInfo.getSex();
+        if (!TextUtils.isEmpty(sex))
+            mTvSex.setText(sex);
+        if (!TextUtils.isEmpty(userInfo.getRealName()))
+            mEtName.setText(userInfo.getRealName());
+        if (!TextUtils.isEmpty(userInfo.getPlayAge()))
+            mEtPlayAge.setText(userInfo.getPlayAge());
+        if (!TextUtils.isEmpty(userInfo.getAddress()))
+            mTvLocation.setText(userInfo.getAddress());
+        String[] gameId = userInfo.getGameId();
+        DBManager dbManager = new DBManager(getApplicationContext());
+        for (String aGameId : gameId) {
+            GameMessage.ResultBean resultBean = dbManager.queryById(aGameId);
+            if (resultBean != null) {
+                RoundedImageView imageView = new RoundedImageView(getApplicationContext());
+                imageView.setOval(true);
+                imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(50, 50));
+                imageView.setImageURI(Uri.parse(resultBean.getThumb()));
+                mLlGame.addView(imageView);
             }
-        } else {
-            userInfo = new UserInfo();
-            String userId = getIntent().getStringExtra("userId");
-            if (!TextUtils.isEmpty(userId)) {
-                userInfo.setUserId(userId);
-            }
-            String headImg = getIntent().getStringExtra("headImg");
-            if (!TextUtils.isEmpty(headImg)) {
-                userInfo.setHeadImg(headImg);
-            }
-
-            mTvSkip.setVisibility(View.VISIBLE);
         }
     }
 
@@ -235,7 +217,7 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
         //三级联动效果
         pvOptions.setPicker(playAgeListDatas);
         //设置选择的三级单位
-        pvOptions.setTitle("选择玩龄");
+        pvOptions.setTitle("选择年龄");
         pvOptions.setCyclic(false);
         //设置默认选中的三级项目
         //监听确定选择按钮
@@ -275,6 +257,8 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
      * 保存个人信息
      */
     private boolean savePersonalInfo() {
+        updateUserInfo = updateUserInfo + "&userId=" + userInfo.getUserId() + "&headImg=" + userInfo.getHeadImg();
+
         sexPersonalInfo = mTvSex.getText().toString();
         playAge = mEtPlayAge.getText().toString();
         address = mTvLocation.getText().toString();
@@ -287,20 +271,25 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
         }
         if (!TextUtils.isEmpty(name) && !"请输入真实姓名".equals(name)) {
             userInfo.setRealName(name);
+            updateUserInfo = updateUserInfo + "&realName=" + userInfo.getRealName();
         }
         if (!TextUtils.isEmpty(mAge) && !"请输入真实年龄".equals(mAge)) {
             userInfo.setAge(mAge);
+            updateUserInfo = updateUserInfo + "&age=" + userInfo.getAge();
         }
         if (!TextUtils.isEmpty(playAge) && !"请输入真实玩龄".equals(playAge)) {
             userInfo.setPlayAge(playAge);
+            updateUserInfo = updateUserInfo + "&playAge=" + userInfo.getPlayAge();
         }
 
         if (!TextUtils.isEmpty(sexPersonalInfo)) {
             userInfo.setSex(sexPersonalInfo);
+            updateUserInfo = updateUserInfo + "&sex=" + userInfo.getSex();
         }
 
         if (!TextUtils.isEmpty(address) && !"点击获取位置".equals(address)) {
             userInfo.setAddress(address);
+            updateUserInfo = updateUserInfo + "&address=" + userInfo.getAddress();
         }
 
         if (mStrings != null) {
@@ -332,37 +321,15 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
                 }
             }
         }
-        String updateUserInfo;
-        if (userInfo != null) {
-
-            //登录用户修改个人信息
-            updateUserInfo = Constant.HOST + "updateUserInfo&userId=" + userInfo.getUserId() + "&headImg=" + userInfo.getHeadImg()
-                    + "&nickName=" + userInfo.getNickName() + "&realName=" + userInfo.getRealName() + "&sex=" + userInfo.getSex() + "&age=" + userInfo.getAge()
-                    + "&playAge=" + userInfo.getPlayAge() + "&address=" + userInfo.getAddress() + "&slogan=" + userInfo.getSlogan() + "&cardNo=" + userInfo.getCardNo() + "&gameId=" + stringBuffer.toString();
-        } else {
-            //注册用户完善个人信息
-            Intent intent = getIntent();
-            String userId = intent.getStringExtra("userId");
-            String headImg = intent.getStringExtra("headImg");
-            String year = cardId.substring(6, 10);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-            Date date = new Date();
-            String formatDate = sdf.format(date);
-            int myage = Integer.parseInt(formatDate) - Integer.parseInt(year);
-            updateUserInfo = Constant.HOST + "updateUserInfo&userId=" + userId + "&headImg=" + headImg
-                    + "&nickName=" + niCeng + "&realName=" + name + "&sex=" + sexPersonalInfo + "&age=" + myage
-                    + "&playAge=" + playAge + "&address=" + address + "&slogan=" + gerenShuoMing + "&cardNo=" + cardId + "&gameId=" + stringBuffer.toString();
-        }
+        updateUserInfo = updateUserInfo + "&gameId=" + stringBuffer.toString();
         StringRequest stringRequest = new StringRequest(updateUserInfo,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("TAG", response);
                         //解析数据
-
                         if (response != null) {
                             ResultDatas result = AnalysisJSON.getAnalysisJSON().AnalysisJSONResult(response);
-
                             if (result != null) {
                                 if ("true".equals(result.getResult())) {
                                     Log.d("TAG", "保存成功");
@@ -378,7 +345,6 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
                             }
                             System.out.println("----result----" + result.getResult());
                         }
-
                     }
                 }, new Response.ErrorListener() {
 
@@ -569,15 +535,8 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // 执行点击确定按钮的业务逻辑
-                if (userInfo != null) {
-                    Intent intent = new Intent(PersonalInfoActivity.this, WoDeZiLiaoActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Intent intent = new Intent(PersonalInfoActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
+                startActivity(new Intent(PersonalInfoActivity.this, MainActivity.class));
+                finish();
             }
         });
 //使用builder创建出对话框对象

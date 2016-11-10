@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -17,6 +18,7 @@ import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.ResultDatas;
 import com.chinalooke.yuwan.utils.GetHTTPDatas;
 import com.chinalooke.yuwan.utils.Validator;
+import com.zhy.autolayout.AutoLayoutActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,21 +27,20 @@ import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 
 /**
+ * 找回密码界面
  * Created by Administrator on 2016/8/25.
  */
-public class ForgetPasswordActivity extends AppCompatActivity {
-    //返回键
-    @Bind(R.id.back_forget_password)
-    ImageView mbackForgetPassword;
+public class ForgetPasswordActivity extends AutoLayoutActivity {
+
     //获取验证码
     @Bind(R.id.btn__get_verification_code_forget_password)
     Button mgetVerificationCode;
-    //忘记密码下一步
-    @Bind(R.id.next_forget_password)
-    Button nextForgetPassword;
+
     //手机号码
     @Bind(R.id.phone_forget_password)
     EditText mphoneForgetPassword;
+    @Bind(R.id.tv_title)
+    TextView mTvTitle;
     //验证码
     @Bind(R.id.verification_code_forget)
     EditText verificationCodeForget;
@@ -52,6 +53,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
     private GetHTTPDatas getHTTPDatas;
     //短信严重的回调
     EventHandler eh;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activit_forget_password);
@@ -59,30 +61,34 @@ public class ForgetPasswordActivity extends AppCompatActivity {
         //初始化smssdk
         SMSSDK.initSDK(this, Constant.APPKEY, Constant.APPSECRET);
         mQueue = Volley.newRequestQueue(this);
-        getHTTPDatas=new GetHTTPDatas();
+        getHTTPDatas = new GetHTTPDatas();
         getHTTPDatas.setmQueue(mQueue);
         //设置初始化倒计时
-        mcountTimer=new CountTimer(60000,1000);
+        mcountTimer = new CountTimer(60000, 1000);
+        initView();
+    }
 
+    private void initView() {
+        mTvTitle.setText("验证身份");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(eh!=null)
+        if (eh != null)
             //解除注册
             SMSSDK.unregisterEventHandler(eh);
     }
 
-    @OnClick({R.id.back_forget_password,R.id.btn__get_verification_code_forget_password,R.id.next_forget_password})
+    @OnClick({R.id.iv_back, R.id.btn__get_verification_code_forget_password, R.id.next_forget_password})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.back_forget_password:
+            case R.id.iv_back:
                 finish();
                 break;
             case R.id.btn__get_verification_code_forget_password:
                 //判断是否是手机号
-                phone=mphoneForgetPassword.getText().toString();
+                phone = mphoneForgetPassword.getText().toString();
                 if (Validator.getValidator().isMobile(phone))
                     //判断用户是否注册
                     getHTTPIsPhoneExists();
@@ -98,63 +104,64 @@ public class ForgetPasswordActivity extends AppCompatActivity {
     /**
      * 点击下一步按钮
      */
-    private  void clickNextBtn(){
-        phone=mphoneForgetPassword.getText().toString();
-        mVerificationCode=verificationCodeForget.getText().toString();
+    private void clickNextBtn() {
+        phone = mphoneForgetPassword.getText().toString();
+        mVerificationCode = verificationCodeForget.getText().toString();
         if (!Validator.getValidator().isMobile(phone))
             mphoneForgetPassword.setError("请输入正确的手机号码");
-        else{
+        else {
             //提交验证码
-            SMSSDK.submitVerificationCode("86",phone,mVerificationCode);
+            SMSSDK.submitVerificationCode("86", phone, mVerificationCode);
         }
-}
+    }
 
     /**
      * 发送短信验证码
      */
-    private void sendSMSRandom(){
-        eh=new EventHandler(){
+    private void sendSMSRandom() {
+        eh = new EventHandler() {
             @Override
             public void afterEvent(int event, int result, Object data) {
-                Log.i("TAG",event+"--------"+result+"-----"+data);
+                Log.i("TAG", event + "--------" + result + "-----" + data);
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     //回调完成
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
                         //提交验证码成功
-                        Log.i("TAG","提交验证马成功");
+                        Log.i("TAG", "提交验证马成功");
                         //开始网上
                         getHTTPNext();
 
-                    }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
-                        Log.i("TAG","获取验证马成功");
+                    } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
+                        Log.i("TAG", "获取验证马成功");
                         //获取验证码成功
-                    }else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){
+                    } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
                         //返回支持发送验证码的国家列表
                     }
-                }else{
-                    ((Throwable)data).printStackTrace();
+                } else {
+                    ((Throwable) data).printStackTrace();
                 }
             }
         };
         SMSSDK.registerEventHandler(eh); //注册短信回调
 
-        SMSSDK.getVerificationCode("86",phone);//获取验证码
+        SMSSDK.getVerificationCode("86", phone);//获取验证码
     }
+
     //网络获取  验证手机号是否注册
-    private void getHTTPIsPhoneExists(){
-        String URLPhone= Constant.IS_PHONE_EXISTS+"&"+ Constant.PHONE+phone;
+    private void getHTTPIsPhoneExists() {
+        String URLPhone = Constant.IS_PHONE_EXISTS + "&" + Constant.PHONE + phone;
         getHTTPDatas.getHTTPIsPhoneExists(URLPhone);
 
-        ResultDatas result= getHTTPDatas.getResult();
+        ResultDatas result = getHTTPDatas.getResult();
 
-        if (result!=null){
-            if("true".equals(result.getSuccess()) && "false".equals(result.getResult())){
-                Log.d("TAG","该号码未注册");
+        if (result != null) {
+            if ("true".equals(result.getSuccess()) && "false".equals(result.getResult())) {
+                Log.d("TAG", "该号码未注册");
                 mphoneForgetPassword.setError("该号码未注册");
 
             }
-            if("true".equals(result.getSuccess()) && "true".equals(result.getResult())){
-                Log.d("TAG","验证密码");
+            if ("true".equals(result.getSuccess()) && "true".equals(result.getResult())) {
+                Log.d("TAG", "验证密码");
                 //启动倒计时
                 mcountTimer.start();
                 //获取验证码 开始获取验证码
@@ -162,13 +169,14 @@ public class ForgetPasswordActivity extends AppCompatActivity {
             }
         }
     }
-/**
- * 手机验证成功之后进行下一步
- */
-   public void getHTTPNext(){
-       Intent intent=new Intent(ForgetPasswordActivity.this,ResetPasswordActivity.class);
-       intent.putExtra("phone",phone);
-       startActivity(intent);
+
+    /**
+     * 手机验证成功之后进行下一步
+     */
+    public void getHTTPNext() {
+        Intent intent = new Intent(ForgetPasswordActivity.this, ResetPasswordActivity.class);
+        intent.putExtra("phone", phone);
+        startActivity(intent);
     }
 
 
@@ -177,8 +185,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
      */
     public class CountTimer extends CountDownTimer {
         /**
-         *
-         * @param millisInFuture 倒计时时间
+         * @param millisInFuture    倒计时时间
          * @param countDownInterval 刷新的时间
          */
         public CountTimer(long millisInFuture, long countDownInterval) {
@@ -187,12 +194,13 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
         /**
          * //设置验证码倒计时
+         *
          * @param millisUntilFinished 到计时时间
          */
         @Override
         public void onTick(long millisUntilFinished) {
 
-            mgetVerificationCode.setText(millisUntilFinished/1000+"后重新发送");
+            mgetVerificationCode.setText(millisUntilFinished / 1000 + "后重新发送");
             mgetVerificationCode.setBackgroundResource(R.drawable.btn_wait_verification_corners_bg);
             mgetVerificationCode.setClickable(false);
         }

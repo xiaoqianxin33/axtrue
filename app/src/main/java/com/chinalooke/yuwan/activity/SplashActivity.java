@@ -27,7 +27,7 @@ public class SplashActivity extends AppCompatActivity {
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            startActivity(new Intent(SplashActivity.this, PersonalInfoActivity.class));
+            startActivity(new Intent(SplashActivity.this, MainActivity.class));
             finish();
         }
     };

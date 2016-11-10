@@ -10,80 +10,126 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-
-    <RadioGroup
-        android:id="@+id/rg_main"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="#3A3837"
-        android:orientation="horizontal"
-        >
+        android:layout_height="100px"
+        android:background="#95000000"
+        android:orientation="horizontal">
 
-        <RadioButton
-            android:id="@+id/rb_battlefield"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/rl_zc"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableTop="@drawable/main_battlefield_selector"
-            android:gravity="center"
-            android:text="@string/zhanchang"
-            android:textColor="@color/main_bottom_text_selector"
-            android:textSize="12sp"/>
+            android:layout_weight="1">
 
-        <RadioButton
-            android:id="@+id/rb_circle"
-            android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/iv_zc"
+                android:layout_width="50px"
+                android:layout_height="50px"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16px"
+                android:background="@drawable/zc_selector"/>
+
+            <TextView
+                android:id="@+id/tv_zc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="76px"
+                android:text="战场"
+                android:textColor="@drawable/main_word_selector"
+                android:textSize="20px"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_qz"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableTop="@drawable/main_circle_selector"
-            android:gravity="center"
-            android:text="@string/quanzi"
-            android:textColor="@color/main_bottom_text_selector"
-            android:textSize="12sp"/>
+            android:layout_weight="1">
 
-        <RadioButton
-            android:id="@+id/rb_yuezhan"
-            android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/iv_qz"
+                android:layout_width="50px"
+                android:layout_height="50px"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16px"
+                android:background="@drawable/qz_selector"/>
+
+            <TextView
+                android:id="@+id/tv_qz"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="76px"
+                android:text="圈子"
+                android:textColor="@drawable/main_word_selector"
+                android:textSize="20px"/>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_yz"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableTop="@drawable/main_yuezhan_selector"
-            android:gravity="center"
-            android:text="@string/yuezhan2"
-            android:textColor="@color/main_bottom_text_selector"
-            android:textSize="12sp"/>
+            android:layout_weight="1">
 
-        <RadioButton
-            android:id="@+id/rb_dynamic"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tv_yz"
+                style="@style/main_bottom_word"
+                android:text="约战"/>
+
+            <ImageView
+                android:id="@+id/iv_yz"
+                style="@style/main_bottom_image"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/yz_selector"/>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_dt"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableTop="@drawable/main_dynamic_selector"
-            android:gravity="center"
-            android:text="动态"
-            android:textColor="@color/main_bottom_text_selector"
-            android:textSize="12sp"/>
+            android:layout_weight="1">
 
-        <RadioButton
-            android:id="@+id/rb_wode"
-            android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/iv_dt"
+                style="@style/main_bottom_image"
+                android:background="@drawable/dt_selector"/>
+
+            <TextView
+                android:id="@+id/tv_dt"
+                style="@style/main_bottom_word"
+                android:text="动态"/>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_wd"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableTop="@drawable/main_wode_selector"
-            android:gravity="center"
-            android:text="我的"
-            android:textColor="@color/main_bottom_text_selector"
-            android:textSize="12sp"/>
+            android:layout_weight="1">
 
-    </RadioGroup>
+            <ImageView
+                android:id="@+id/iv_wd"
+                style="@style/main_bottom_image"
+                android:background="@drawable/wd_selector"/>
+
+            <TextView
+                android:id="@+id/tv_wd"
+                style="@style/main_bottom_word"
+                android:text="动态"/>
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
 
 </LinearLayout>

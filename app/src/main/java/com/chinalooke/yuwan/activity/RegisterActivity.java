@@ -22,14 +22,18 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.ResultDatas;
+import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.GetHTTPDatas;
+import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.Validator;
 import com.zhy.autolayout.AutoLayoutActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -72,8 +76,6 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
     private RequestQueue mQueue;
     //验证码倒计时
     private CountTimer mcountTimer;
-    //验证码
-    private String mVerificationCode;
     //介绍人的电话号码
     private String mIntroducePhone;
     private GetHTTPDatas getHTTPDatas;
@@ -99,6 +101,14 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         mToast = YuwanApplication.getToast();
         //设置密码类型
         mcountTimer = new CountTimer(60000, 1000);
+        initView();
+    }
+
+    private void initView() {
+        String phone = getIntent().getStringExtra("phone");
+        if (!TextUtils.isEmpty(phone)) {
+            mphoneRegister.setText(phone);
+        }
     }
 
     @Override
@@ -111,7 +121,6 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
 
     @OnClick({R.id.btn__get_verification_code_register, R.id.btn_register_register, R.id.iv_back})
     public void onClick(View view) {
-
 
         switch (view.getId()) {
             //获取验证码
@@ -141,10 +150,17 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
      * 注册成功跳转页面
      */
     private void registerSuccess() {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserId(userId);
+        userInfo.setHeadImg(headImg);
+        try {
+            LoginUserInfoUtils.getLoginUserInfoUtils().saveLoginUserInfo(getApplicationContext(),
+                    LoginUserInfoUtils.KEY, userInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, PersonalInfoActivity.class);
-        intent.putExtra("userId", userId);
-        intent.putExtra("headImg", headImg);
         startActivity(intent);
         finish();
     }
@@ -153,7 +169,6 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
      * 发送短信验证码
      */
     private void sendSMSRandom() {
-
 
         eh = new EventHandler() {
             @Override
@@ -165,16 +180,18 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
                         //提交验证码成功
                         Log.i("TAG", "提交验证码成功");
                         //开始网上注册
-
                         getHTTPRegister();
-
                     } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                         Log.i("TAG", "获取验证码成功");
+                        mToast.setText("短信验证码已发送！");
+                        mToast.show();
                         //获取验证码成功
                     } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
                         //返回支持发送验证码的国家列表
                     }
                 } else {
+                    mToast.setText("验证码输入错误");
+                    mToast.show();
                     ((Throwable) data).printStackTrace();
                 }
             }
@@ -190,8 +207,8 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
      */
 
     private void beginRegister() {
-        mVerificationCode = mETVerification.getText().toString();
-        Log.i("TAG", "验证码为-----" + mVerificationCode);
+        String verificationCode = mETVerification.getText().toString();
+        Log.i("TAG", "验证码为-----" + verificationCode);
         //重新获取当前信息
         phone = mphoneRegister.getText().toString();
         String introducePhone = mIntroducePhoneRegister.getText().toString();
@@ -217,10 +234,10 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
                 if (!Validator.getValidator().isMobile(mIntroducePhone))
                     mIntroducePhoneRegister.setError("推荐人手机号码错误，改改试试吧");
                 else {
-                    SMSSDK.submitVerificationCode("86", phone, mVerificationCode);
+                    SMSSDK.submitVerificationCode("86", phone, verificationCode);
                 }
             } else {
-                SMSSDK.submitVerificationCode("86", phone, mVerificationCode);
+                SMSSDK.submitVerificationCode("86", phone, verificationCode);
             }
         }
 
@@ -239,7 +256,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
 
 
     public class CountTimer extends CountDownTimer {
-        public CountTimer(long millisInFuture, long countDownInterval) {
+        CountTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
         }
 

@@ -3,6 +3,7 @@ package com.chinalooke.yuwan.utils;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by xiao on 2016/8/23.
@@ -90,5 +93,24 @@ public class MyUtils {
         mProgressDialog.setMessage(message);
         mProgressDialog.setCancelable(true);
         return mProgressDialog;
+    }
+
+    public static boolean CheckPhoneNumber(String str)
+
+    {
+        Pattern p = Pattern.compile("^1(3|4|5|7|8)\\d{9}$");
+        Matcher m = p.matcher(str);
+        return m.matches();
+    }
+
+    public static void showNorDialog(final Activity context, String title, String message, DialogInterface.OnClickListener noClickListener
+            , DialogInterface.OnClickListener yesClickListener) {
+
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setNegativeButton("不了", noClickListener);
+        builder.setPositiveButton("好的", yesClickListener);
+        builder.show();
     }
 }

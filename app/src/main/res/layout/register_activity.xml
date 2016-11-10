@@ -222,14 +222,7 @@
 
     <Button
         android:id="@+id/btn_register_register"
-        android:layout_width="match_parent"
-        android:layout_height="90px"
-        android:layout_marginLeft="@dimen/mid_padding"
-        android:layout_marginRight="@dimen/mid_padding"
-        android:layout_marginTop="70px"
-        android:background="@mipmap/bottom"
         android:text="下一步"
-        android:textColor="@android:color/white"
-        android:textSize="34px"/>
+        style="@style/big_orange_btn"/>
 
 </LinearLayout>

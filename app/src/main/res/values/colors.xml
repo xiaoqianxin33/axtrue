@@ -36,5 +36,6 @@
     <color name="black_word">#232324</color>
     <color name="hint_color">#c8c7cd</color>
     <color name="btn_yellow">#fec100</color>
+    <color name="bottonpress">#3881FB</color>
 
 </resources>

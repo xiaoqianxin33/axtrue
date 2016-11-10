@@ -124,13 +124,19 @@
         <activity android:name=".activity.MoreCircleActivity">
         </activity>
 
-        <!--启动页-->
+        <!-- 启动页 -->
         <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".activity.BindPhoneActivity">
+        </activity>
+        <activity android:name=".activity.FindPwdCompleteActivity">
+        </activity>
+        <activity android:name=".activity.SearchActivity">
         </activity>
     </application>
 

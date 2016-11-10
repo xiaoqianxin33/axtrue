@@ -18,11 +18,7 @@ public class GetHTTPDatas {
     private ResultDatas result;
 
     public ResultDatas getResult() {
-
-
             return result;
-
-
     }
 
     public void setResult(ResultDatas result) {

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_find_pwd_complete"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.chinalooke.yuwan.activity.FindPwdCompleteActivity">
+
+    <include layout="@layout/include_head"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="530px"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:layout_width="170px"
+            android:layout_height="195px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="70px"
+            android:src="@mipmap/complete"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="305px"
+            android:text="恭喜您，修改成功！"
+            android:textColor="#fec100"
+            android:textSize="30px"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="380px"
+            android:text="请妥善保管密码！"
+            android:textColor="#8e8e8e"
+            android:textSize="26px"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="420px"
+            android:text="为了您的账户安全，请到安全中心完善其他密保设置！"
+            android:textColor="#8e8e8e"
+            android:textSize="26px"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/line_color"/>
+
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="630px"
+        android:layout_height="90px"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="64px"
+        android:background="@drawable/button_orange_shape"
+        android:text="重新登录"
+        android:textColor="@android:color/white"
+        android:textSize="32px"/>
+
+
+</LinearLayout>
