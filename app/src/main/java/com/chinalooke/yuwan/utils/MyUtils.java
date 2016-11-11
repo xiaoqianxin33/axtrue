@@ -12,6 +12,9 @@ import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -112,5 +115,16 @@ public class MyUtils {
         builder.setNegativeButton("不了", noClickListener);
         builder.setPositiveButton("好的", yesClickListener);
         builder.show();
+    }
+
+    public static void showMsg(Toast toast, String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            String msg = jsonObject.getString("Msg");
+            toast.setText(msg);
+            toast.show();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

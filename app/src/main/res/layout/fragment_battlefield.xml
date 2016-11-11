@@ -52,77 +52,99 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <cn.bingoogolapple.bgabanner.BGABanner
-        android:id="@+id/banner"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/sr"
         android:layout_width="match_parent"
-        android:layout_height="340px"
-        app:banner_pageChangeDuration="1000"
-        app:banner_pointAutoPlayAble="true"
-        app:banner_pointAutoPlayInterval="2000"
-        app:banner_pointContainerBackground="@android:color/transparent"
-        app:banner_pointDrawable="@drawable/bga_banner_selector_point_hollow"
-        app:banner_pointTopBottomMargin="5dp"
-        app:banner_transitionEffect="alpha"/>
+        android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="196px"
-        android:background="@android:color/white"
-        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            <cn.bingoogolapple.bgabanner.BGABanner
+                android:id="@+id/banner"
+                android:layout_width="match_parent"
+                android:layout_height="340px"
+                app:banner_pageChangeDuration="1000"
+                app:banner_pointAutoPlayAble="true"
+                app:banner_pointAutoPlayInterval="2000"
+                app:banner_pointContainerBackground="@android:color/transparent"
+                app:banner_pointDrawable="@drawable/bga_banner_selector_point_hollow"
+                app:banner_pointTopBottomMargin="5dp"
+                app:banner_transitionEffect="alpha"/>
 
-            <ImageView
-                style="@style/zc_table_icon"
-                android:src="@mipmap/yjs_checked"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="196px"
+                android:background="@android:color/white"
+                android:orientation="horizontal">
 
-            <TextView
-                style="@style/zc_table_word"
-                android:text="迎战中"/>
+                <RelativeLayout
+                    android:id="@+id/rl_yz"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
+                    <ImageView
+                        style="@style/zc_table_icon"
+                        android:src="@mipmap/yjs_checked"/>
 
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <ImageView
-                style="@style/zc_table_icon"
-                android:src="@mipmap/yjs_checked"/>
-
-            <TextView
-                style="@style/zc_table_word"
-                android:text="进行中"/>
+                    <TextView
+                        style="@style/zc_table_word"
+                        android:text="约战中"/>
 
 
-        </RelativeLayout>
+                </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+                <RelativeLayout
+                    android:id="@+id/rl_jx"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
-            <ImageView
-                style="@style/zc_table_icon"
-                android:src="@mipmap/yjs_checked"/>
+                    <ImageView
+                        style="@style/zc_table_icon"
+                        android:src="@mipmap/yjs_checked"/>
 
-            <TextView
-                style="@style/zc_table_word"
-                android:text="已结束"/>
-        </RelativeLayout>
-    </LinearLayout>
+                    <TextView
+                        style="@style/zc_table_word"
+                        android:text="进行中"/>
 
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+                </RelativeLayout>
 
+                <RelativeLayout
+                    android:id="@+id/rl_js"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        style="@style/zc_table_icon"
+                        android:src="@mipmap/yjs_checked"/>
+
+                    <TextView
+                        style="@style/zc_table_word"
+                        android:text="已结束"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <com.chinalooke.yuwan.view.ScrollableViewGroup
+                android:id="@+id/scrollable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/fragment_main_yz"/>
+
+                <include layout="@layout/fragment_main_jx"/>
+
+                <include layout="@layout/fragment_main_js"/>
+
+            </com.chinalooke.yuwan.view.ScrollableViewGroup>
+
+        </LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
     <!--<LinearLayout-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="48dp"-->

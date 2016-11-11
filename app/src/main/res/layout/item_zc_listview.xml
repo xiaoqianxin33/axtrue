@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="234px"
+                android:background="@android:color/white">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/image"
+        android:layout_width="225px"
+        android:layout_height="172px"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="24px"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/placeholder"
+        app:riv_corner_radius="5dp"/>
+
+    <TextView
+        android:id="@+id/tv_owner"
+        android:layout_width="55px"
+        android:layout_height="30px"
+        android:layout_marginLeft="182px"
+        android:layout_marginTop="43px"
+        android:background="@mipmap/gr_zc"
+        android:gravity="center"
+        android:text="个人"
+        android:textColor="@android:color/white"
+        android:textSize="20px"/>
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="126px"
+        android:layout_height="46px"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/small_padding"
+        android:background="@mipmap/yzz"
+        android:gravity="center"
+        android:text="迎战中"
+        android:textColor="@android:color/white"
+        android:textSize="23px"/>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="275px"
+        android:layout_marginTop="34px"
+        android:textColor="@color/black_word"
+        android:textSize="30px"/>
+
+
+    <ImageView
+        android:layout_width="23px"
+        android:layout_height="23px"
+        android:layout_marginLeft="275px"
+        android:layout_marginTop="135px"
+        android:src="@mipmap/price_zc"/>
+
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="318px"
+        android:layout_marginTop="135px"
+        android:textColor="#fee387"
+        android:textSize="20px"/>
+
+    <ImageView
+        android:layout_width="23px"
+        android:layout_height="23px"
+        android:layout_marginLeft="416px"
+        android:layout_marginTop="135px"
+        android:src="@mipmap/people_zc"/>
+
+    <TextView
+        android:id="@+id/tv_people"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="459px"
+        android:layout_marginTop="135px"
+        android:textColor="#fee387"
+        android:textSize="20px"/>
+
+    <ImageView
+        android:layout_width="23px"
+        android:layout_height="23px"
+        android:layout_marginLeft="275px"
+        android:layout_marginTop="179px"
+        android:src="@mipmap/location_zc"/>
+
+    <TextView
+        android:id="@+id/tv_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="318px"
+        android:layout_marginTop="179px"
+        android:textColor="#fee387"
+        android:textSize="20px"/>
+
+    <TextView
+        android:layout_width="1px"
+        android:layout_height="84px"
+        android:layout_marginLeft="545px"
+        android:layout_marginTop="128px"
+        android:background="@color/line_color"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="43px"
+        android:layout_marginTop="134px"
+        android:text="离报名结束"
+        android:textColor="#bdbdbd"
+        android:textSize="20px"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="37px"
+        android:layout_marginTop="180px"
+        android:text="00:00:00"
+        android:textColor="#ff6645"
+        android:textSize="24px"/>
+
+</RelativeLayout>

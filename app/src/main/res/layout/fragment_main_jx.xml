@@ -1,16 +1,16 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.chinalooke.yuwan.fragment.AgainstFragment">
+<com.chinalooke.yuwan.view.ViewGroupHook xmlns:android="http://schemas.android.com/apk/res/android"
+                                         android:layout_width="match_parent"
+                                         android:layout_height="match_parent">
 
     <ListView
-        android:id="@+id/listview"
+        android:id="@+id/listview_jx"
+        android:divider="@color/background"
+        android:dividerHeight="@dimen/small_padding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <ProgressBar
-        android:id="@+id/pb_load"
+        android:id="@+id/pb_load_jx"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
@@ -18,10 +18,10 @@
         />
 
     <TextView
-        android:id="@+id/tv_none"
+        android:id="@+id/tv_none_jx"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:gravity="center"
         android:text="暂无战场"/>
-</FrameLayout>
+</com.chinalooke.yuwan.view.ViewGroupHook>

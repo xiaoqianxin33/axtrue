@@ -1,11 +1,10 @@
 package com.chinalooke.yuwan.activity;
 
-import android.Manifest;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,17 +22,16 @@ import com.chinalooke.yuwan.fragment.CircleFragment;
 import com.chinalooke.yuwan.fragment.DynamicFragment;
 import com.chinalooke.yuwan.fragment.WodeFragment;
 import com.chinalooke.yuwan.fragment.YueZhanFragment;
+import com.chinalooke.yuwan.utils.LocationUtils;
+import com.chinalooke.yuwan.utils.LogUtil;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.zhy.autolayout.AutoLayoutActivity;
-
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends AutoLayoutActivity implements AMapLocationListener, EasyPermissions.PermissionCallbacks {
+public class MainActivity extends AutoLayoutActivity implements AMapLocationListener {
 
     @Bind(R.id.iv_zc)
     ImageView mIvZc;
@@ -67,7 +65,6 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     private WodeFragment mWodeFragment;
     private YueZhanFragment mYueZhanFragment;
     private BlackFragment mBlackFragment;
-    private int RC_CAMERA_AND_WIFI = 1;
 
     public RequestQueue getQueue() {
         return mQueue;
@@ -87,30 +84,8 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         mWodeFragment = new WodeFragment();
         mYueZhanFragment = new YueZhanFragment();
         mBlackFragment = new BlackFragment();
-        requirePermission();
+        mLocationClient = LocationUtils.location(MainActivity.this, this);
         initView();
-    }
-
-    private void requirePermission() {
-        String[] perms = {Manifest.permission.ACCESS_COARSE_LOCATION};
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            location();
-        } else {
-            EasyPermissions.requestPermissions(this, "需要定位权限定位",
-                    RC_CAMERA_AND_WIFI, perms);
-        }
-    }
-
-
-    private void location() {
-        mLocationClient = new AMapLocationClient(this);
-        AMapLocationClientOption locationOption = new AMapLocationClientOption();
-        locationOption.setOnceLocation(true);
-        mLocationClient.setLocationListener(this);
-        locationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-        locationOption.setInterval(2000);
-        mLocationClient.setLocationOption(locationOption);
-        mLocationClient.startLocation();
     }
 
     private void initView() {
@@ -122,8 +97,11 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
-        if (mLocationClient != null)
+        if (mLocationClient != null) {
             mLocationClient.stopLocation();
+            mLocationClient.onDestroy();
+        }
+
     }
 
     public double getLatitude() {
@@ -137,30 +115,16 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null) {
-            mLongitude = aMapLocation.getLongitude();
-            PreferenceUtils.setPrefString(getApplicationContext(), "longitude", mLongitude + "");
-            mLatitude = aMapLocation.getLatitude();
-            PreferenceUtils.setPrefString(getApplicationContext(), "latitude", mLongitude + "");
+            if (aMapLocation.getErrorCode() == 0) {
+                mLongitude = aMapLocation.getLongitude();
+                PreferenceUtils.setPrefString(getApplicationContext(), "longitude", mLongitude + "");
+                mLatitude = aMapLocation.getLatitude();
+                PreferenceUtils.setPrefString(getApplicationContext(), "latitude", mLatitude + "");
+                mBattleFieldFragment.getADListWithGPS();
+            }
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-        if (requestCode == RC_CAMERA_AND_WIFI) {
-            location();
-        }
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-
-    }
 
     @OnClick({R.id.rl_zc, R.id.rl_qz, R.id.rl_yz, R.id.rl_dt, R.id.rl_wd})
     public void onClick(View view) {

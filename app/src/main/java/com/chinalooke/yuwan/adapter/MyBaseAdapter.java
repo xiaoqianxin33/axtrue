@@ -11,10 +11,16 @@ import java.util.List;
  */
 
 public abstract class MyBaseAdapter<ITEMBEANTYPE> extends BaseAdapter {
+    protected int STATUS;
     protected List<ITEMBEANTYPE> mDataSource = new ArrayList<>();
 
     public MyBaseAdapter(List<ITEMBEANTYPE> dataSource) {
         mDataSource = dataSource;
+    }
+
+    public MyBaseAdapter(List<ITEMBEANTYPE> dataSource, int status) {
+        mDataSource = dataSource;
+        this.STATUS = status;
     }
 
     @Override

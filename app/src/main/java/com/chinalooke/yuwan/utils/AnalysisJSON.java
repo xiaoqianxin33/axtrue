@@ -17,35 +17,38 @@ import org.json.JSONObject;
 public class AnalysisJSON {
     /**
      * 解析登录注册返回的数据
-     * @paramdatas
+     *
      * @return
+     * @paramdatas
      */
-    private AnalysisJSON(){};
+    private AnalysisJSON() {
+    }
+
+    ;
     public static AnalysisJSON analysisJSON;
 
     public static AnalysisJSON getAnalysisJSON() {
-        if (analysisJSON==null){
-            analysisJSON=new AnalysisJSON();
-        }else{
+        if (analysisJSON == null) {
+            analysisJSON = new AnalysisJSON();
+        } else {
             return analysisJSON;
         }
         return analysisJSON;
     }
 
     //解析手机号码是否注册
-    public ResultDatas AnalysisJSONResult(String datas){
+    public ResultDatas AnalysisJSONResult(String datas) {
         JSONObject jsonObject;
-        ResultDatas result=null;
-        Log.d("TAG","++++"+datas);
+        ResultDatas result = null;
+        Log.d("TAG", "++++" + datas);
         try {
-            if(datas!=null){
-                 jsonObject = new JSONObject(datas);
-                result=new ResultDatas();
+            if (datas != null) {
+                jsonObject = new JSONObject(datas);
+                result = new ResultDatas();
                 result.setSuccess(jsonObject.getString("Success"));
                 result.setMsg(jsonObject.getString("Msg"));
                 result.setResult(jsonObject.getString("Result"));
-                Log.d("TAG","++++"+result.getResult());
-
+                Log.d("TAG", "++++" + result.getResult());
 
 
             }
@@ -59,15 +62,18 @@ public class AnalysisJSON {
     }
 
 
-    public void getSubStringAddress(String address){
-        String []city=new String[3];
-        String province=address.substring(0,address.indexOf("省"));
-        if(province==null||"".equals(province)){
-             province=address.substring(0,address.indexOf("市"));
+    public void getSubStringAddress(String address) {
+        String[] city = new String[3];
+        String province = address.substring(0, address.indexOf("省"));
+        if (province == null || "".equals(province)) {
+            province = address.substring(0, address.indexOf("市"));
         }
     }
 
 
-
+    public static boolean analysisJson(String response) {
+        String substring = response.substring(11, 15);
+        return "true".equals(substring);
+    }
 
 }

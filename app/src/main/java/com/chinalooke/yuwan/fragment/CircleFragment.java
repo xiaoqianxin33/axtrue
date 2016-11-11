@@ -272,15 +272,7 @@ public class CircleFragment extends Fragment implements AMapLocationListener {
                     }
 
                 } else {
-
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-                        String msg = jsonObject.getString("Msg");
-                        mToast.setText(msg);
-                        mToast.show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    MyUtils.showMsg(mToast, response);
                 }
             }
         }, new Response.ErrorListener() {
