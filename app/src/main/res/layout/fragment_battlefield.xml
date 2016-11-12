@@ -1,71 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroud"
     android:orientation="vertical"
     tools:context="com.chinalooke.yuwan.fragment.BattleFieldFragment">
 
-    <RelativeLayout
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="100px"
-        android:background="@color/actionbar_color">
+        android:layout_height="636px">
 
-        <RelativeLayout
-            android:id="@+id/rl_search"
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="57px"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/small_padding"
-            android:layout_marginRight="@dimen/small_padding"
-            android:background="@drawable/main_searchview_shape">
+            android:layout_height="440px"
+            app:contentScrim="#000000"
+            app:layout_scrollFlags="scroll">
 
-            <ImageView
-                android:id="@+id/iv_search"
-                android:layout_width="22px"
-                android:layout_height="22px"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="290px"
-                android:src="@mipmap/search_icn"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="100px"
+                android:background="@color/actionbar_color">
 
-            <TextView
-                android:id="@+id/tv_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="336px"
-                android:text="Search"
-                android:textColor="@color/black_word"
-                android:textSize="24px"/>
+                <RelativeLayout
+                    android:id="@+id/rl_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="57px"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/small_padding"
+                    android:layout_marginRight="@dimen/small_padding"
+                    android:background="@drawable/main_searchview_shape">
 
-            <ImageView
-                android:id="@+id/iv_qcode"
-                android:layout_width="30px"
-                android:layout_height="30px"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/small_padding"
-                android:src="@mipmap/erweima"/>
-        </RelativeLayout>
-    </RelativeLayout>
+                    <ImageView
+                        android:id="@+id/iv_search"
+                        android:layout_width="22px"
+                        android:layout_height="22px"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="290px"
+                        android:src="@mipmap/search_icn"/>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/sr"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="336px"
+                        android:text="Search"
+                        android:textColor="@color/black_word"
+                        android:textSize="24px"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+                    <ImageView
+                        android:id="@+id/iv_qcode"
+                        android:layout_width="30px"
+                        android:layout_height="30px"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/small_padding"
+                        android:src="@mipmap/erweima"/>
+                </RelativeLayout>
+            </RelativeLayout>
+
 
             <cn.bingoogolapple.bgabanner.BGABanner
                 android:id="@+id/banner"
                 android:layout_width="match_parent"
                 android:layout_height="340px"
+                android:layout_marginTop="100px"
                 app:banner_pageChangeDuration="1000"
                 app:banner_pointAutoPlayAble="true"
                 app:banner_pointAutoPlayInterval="2000"
@@ -74,61 +75,75 @@
                 app:banner_pointTopBottomMargin="5dp"
                 app:banner_transitionEffect="alpha"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="196px"
-                android:background="@android:color/white"
-                android:orientation="horizontal">
+        </android.support.design.widget.CoordinatorLayout>
 
-                <RelativeLayout
-                    android:id="@+id/rl_yz"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="196px"
+            android:background="@android:color/white"
+            android:orientation="horizontal">
 
-                    <ImageView
-                        style="@style/zc_table_icon"
-                        android:src="@mipmap/yjs_checked"/>
+            <RelativeLayout
+                android:id="@+id/rl_yz"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-                    <TextView
-                        style="@style/zc_table_word"
-                        android:text="约战中"/>
+                <ImageView
+                    style="@style/zc_table_icon"
+                    android:src="@mipmap/yjs_checked"/>
 
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/rl_jx"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <ImageView
-                        style="@style/zc_table_icon"
-                        android:src="@mipmap/yjs_checked"/>
-
-                    <TextView
-                        style="@style/zc_table_word"
-                        android:text="进行中"/>
+                <TextView
+                    style="@style/zc_table_word"
+                    android:text="约战中"/>
 
 
-                </RelativeLayout>
+            </RelativeLayout>
 
-                <RelativeLayout
-                    android:id="@+id/rl_js"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
+            <RelativeLayout
+                android:id="@+id/rl_jx"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-                    <ImageView
-                        style="@style/zc_table_icon"
-                        android:src="@mipmap/yjs_checked"/>
+                <ImageView
+                    style="@style/zc_table_icon"
+                    android:src="@mipmap/yjs_checked"/>
 
-                    <TextView
-                        style="@style/zc_table_word"
-                        android:text="已结束"/>
-                </RelativeLayout>
-            </LinearLayout>
+                <TextView
+                    style="@style/zc_table_word"
+                    android:text="进行中"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_js"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    style="@style/zc_table_icon"
+                    android:src="@mipmap/yjs_checked"/>
+
+                <TextView
+                    style="@style/zc_table_word"
+                    android:text="已结束"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <com.chinalooke.yuwan.view.VerticalSwipeRefreshLayout
+        android:id="@+id/sr"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="636px">
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <com.chinalooke.yuwan.view.ScrollableViewGroup
                 android:id="@+id/scrollable"
@@ -143,138 +158,7 @@
 
             </com.chinalooke.yuwan.view.ScrollableViewGroup>
 
-        </LinearLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="48dp"-->
-    <!--android:background="#3A3D3E"-->
-    <!--android:gravity="center_vertical"-->
-    <!--android:orientation="horizontal"-->
-    <!--android:paddingLeft="8dp">-->
+        </android.support.v4.widget.NestedScrollView>
+    </com.chinalooke.yuwan.view.VerticalSwipeRefreshLayout>
 
-    <!--<ImageView-->
-    <!--android:id="@+id/iv_qcord"-->
-    <!--android:layout_width="36dp"-->
-    <!--android:layout_height="36dp"-->
-    <!--android:background="@drawable/sweep_icon_selector"/>-->
-
-    <!--<com.chinalooke.yuwan.view.SearchView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="44dp"-->
-    <!--android:layout_marginLeft="8dp"-->
-    <!--android:layout_marginRight="16dp"-->
-    <!--android:paddingBottom="1dp"-->
-    <!--android:paddingTop="2dp">-->
-    <!--</com.chinalooke.yuwan.view.SearchView>-->
-    <!--</LinearLayout>-->
-
-    <!--<RelativeLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content">-->
-
-
-    <!--<com.chinalooke.yuwan.view.MyScrollView-->
-    <!--android:id="@+id/myscrollview_battlefield"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content">-->
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="vertical">-->
-
-
-    <!--<com.chinalooke.yuwan.view.CarouselView-->
-    <!--android:id="@+id/battlefield_carouseview"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="160dp"/>-->
-
-    <!--<include-->
-    <!--android:id="@+id/radiogroup"-->
-    <!--layout="@layout/battlefield_radiogroup"/>-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/tv_battlefiled_nodata"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="200dp"-->
-    <!--android:gravity="center"-->
-    <!--android:text="暂无数据"-->
-    <!--android:textColor="@android:color/black"-->
-    <!--android:textSize="14sp"-->
-    <!--android:visibility="gone"/>-->
-
-
-    <!--<com.chinalooke.yuwan.view.ListViewForScrollView-->
-    <!--android:id="@+id/lv_battlefield"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginTop="16dp"-->
-    <!--android:divider="@color/backgroud"-->
-    <!--android:dividerHeight="8dp">-->
-    <!--</com.chinalooke.yuwan.view.ListViewForScrollView>-->
-
-    <!--</LinearLayout>-->
-    <!--</com.chinalooke.yuwan.view.MyScrollView>-->
-
-    <!--<LinearLayout-->
-    <!--android:id="@+id/ll_s"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="80dp"-->
-    <!--android:orientation="horizontal"-->
-    <!--android:visibility="gone"-->
-    <!--&gt;-->
-
-    <!--<RadioGroup-->
-    <!--android:id="@+id/rg_battlefield_s"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="80dp"-->
-    <!--android:background="@android:color/white"-->
-    <!--android:orientation="horizontal"-->
-    <!--android:paddingTop="8dp">-->
-
-
-    <!--<RadioButton-->
-    <!--android:id="@+id/rb_setout_s"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_gravity="center_vertical"-->
-    <!--android:layout_weight="1"-->
-    <!--android:button="@null"-->
-    <!--android:drawableTop="@mipmap/setout"-->
-    <!--android:gravity="center"-->
-    <!--android:text="应战中"-->
-    <!--android:textColor="@color/battlefield_text_selector"-->
-    <!--android:textSize="14sp"/>-->
-
-    <!--<RadioButton-->
-    <!--android:id="@+id/rb_combat_s"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_gravity="center_vertical"-->
-    <!--android:layout_weight="1"-->
-    <!--android:button="@null"-->
-    <!--android:drawableTop="@mipmap/combat"-->
-    <!--android:gravity="center"-->
-    <!--android:text="进行中"-->
-    <!--android:textColor="@color/battlefield_text_selector"-->
-    <!--android:textSize="14sp"/>-->
-
-    <!--<RadioButton-->
-    <!--android:id="@+id/rb_finish_s"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_gravity="center_vertical"-->
-    <!--android:layout_weight="1"-->
-    <!--android:button="@null"-->
-    <!--android:drawableTop="@mipmap/finish"-->
-    <!--android:gravity="center"-->
-    <!--android:text="已结束"-->
-    <!--android:textColor="@color/battlefield_text_selector"-->
-    <!--android:textSize="14sp"/>-->
-    <!--</RadioGroup>-->
-
-
-    <!--</LinearLayout>-->
-    <!--</RelativeLayout>-->
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

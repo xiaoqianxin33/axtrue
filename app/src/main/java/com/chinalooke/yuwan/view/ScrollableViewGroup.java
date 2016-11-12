@@ -202,15 +202,24 @@ public class ScrollableViewGroup extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        final int width = MeasureSpec.getSize(widthMeasureSpec);
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            getChildAt(i).measure(widthMeasureSpec, heightMeasureSpec);
+//        final int width = MeasureSpec.getSize(widthMeasureSpec);
+//        final int count = getChildCount();
+//        for (int i = 0; i < count; i++) {
+//            getChildAt(i).measure(widthMeasureSpec, heightMeasureSpec);
+//        }
+//        if (mFirstLayout) {
+//            scrollTo(mCurrentScreen * width, 0);
+//            mFirstLayout = false;
+//        }
+        int height = 0;
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+            int h = child.getMeasuredHeight();
+            if (h > height) height = h;
         }
-        if (mFirstLayout) {
-            scrollTo(mCurrentScreen * width, 0);
-            mFirstLayout = false;
-        }
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     /*
@@ -293,7 +302,7 @@ public class ScrollableViewGroup extends ViewGroup {
                 mLastMotionX = x;
                 mLastMotionY = y;
                 mAllowLongPress = true;
-			/*
+            /*
 			 * * If being flinged and user touches the screen, initiate drag;
 			 * otherwise don't. mScroller.isFinished should be false when being
 			 * flinged.
