@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.chinalooke.yuwan.fragment.BattleFieldFragment">
 
-    <android.support.design.widget.AppBarLayout
+    <com.chinalooke.yuwan.view.MyScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="636px">
+        android:layout_height="match_parent"
+        android:paddingBottom="100px">
 
-        <android.support.design.widget.CoordinatorLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="440px"
-            app:contentScrim="#000000"
-            app:layout_scrollFlags="scroll">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <RelativeLayout
+                android:id="@+id/rl_search_title"
                 android:layout_width="match_parent"
                 android:layout_height="100px"
                 android:background="@color/actionbar_color">
@@ -61,12 +62,10 @@
                 </RelativeLayout>
             </RelativeLayout>
 
-
             <cn.bingoogolapple.bgabanner.BGABanner
                 android:id="@+id/banner"
                 android:layout_width="match_parent"
                 android:layout_height="340px"
-                android:layout_marginTop="100px"
                 app:banner_pageChangeDuration="1000"
                 app:banner_pointAutoPlayAble="true"
                 app:banner_pointAutoPlayInterval="2000"
@@ -75,80 +74,12 @@
                 app:banner_pointTopBottomMargin="5dp"
                 app:banner_transitionEffect="alpha"/>
 
-        </android.support.design.widget.CoordinatorLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="196px"
-            android:background="@android:color/white"
-            android:orientation="horizontal">
-
-            <RelativeLayout
-                android:id="@+id/rl_yz"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    style="@style/zc_table_icon"
-                    android:src="@mipmap/yjs_checked"/>
-
-                <TextView
-                    style="@style/zc_table_word"
-                    android:text="约战中"/>
-
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_jx"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    style="@style/zc_table_icon"
-                    android:src="@mipmap/yjs_checked"/>
-
-                <TextView
-                    style="@style/zc_table_word"
-                    android:text="进行中"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_js"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    style="@style/zc_table_icon"
-                    android:src="@mipmap/yjs_checked"/>
-
-                <TextView
-                    style="@style/zc_table_word"
-                    android:text="已结束"/>
-            </RelativeLayout>
-        </LinearLayout>
-    </android.support.design.widget.AppBarLayout>
-
-    <com.chinalooke.yuwan.view.VerticalSwipeRefreshLayout
-        android:id="@+id/sr"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="636px">
-
-        <android.support.v4.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <include layout="@layout/item_zc_check_icon"/>
 
             <com.chinalooke.yuwan.view.ScrollableViewGroup
                 android:id="@+id/scrollable"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
                 <include layout="@layout/fragment_main_yz"/>
 
@@ -157,8 +88,9 @@
                 <include layout="@layout/fragment_main_js"/>
 
             </com.chinalooke.yuwan.view.ScrollableViewGroup>
+        </LinearLayout>
 
-        </android.support.v4.widget.NestedScrollView>
-    </com.chinalooke.yuwan.view.VerticalSwipeRefreshLayout>
+    </com.chinalooke.yuwan.view.MyScrollView>
 
-</android.support.design.widget.CoordinatorLayout>
+    <include layout="@layout/item_zc_check_icon_gone"/>
+</RelativeLayout>

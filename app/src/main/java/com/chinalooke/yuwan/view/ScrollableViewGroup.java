@@ -211,6 +211,7 @@ public class ScrollableViewGroup extends ViewGroup {
 //            scrollTo(mCurrentScreen * width, 0);
 //            mFirstLayout = false;
 //        }
+
         int height = 0;
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
@@ -221,6 +222,7 @@ public class ScrollableViewGroup extends ViewGroup {
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
+
 
     /*
      * * (non-Javadoc) * * @see
@@ -303,7 +305,7 @@ public class ScrollableViewGroup extends ViewGroup {
                 mLastMotionY = y;
                 mAllowLongPress = true;
             /*
-			 * * If being flinged and user touches the screen, initiate drag;
+             * * If being flinged and user touches the screen, initiate drag;
 			 * otherwise don't. mScroller.isFinished should be false when being
 			 * flinged.
 			 */
@@ -347,7 +349,7 @@ public class ScrollableViewGroup extends ViewGroup {
         }
 
 		/*
-		 * * The only time we want to intercept motion events is if we are in
+         * * The only time we want to intercept motion events is if we are in
 		 * the drag mode.
 		 */
         return mTouchState != TOUCH_STATE_REST;//true-->孩子
@@ -379,7 +381,7 @@ public class ScrollableViewGroup extends ViewGroup {
     }
 
 	/*
-	 * * (non-Javadoc) * * @see
+     * * (non-Javadoc) * * @see
 	 * android.view.View#onTouchEvent(android.view.MotionEvent)
 	 */
 

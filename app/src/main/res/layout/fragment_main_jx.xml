@@ -2,7 +2,7 @@
                                          android:layout_width="match_parent"
                                          android:layout_height="match_parent">
 
-    <ListView
+    <com.chinalooke.yuwan.view.NoSlidingListView
         android:id="@+id/listview_jx"
         android:divider="@color/background"
         android:dividerHeight="@dimen/small_padding"

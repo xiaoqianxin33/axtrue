@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,8 +15,10 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +27,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.activity.GameDeskActivity;
 import com.chinalooke.yuwan.activity.SearchActivity;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.config.YuwanApplication;
@@ -35,11 +36,9 @@ import com.chinalooke.yuwan.model.GameDesk;
 import com.chinalooke.yuwan.model.GameDeskDetails;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DateUtils;
-import com.chinalooke.yuwan.utils.LogUtil;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
-import com.chinalooke.yuwan.view.NoSlidingListView;
 import com.chinalooke.yuwan.view.ScrollableViewGroup;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -84,8 +83,20 @@ public class BattleFieldFragment extends Fragment {
     ProgressBar mPbLoadJs;
     @Bind(R.id.tv_none_js)
     TextView mTvNoneJs;
-    @Bind(R.id.sr)
-    SwipeRefreshLayout mSr;
+    @Bind(R.id.ll_gone)
+    LinearLayout mLlGone;
+    @Bind(R.id.scrollView)
+    NestedScrollView mMyScrollView;
+    @Bind(R.id.rl_search_title)
+    RelativeLayout mRlSearchTitle;
+    @Bind(R.id.rl_yz_g)
+    RelativeLayout mRlYzG;
+    @Bind(R.id.rl_jx_g)
+    RelativeLayout mRlJxG;
+    @Bind(R.id.rl_js_g)
+    RelativeLayout mRlJsG;
+    //    @Bind(R.id.sr)
+//    SwipeRefreshLayout mSr;
     private RequestQueue mQueue;
     private Toast mToast;
     private int mWidth;
@@ -154,17 +165,31 @@ public class BattleFieldFragment extends Fragment {
                     // enabling or disabling the refresh layout
                     enable = firstItemVisible && topOfFirstItemVisible;
                 }
-                mSr.setEnabled(enable);
+//                mSr.setEnabled(enable);
             }
         };
         mListviewJs.setOnScrollListener(onScrollListener);
         mListviewJx.setOnScrollListener(onScrollListener);
         mListviewYz.setOnScrollListener(onScrollListener);
 
-        mSr.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mMyScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
-            public void onRefresh() {
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (mBanner != null) {
+                    if (scrollY >= mBanner.getHeight() + mRlSearchTitle.getHeight()) {
+                        mLlGone.setVisibility(View.VISIBLE);
+                    } else {
+                        mLlGone.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+        mMyScrollView.smoothScrollTo(0, 0);
 
+        mScrollableViewGroup.setOnCurrentViewChangedListener(new ScrollableViewGroup.OnCurrentViewChangedListener() {
+            @Override
+            public void onCurrentViewChanged(View view, int currentview) {
+                mMyScrollView.smoothScrollTo(0, 0);
             }
         });
     }
@@ -177,8 +202,9 @@ public class BattleFieldFragment extends Fragment {
 
     //按状态取游戏桌列表
     private void getGameDeskListWithStatus(final int status, final ProgressBar mPbLoad, final TextView mTvNone) {
+        String uri = Constant.HOST + "getGameDeskListWithStatus&gameStatus=" + status + "&pageNo=" + mPage + "&pageSize=5";
         if (NetUtil.is_Network_Available(getActivity())) {
-            StringRequest stringRequest = new StringRequest(Constant.HOST + "getGameDeskListWithStatus&gameStatus=" + status + "&pageNo=" + mPage + "&pageSize=5",
+            StringRequest stringRequest = new StringRequest(uri,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -223,6 +249,8 @@ public class BattleFieldFragment extends Fragment {
             mPbLoad.setVisibility(View.GONE);
             mTvNone.setText("网络未连接");
         }
+
+
     }
 
     //获得最近的广告
@@ -289,10 +317,10 @@ public class BattleFieldFragment extends Fragment {
         mListviewYz.setAdapter(mYzAdapter);
         mListviewJx.setAdapter(mJxAdapter);
         mListviewJs.setAdapter(mJsAdapter);
-        mSr.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+//        mSr.setColorSchemeResources(android.R.color.holo_blue_bright,
+//                android.R.color.holo_green_light,
+//                android.R.color.holo_orange_light,
+//                android.R.color.holo_red_light);
     }
 
     @Override
@@ -301,9 +329,16 @@ public class BattleFieldFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
-    @OnClick({R.id.iv_search, R.id.tv_search, R.id.iv_qcode, R.id.rl_yz, R.id.rl_jx, R.id.rl_js})
+    @OnClick({R.id.iv_search, R.id.tv_search, R.id.iv_qcode, R.id.rl_yz, R.id.rl_jx, R.id.rl_js
+            , R.id.rl_js_g, R.id.rl_jx_g, R.id.rl_yz_g})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.rl_js_g:
+                break;
+            case R.id.rl_jx_g:
+                break;
+            case R.id.rl_yz_g:
+                break;
             case R.id.rl_yz:
                 mScrollableViewGroup.setCurrentView(0);
                 break;
@@ -478,6 +513,9 @@ public class BattleFieldFragment extends Fragment {
             ButterKnife.bind(this, view);
         }
     }
+
+
+}
 
 //    @Override
 //    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -826,4 +864,4 @@ public class BattleFieldFragment extends Fragment {
 //        ButterKnife.unbind(this);
 //    }
 
-}
+

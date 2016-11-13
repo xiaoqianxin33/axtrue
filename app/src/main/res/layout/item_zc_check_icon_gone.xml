@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_gone"
+    android:layout_width="match_parent"
+    android:layout_height="196px"
+    android:background="@android:color/white"
+    android:orientation="horizontal"
+    android:visibility="gone">
+
+    <RelativeLayout
+        android:id="@+id/rl_yz_g"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ImageView
+            style="@style/zc_table_icon"
+            android:src="@mipmap/yjs_checked"/>
+
+        <TextView
+            style="@style/zc_table_word"
+            android:text="约战中"/>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_jx_g"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ImageView
+            style="@style/zc_table_icon"
+            android:src="@mipmap/yjs_checked"/>
+
+        <TextView
+            style="@style/zc_table_word"
+            android:text="进行中"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_js_g"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ImageView
+            style="@style/zc_table_icon"
+            android:src="@mipmap/yjs_checked"/>
+
+        <TextView
+            style="@style/zc_table_word"
+            android:text="已结束"/>
+    </RelativeLayout>
+</LinearLayout>

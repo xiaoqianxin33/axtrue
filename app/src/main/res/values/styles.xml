@@ -322,5 +322,9 @@
         <item name="android:textSize">25px</item>
     </style>
 
+    <style name="Widget.Design.AppBarLayout" parent="android:Widget">
+        <item name="elevation">0dp</item>
+        <item name="android:background">?attr/colorPrimary</item>
+    </style>
 
 </resources>
