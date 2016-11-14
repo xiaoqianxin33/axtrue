@@ -18,6 +18,7 @@
             android:src="@mipmap/yjs_checked"/>
 
         <TextView
+            android:id="@+id/tv_yz"
             style="@style/zc_table_word"
             android:text="约战中"/>
 
@@ -35,6 +36,7 @@
             android:src="@mipmap/yjs_checked"/>
 
         <TextView
+            android:id="@+id/tv_jx"
             style="@style/zc_table_word"
             android:text="进行中"/>
 
@@ -51,6 +53,7 @@
             android:src="@mipmap/yjs_checked"/>
 
         <TextView
+            android:id="@+id/tv_js"
             style="@style/zc_table_word"
             android:text="已结束"/>
     </RelativeLayout>

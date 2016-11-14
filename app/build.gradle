@@ -65,7 +65,6 @@ dependencies {
     compile 'cn.bingoogolapple:bga-banner:2.0.9@aar'
     testCompile 'junit:junit:4.12'
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:v1.9.7'
-    compile 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.2'
 }
 
 

@@ -5,9 +5,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -16,6 +18,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.fragment.BattleFieldFragment;
 import com.chinalooke.yuwan.fragment.BlackFragment;
 import com.chinalooke.yuwan.fragment.CircleFragment;
@@ -26,9 +29,14 @@ import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.zhy.autolayout.AutoLayoutActivity;
 
+import java.util.Calendar;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.chinalooke.yuwan.constant.Constant.MIN_CLICK_DELAY_TIME;
+import static com.chinalooke.yuwan.constant.Constant.lastClickTime;
 
 public class MainActivity extends AutoLayoutActivity implements AMapLocationListener {
 
@@ -64,6 +72,8 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     private WodeFragment mWodeFragment;
     private YueZhanFragment mYueZhanFragment;
     private BlackFragment mBlackFragment;
+    private long exitTime = 0;
+    private Toast mToast;
 
     public RequestQueue getQueue() {
         return mQueue;
@@ -75,6 +85,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.avtivity_main);
         ButterKnife.bind(this);
+        mToast = YuwanApplication.getToast();
         mFragmentManager = getSupportFragmentManager();
         mQueue = Volley.newRequestQueue(getApplicationContext());
         mBattleFieldFragment = new BattleFieldFragment();
@@ -127,27 +138,31 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
 
     @OnClick({R.id.rl_zc, R.id.rl_qz, R.id.rl_yz, R.id.rl_dt, R.id.rl_wd})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.rl_zc:
-                setSelected(1);
-                switchContent(mContent, mBattleFieldFragment);
-                break;
-            case R.id.rl_qz:
-                setSelected(2);
-                switchContent(mContent, mCircleFragment);
-                break;
-            case R.id.rl_yz:
-                setSelected(3);
-                switchContent(mContent, mYueZhanFragment);
-                break;
-            case R.id.rl_dt:
-                setSelected(4);
-                switchContent(mContent, mDynamicFragment);
-                break;
-            case R.id.rl_wd:
-                setSelected(5);
-                switchContent(mContent, mWodeFragment);
-                break;
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
+            lastClickTime = currentTime;
+            switch (view.getId()) {
+                case R.id.rl_zc:
+                    setSelected(1);
+                    switchContent(mContent, mBattleFieldFragment);
+                    break;
+                case R.id.rl_qz:
+                    setSelected(2);
+                    switchContent(mContent, mCircleFragment);
+                    break;
+                case R.id.rl_yz:
+                    setSelected(3);
+                    switchContent(mContent, mYueZhanFragment);
+                    break;
+                case R.id.rl_dt:
+                    setSelected(4);
+                    switchContent(mContent, mDynamicFragment);
+                    break;
+                case R.id.rl_wd:
+                    setSelected(5);
+                    switchContent(mContent, mWodeFragment);
+                    break;
+            }
         }
     }
 
@@ -186,6 +201,28 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
             } else {
                 transaction.hide(from).show(to).commit(); // 隐藏当前的fragment，显示下一个
             }
+        }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0) {
+                this.exitApp();
+            }
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    private void exitApp() {
+        // 判断2次点击事件时间
+        if ((System.currentTimeMillis() - exitTime) > 2000) {
+            mToast.setText("再按一次退出程序");
+            mToast.show();
+            exitTime = System.currentTimeMillis();
+        } else {
+            finish();
         }
     }
 }

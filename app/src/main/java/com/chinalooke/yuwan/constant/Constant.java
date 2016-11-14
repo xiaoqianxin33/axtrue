@@ -30,6 +30,6 @@ public class Constant {
     public static final String APPKEY = "16529ca8e94af";
     public static final String APPSECRET = "532befe9d0d33bdec76";
 
-    public static int MIN_CLICK_DELAY_TIME = 300;
+    public static int MIN_CLICK_DELAY_TIME = 500;
     public static long lastClickTime = 0;
 }
