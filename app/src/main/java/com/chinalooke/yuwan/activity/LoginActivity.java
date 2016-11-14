@@ -107,9 +107,14 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
         ShareSDK.stopSDK();
     }
 
-    @OnClick({R.id.QQ_login, R.id.weixin_login, R.id.weibo_login, R.id.btn_login_login, R.id.iv_back, R.id.forget_pwd_login})
+    @OnClick({R.id.QQ_login, R.id.weixin_login, R.id.weibo_login, R.id.btn_login_login,
+            R.id.tv_skip, R.id.iv_back, R.id.forget_pwd_login})
     public void onClick(View view) {
         switch (view.getId()) {
+            //注册按钮
+            case R.id.tv_skip:
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                break;
             //登录按钮
             case R.id.btn_login_login:
                 if (Validator.isNetworkAvailable(LoginActivity.this)) {

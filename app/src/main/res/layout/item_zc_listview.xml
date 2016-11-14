@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="234px"
+                android:layout_height="wrap_content"
                 android:background="@android:color/white">
 
     <com.makeramen.roundedimageview.RoundedImageView
@@ -20,7 +20,7 @@
         android:layout_width="55px"
         android:layout_height="30px"
         android:layout_marginLeft="182px"
-        android:layout_marginTop="43px"
+        android:layout_marginTop="33px"
         android:background="@mipmap/gr_zc"
         android:gravity="center"
         android:text="个人"
@@ -50,8 +50,8 @@
 
 
     <ImageView
-        android:layout_width="23px"
-        android:layout_height="23px"
+        android:layout_width="25px"
+        android:layout_height="25px"
         android:layout_marginLeft="275px"
         android:layout_marginTop="135px"
         android:src="@mipmap/price_zc"/>
@@ -63,11 +63,11 @@
         android:layout_marginLeft="318px"
         android:layout_marginTop="135px"
         android:textColor="#fee387"
-        android:textSize="20px"/>
+        android:textSize="24px"/>
 
     <ImageView
-        android:layout_width="23px"
-        android:layout_height="23px"
+        android:layout_width="25px"
+        android:layout_height="25px"
         android:layout_marginLeft="416px"
         android:layout_marginTop="135px"
         android:src="@mipmap/people_zc"/>
@@ -79,11 +79,11 @@
         android:layout_marginLeft="459px"
         android:layout_marginTop="135px"
         android:textColor="#fee387"
-        android:textSize="20px"/>
+        android:textSize="24px"/>
 
     <ImageView
-        android:layout_width="23px"
-        android:layout_height="23px"
+        android:layout_width="25px"
+        android:layout_height="25px"
         android:layout_marginLeft="275px"
         android:layout_marginTop="179px"
         android:src="@mipmap/location_zc"/>
@@ -95,7 +95,7 @@
         android:layout_marginLeft="318px"
         android:layout_marginTop="179px"
         android:textColor="#fee387"
-        android:textSize="20px"/>
+        android:textSize="24px"/>
 
     <TextView
         android:layout_width="1px"
@@ -112,7 +112,7 @@
         android:layout_marginTop="134px"
         android:text="离报名结束"
         android:textColor="#bdbdbd"
-        android:textSize="20px"/>
+        android:textSize="24px"/>
 
     <TextView
         android:id="@+id/tv_time"
@@ -123,6 +123,6 @@
         android:layout_marginTop="180px"
         android:text="00:00:00"
         android:textColor="#ff6645"
-        android:textSize="24px"/>
+        android:textSize="28px"/>
 
 </RelativeLayout>

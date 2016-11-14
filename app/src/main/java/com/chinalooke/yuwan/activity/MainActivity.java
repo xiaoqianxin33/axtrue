@@ -23,7 +23,6 @@ import com.chinalooke.yuwan.fragment.DynamicFragment;
 import com.chinalooke.yuwan.fragment.WodeFragment;
 import com.chinalooke.yuwan.fragment.YueZhanFragment;
 import com.chinalooke.yuwan.utils.LocationUtils;
-import com.chinalooke.yuwan.utils.LogUtil;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.zhy.autolayout.AutoLayoutActivity;
 

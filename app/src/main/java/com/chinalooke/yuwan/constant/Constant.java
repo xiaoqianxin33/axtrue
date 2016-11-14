@@ -32,5 +32,4 @@ public class Constant {
 
     public static int MIN_CLICK_DELAY_TIME = 300;
     public static long lastClickTime = 0;
-
 }

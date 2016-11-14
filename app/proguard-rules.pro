@@ -22,3 +22,6 @@
 -keep class com.amap.api.location.**{*;}
 -keep class com.amap.api.fence.**{*;}
 -keep class com.autonavi.aps.amapapi.model.**{*;}
+
+-keep class com.lsjwzh.widget.recyclerviewpager.**
+-dontwarn com.lsjwzh.widget.recyclerviewpager.**

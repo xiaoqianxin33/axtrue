@@ -1,96 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<com.chinalooke.yuwan.view.VerticalSwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sr"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.chinalooke.yuwan.fragment.BattleFieldFragment">
 
-    <com.chinalooke.yuwan.view.MyScrollView
-        android:id="@+id/scrollView"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="100px">
+        android:fitsSystemWindows="false">
 
-        <LinearLayout
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <RelativeLayout
-                android:id="@+id/rl_search_title"
+            <android.support.design.widget.CollapsingToolbarLayout
                 android:layout_width="match_parent"
-                android:layout_height="100px"
-                android:background="@color/actionbar_color">
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll">
 
                 <RelativeLayout
-                    android:id="@+id/rl_search"
+                    android:id="@+id/rl_search_title"
                     android:layout_width="match_parent"
-                    android:layout_height="57px"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/small_padding"
-                    android:layout_marginRight="@dimen/small_padding"
-                    android:background="@drawable/main_searchview_shape">
+                    android:layout_height="100px"
+                    android:background="@color/actionbar_color">
 
-                    <ImageView
-                        android:id="@+id/iv_search"
-                        android:layout_width="22px"
-                        android:layout_height="22px"
+                    <RelativeLayout
+                        android:id="@+id/rl_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="57px"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="290px"
-                        android:src="@mipmap/search_icn"/>
-
-                    <TextView
-                        android:id="@+id/tv_search"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="336px"
-                        android:text="Search"
-                        android:textColor="@color/black_word"
-                        android:textSize="24px"/>
-
-                    <ImageView
-                        android:id="@+id/iv_qcode"
-                        android:layout_width="30px"
-                        android:layout_height="30px"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/small_padding"
                         android:layout_marginRight="@dimen/small_padding"
-                        android:src="@mipmap/erweima"/>
-                </RelativeLayout>
-            </RelativeLayout>
+                        android:background="@drawable/main_searchview_shape">
 
-            <cn.bingoogolapple.bgabanner.BGABanner
-                android:id="@+id/banner"
-                android:layout_width="match_parent"
-                android:layout_height="340px"
-                app:banner_pageChangeDuration="1000"
-                app:banner_pointAutoPlayAble="true"
-                app:banner_pointAutoPlayInterval="2000"
-                app:banner_pointContainerBackground="@android:color/transparent"
-                app:banner_pointDrawable="@drawable/bga_banner_selector_point_hollow"
-                app:banner_pointTopBottomMargin="5dp"
-                app:banner_transitionEffect="alpha"/>
+                        <ImageView
+                            android:id="@+id/iv_search"
+                            android:layout_width="22px"
+                            android:layout_height="22px"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="290px"
+                            android:src="@mipmap/search_icn"/>
+
+                        <TextView
+                            android:id="@+id/tv_search"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="336px"
+                            android:text="Search"
+                            android:textColor="@color/black_word"
+                            android:textSize="24px"/>
+
+                        <ImageView
+                            android:id="@+id/iv_qcode"
+                            android:layout_width="30px"
+                            android:layout_height="30px"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/small_padding"
+                            android:src="@mipmap/erweima"/>
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <cn.bingoogolapple.bgabanner.BGABanner
+                    android:id="@+id/banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:layout_marginTop="100px"
+                    app:banner_pageChangeDuration="1000"
+                    app:banner_pointAutoPlayAble="true"
+                    app:banner_pointAutoPlayInterval="2000"
+                    app:banner_pointContainerBackground="@android:color/transparent"
+                    app:banner_pointDrawable="@drawable/bga_banner_selector_point_hollow"
+                    app:banner_pointTopBottomMargin="5dp"
+                    app:banner_transitionEffect="alpha"/>
+            </android.support.design.widget.CollapsingToolbarLayout>
 
             <include layout="@layout/item_zc_check_icon"/>
+        </android.support.design.widget.AppBarLayout>
 
-            <com.chinalooke.yuwan.view.ScrollableViewGroup
-                android:id="@+id/scrollable"
+        <com.chinalooke.yuwan.view.MyNestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/small_padding"
+            android:fillViewport="true"
+            android:paddingBottom="100px"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <include layout="@layout/fragment_main_yz"/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@color/background"
+                    android:dividerHeight="@dimen/small_padding"/>
 
-                <include layout="@layout/fragment_main_jx"/>
+                <ProgressBar
+                    android:id="@+id/pb_load"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="40dp"
+                    android:indeterminateDrawable="@drawable/progressbar"
+                    />
 
-                <include layout="@layout/fragment_main_js"/>
+                <TextView
+                    android:id="@+id/tv_none"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="40dp"
+                    android:gravity="center"
+                    android:text="暂无战场"/>
 
-            </com.chinalooke.yuwan.view.ScrollableViewGroup>
-        </LinearLayout>
 
-    </com.chinalooke.yuwan.view.MyScrollView>
+            </FrameLayout>
 
-    <include layout="@layout/item_zc_check_icon_gone"/>
-</RelativeLayout>
+
+        </com.chinalooke.yuwan.view.MyNestedScrollView>
+
+    </android.support.design.widget.CoordinatorLayout>
+</com.chinalooke.yuwan.view.VerticalSwipeRefreshLayout>

@@ -2,7 +2,7 @@
                                          android:layout_width="match_parent"
                                          android:layout_height="match_parent">
 
-    <com.chinalooke.yuwan.view.NoSlidingListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/listview_js"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,5 +23,6 @@
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="暂无战场"/>
+        android:text="暂无战场"
+        android:visibility="gone"/>
 </com.chinalooke.yuwan.view.ViewGroupHook>

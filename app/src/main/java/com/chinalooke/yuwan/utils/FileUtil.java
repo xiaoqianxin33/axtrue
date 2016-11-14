@@ -18,38 +18,33 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
-public class FileUtil
-{
+public class FileUtil {
 
     /**
      * 删除文件
-     * 
-     * @param context
-     *            程序上下文
-     * @param fileName
-     *            文件名，要在系统内保持唯一
+     *
+     * @param context  程序上下文
+     * @param fileName 文件名，要在系统内保持唯一
      * @return boolean 存储成功的标志
      */
-    public static boolean deleteFile(Context context, String fileName)
-    {
+    public static boolean deleteFile(Context context, String fileName) {
         return context.deleteFile(fileName);
     }
 
     /**
      * 文件是否存在
-     * 
+     *
      * @param context
      * @param fileName
      * @return
      */
-    public static boolean exists(Context context, String fileName)
-    {
+    public static boolean exists(Context context, String fileName) {
         return new File(context.getFilesDir(), fileName).exists();
     }
 
     /**
      * 存储文本数据
-     * 
+     *
      * @param context
      *            程序上下文
      * @param fileName
@@ -58,80 +53,66 @@ public class FileUtil
      *            文本内容
      * @return boolean 存储成功的标志
      */
-    public static boolean writeFile(Context context, String fileName, String content)
-    {
-        boolean success = false;
-        FileOutputStream fos = null;
-        try
-        {
-            fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-            byte[] byteContent = content.getBytes();
-            fos.write(byteContent);
-
-            success = true;
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
-                if (fos != null) fos.close();
-            }
-            catch (IOException ioe)
-            {
-                ioe.printStackTrace();
-            }
-        }
-
-        return success;
-    }
+//    public static boolean writeFile(String context, String fileName, boolean content)
+//    {
+//        boolean success = false;
+//        FileOutputStream fos = null;
+//        try
+//        {
+//            fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+//            byte[] byteContent = content.getBytes();
+//            fos.write(byteContent);
+//
+//            success = true;
+//        }
+//        catch (FileNotFoundException e)
+//        {
+//            e.printStackTrace();
+//        }
+//        catch (IOException e)
+//        {
+//            e.printStackTrace();
+//        }
+//        finally
+//        {
+//            try
+//            {
+//                if (fos != null) fos.close();
+//            }
+//            catch (IOException ioe)
+//            {
+//                ioe.printStackTrace();
+//            }
+//        }
+//
+//        return success;
+//    }
 
     /**
      * 存储文本数据
-     * 
-     * @paramcontext
-     *            程序上下文
-     * @paramfileName
-     *            文件名，要在系统内保持唯一
-     * @param content
-     *            文本内容
+     *
+     * @param content 文本内容
      * @return boolean 存储成功的标志
+     * @paramcontext 程序上下文
+     * @paramfileName 文件名，要在系统内保持唯一
      */
-    public static boolean writeFile(String filePath, String content)
-    {
+    public static boolean writeFile(String filePath, String content) {
         boolean success = false;
         FileOutputStream fos = null;
-        try
-        {
+        try {
             fos = new FileOutputStream(filePath);
             byte[] byteContent = content.getBytes();
             fos.write(byteContent);
 
             success = true;
-        }
-        catch (FileNotFoundException e)
-        {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
+        } finally {
+            try {
                 if (fos != null) fos.close();
-            }
-            catch (IOException ioe)
-            {
+            } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
         }
@@ -141,28 +122,24 @@ public class FileUtil
 
     /**
      * 读取文本数据
-     * 
-     * @param context
-     *            程序上下文
-     * @param fileName
-     *            文件名
+     *
+     * @param context  程序上下文
+     * @param fileName 文件名
      * @return String, 读取到的文本内容，失败返回null
      */
-    public static String readFile(Context context, String fileName)
-    {
-        if (!exists(context, fileName)) { return null; }
+    public static String readFile(Context context, String fileName) {
+        if (!exists(context, fileName)) {
+            return null;
+        }
         FileInputStream fis = null;
         String content = null;
-        try
-        {
+        try {
             fis = context.openFileInput(fileName);
-            if (fis != null)
-            {
+            if (fis != null) {
 
                 byte[] buffer = new byte[1024];
                 ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
-                while (true)
-                {
+                while (true) {
                     int readLength = fis.read(buffer);
                     if (readLength == -1) break;
                     arrayOutputStream.write(buffer, 0, readLength);
@@ -172,24 +149,15 @@ public class FileUtil
                 content = new String(arrayOutputStream.toByteArray());
 
             }
-        }
-        catch (FileNotFoundException e)
-        {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
             content = null;
-        }
-        finally
-        {
-            try
-            {
+        } finally {
+            try {
                 if (fis != null) fis.close();
-            }
-            catch (IOException ioe)
-            {
+            } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
         }
@@ -198,28 +166,24 @@ public class FileUtil
 
     /**
      * 读取文本数据
-     * 
-     * @paramcontext
-     *            程序上下文
-     * @paramfileName
-     *            文件名
+     *
      * @return String, 读取到的文本内容，失败返回null
+     * @paramcontext 程序上下文
+     * @paramfileName 文件名
      */
-    public static String readFile(String filePath)
-    {
-        if (filePath == null || !new File(filePath).exists()) { return null; }
+    public static String readFile(String filePath) {
+        if (filePath == null || !new File(filePath).exists()) {
+            return null;
+        }
         FileInputStream fis = null;
         String content = null;
-        try
-        {
+        try {
             fis = new FileInputStream(filePath);
-            if (fis != null)
-            {
+            if (fis != null) {
 
                 byte[] buffer = new byte[1024];
                 ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
-                while (true)
-                {
+                while (true) {
                     int readLength = fis.read(buffer);
                     if (readLength == -1) break;
                     arrayOutputStream.write(buffer, 0, readLength);
@@ -229,24 +193,15 @@ public class FileUtil
                 content = new String(arrayOutputStream.toByteArray());
 
             }
-        }
-        catch (FileNotFoundException e)
-        {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
             content = null;
-        }
-        finally
-        {
-            try
-            {
+        } finally {
+            try {
                 if (fis != null) fis.close();
-            }
-            catch (IOException ioe)
-            {
+            } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
         }
@@ -255,27 +210,21 @@ public class FileUtil
 
     /**
      * 读取文本数据
-     * 
-     * @param context
-     *            程序上下文
-     * @param fileName
-     *            文件名
+     *
+     * @param context  程序上下文
+     * @param fileName 文件名
      * @return String, 读取到的文本内容，失败返回null
      */
-    public static String readAssets(Context context, String fileName)
-    {
+    public static String readAssets(Context context, String fileName) {
         InputStream is = null;
         String content = null;
-        try
-        {
+        try {
             is = context.getAssets().open(fileName);
-            if (is != null)
-            {
+            if (is != null) {
 
                 byte[] buffer = new byte[1024];
                 ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
-                while (true)
-                {
+                while (true) {
                     int readLength = is.read(buffer);
                     if (readLength == -1) break;
                     arrayOutputStream.write(buffer, 0, readLength);
@@ -285,47 +234,33 @@ public class FileUtil
                 content = new String(arrayOutputStream.toByteArray());
 
             }
-        }
-        catch (FileNotFoundException e)
-        {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
             content = null;
-        }
-        finally
-        {
-            try
-            {
+        } finally {
+            try {
                 if (is != null) is.close();
-            }
-            catch (IOException ioe)
-            {
+            } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
         }
         return content;
     }
-    
+
     /**
      * 存储单个Parcelable对象
-     * 
-     * @param context
-     *            程序上下文
-     * @param fileName
-     *            文件名，要在系统内保持唯一
-     * @param parcelObject
-     *            对象必须实现Parcelable
+     *
+     * @param context      程序上下文
+     * @param fileName     文件名，要在系统内保持唯一
+     * @param parcelObject 对象必须实现Parcelable
      * @return boolean 存储成功的标志
      */
-    public static boolean writeParcelable(Context context, String fileName, Parcelable parcelObject)
-    {
+    public static boolean writeParcelable(Context context, String fileName, Parcelable parcelObject) {
         boolean success = false;
         FileOutputStream fos = null;
-        try
-        {
+        try {
             fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
             Parcel parcel = Parcel.obtain();
             parcel.writeParcelable(parcelObject, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
@@ -333,25 +268,15 @@ public class FileUtil
             fos.write(data);
 
             success = true;
-        }
-        catch (FileNotFoundException e)
-        {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally
-        {
-            if (fos != null)
-            {
-                try
-                {
+        } finally {
+            if (fos != null) {
+                try {
                     fos.close();
-                }
-                catch (IOException ioe)
-                {
+                } catch (IOException ioe) {
                     ioe.printStackTrace();
                 }
             }
@@ -362,23 +287,17 @@ public class FileUtil
 
     /**
      * 存储List对象
-     * 
-     * @param context
-     *            程序上下文
-     * @param fileName
-     *            文件名，要在系统内保持唯一
-     * @param list
-     *            对象数组集合，对象必须实现Parcelable
+     *
+     * @param context  程序上下文
+     * @param fileName 文件名，要在系统内保持唯一
+     * @param list     对象数组集合，对象必须实现Parcelable
      * @return boolean 存储成功的标志
      */
-    public static boolean writeParcelableList(Context context, String fileName, List<Parcelable> list)
-    {
+    public static boolean writeParcelableList(Context context, String fileName, List<Parcelable> list) {
         boolean success = false;
         FileOutputStream fos = null;
-        try
-        {
-            if (list instanceof List)
-            {
+        try {
+            if (list instanceof List) {
                 fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
                 Parcel parcel = Parcel.obtain();
                 parcel.writeList(list);
@@ -387,25 +306,15 @@ public class FileUtil
 
                 success = true;
             }
-        }
-        catch (FileNotFoundException e)
-        {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally
-        {
-            if (fos != null)
-            {
-                try
-                {
+        } finally {
+            if (fos != null) {
+                try {
                     fos.close();
-                }
-                catch (IOException ioe)
-                {
+                } catch (IOException ioe) {
                     ioe.printStackTrace();
                 }
             }
@@ -416,29 +325,23 @@ public class FileUtil
 
     /**
      * 读取单个数据对象
-     * 
-     * @param context
-     *            程序上下文
-     * @param fileName
-     *            文件名
+     *
+     * @param context  程序上下文
+     * @param fileName 文件名
      * @return Parcelable, 读取到的Parcelable对象，失败返回null
      */
     @SuppressWarnings("unchecked")
-    public static Parcelable readParcelable(Context context, String fileName, ClassLoader classLoader)
-    {
+    public static Parcelable readParcelable(Context context, String fileName, ClassLoader classLoader) {
         Parcelable parcelable = null;
         FileInputStream fis = null;
         ByteArrayOutputStream bos = null;
-        try
-        {
+        try {
             fis = context.openFileInput(fileName);
-            if (fis != null)
-            {
+            if (fis != null) {
                 bos = new ByteArrayOutputStream();
                 byte[] b = new byte[4096];
                 int bytesRead;
-                while ((bytesRead = fis.read(b)) != -1)
-                {
+                while ((bytesRead = fis.read(b)) != -1) {
                     bos.write(b, 0, bytesRead);
                 }
 
@@ -449,64 +352,46 @@ public class FileUtil
                 parcel.setDataPosition(0);
                 parcelable = parcel.readParcelable(classLoader);
             }
-        }
-        catch (FileNotFoundException e)
-        {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
             parcelable = null;
-        }
-        finally
-        {
-            if (fis != null) try
-            {
+        } finally {
+            if (fis != null) try {
                 fis.close();
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (bos != null) try
-            {
+            if (bos != null) try {
                 bos.close();
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         return parcelable;
     }
-    
+
     /**
      * 读取数据对象列表
-     * 
-     * @param context
-     *            程序上下文
-     * @param fileName
-     *            文件名
+     *
+     * @param context  程序上下文
+     * @param fileName 文件名
      * @return List, 读取到的对象数组，失败返回null
      */
     @SuppressWarnings("unchecked")
-    public static List<Parcelable> readParcelableList(Context context, String fileName, ClassLoader classLoader)
-    {
+    public static List<Parcelable> readParcelableList(Context context, String fileName, ClassLoader classLoader) {
         List<Parcelable> results = null;
         FileInputStream fis = null;
         ByteArrayOutputStream bos = null;
-        try
-        {
+        try {
             fis = context.openFileInput(fileName);
-            if (fis != null)
-            {
+            if (fis != null) {
                 bos = new ByteArrayOutputStream();
                 byte[] b = new byte[4096];
                 int bytesRead;
-                while ((bytesRead = fis.read(b)) != -1)
-                {
+                while ((bytesRead = fis.read(b)) != -1) {
                     bos.write(b, 0, bytesRead);
                 }
 
@@ -517,32 +402,20 @@ public class FileUtil
                 parcel.setDataPosition(0);
                 results = parcel.readArrayList(classLoader);
             }
-        }
-        catch (FileNotFoundException e)
-        {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
             results = null;
-        }
-        finally
-        {
-            if (fis != null) try
-            {
+        } finally {
+            if (fis != null) try {
                 fis.close();
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (bos != null) try
-            {
+            if (bos != null) try {
                 bos.close();
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -550,30 +423,20 @@ public class FileUtil
         return results;
     }
 
-    public static boolean saveSerializable(Context context, String fileName, Serializable data)
-    {
+    public static boolean saveSerializable(Context context, String fileName, Serializable data) {
         boolean success = false;
         ObjectOutputStream oos = null;
-        try
-        {
+        try {
             oos = new ObjectOutputStream(context.openFileOutput(fileName, Context.MODE_PRIVATE));
             oos.writeObject(data);
             success = true;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally
-        {
-            if (oos != null)
-            {
-                try
-                {
+        } finally {
+            if (oos != null) {
+                try {
                     oos.close();
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -581,29 +444,19 @@ public class FileUtil
         return success;
     }
 
-    public static Serializable readSerialLizable(Context context, String fileName)
-    {
+    public static Serializable readSerialLizable(Context context, String fileName) {
         Serializable data = null;
         ObjectInputStream ois = null;
-        try
-        {
+        try {
             ois = new ObjectInputStream(context.openFileInput(fileName));
             data = (Serializable) ois.readObject();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally
-        {
-            if (ois != null)
-            {
-                try
-                {
+        } finally {
+            if (ois != null) {
+                try {
                     ois.close();
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -614,15 +467,13 @@ public class FileUtil
 
     /**
      * 从assets里边读取字符串
-     * 
+     *
      * @param context
      * @param fileName
      * @return
      */
-    public static String getFromAssets(Context context, String fileName)
-    {
-        try
-        {
+    public static String getFromAssets(Context context, String fileName) {
+        try {
             InputStreamReader inputReader = new InputStreamReader(context.getResources().getAssets().open(fileName));
             BufferedReader bufReader = new BufferedReader(inputReader);
             String line = "";
@@ -630,9 +481,7 @@ public class FileUtil
             while ((line = bufReader.readLine()) != null)
                 Result += line;
             return Result;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -640,21 +489,18 @@ public class FileUtil
 
     /**
      * 复制文件
-     * 
+     *
      * @param srcFile
      * @param dstFile
      * @return
      */
-    public static boolean copy(String srcFile, String dstFile)
-    {
+    public static boolean copy(String srcFile, String dstFile) {
         FileInputStream fis = null;
         FileOutputStream fos = null;
-        try
-        {
+        try {
 
             File dst = new File(dstFile);
-            if (!dst.getParentFile().exists())
-            {
+            if (!dst.getParentFile().exists()) {
                 dst.getParentFile().mkdirs();
             }
 
@@ -664,38 +510,25 @@ public class FileUtil
             byte[] buffer = new byte[1024];
             int len = 0;
 
-            while ((len = fis.read(buffer)) != -1)
-            {
+            while ((len = fis.read(buffer)) != -1) {
                 fos.write(buffer, 0, len);
             }
 
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
-        }
-        finally
-        {
-            if (fis != null)
-            {
-                try
-                {
+        } finally {
+            if (fis != null) {
+                try {
                     fis.close();
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            if (fos != null)
-            {
-                try
-                {
+            if (fos != null) {
+                try {
                     fos.close();
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
