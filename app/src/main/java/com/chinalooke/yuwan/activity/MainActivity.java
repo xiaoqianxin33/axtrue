@@ -135,6 +135,11 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 
     @OnClick({R.id.rl_zc, R.id.rl_qz, R.id.rl_yz, R.id.rl_dt, R.id.rl_wd})
     public void onClick(View view) {

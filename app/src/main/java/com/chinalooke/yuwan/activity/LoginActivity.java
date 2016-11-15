@@ -1,5 +1,6 @@
 package com.chinalooke.yuwan.activity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -66,6 +67,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     //加载的弹出框
     private LoadingProgressDialogView dialog;
     private Toast mToast;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,7 +176,8 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
         } else {
             getHTTPIsPhoneExists();
             //弹出正在登陆
-            showMyDialog(mBtnLoginLogin);
+            mProgressDialog = MyUtils.initDialog("正在加载中...", LoginActivity.this);
+            mProgressDialog.show();
             mBtnLoginLogin.setClickable(false);
         }
 
@@ -197,14 +200,12 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                     public void onResponse(String response) {
                         Log.d("TAG", response);
                         //解析数据
-
                         if (response != null) {
-
                             ResultDatas result = AnalysisJSON.getAnalysisJSON().AnalysisJSONResult(response);
                             if (result != null) {
                                 if ("true".equals(result.getSuccess()) && "false".equals(result.getResult())) {
-                                    Log.d("TAG", "该号码未注册");
-                                    dialog.dismiss();
+                                    Log.e("TAG", "该号码未注册");
+                                    mProgressDialog.dismiss();
                                     MyUtils.showNorDialog(LoginActivity.this, "提示", "您的手机号码" + phone + "未注册雷熊，现在就注册么？",
                                             new DialogInterface.OnClickListener() {
                                                 @Override
@@ -222,25 +223,19 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                                             });
                                 }
                                 if ("true".equals(result.getSuccess()) && "true".equals(result.getResult())) {
-                                    Log.d("TAG", "验证密码");
+                                    Log.e("TAG", "验证密码");
 
                                     if ("".equals(passWord)) {
                                         //判断密码是否为空
                                         mEtPassword.setError("请输入密码");
-                                        dialog.dismiss();
+                                        mProgressDialog.dismiss();
                                     } else {
                                         //进行登录
                                         getHTTPLoginSuccess();
                                     }
-
-
                                 }
                             }
-
-
                         }
-
-
                     }
                 }, new Response.ErrorListener() {
 
@@ -298,7 +293,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                     }
                 }
                 Log.d("TAG", "用户名" + userInfo.getUserId() + userInfo.getCardNo());
-                dialog.dismiss();
+                mProgressDialog.dismiss();
                 loginSuccess();//调用登录成功方法
 
             }
@@ -350,8 +345,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
             Log.i("TAG", "验证通-----------------过-----" + userName + password);
         } else {
             //没有通过验证
-            mToast.setText("验证失败，请重试");
-            mToast.show();
         }
         platform.showUser(null);//授权并获取用户信息
     }

@@ -220,7 +220,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="62px">
+                    android:layout_height="64px">
 
 
                     <ImageView
@@ -258,14 +258,14 @@
                         android:layout_width="@dimen/small_padding"
                         android:layout_height="@dimen/small_padding"
                         android:layout_marginLeft="30px"
-                        android:layout_marginTop="54px"
+                        android:layout_marginTop="50px"
                         android:src="@mipmap/game_desk_quan"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="70px"
-                        android:layout_marginTop="49px"
+                        android:layout_marginTop="45px"
                         android:text="奖金"
                         android:textColor="#fecc2c"
                         android:textSize="30px"/>
@@ -274,7 +274,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="230px"
-                        android:layout_marginTop="49px"
+                        android:layout_marginTop="45px"
                         android:text="100元"
                         android:textColor="#848789"/>
 
@@ -289,14 +289,14 @@
                         android:layout_width="@dimen/small_padding"
                         android:layout_height="@dimen/small_padding"
                         android:layout_marginLeft="30px"
-                        android:layout_marginTop="54px"
+                        android:layout_marginTop="50px"
                         android:src="@mipmap/game_desk_quan"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="70px"
-                        android:layout_marginTop="49px"
+                        android:layout_marginTop="45px"
                         android:text="对战人数"
                         android:textColor="#fecc2c"
                         android:textSize="30px"/>
@@ -305,7 +305,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="230px"
-                        android:layout_marginTop="49px"
+                        android:layout_marginTop="45px"
                         android:text="3vs3"
                         android:textColor="#848789"/>
 
@@ -320,15 +320,15 @@
                         android:layout_width="@dimen/small_padding"
                         android:layout_height="@dimen/small_padding"
                         android:layout_marginLeft="30px"
-                        android:layout_marginTop="54px"
+                        android:layout_marginTop="50px"
                         android:src="@mipmap/game_desk_quan"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="70px"
-                        android:layout_marginTop="49px"
-                        android:text="对战人数"
+                        android:layout_marginTop="45px"
+                        android:text="详细规则"
                         android:textColor="#fecc2c"
                         android:textSize="30px"/>
 
@@ -337,7 +337,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="230px"
                         android:layout_marginRight="56px"
-                        android:layout_marginTop="49px"
+                        android:layout_marginTop="45px"
                         android:lineSpacingExtra="3dp"
                         android:text="@string/game_rule"
                         android:textColor="#848789"/>

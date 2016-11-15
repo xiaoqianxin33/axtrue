@@ -1,19 +1,16 @@
 package com.chinalooke.yuwan.activity;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -31,13 +28,11 @@ import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.GameDeskDetails;
 import com.chinalooke.yuwan.model.UserInfo;
-import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
-import com.chinalooke.yuwan.utils.NetUtil;
-import com.chinalooke.yuwan.view.RoundImageView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
 
@@ -57,12 +52,10 @@ import butterknife.OnClick;
  */
 public class GameDeskActivity extends AutoLayoutActivity {
 
-    @Bind(R.id.tv_game_name)
-    TextView mTvGameName;
     @Bind(R.id.tv_chat)
     TextView mTvChat;
     @Bind(R.id.game_name)
-    TextView mGameName;
+    TextView mTvGameName;
     @Bind(R.id.owner_type)
     TextView mOwnerType;
     @Bind(R.id.status)
@@ -98,8 +91,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private ProgressDialog mProgressDialog;
     private MyLeftAdapter mMyLeftAdapter;
     private MyRightAdapter mMyRightAdapter;
-    private int mLeftUser = -1;
-    private int mRightUser = -1;
     private String getGameDeskWithId = Constant.mainUri + "getGameDeskWithId&gameDeskId=";
     private GameDeskDetails mGameDeskDetails;
     private int mStatus;
@@ -118,7 +109,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
         mWidthPixels = displayMetrics.widthPixels;
         mToast = YuwanApplication.getToast();
         user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
-        mGameDeskDetails = getIntent().getParcelableExtra("gameDeskDetails");
+        mGameDeskDetails = (GameDeskDetails) getIntent().getSerializableExtra("gameDeskDetails");
         initData();
         initView();
     }
@@ -127,22 +118,24 @@ public class GameDeskActivity extends AutoLayoutActivity {
         mTvChat.setEnabled(isJoin);
         mResult = mGameDeskDetails.getResult();
         String status = mResult.getStatus();
-        switch (status) {
-            case "pedding":
-                mTvStatus.setText("迎战中");
-                mTvOk.setText("我要参战");
-                mTvStatus.setBackgroundResource(R.mipmap.red_round_background);
-                break;
-            case "doing":
-                mTvStatus.setText("进行中");
-                mTvStatus.setBackgroundResource(R.mipmap.green_round_background);
-                mTvOk.setText("确认交战结果");
-                break;
-            case "done":
-                mTvStatus.setText("已结束");
-                mTvStatus.setBackgroundResource(R.mipmap.orange_round_background);
-                mTvOk.setVisibility(View.GONE);
-                break;
+        if (!TextUtils.isEmpty(status)) {
+            switch (status) {
+                case "pedding":
+                    mTvStatus.setText("迎战中");
+                    mTvOk.setText("我要参战");
+                    mTvStatus.setBackgroundResource(R.mipmap.red_round_background);
+                    break;
+                case "doing":
+                    mTvStatus.setText("进行中");
+                    mTvStatus.setBackgroundResource(R.mipmap.green_round_background);
+                    mTvOk.setText("确认交战结果");
+                    break;
+                case "done":
+                    mTvStatus.setText("已结束");
+                    mTvStatus.setBackgroundResource(R.mipmap.orange_round_background);
+                    mTvOk.setVisibility(View.GONE);
+                    break;
+            }
         }
 
         String ownerName = getIntent().getStringExtra("ownerName");
@@ -175,75 +168,35 @@ public class GameDeskActivity extends AutoLayoutActivity {
         int totalPeople = Integer.parseInt(peopleNumber) / 2;
         GameDeskDetails.ResultBean.PlayersBean players = mResult.getPlayers();
         if (players != null) {
-            mLeftBeen = players.getLeft();
+            List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> left = players.getLeft();
+            if (left != null)
+                mLeftBeen = players.getLeft();
             mPersonYuezhan.setText(mLeftBeen.size() + "/" + totalPeople);
-            mRight = players.getRight();
+            List<GameDeskDetails.ResultBean.PlayersBean.RightBean> right = players.getRight();
+            if (right != null)
+                mRight = players.getRight();
             mPersonYingzhan.setText(mRight.size() + "/" + totalPeople);
         } else {
             mPersonYuezhan.setText("0/" + totalPeople);
             mPersonYingzhan.setText("0/" + totalPeople);
         }
         mWiner = mResult.getWiner();
-
-
+        //gridView 添加 adapter
+        mMyLeftAdapter = new MyLeftAdapter();
+        mMyRightAdapter = new MyRightAdapter();
+        mGdYuezhan.setAdapter(mMyLeftAdapter);
+        mGdYingzhan.setAdapter(mMyRightAdapter);
     }
 
     private void initData() {
 
 
-        if (mResult != null) {
-            String peopleNumber = mResult.getPeopleNumber();
-            if (!TextUtils.isEmpty(peopleNumber)) {
-                mPeopleNumer = Integer.parseInt(peopleNumber);
-            }
-            List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> left = mResult.getPlayers().getLeft();
-            if (left != null) {
-                mLeftSize = mResult.getPlayers().getLeft().size();
-            } else {
-                mLeftSize = 0;
-            }
-            List<GameDeskDetails.ResultBean.PlayersBean.RightBean> right = mResult.getPlayers().getRight();
-            if (right != null) {
-                mRightSize = mResult.getPlayers().getRight().size();
-            } else {
-                mRightSize = 0;
-            }
-        }
-
-        if (mResult.getPlayers() != null) {
-            mLeftBeen = mResult.getPlayers().getLeft();
-            mRight = mResult.getPlayers().getRight();
-        }
-
-
-        if (user != null) {
-            if (mLeftBeen != null) {
-                for (int i = 0; i < mLeftBeen.size(); i++) {
-                    GameDeskDetails.ResultBean.PlayersBean.LeftBean leftBean = mLeftBeen.get(i);
-                    String userId = leftBean.getUserId();
-                    if (user.getUserId().equals(userId)) {
-                        mLeftUser = i;
-                    }
-                }
-            }
-
-            if (mRight != null) {
-                for (int i = 0; i < mRight.size(); i++) {
-                    GameDeskDetails.ResultBean.PlayersBean.RightBean leftBean = mRight.get(i);
-                    String userId = leftBean.getUserId();
-                    if (user.getUserId().equals(userId)) {
-                        mRightUser = i;
-                    }
-                }
-            }
-        }
-
     }
 
-    @OnClick({R.id.take, R.id.tv_ok})
+    @OnClick({R.id.tv_chat, R.id.tv_ok})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.take:
+            case R.id.tv_chat:
                 break;
             case R.id.tv_ok:
                 break;
@@ -279,6 +232,20 @@ public class GameDeskActivity extends AutoLayoutActivity {
             }
             setDetails(viewHolder, position);
             return convertView;
+        }
+
+    }
+
+    class ViewHolder {
+        @Bind(R.id.roundedImageView)
+        RoundedImageView mView;
+        @Bind(R.id.iv_crown)
+        ImageView mIvCrown;
+        @Bind(R.id.tv_name)
+        TextView mTvName;
+
+        ViewHolder(View view) {
+            ButterKnife.bind(this, view);
         }
     }
 
@@ -441,8 +408,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
                         if (result) {
                             mToast.setText("退出成功！");
                             mToast.show();
-                            mLeftUser = -1;
-                            mRightUser = -1;
                             refreshUI();
                         } else {
                             String msg = jsonObject.getString("Msg");
@@ -509,8 +474,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     } else {
                         mToast.setText("加入成功!");
                         mToast.show();
-                        mLeftUser = -1;
-                        mRightUser = -1;
                         refreshUI();
                     }
                 } else {
@@ -537,26 +500,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
         mQueue.add(stringRequest);
     }
 
-
-    static class ViewHolder {
-
-        @Bind(R.id.roundedImageView)
-        RoundImageView mView;
-        @Bind(R.id.iv_crown)
-        ImageView mIvCrown;
-        @Bind(R.id.tv_name)
-        TextView mTvName;
-
-
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
-        }
-    }
-
-    @OnClick(R.id.iv_wirte_back)
-    public void onClick() {
-        finish();
-    }
 
     private void refreshUI() {
         StringRequest stringRequest = new StringRequest(getGameDeskWithId + mGameDeskId,

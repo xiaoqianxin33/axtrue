@@ -47,7 +47,6 @@ import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.chinalooke.yuwan.view.RecycleViewDivider;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.mob.tools.utils.ReflectHelper;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -64,7 +63,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bingoogolapple.bgabanner.BGABanner;
 
-import static com.chinalooke.yuwan.constant.Constant.MIN_CLICK_DELAY_TIME;
 import static com.chinalooke.yuwan.constant.Constant.lastClickTime;
 
 public class BattleFieldFragment extends Fragment {
@@ -131,6 +129,12 @@ public class BattleFieldFragment extends Fragment {
         initView();
         initData();
         initEvent();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
     }
 
     private void initEvent() {
@@ -576,7 +580,7 @@ public class BattleFieldFragment extends Fragment {
                                 } else {
                                     Intent intent = new Intent(getActivity(), GameDeskActivity.class);
                                     Bundle bundle = new Bundle();
-                                    bundle.putParcelable("gameDeskDetails", gameDesk);
+                                    bundle.putSerializable("gameDeskDetails", gameDesk);
                                     if (!TextUtils.isEmpty(mOwnerName))
                                         intent.putExtra("ownerName", mOwnerName);
                                     intent.putExtras(bundle);
