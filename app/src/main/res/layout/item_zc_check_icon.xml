@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="90dp"
     android:background="@android:color/white"
@@ -15,7 +14,7 @@
 
         <ImageView
             style="@style/zc_table_icon"
-            android:src="@mipmap/yjs_checked"/>
+            android:src="@mipmap/yzz_check"/>
 
         <TextView
             android:id="@+id/tv_yz"
@@ -31,14 +30,15 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <ImageView
-            style="@style/zc_table_icon"
-            android:src="@mipmap/yjs_checked"/>
-
         <TextView
             android:id="@+id/tv_jx"
             style="@style/zc_table_word"
             android:text="进行中"/>
+
+        <ImageView
+            android:id="@+id/imageView4"
+            style="@style/zc_table_icon"
+            android:src="@mipmap/jxz_check"/>
 
     </RelativeLayout>
 

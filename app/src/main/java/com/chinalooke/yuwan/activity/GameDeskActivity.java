@@ -2,24 +2,28 @@ package com.chinalooke.yuwan.activity;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
@@ -31,12 +35,11 @@ import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
-import com.chinalooke.yuwan.utils.PreferenceUtils;
-import com.chinalooke.yuwan.view.NoSlidingListView;
 import com.chinalooke.yuwan.view.RoundImageView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
+import com.zhy.autolayout.AutoLayoutActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,30 +55,31 @@ import butterknife.OnClick;
 /**
  * 游戏桌详情
  */
-public class GameDeskActivity extends AppCompatActivity {
+public class GameDeskActivity extends AutoLayoutActivity {
 
     @Bind(R.id.tv_game_name)
     TextView mTvGameName;
-    @Bind(R.id.lv_gamedesk_yuezhan)
-    NoSlidingListView mLvGamedeskYuezhan;
-    @Bind(R.id.lv_gamedesk_yingzhan)
-    NoSlidingListView mLvGamedeskYingzhan;
-    @Bind(R.id.iv_bkImage)
-    ImageView mIvBkImage;
-    @Bind(R.id.btn_desk)
-    TextView mBtnDesk;
-    @Bind(R.id.tv_time)
-    TextView mTvTime;
-    @Bind(R.id.tv_pay)
-    TextView mTvPay;
-    @Bind(R.id.tv_number)
-    TextView mTvNumber;
-    @Bind(R.id.tv_rule)
-    TextView mTvRule;
-    @Bind(R.id.iv_cup)
-    ImageView mIvCup;
-    @Bind(R.id.tv_winner)
-    TextView mTvWinner;
+    @Bind(R.id.tv_chat)
+    TextView mTvChat;
+    @Bind(R.id.game_name)
+    TextView mGameName;
+    @Bind(R.id.owner_type)
+    TextView mOwnerType;
+    @Bind(R.id.status)
+    TextView mTvStatus;
+    @Bind(R.id.person_yuezhan)
+    TextView mPersonYuezhan;
+    @Bind(R.id.person_yingzhan)
+    TextView mPersonYingzhan;
+    @Bind(R.id.tv_ok)
+    TextView mTvOk;
+    @Bind(R.id.rl_image)
+    RelativeLayout mRlImage;
+    @Bind(R.id.gd_yuezhan)
+    GridView mGdYuezhan;
+    @Bind(R.id.gd_yingzhan)
+    GridView mGdYingzhan;
+
     private GameDeskDetails.ResultBean mResult;
 
     private List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> mLeftBeen = new ArrayList<>();
@@ -85,7 +89,6 @@ public class GameDeskActivity extends AppCompatActivity {
     private int mPeopleNumer;
     private int mLeftSize;
     private int mRightSize;
-    private String mStatus;
     private String mWiner;
     private RequestQueue mQueue;
     private int mWidthPixels;
@@ -99,11 +102,15 @@ public class GameDeskActivity extends AppCompatActivity {
     private int mRightUser = -1;
     private String getGameDeskWithId = Constant.mainUri + "getGameDeskWithId&gameDeskId=";
     private GameDeskDetails mGameDeskDetails;
+    private int mStatus;
+    private boolean isJoin = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_game_desk);
         ButterKnife.bind(this);
         mQueue = Volley.newRequestQueue(getApplicationContext());
@@ -111,50 +118,79 @@ public class GameDeskActivity extends AppCompatActivity {
         mWidthPixels = displayMetrics.widthPixels;
         mToast = YuwanApplication.getToast();
         user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
-        mGameDeskId = getIntent().getStringExtra("gameDeskId");
-        mResult = (GameDeskDetails.ResultBean) getIntent().getExtras().getSerializable("mResultBean");
+        mGameDeskDetails = getIntent().getParcelableExtra("gameDeskDetails");
         initData();
         initView();
     }
 
     private void initView() {
-        mStatus = mResult.getStatus();
-        switch (mStatus) {
+        mTvChat.setEnabled(isJoin);
+        mResult = mGameDeskDetails.getResult();
+        String status = mResult.getStatus();
+        switch (status) {
             case "pedding":
-                mBtnDesk.setBackground(getResources().getDrawable(R.drawable.button_blue_shape));
-                mBtnDesk.setTextColor(getResources().getColor(R.color.btnblue));
-                mBtnDesk.setText("应战中");
+                mTvStatus.setText("迎战中");
+                mTvOk.setText("我要参战");
+                mTvStatus.setBackgroundResource(R.mipmap.red_round_background);
                 break;
             case "doing":
-                mBtnDesk.setBackground(getResources().getDrawable(R.drawable.button_compat_shape));
-                mBtnDesk.setTextColor(getResources().getColor(R.color.btncompat));
-                mBtnDesk.setText("进行中");
+                mTvStatus.setText("进行中");
+                mTvStatus.setBackgroundResource(R.mipmap.green_round_background);
+                mTvOk.setText("确认交战结果");
                 break;
             case "done":
-                mTvWinner.setText(mResult.getWiner());
-                mIvCup.setVisibility(View.VISIBLE);
-                mBtnDesk.setBackground(getResources().getDrawable(R.drawable.shape));
-                mBtnDesk.setTextColor(Color.RED);
-                mBtnDesk.setText("已结束");
+                mTvStatus.setText("已结束");
+                mTvStatus.setBackgroundResource(R.mipmap.orange_round_background);
+                mTvOk.setVisibility(View.GONE);
                 break;
         }
-        mWiner = mResult.getWiner();
-        mTvGameName.setText(mResult.getGameName());
 
-        if (!TextUtils.isEmpty(mResult.getBgImage()))
-            Picasso.with(getApplicationContext()).load(mResult.getBgImage()).resize(mWidthPixels, MyUtils.Dp2Px(getApplicationContext(), 160))
-                    .centerCrop().into(mIvBkImage);
-        mTvNumber.setText(mPeopleNumer / 2 + " vs " + mPeopleNumer / 2);
-        mTvPay.setText(mResult.getGamePay());
-        mTvTime.setText(mResult.getStartTime());
-        mTvRule.setText(mResult.getDetails());
-        mMyLeftAdapter = new MyLeftAdapter();
-        mMyRightAdapter = new MyRightAdapter();
-        mLvGamedeskYuezhan.setAdapter(mMyRightAdapter);
-        mLvGamedeskYingzhan.setAdapter(mMyLeftAdapter);
+        String ownerName = getIntent().getStringExtra("ownerName");
+        if (!TextUtils.isEmpty(ownerName))
+            mOwnerType.setText(ownerName);
+
+        String bgImage = mResult.getBgImage();
+        if (!TextUtils.isEmpty(bgImage)) {
+            ImageRequest request = new ImageRequest(bgImage, new Response.Listener<Bitmap>() {
+                @Override
+                public void onResponse(Bitmap response) {
+                    if (response != null) {
+                        mRlImage.setBackground(new BitmapDrawable(response));
+                    }
+                }
+            }, mWidthPixels, 390, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+            mQueue.add(request);
+        }
+        String gameName = mResult.getGameName();
+        if (!TextUtils.isEmpty(gameName)) {
+            mTvGameName.setText(gameName);
+        }
+
+        String peopleNumber = mResult.getPeopleNumber();
+        int totalPeople = Integer.parseInt(peopleNumber) / 2;
+        GameDeskDetails.ResultBean.PlayersBean players = mResult.getPlayers();
+        if (players != null) {
+            mLeftBeen = players.getLeft();
+            mPersonYuezhan.setText(mLeftBeen.size() + "/" + totalPeople);
+            mRight = players.getRight();
+            mPersonYingzhan.setText(mRight.size() + "/" + totalPeople);
+        } else {
+            mPersonYuezhan.setText("0/" + totalPeople);
+            mPersonYingzhan.setText("0/" + totalPeople);
+        }
+        mWiner = mResult.getWiner();
+
+
     }
 
     private void initData() {
+
+
         if (mResult != null) {
             String peopleNumber = mResult.getPeopleNumber();
             if (!TextUtils.isEmpty(peopleNumber)) {
@@ -204,15 +240,21 @@ public class GameDeskActivity extends AppCompatActivity {
 
     }
 
+    @OnClick({R.id.take, R.id.tv_ok})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.take:
+                break;
+            case R.id.tv_ok:
+                break;
+        }
+    }
+
     class MyLeftAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
-            if (mPeopleNumer / 2 <= mLeftSize) {
-                return mPeopleNumer / 2;
-            } else {
-                return mLeftSize + 1;
-            }
+            return mLeftBeen.size() + 1;
         }
 
         @Override
@@ -229,13 +271,12 @@ public class GameDeskActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
             if (convertView == null) {
-                convertView = View.inflate(GameDeskActivity.this, R.layout.item_gamedesk_listview, null);
+                convertView = View.inflate(GameDeskActivity.this, R.layout.item_gridview_person, null);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-
             setDetails(viewHolder, position);
             return convertView;
         }
@@ -245,11 +286,7 @@ public class GameDeskActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            if (mPeopleNumer / 2 <= mRightSize) {
-                return mPeopleNumer / 2;
-            } else {
-                return mRightSize + 1;
-            }
+            return mRight.size() + 1;
         }
 
         @Override
@@ -266,7 +303,7 @@ public class GameDeskActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
             if (convertView == null) {
-                convertView = View.inflate(GameDeskActivity.this, R.layout.item_gamedesk_listview, null);
+                convertView = View.inflate(GameDeskActivity.this, R.layout.item_gridview_person, null);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
             } else {
@@ -278,161 +315,115 @@ public class GameDeskActivity extends AppCompatActivity {
         }
     }
 
+
     private void setDetails(ViewHolder viewHolder, int position) {
-        Log.e("TAG", mLeftUser + "");
-
-        if (position == 0) {
-            viewHolder.mTvYuezhanListview.setText("应战方");
-            viewHolder.mTvYuezhanListview.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.mTvYuezhanListview.setVisibility(View.INVISIBLE);
-        }
-
-        if ("left".equals(mWiner)) {
+        if (!TextUtils.isEmpty(mWiner) && "left".equals(mWiner)) {
             viewHolder.mIvCrown.setVisibility(View.VISIBLE);
         } else {
-            viewHolder.mIvCrown.setVisibility(View.INVISIBLE);
+            viewHolder.mIvCrown.setVisibility(View.GONE);
         }
-
-        if (position < mLeftSize) {
-            viewHolder.mBtnJoin.setVisibility(View.INVISIBLE);
-            viewHolder.mTvVcant.setVisibility(View.INVISIBLE);
-            viewHolder.mEditText.setVisibility(View.VISIBLE);
-            viewHolder.mView.setVisibility(View.VISIBLE);
-            if (mLeftUser == position) {
-                viewHolder.mBtnJoin.setText("退出应战方");
-                viewHolder.mEditText.setVisibility(View.VISIBLE);
-                viewHolder.mView.setVisibility(View.VISIBLE);
-                viewHolder.mBtnJoin.setVisibility(View.VISIBLE);
-                viewHolder.mImageView.setVisibility(View.INVISIBLE);
-                viewHolder.mImageView2.setVisibility(View.INVISIBLE);
-                showDialog2(viewHolder, "确定退出吗？");
-            }
-            if (mLeftBeen != null) {
-                mLeftBean = mLeftBeen.get(position);
-                viewHolder.mEditText.setText(mLeftBean.getNickName());
-                Picasso.with(getApplicationContext()).load(mLeftBean.getHeadImg()).resize(50, 50).centerCrop().into(viewHolder.mView);
-            }
+        if (position == mLeftBeen.size()) {
+            viewHolder.mIvCrown.setImageResource(R.mipmap.vacant);
+            viewHolder.mTvName.setText("");
         } else {
-            viewHolder.mEditText.setVisibility(View.INVISIBLE);
-            viewHolder.mImageView.setVisibility(View.INVISIBLE);
-            viewHolder.mView.setVisibility(View.INVISIBLE);
-            viewHolder.mImageView2.setVisibility(View.INVISIBLE);
-            showDialog(viewHolder, "确定加入应战方吗?");
+            GameDeskDetails.ResultBean.PlayersBean.LeftBean leftBean = mLeftBeen.get(position);
+            String headImg = leftBean.getHeadImg();
+            if (!TextUtils.isEmpty(headImg))
+                Picasso.with(getApplicationContext()).load(headImg).resize(80, 80).centerCrop().into(viewHolder.mView);
+            String nickName = leftBean.getNickName();
+            if (!TextUtils.isEmpty(nickName)) {
+                viewHolder.mTvName.setText(nickName);
+            }
         }
-
-
     }
 
     private void setDetailsR(ViewHolder viewHolder, int position) {
-
-        Log.e("TAG", mRightUser + "");
-
-        if (position == 0) {
-            viewHolder.mTvYuezhanListview.setText("约战方");
-            viewHolder.mTvYuezhanListview.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.mTvYuezhanListview.setVisibility(View.INVISIBLE);
-        }
-
-        if ("right".equals(mWiner)) {
-
+        if (!TextUtils.isEmpty(mWiner) && "right".equals(mWiner)) {
             viewHolder.mIvCrown.setVisibility(View.VISIBLE);
         } else {
-            viewHolder.mIvCrown.setVisibility(View.INVISIBLE);
+            viewHolder.mIvCrown.setVisibility(View.GONE);
         }
-
-        if (position < mRightSize) {
-            viewHolder.mBtnJoin.setVisibility(View.INVISIBLE);
-            viewHolder.mTvVcant.setVisibility(View.INVISIBLE);
-            mRightBean = mRight.get(position);
-            viewHolder.mEditText.setText(mRightBean.getNickName());
-            Picasso.with(getApplicationContext()).load(mRightBean.getHeadImg()).resize(50, 50).centerCrop().into(viewHolder.mView);
-            if (mRightUser == position) {
-                viewHolder.mBtnJoin.setText("退出约战方");
-                viewHolder.mBtnJoin.setVisibility(View.VISIBLE);
-                viewHolder.mImageView.setVisibility(View.INVISIBLE);
-                viewHolder.mImageView2.setVisibility(View.INVISIBLE);
-                showDialog2(viewHolder, "确定退出吗？");
-            } else {
-                showDialog(viewHolder, "确定加入约战方吗?");
-            }
+        if (position == mRight.size()) {
+            viewHolder.mIvCrown.setImageResource(R.mipmap.vacant);
+            viewHolder.mTvName.setText("");
         } else {
-            viewHolder.mEditText.setVisibility(View.INVISIBLE);
-            viewHolder.mImageView.setVisibility(View.INVISIBLE);
-            viewHolder.mView.setVisibility(View.INVISIBLE);
-            viewHolder.mImageView2.setVisibility(View.INVISIBLE);
-            showDialog(viewHolder, "确定加入约战方吗?");
+            GameDeskDetails.ResultBean.PlayersBean.RightBean leftBean = mRight.get(position);
+            String headImg = leftBean.getHeadImg();
+            if (!TextUtils.isEmpty(headImg))
+                Picasso.with(getApplicationContext()).load(headImg).resize(80, 80).centerCrop().into(viewHolder.mView);
+            String nickName = leftBean.getNickName();
+            if (!TextUtils.isEmpty(nickName)) {
+                viewHolder.mTvName.setText(nickName);
+            }
         }
-
 
     }
 
     //加入游戏桌
     private void showDialog(ViewHolder viewHolder, final String s) {
-        viewHolder.mBtnJoin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (user != null) {
-                    DialogUtil.showSingerDialog(GameDeskActivity.this, "提示", s, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            if (NetUtil.is_Network_Available(getApplicationContext())) {
-                                mProgressDialog = DialogUtil.initDialog("加入中...", GameDeskActivity.this);
-                                mProgressDialog.show();
-                                sendInternet(s);
-                            } else {
-                                mToast.setText("网络不可用，请检查网络连接");
-                                mToast.show();
-                            }
-                        }
-                    }, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                } else {
-                    mToast.setText("请先登录");
-                    mToast.show();
-                }
-            }
-        });
+//        viewHolder.mBtnJoin.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if (user != null) {
+//                    DialogUtil.showSingerDialog(GameDeskActivity.this, "提示", s, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                            if (NetUtil.is_Network_Available(getApplicationContext())) {
+//                                mProgressDialog = DialogUtil.initDialog("加入中...", GameDeskActivity.this);
+//                                mProgressDialog.show();
+//                                sendInternet(s);
+//                            } else {
+//                                mToast.setText("网络不可用，请检查网络连接");
+//                                mToast.show();
+//                            }
+//                        }
+//                    }, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                } else {
+//                    mToast.setText("请先登录");
+//                    mToast.show();
+//                }
+//            }
+//        });
     }
 
     //退出游戏桌
     private void showDialog2(ViewHolder viewHolder, final String s) {
-        viewHolder.mBtnJoin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (user != null) {
-                    DialogUtil.showSingerDialog(GameDeskActivity.this, "提示", s, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            if (NetUtil.is_Network_Available(getApplicationContext())) {
-                                mProgressDialog = DialogUtil.initDialog("", GameDeskActivity.this);
-                                mProgressDialog.show();
-                                exitDesk();
-                            } else {
-                                mToast.setText("网络不可用，请检查网络连接");
-                                mToast.show();
-                            }
-                        }
-                    }, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                } else {
-                    mToast.setText("请先登录");
-                    mToast.show();
-                }
-            }
-        });
+//        viewHolder.mBtnJoin.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (user != null) {
+//                    DialogUtil.showSingerDialog(GameDeskActivity.this, "提示", s, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                            if (NetUtil.is_Network_Available(getApplicationContext())) {
+//                                mProgressDialog = DialogUtil.initDialog("", GameDeskActivity.this);
+//                                mProgressDialog.show();
+//                                exitDesk();
+//                            } else {
+//                                mToast.setText("网络不可用，请检查网络连接");
+//                                mToast.show();
+//                            }
+//                        }
+//                    }, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                } else {
+//                    mToast.setText("请先登录");
+//                    mToast.show();
+//                }
+//            }
+//        });
     }
 
     //退出游戏桌
@@ -548,22 +539,14 @@ public class GameDeskActivity extends AppCompatActivity {
 
 
     static class ViewHolder {
-        @Bind(R.id.tv_yuezhan_listview)
-        TextView mTvYuezhanListview;
-        @Bind(R.id.view)
+
+        @Bind(R.id.roundedImageView)
         RoundImageView mView;
-        @Bind(R.id.editText)
-        TextView mEditText;
-        @Bind(R.id.imageView)
-        ImageView mImageView;
-        @Bind(R.id.imageView2)
-        ImageView mImageView2;
-        @Bind(R.id.button_join)
-        Button mBtnJoin;
-        @Bind(R.id.tv_vacant)
-        TextView mTvVcant;
         @Bind(R.id.iv_crown)
         ImageView mIvCrown;
+        @Bind(R.id.tv_name)
+        TextView mTvName;
+
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

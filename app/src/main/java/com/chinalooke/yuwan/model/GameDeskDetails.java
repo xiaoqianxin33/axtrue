@@ -1,12 +1,16 @@
 package com.chinalooke.yuwan.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.List;
 
 /**
+ * 游戏桌详情实体类
  * Created by xiao on 2016/8/24.
  */
-public class GameDeskDetails {
+public class GameDeskDetails implements Parcelable {
 
 
     /**
@@ -33,6 +37,23 @@ public class GameDeskDetails {
     private boolean Success;
 
 
+    protected GameDeskDetails(Parcel in) {
+        Msg = in.readString();
+        Success = in.readByte() != 0;
+    }
+
+    public static final Creator<GameDeskDetails> CREATOR = new Creator<GameDeskDetails>() {
+        @Override
+        public GameDeskDetails createFromParcel(Parcel in) {
+            return new GameDeskDetails(in);
+        }
+
+        @Override
+        public GameDeskDetails[] newArray(int size) {
+            return new GameDeskDetails[size];
+        }
+    };
+
     public String getMsg() {
         return Msg;
     }
@@ -55,6 +76,17 @@ public class GameDeskDetails {
 
     public void setSuccess(boolean Success) {
         this.Success = Success;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(Msg);
+        dest.writeByte((byte) (Success ? 1 : 0));
     }
 
     public static class ResultBean implements Serializable {

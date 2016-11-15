@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,268 +10,366 @@
     tools:context="com.chinalooke.yuwan.activity.GameDeskActivity">
 
     <RelativeLayout
+        android:id="@+id/rl_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/search"
-        >
-
-
-        <FrameLayout
-            android:id="@+id/iv_wirte_back"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginTop="6dp"
-            android:clickable="true">
-
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:layout_marginStart="8dp"
-                android:background="@mipmap/icon_back"/>
-
-
-        </FrameLayout>
-
+        android:layout_height="390px"
+        android:background="@android:color/darker_gray">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:gravity="center"
-            android:paddingLeft="16dp"
-            android:text="详情"
-            android:textColor="#FFFFFF"
-            android:textSize="18dp"
-            android:textStyle="bold"
-            />
-
-    </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/iv_bkImage"
-        android:layout_width="match_parent"
-        android:layout_height="160dp"
-        />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@android:color/white"
-        android:gravity="center_vertical"
-        android:paddingLeft="8dp"
-        >
-
-        <TextView
-            android:id="@+id/btn_desk"
-            android:layout_width="48dp"
-            android:layout_height="16dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/button_blue_shape"
-            android:gravity="center"
-            android:padding="1dp"
-            android:text="应战中"
-            android:textSize="12dp"/>
-
-        <TextView
-            android:id="@+id/tv_q"
-            android:layout_width="65dp"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:paddingLeft="8dp"
-            android:text="游戏  ："
-            android:textColor="@android:color/black"
-            android:textSize="14sp"/>
-
-        <TextView
-            android:id="@+id/tv_game_name"
-            android:layout_width="80dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/tv_q"
-            android:gravity="center_vertical"
-            android:text="英雄联盟"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"/>
-
-        <ImageView
-            android:id="@+id/iv_cup"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="26dp"
-            android:layout_toEndOf="@+id/btn_desk"
-            android:src="@mipmap/cup"
-            android:visibility="invisible"/>
-
-        <TextView
-            android:id="@+id/tv_winner"
+            android:id="@+id/game_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/btn_desk"
-            android:layout_marginStart="15dp"
-            android:layout_toEndOf="@+id/iv_cup"
-            android:text="约战方"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/TextSize_14"
-            android:visibility="invisible"/>
-    </RelativeLayout>
+            android:layout_marginLeft="285px"
+            android:layout_marginTop="60px"
+            android:text="英雄联盟"
+            android:textColor="@android:color/white"
+            android:textSize="34px"/>
 
+        <TextView
+            android:id="@+id/owner_type"
+            android:layout_width="55px"
+            android:layout_height="30px"
+            android:layout_marginLeft="10px"
+            android:layout_marginTop="66px"
+            android:layout_toRightOf="@id/game_name"
+            android:background="@mipmap/red_round_background"
+            android:gravity="center"
+            android:text="官方"
+            android:textColor="@android:color/white"
+            android:textSize="20px"/>
+
+        <TextView
+            android:id="@+id/tv_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="40px"
+            android:layout_marginTop="72px"
+            android:text="群聊"
+            android:textColor="@color/orange"
+            android:textSize="28px"/>
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="120px"
+            android:layout_height="46px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="215px"
+            android:background="@mipmap/green_round_background"
+            android:gravity="center"
+            android:text="进行中"
+            android:textColor="@android:color/white"
+            android:textSize="24px"/>
+
+        <RelativeLayout
+            android:layout_width="85px"
+            android:layout_height="108px"
+            android:layout_marginRight="90px"
+            android:layout_marginTop="195px"
+            android:layout_toLeftOf="@id/status">
+
+            <ImageView
+                android:layout_width="70px"
+                android:layout_height="70px"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/yzf"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="约战方"
+                android:textColor="@android:color/white"
+                android:textSize="27px"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="85px"
+            android:layout_height="108px"
+            android:layout_marginLeft="90px"
+            android:layout_marginTop="195px"
+            android:layout_toRightOf="@id/status">
+
+            <ImageView
+                android:layout_width="70px"
+                android:layout_height="70px"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/yzf_gamedetails"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="应战方"
+                android:textColor="@android:color/white"
+                android:textSize="27px"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_weight="1"
-        >
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
-            <com.chinalooke.yuwan.view.NoSlidingListView
-                android:id="@+id/lv_gamedesk_yuezhan"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:divider="#00000000"
-                android:dividerHeight="0dip"
-                />
-
-            <com.chinalooke.yuwan.view.NoSlidingListView
-                android:id="@+id/lv_gamedesk_yingzhan"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:divider="#00000000"
-                android:dividerHeight="0dip"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:layout_marginTop="8dp"
-                android:background="@android:color/white"
-                android:orientation="vertical"
-                android:paddingLeft="16dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1.5"
-                        android:gravity="center_vertical"
-                        android:text="时间 :"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/TextSize_14"/>
-
-                    <TextView
-                        android:id="@+id/tv_time"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center_vertical"
-                        android:text="时间 :"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/TextSize_14"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1.5"
-                        android:gravity="center_vertical"
-                        android:text="奖金 :"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/TextSize_14"/>
-
-                    <TextView
-                        android:id="@+id/tv_pay"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center_vertical"
-                        android:text="时间 :"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/TextSize_14"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1.5"
-                        android:gravity="center_vertical"
-                        android:text="对战人数 :"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/TextSize_14"/>
-
-                    <TextView
-                        android:id="@+id/tv_number"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center_vertical"
-                        android:text="时间 :"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/TextSize_14"/>
-                </LinearLayout>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:paddingLeft="16dp"
-                android:paddingTop="8dp"
-                >
+                android:layout_height="105px"
+                android:background="@android:color/white">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.5"
-                    android:gravity="center_vertical"
-                    android:text="详细规则 :"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/TextSize_14"/>
+                    android:layout_width="7px"
+                    android:layout_height="38px"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/mid_padding"
+                    android:background="@color/orange"/>
 
                 <TextView
-                    android:id="@+id/tv_rule"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:gravity="center_vertical"
-                    android:text="时间 :"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/TextSize_14"/>
-            </LinearLayout>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="55px"
+                    android:text="约战方"
+                    android:textColor="@color/black_word"
+                    android:textSize="27px"/>
+
+                <TextView
+                    android:id="@+id/person_yuezhan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/mid_padding"
+                    android:text="4/50"
+                    android:textColor="#848787"
+                    android:textSize="20px"/>
+
+            </RelativeLayout>
+
+            <GridView
+                android:id="@+id/gd_yuezhan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:numColumns="5"/>
 
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:background="@android:color/white"/>
+                android:layout_height="1dp"
+                android:layout_marginLeft="30px"
+                android:background="@color/background"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="105px"
+                android:background="@android:color/white">
+
+                <TextView
+                    android:layout_width="7px"
+                    android:layout_height="38px"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/mid_padding"
+                    android:background="@color/orange"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="55px"
+                    android:text="迎战方"
+                    android:textColor="@color/black_word"
+                    android:textSize="27px"/>
+
+                <TextView
+                    android:id="@+id/person_yingzhan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/mid_padding"
+                    android:text="4/50"
+                    android:textColor="#848787"
+                    android:textSize="20px"/>
+
+            </RelativeLayout>
+
+            <GridView
+                android:id="@+id/gd_yingzhan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:numColumns="5"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="390px"
+                android:layout_marginTop="@dimen/small_padding"
+                android:background="@android:color/white"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="62px">
+
+
+                    <ImageView
+                        android:layout_width="@dimen/small_padding"
+                        android:layout_height="@dimen/small_padding"
+                        android:layout_marginLeft="30px"
+                        android:layout_marginTop="36px"
+                        android:src="@mipmap/game_desk_quan"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="70px"
+                        android:layout_marginTop="30px"
+                        android:text="时间"
+                        android:textColor="#fecc2c"
+                        android:textSize="30px"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="230px"
+                        android:layout_marginTop="31px"
+                        android:text="2016-9-26 13:13:00"
+                        android:textColor="#848789"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80px">
+
+
+                    <ImageView
+                        android:layout_width="@dimen/small_padding"
+                        android:layout_height="@dimen/small_padding"
+                        android:layout_marginLeft="30px"
+                        android:layout_marginTop="54px"
+                        android:src="@mipmap/game_desk_quan"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="70px"
+                        android:layout_marginTop="49px"
+                        android:text="奖金"
+                        android:textColor="#fecc2c"
+                        android:textSize="30px"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="230px"
+                        android:layout_marginTop="49px"
+                        android:text="100元"
+                        android:textColor="#848789"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80px">
+
+
+                    <ImageView
+                        android:layout_width="@dimen/small_padding"
+                        android:layout_height="@dimen/small_padding"
+                        android:layout_marginLeft="30px"
+                        android:layout_marginTop="54px"
+                        android:src="@mipmap/game_desk_quan"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="70px"
+                        android:layout_marginTop="49px"
+                        android:text="对战人数"
+                        android:textColor="#fecc2c"
+                        android:textSize="30px"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="230px"
+                        android:layout_marginTop="49px"
+                        android:text="3vs3"
+                        android:textColor="#848789"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="118px">
+
+
+                    <ImageView
+                        android:layout_width="@dimen/small_padding"
+                        android:layout_height="@dimen/small_padding"
+                        android:layout_marginLeft="30px"
+                        android:layout_marginTop="54px"
+                        android:src="@mipmap/game_desk_quan"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="70px"
+                        android:layout_marginTop="49px"
+                        android:text="对战人数"
+                        android:textColor="#fecc2c"
+                        android:textSize="30px"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="230px"
+                        android:layout_marginRight="56px"
+                        android:layout_marginTop="49px"
+                        android:lineSpacingExtra="3dp"
+                        android:text="@string/game_rule"
+                        android:textColor="#848789"/>
+                </RelativeLayout>
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="26px"
+                    android:src="@mipmap/arrow_down"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="26px"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="28px"
+                android:background="@color/background"/>
         </LinearLayout>
-
-
     </ScrollView>
+
+    <TextView
+        android:id="@+id/tv_ok"
+        android:layout_width="match_parent"
+        android:layout_height="100px"
+        android:background="#fec100"
+        android:gravity="center"
+        android:text="我要参战"
+        android:textColor="@android:color/white"
+        android:textSize="36px"/>
 
 </LinearLayout>

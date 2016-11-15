@@ -28,6 +28,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.activity.GameDeskActivity;
+import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.SearchActivity;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
@@ -35,14 +37,17 @@ import com.chinalooke.yuwan.constant.MyLinearLayoutManager;
 import com.chinalooke.yuwan.model.Advertisement;
 import com.chinalooke.yuwan.model.GameDesk;
 import com.chinalooke.yuwan.model.GameDeskDetails;
+import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DateUtils;
+import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.chinalooke.yuwan.view.RecycleViewDivider;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mob.tools.utils.ReflectHelper;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -100,6 +105,10 @@ public class BattleFieldFragment extends Fragment {
     private int mCurrentCounter;
     private int PAGE_SIZE = 3;
     private long lastTime = 0;
+    private boolean isFresh = false;
+    private View mFootView;
+    private UserInfo user;
+    private String mOwnerName;
 
 
     @Override
@@ -118,6 +127,7 @@ public class BattleFieldFragment extends Fragment {
         WindowManager wm = (WindowManager) getContext()
                 .getSystemService(Context.WINDOW_SERVICE);
         mWidth = wm.getDefaultDisplay().getWidth();
+        user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         initView();
         initData();
         initEvent();
@@ -139,19 +149,17 @@ public class BattleFieldFragment extends Fragment {
                 long currentTime = Calendar.getInstance().getTimeInMillis();
                 if (currentTime - lastClickTime > 3000) {
                     lastClickTime = currentTime;
+                    isFresh = true;
                     switch (mCurrentPage) {
                         case 0:
-                            mYzList.clear();
                             mPage = 0;
                             initData();
                             break;
                         case 1:
-                            mJxList.clear();
                             mPage = 0;
                             initData();
                             break;
                         case 2:
-                            mJsList.clear();
                             mPage = 0;
                             initData();
                             break;
@@ -159,8 +167,6 @@ public class BattleFieldFragment extends Fragment {
                     }
                     mSr.setRefreshing(false);
                 } else {
-                    mToast.setText("请不要频繁刷新");
-                    mToast.show();
                     mSr.setRefreshing(false);
                 }
             }
@@ -182,53 +188,82 @@ public class BattleFieldFragment extends Fragment {
         mYzAdapter.setOnRecyclerViewItemClickListener(new BaseQuickAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int i) {
-                mToast.setText(i + "");
-                mToast.show();
+                if (user == null) {
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                } else {
+                    switch (mCurrentPage) {
+                        case 0:
+                            GameDesk.ResultBean resultBean = mYzList.get(i);
+                            String gameDeskId = resultBean.getGameDeskId();
+                            getGameDeskWithId(gameDeskId, null);
+                            break;
+                        case 1:
+                            GameDesk.ResultBean resultBean1 = mJxList.get(i);
+                            String gameDeskId1 = resultBean1.getGameDeskId();
+                            getGameDeskWithId(gameDeskId1, null);
+                            break;
+                        case 2:
+                            GameDesk.ResultBean resultBean2 = mJsList.get(i);
+                            String gameDeskId2 = resultBean2.getGameDeskId();
+                            getGameDeskWithId(gameDeskId2, null);
+                            break;
+                    }
+                }
             }
         });
 
         mYzAdapter.openLoadMore(PAGE_SIZE, true);
-        BaseQuickAdapter.RequestLoadMoreListener requestLoadMoreListener = new BaseQuickAdapter.RequestLoadMoreListener() {
-            @Override
-            public void onLoadMoreRequested() {
-                QuickAdapter quickAdapter = null;
-                switch (mCurrentPage) {
-                    case 0:
-                        quickAdapter = mYzAdapter;
-                        break;
-                    case 1:
-                        quickAdapter = mJxAdapter;
-                        break;
-                    case 2:
-                        quickAdapter = mJsAdapter;
-                        break;
-                }
-                mPage++;
-                initData();
-                Log.e("TAG", "onLoadMoreRequested");
-                final QuickAdapter finalQuickAdapter = quickAdapter;
-                mRecyclerView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mCurrentCounter >= 0) {
-                            assert finalQuickAdapter != null;
-                            finalQuickAdapter.notifyDataChangedAfterLoadMore(false);
-                        } else {
-                            assert finalQuickAdapter != null;
-                            finalQuickAdapter.notifyDataChangedAfterLoadMore(mYzList, true);
-                            mCurrentCounter = mYzAdapter.getItemCount();
-                        }
-                    }
+        mJxAdapter.openLoadMore(PAGE_SIZE, true);
+        mJsAdapter.openLoadMore(PAGE_SIZE, true);
 
-                });
-            }
-        };
-        mYzAdapter.setOnLoadMoreListener(requestLoadMoreListener);
-        mJxAdapter.setOnLoadMoreListener(requestLoadMoreListener);
-        mJsAdapter.setOnLoadMoreListener(requestLoadMoreListener);
-
+        mYzAdapter.setOnLoadMoreListener(new MyRequestLoadMoreListener(0));
+        mJxAdapter.setOnLoadMoreListener(new MyRequestLoadMoreListener(1));
+        mJsAdapter.setOnLoadMoreListener(new MyRequestLoadMoreListener(2));
     }
 
+    private class MyRequestLoadMoreListener implements BaseQuickAdapter.RequestLoadMoreListener {
+        private int PAGE;
+
+        MyRequestLoadMoreListener(int page) {
+            this.PAGE = page;
+        }
+
+        @Override
+        public void onLoadMoreRequested() {
+            QuickAdapter quickAdapter = null;
+            switch (PAGE) {
+                case 0:
+                    quickAdapter = mYzAdapter;
+                    break;
+                case 1:
+                    quickAdapter = mJxAdapter;
+                    break;
+                case 2:
+                    quickAdapter = mJsAdapter;
+                    break;
+            }
+            mPage++;
+            initData();
+            Log.e("TAG", "onLoadMoreRequested");
+            final QuickAdapter finalQuickAdapter = quickAdapter;
+            mRecyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    assert finalQuickAdapter != null;
+                    if (mCurrentCounter >= 0) {
+                        finalQuickAdapter.notifyDataChangedAfterLoadMore(false);
+                        finalQuickAdapter.addFooterView(mFootView);
+                        Log.e("TAG", ">0");
+                    } else {
+                        finalQuickAdapter.notifyDataChangedAfterLoadMore(mYzList, true);
+                        mCurrentCounter = finalQuickAdapter.getItemCount();
+                        Log.e("TAG", "<0");
+                    }
+                }
+
+            });
+        }
+    }
 
     private void initData() {
         if (isFirst) {
@@ -258,14 +293,20 @@ public class BattleFieldFragment extends Fragment {
                                 List<GameDesk.ResultBean> result = gameDesk.getResult();
                                 switch (status) {
                                     case 0:
+                                        if (isFresh)
+                                            mYzList.clear();
                                         mYzList.addAll(result);
                                         mYzAdapter.notifyDataSetChanged();
                                         break;
                                     case 1:
+                                        if (isFresh)
+                                            mJxList.clear();
                                         mJxList.addAll(result);
                                         mJxAdapter.notifyDataSetChanged();
                                         break;
                                     case 2:
+                                        if (isFresh)
+                                            mJsList.clear();
                                         mJsList.addAll(result);
                                         mJsAdapter.notifyDataSetChanged();
                                         break;
@@ -280,7 +321,7 @@ public class BattleFieldFragment extends Fragment {
                                     mToast.show();
                                 }
                             }
-
+                            isFresh = false;
                             isFirst = false;
                         }
                     }, new Response.ErrorListener() {
@@ -291,6 +332,7 @@ public class BattleFieldFragment extends Fragment {
                         mTvNone.setVisibility(View.VISIBLE);
                     mToast.setText("网络不给力，换个地方试试");
                     mToast.show();
+                    isFresh = false;
                 }
             });
 
@@ -298,6 +340,7 @@ public class BattleFieldFragment extends Fragment {
         } else {
             mPbLoad.setVisibility(View.GONE);
             mTvNone.setText("网络未连接");
+            isFresh = false;
         }
     }
 
@@ -372,6 +415,7 @@ public class BattleFieldFragment extends Fragment {
         mRecyclerView.addItemDecoration(new RecycleViewDivider(getActivity(), LinearLayoutManager.VERTICAL, 20, getResources().getColor(R.color.background)));
         mRecyclerView.setAdapter(mYzAdapter);
         setIconWordColor(0);
+        mFootView = View.inflate(getActivity(), R.layout.foot, null);
     }
 
     @Override
@@ -385,6 +429,8 @@ public class BattleFieldFragment extends Fragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_yz:
+                mJxAdapter.removeAllFooterView();
+                mJsAdapter.removeAllFooterView();
                 setIconWordColor(0);
                 mCurrentPage = 0;
                 mPage = 0;
@@ -392,6 +438,8 @@ public class BattleFieldFragment extends Fragment {
                 mYzAdapter.notifyDataSetChanged();
                 break;
             case R.id.rl_jx:
+                mYzAdapter.removeAllFooterView();
+                mJsAdapter.removeAllFooterView();
                 setIconWordColor(1);
                 mCurrentPage = 1;
                 mPage = 0;
@@ -399,6 +447,8 @@ public class BattleFieldFragment extends Fragment {
                 mJxAdapter.notifyDataSetChanged();
                 break;
             case R.id.rl_js:
+                mYzAdapter.removeAllFooterView();
+                mJxAdapter.removeAllFooterView();
                 setIconWordColor(2);
                 mCurrentPage = 2;
                 mPage = 0;
@@ -490,7 +540,8 @@ public class BattleFieldFragment extends Fragment {
             }
 
             String gameDeskId = item.getGameDeskId();
-            getGameDeskWithId(gameDeskId, null, helper);
+            mOwnerName = item.getOwnerName();
+            getGameDeskWithId(gameDeskId, helper);
             String gameImage = item.getGameImage();
             if (gameImage != null)
                 Picasso.with(mContext).load(item.getGameImage()).into((ImageView) helper.getView(R.id.image));
@@ -499,7 +550,7 @@ public class BattleFieldFragment extends Fragment {
     }
 
     //按照游戏桌id取得游戏桌详情
-    private void getGameDeskWithId(final String gameDeskId, final TextView textView, final BaseViewHolder helper) {
+    private void getGameDeskWithId(final String gameDeskId, final BaseViewHolder helper) {
         StringRequest stringRequest = new StringRequest(Constant.HOST + "getGameDeskWithId&gameDeskId=" + gameDeskId,
                 new Response.Listener<String>() {
                     @Override
@@ -520,10 +571,17 @@ public class BattleFieldFragment extends Fragment {
                                     current += right.size();
                                 }
                                 String peopleNumber = gameDesk.getResult().getPeopleNumber();
-                                if (textView != null)
-                                    textView.setText(current + "/" + peopleNumber);
-                                if (helper != null)
+                                if (helper != null) {
                                     helper.setText(R.id.tv_people, current + "/" + peopleNumber);
+                                } else {
+                                    Intent intent = new Intent(getActivity(), GameDeskActivity.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelable("gameDeskDetails", gameDesk);
+                                    if (!TextUtils.isEmpty(mOwnerName))
+                                        intent.putExtra("ownerName", mOwnerName);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                }
                             }
                         } else {
                             try {
@@ -544,8 +602,6 @@ public class BattleFieldFragment extends Fragment {
         });
         mQueue.add(stringRequest);
     }
-
-
 }
 
 

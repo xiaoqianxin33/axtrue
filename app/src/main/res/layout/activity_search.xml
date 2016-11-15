@@ -1,14 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_search"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="com.chinalooke.yuwan.activity.SearchActivity">
 
-</RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_search_title"
+        android:layout_width="match_parent"
+        android:layout_height="100px"
+        android:background="#f0eff5">
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="30px"
+            android:text="取消"
+            android:textColor="@color/orange"
+            android:textSize="30px"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_search"
+            android:layout_width="match_parent"
+            android:layout_height="57px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="27px"
+            android:layout_marginRight="135px"
+            android:background="@drawable/main_searchview_shape">
+
+            <ImageView
+                android:id="@+id/iv_search"
+                android:layout_width="22px"
+                android:layout_height="22px"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/small_padding"
+                android:src="@mipmap/search_icn"/>
+
+            <EditText
+                android:id="@+id/tv_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="60px"
+                android:background="@null"
+                android:hint="Search"
+                android:textColor="@color/black_word"
+                android:textSize="24px"/>
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="130px"
+            android:layout_height="180px"
+            android:layout_marginLeft="77px"
+            android:layout_marginTop="80px">
+
+            <ImageView
+                android:layout_width="130px"
+                android:layout_height="130px"
+                android:src="@mipmap/yz_search"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="迎战中"
+                android:textColor="#8f8f8f"
+                android:textSize="24px"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="130px"
+            android:layout_height="180px"
+            android:layout_marginLeft="306px"
+            android:layout_marginTop="80px">
+
+            <ImageView
+                android:layout_width="130px"
+                android:layout_height="130px"
+                android:src="@mipmap/jx_search"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="进行中"
+                android:textSize="24px"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="130px"
+            android:layout_height="180px"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="77px"
+            android:layout_marginTop="80px">
+
+            <ImageView
+                android:layout_width="130px"
+                android:layout_height="130px"
+                android:src="@mipmap/js_search"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="已结束"
+                android:textSize="24px"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

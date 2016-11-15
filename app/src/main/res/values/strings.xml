@@ -108,6 +108,7 @@
     <string name="zhanchang">战场</string>
     <string name="quanzi">圈子</string>
     <string name="yuezhan2">约战</string>
+    <string name="game_rule">1.同意参战后不得违约，否则认为自动认输。</string>
 
 
 </resources>
