@@ -20,6 +20,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.view.CircleImageView;
@@ -64,7 +65,7 @@ public class WoDeZiLiaoActivity extends AppCompatActivity {
     TextView editWodeziliao;
 
     //用户登录信息
-    UserInfo userInfo;
+    LoginUser.ResultBean userInfo;
     RequestQueue mQueue;
     //图片加载
     ImageLoader imageLoader;

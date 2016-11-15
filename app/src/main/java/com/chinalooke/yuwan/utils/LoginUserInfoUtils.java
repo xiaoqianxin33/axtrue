@@ -1,14 +1,12 @@
 package com.chinalooke.yuwan.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 
-import com.chinalooke.yuwan.model.UserInfo;
-
-import org.apache.commons.codec.binary.Base64;
+import com.chinalooke.yuwan.model.LoginUser;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,13 +35,13 @@ public class LoginUserInfoUtils {
     }
 
     public static LoginUserInfoUtils loginUserInfoUtils;
-    private UserInfo userInfo;
+    private static LoginUser.ResultBean userInfo;
 
-    public UserInfo getUserInfo() {
+    public LoginUser.ResultBean getUserInfo() {
         return userInfo;
     }
 
-    public void setUserInfo(UserInfo userInfo) {
+    public void setUserInfo(LoginUser.ResultBean userInfo) {
         this.userInfo = userInfo;
     }
 
@@ -70,9 +68,7 @@ public class LoginUserInfoUtils {
         Toast.LENGTH_LONG).show();
         SharedPreferences
     */
-    public void saveLoginUserInfo(Context context, String key, UserInfo userInfo) throws IOException {
-        this.userInfo = userInfo;
-
+    public static void saveLoginUserInfo(Context context, String key, LoginUser.ResultBean userInfo) throws IOException {
         saveObject(context, key, userInfo);
     }
 
@@ -83,11 +79,11 @@ public class LoginUserInfoUtils {
      */
     public void clearData(Context context) {
         SharedPreferences.Editor sharedata = context.getSharedPreferences(FILENAME, 0).edit();
-        sharedata.clear().commit();
+        sharedata.clear().apply();
     }
 
-    public UserInfo getLoginUserInfo(Context context, String key) throws IOException {
-        this.userInfo = (UserInfo) readObject(context, key);
+    public LoginUser.ResultBean getLoginUserInfo(Context context, String key) throws IOException {
+        this.userInfo = (LoginUser.ResultBean) readObject(context, key);
         return userInfo;
     }
 
@@ -106,10 +102,10 @@ public class LoginUserInfoUtils {
             //将对象序列化写入byte缓存
             os.writeObject(obj);
             //将序列化的数据转为16进制保存
-            String bytesToHexString = bytesToHexString(bos.toByteArray());
+            String bytesToHexString = bytesToHexString(Base64.encode(bos.toByteArray(), Base64.DEFAULT));
             //保存该16进制数组
             sharedata.putString(key, bytesToHexString);
-            sharedata.commit();
+            sharedata.apply();
         } catch (IOException e) {
             e.printStackTrace();
             Log.e("", "保存obj失败");
@@ -148,7 +144,7 @@ public class LoginUserInfoUtils {
      * @param key     存储的键值
      * @return modified:
      */
-    public Object readObject(Context context, String key) {
+    public static Object readObject(Context context, String key) {
         try {
             SharedPreferences sharedata = context.getSharedPreferences(FILENAME, 0);
             if (sharedata.contains(key)) {

@@ -213,7 +213,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="390px"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/small_padding"
                 android:background="@android:color/white"
                 android:orientation="vertical">
@@ -313,7 +313,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="118px">
+                    android:layout_height="120px">
 
 
                     <ImageView
@@ -344,15 +344,12 @@
                 </RelativeLayout>
 
                 <ImageView
+                    android:id="@+id/iv_arrow"
                     android:layout_width="25dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="26px"
-                    android:src="@mipmap/arrow_down"/>
+                    android:src="@mipmap/arrow_xia"/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="26px"/>
             </LinearLayout>
 
             <TextView

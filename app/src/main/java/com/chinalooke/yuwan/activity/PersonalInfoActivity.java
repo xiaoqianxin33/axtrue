@@ -33,6 +33,7 @@ import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.DBManager;
 import com.chinalooke.yuwan.interf.UpdateGetCity;
 import com.chinalooke.yuwan.model.GameMessage;
+import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.ResultDatas;
 import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
@@ -94,7 +95,7 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
     public AMapLocationClientOption mLocationOption = null;
     //声明AMapLocationClient类对象
     public AMapLocationClient mLocationClient = null;
-    UserInfo userInfo;
+    LoginUser.ResultBean userInfo;
     RequestQueue mQueue;
     private Toast mToast;
     private GameMessage mGameMessage;

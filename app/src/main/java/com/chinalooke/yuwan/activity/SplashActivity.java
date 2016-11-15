@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -15,9 +16,12 @@ import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.DBManager;
 import com.chinalooke.yuwan.model.GameMessage;
+import com.chinalooke.yuwan.model.LoginUser;
+import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -39,6 +43,13 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         mQueue = YuwanApplication.getQueue();
         getGameMessage();
+        LoginUser.ResultBean user = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(this, LoginUserInfoUtils.KEY);
+        if (user != null) {
+            Log.e("TAG", "user");
+            LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(user);
+        } else {
+            Log.e("TAG", "user=null");
+        }
         mHandler.sendEmptyMessageDelayed(1, 2000);
     }
 

@@ -27,6 +27,7 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.GameDeskDetails;
+import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -85,7 +86,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private String mWiner;
     private RequestQueue mQueue;
     private int mWidthPixels;
-    private UserInfo user;
+    private LoginUser.ResultBean user;
     private Toast mToast;
     private String mGameDeskId;
     private ProgressDialog mProgressDialog;
@@ -139,8 +140,12 @@ public class GameDeskActivity extends AutoLayoutActivity {
         }
 
         String ownerName = getIntent().getStringExtra("ownerName");
-        if (!TextUtils.isEmpty(ownerName))
-            mOwnerType.setText(ownerName);
+        if (!TextUtils.isEmpty(ownerName)) {
+            if ("官方".equals(ownerName))
+                mOwnerType.setText(ownerName);
+            else
+                mOwnerType.setText("个人");
+        }
 
         String bgImage = mResult.getBgImage();
         if (!TextUtils.isEmpty(bgImage)) {

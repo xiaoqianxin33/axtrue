@@ -22,6 +22,7 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.Circle;
+import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -53,7 +54,7 @@ public class MyCircleActivity extends AppCompatActivity {
     TextView mTvNo;
     private RequestQueue mQueue;
     private Toast mToast;
-    private UserInfo mUserInfo;
+    private LoginUser.ResultBean mUserInfo;
     private Circle mMyCircle;
     private List<Circle.ResultBean> mMyCircleResult = new ArrayList<>();
     private MyAdapt mMyAdapt;

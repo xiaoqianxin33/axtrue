@@ -19,6 +19,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.ResultDatas;
 import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
@@ -247,7 +248,7 @@ public class BindPhoneActivity extends AutoLayoutActivity {
     }
 
     private void registerSuccess() {
-        UserInfo userInfo = new UserInfo();
+        LoginUser.ResultBean userInfo = new LoginUser.ResultBean();
         userInfo.setUserId(userId);
         userInfo.setHeadImg(headImg);
         try {

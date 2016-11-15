@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 
@@ -53,7 +54,7 @@ public class FirstActivity extends AppCompatActivity {
 //    /初始化 判断是否登录过
     private void init() throws IOException {
 
-        UserInfo user= LoginUserInfoUtils.getLoginUserInfoUtils().getLoginUserInfo(this,LoginUserInfoUtils.KEY);
+        LoginUser.ResultBean user= LoginUserInfoUtils.getLoginUserInfoUtils().getLoginUserInfo(this,LoginUserInfoUtils.KEY);
         Log.d("TAG","---------获取登录用户成功");
             if (user!=null){
                 Log.d("TAG","---------用户已登录过");

@@ -20,6 +20,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.model.GameDeskDetails;
+import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.ResultDatas;
 import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
@@ -28,12 +30,15 @@ import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.Validator;
 import com.chinalooke.yuwan.view.LoadingProgressDialogView;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zhy.autolayout.AutoLayoutActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import butterknife.Bind;
@@ -45,6 +50,9 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qq.QQ;
 import cn.sharesdk.wechat.friends.Wechat;
+
+import static com.chinalooke.yuwan.constant.Constant.MIN_CLICK_DELAY_TIME;
+import static com.chinalooke.yuwan.constant.Constant.lastClickTime;
 
 
 public class LoginActivity extends AutoLayoutActivity implements PlatformActionListener {
@@ -112,41 +120,45 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     @OnClick({R.id.QQ_login, R.id.weixin_login, R.id.weibo_login, R.id.btn_login_login,
             R.id.tv_skip, R.id.iv_back, R.id.forget_pwd_login})
     public void onClick(View view) {
-        switch (view.getId()) {
-            //注册按钮
-            case R.id.tv_skip:
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-                break;
-            //登录按钮
-            case R.id.btn_login_login:
-                if (Validator.isNetworkAvailable(LoginActivity.this)) {
-                    //判断是否网络未连接
-                    handleLogin();
-                } else {
-                    mToast.setText("亲掉线了，换个地方试试");
-                    mToast.show();
-                }
-                break;
-            //QQ登录
-            case R.id.QQ_login:
-                QQLogin();
-                break;
-            //微信登录
-            case R.id.weixin_login:
-                weixinLogin();
-                break;
-            //微博登
-            case R.id.weibo_login:
-                sinaLogin();
-                break;
-            //返回按钮
-            case R.id.iv_back:
-                finish();
-                break;
-            //忘记密码
-            case R.id.forget_pwd_login:
-                ClickForgetPwd();
-                break;
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
+            lastClickTime = currentTime;
+            switch (view.getId()) {
+                //注册按钮
+                case R.id.tv_skip:
+                    startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                    break;
+                //登录按钮
+                case R.id.btn_login_login:
+                    if (Validator.isNetworkAvailable(LoginActivity.this)) {
+                        //判断是否网络未连接
+                        handleLogin();
+                    } else {
+                        mToast.setText("亲掉线了，换个地方试试");
+                        mToast.show();
+                    }
+                    break;
+                //QQ登录
+                case R.id.QQ_login:
+                    QQLogin();
+                    break;
+                //微信登录
+                case R.id.weixin_login:
+                    weixinLogin();
+                    break;
+                //微博登
+                case R.id.weibo_login:
+                    sinaLogin();
+                    break;
+                //返回按钮
+                case R.id.iv_back:
+                    finish();
+                    break;
+                //忘记密码
+                case R.id.forget_pwd_login:
+                    ClickForgetPwd();
+                    break;
+            }
         }
     }
 
@@ -178,7 +190,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
             //弹出正在登陆
             mProgressDialog = MyUtils.initDialog("正在加载中...", LoginActivity.this);
             mProgressDialog.show();
-            mBtnLoginLogin.setClickable(false);
         }
 
     }
@@ -198,50 +209,58 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("TAG", response);
                         //解析数据
                         if (response != null) {
-                            ResultDatas result = AnalysisJSON.getAnalysisJSON().AnalysisJSONResult(response);
-                            if (result != null) {
-                                if ("true".equals(result.getSuccess()) && "false".equals(result.getResult())) {
-                                    Log.e("TAG", "该号码未注册");
-                                    mProgressDialog.dismiss();
-                                    MyUtils.showNorDialog(LoginActivity.this, "提示", "您的手机号码" + phone + "未注册雷熊，现在就注册么？",
-                                            new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    dialog.dismiss();
-                                                }
-                                            }, new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    dialog.dismiss();
-                                                    Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                                                    intent.putExtra("phone", phone);
-                                                    startActivity(intent);
-                                                }
-                                            });
-                                }
-                                if ("true".equals(result.getSuccess()) && "true".equals(result.getResult())) {
-                                    Log.e("TAG", "验证密码");
-
-                                    if ("".equals(passWord)) {
-                                        //判断密码是否为空
-                                        mEtPassword.setError("请输入密码");
-                                        mProgressDialog.dismiss();
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                boolean success = jsonObject.getBoolean("Success");
+                                if (success) {
+                                    boolean result = jsonObject.getBoolean("Result");
+                                    if (result) {
+                                        if ("".equals(passWord)) {
+                                            //判断密码是否为空
+                                            mEtPassword.setError("请输入密码");
+                                            mProgressDialog.dismiss();
+                                        } else {
+                                            //进行登录
+                                            getHTTPLoginSuccess();
+                                        }
                                     } else {
-                                        //进行登录
-                                        getHTTPLoginSuccess();
+                                        mProgressDialog.dismiss();
+                                        MyUtils.showNorDialog(LoginActivity.this, "提示", "您的手机号码" + phone + "未注册雷熊，现在就注册么？",
+                                                new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                    }
+                                                }, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                        Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                                                        intent.putExtra("phone", phone);
+                                                        startActivity(intent);
+                                                    }
+                                                });
                                     }
+                                } else {
+                                    mProgressDialog.dismiss();
+                                    mToast.setText("网络不给力啊，换个地方试试");
+                                    mToast.show();
                                 }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
+
                     }
                 }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("TAG", error.getMessage(), error);
+                mProgressDialog.dismiss();
+                mToast.setText("网络不给力啊，换个地方试试");
+                mToast.show();
             }
         });
         mQueue.add(stringRequest);
@@ -251,60 +270,51 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     //网络获取  验证手机号是否注册
     private void getHTTPLoginSuccess() {
         String URLLogin = Constant.LOGIN_RESULT + "&" + Constant.PHONE + phone + "&" + Constant.PWD + passWord;
-        Log.d("TAG", "登录网址----------" + URLLogin);
         StringRequest stringRequest = new StringRequest(URLLogin,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("TAG", response);
-                        //解析数据
                         if (response != null) {
-                            parseLoginJson(response);
+                            analysisJson(response);
                         }
+                        //解析数据
                     }
                 }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("TAG", error.getMessage(), error);
-                dialog.dismiss();
+                mProgressDialog.dismiss();
                 Toast.makeText(LoginActivity.this, "服务器抽风了，一会儿再试试", Toast.LENGTH_SHORT).show();
-                mBtnLoginLogin.setClickable(true);
             }
         });
         mQueue.add(stringRequest);
     }
 
-    private void parseLoginJson(String response) {
-        ResultDatas result = AnalysisJSON.getAnalysisJSON().AnalysisJSONResult(response);
-        if (result != null) {
-            if ("true".equals(result.getSuccess())) {
-                Log.d("TAG", "登录成功");
-                //Gson解析
-                Gson gson = new Gson();
-                UserInfo userInfo = gson.fromJson(result.getResult(), UserInfo.class);
-                if (userInfo != null) {
-                    LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo);//设置userInfo
-                    try {
-                        LoginUserInfoUtils.getLoginUserInfoUtils().saveLoginUserInfo(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo);
-                    } catch (IOException e) {
-                        Log.d("TAG", "-------存储失败");
-                        e.printStackTrace();
-                    }
+    private void analysisJson(String response) {
+        if (AnalysisJSON.analysisJson(response)) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<LoginUser>() {
+            }.getType();
+            LoginUser userInfo = gson.fromJson(response, type);
+            if (userInfo != null) {
+                Log.e("TAG", "userInfo != null");
+                LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo.getResult());//设置userInfo
+                try {
+                    LoginUserInfoUtils.saveLoginUserInfo(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo.getResult());
+                } catch (IOException e) {
+                    Log.e("TAG", "-------存储失败");
+                    e.printStackTrace();
                 }
-                Log.d("TAG", "用户名" + userInfo.getUserId() + userInfo.getCardNo());
-                mProgressDialog.dismiss();
-                loginSuccess();//调用登录成功方法
-
             }
-            if ("false".equals(result.getSuccess())) {
-                Log.d("TAG", "验证密码");
-                dialog.dismiss();
-                mEtPassword.setError("密码输入错误");
-
-            }
+            mProgressDialog.dismiss();
+            loginSuccess();//调用登录成功方法
+        } else {
+            mProgressDialog.dismiss();
+            mToast.setText("密码错误，请重新输入");
+            mToast.show();
         }
     }
+
 
     /**
      * QQ登录
@@ -404,7 +414,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                parseLoginJson(response);
+                analysisJson(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -413,7 +423,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                 mToast.show();
             }
         });
-
         mQueue.add(request);
     }
 

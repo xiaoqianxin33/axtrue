@@ -25,7 +25,9 @@ import com.chinalooke.yuwan.fragment.CircleFragment;
 import com.chinalooke.yuwan.fragment.DynamicFragment;
 import com.chinalooke.yuwan.fragment.WodeFragment;
 import com.chinalooke.yuwan.fragment.YueZhanFragment;
+import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.utils.LocationUtils;
+import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.zhy.autolayout.AutoLayoutActivity;
 
@@ -74,11 +76,19 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     private BlackFragment mBlackFragment;
     private long exitTime = 0;
     private Toast mToast;
+    private LoginUser.ResultBean mUserInfo;
 
     public RequestQueue getQueue() {
         return mQueue;
     }
 
+    public LoginUser.ResultBean getUserInfo() {
+        return mUserInfo;
+    }
+
+    public void setUserInfo(LoginUser.ResultBean userInfo) {
+        mUserInfo = userInfo;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +105,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         mYueZhanFragment = new YueZhanFragment();
         mBlackFragment = new BlackFragment();
         mLocationClient = LocationUtils.location(MainActivity.this, this);
+        mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         initView();
     }
 
@@ -138,7 +149,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     @Override
     protected void onResume() {
         super.onResume();
-
+        mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
     }
 
     @OnClick({R.id.rl_zc, R.id.rl_qz, R.id.rl_yz, R.id.rl_dt, R.id.rl_wd})

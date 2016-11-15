@@ -30,6 +30,7 @@ import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.Dynamic;
+import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -69,7 +70,7 @@ public class DynamicFragment extends Fragment {
     private int mPage = 1;
     private boolean isLoading = false;
     private RequestQueue mQueue;
-    private UserInfo mUserInfo;
+    private LoginUser.ResultBean mUserInfo;
     private boolean isFirst = true;
     private List<Dynamic.ResultBean> mDynamics = new ArrayList<>();
     private Toast mToast;

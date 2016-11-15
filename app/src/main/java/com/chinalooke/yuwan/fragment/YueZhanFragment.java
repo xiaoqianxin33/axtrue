@@ -26,6 +26,7 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.GameList;
+import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.NearNetBar;
 import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -201,7 +202,7 @@ public class YueZhanFragment extends Fragment implements AMapLocationListener {
      */
     private void getGameIdDatas() {
 
-        UserInfo userInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
+        LoginUser.ResultBean userInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         if (userInfo != null) {
             gameID = userInfo.getGameId();
             StringBuilder stringBuffer = new StringBuilder();

@@ -23,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.WoDeZiLiaoActivity;
+import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -61,7 +62,7 @@ public class WodeFragment extends Fragment {
     RelativeLayout mSetRela;
 
 
-    UserInfo user;
+    LoginUser.ResultBean user;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,11 +70,10 @@ public class WodeFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_wode, container, false);
         ButterKnife.bind(this, view);
         mQueue = Volley.newRequestQueue(getActivity());
-        initDatas();
-
+        user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         return view;
-
     }
+
 
     @OnClick({R.id.name__wode, R.id.xiaoxi_wode, R.id.ziliao_wode, R.id.btn_cancel_wode, R.id.liaotian_wode, R.id.setting_wode, R.id.zhanji_wode, R.id.yue_wode, R.id.zhanyou_wode})
     public void onClick(View view) {
@@ -114,14 +114,14 @@ public class WodeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        onCreate(null);
+        user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
+        initDatas();
     }
 
     //初始化数据
     private void initDatas() {
         mCircleImageView = (CircleImageView) view.findViewById(R.id.icon_face_wode);
         //获取用户登录信息
-        user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         if (user != null) {
             //获取网络图片
             ImageLoader imageLoader = new ImageLoader(mQueue, new BitmapCache());
@@ -129,7 +129,6 @@ public class WodeFragment extends Fragment {
             imageLoader.get(user.getHeadImg(), listener);
             mNameView.setText(user.getNickName());
             mShuoMingView.setText(user.getSlogan());
-
 
         } else {
             mCircleImageView.setBackgroundResource(R.mipmap.yw80_orange);

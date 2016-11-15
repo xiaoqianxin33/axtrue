@@ -37,7 +37,7 @@ import com.chinalooke.yuwan.constant.MyLinearLayoutManager;
 import com.chinalooke.yuwan.model.Advertisement;
 import com.chinalooke.yuwan.model.GameDesk;
 import com.chinalooke.yuwan.model.GameDeskDetails;
-import com.chinalooke.yuwan.model.UserInfo;
+import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -63,6 +63,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bingoogolapple.bgabanner.BGABanner;
 
+import static com.chinalooke.yuwan.constant.Constant.MIN_CLICK_DELAY_TIME;
 import static com.chinalooke.yuwan.constant.Constant.lastClickTime;
 
 public class BattleFieldFragment extends Fragment {
@@ -105,7 +106,7 @@ public class BattleFieldFragment extends Fragment {
     private long lastTime = 0;
     private boolean isFresh = false;
     private View mFootView;
-    private UserInfo user;
+    private LoginUser.ResultBean user;
     private String mOwnerName;
 
 
@@ -431,42 +432,46 @@ public class BattleFieldFragment extends Fragment {
     @OnClick({R.id.iv_search, R.id.tv_search, R.id.iv_qcode, R.id.rl_yz, R.id.rl_jx, R.id.rl_js
     })
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.rl_yz:
-                mJxAdapter.removeAllFooterView();
-                mJsAdapter.removeAllFooterView();
-                setIconWordColor(0);
-                mCurrentPage = 0;
-                mPage = 0;
-                mRecyclerView.setAdapter(mYzAdapter);
-                mYzAdapter.notifyDataSetChanged();
-                break;
-            case R.id.rl_jx:
-                mYzAdapter.removeAllFooterView();
-                mJsAdapter.removeAllFooterView();
-                setIconWordColor(1);
-                mCurrentPage = 1;
-                mPage = 0;
-                mRecyclerView.setAdapter(mJxAdapter);
-                mJxAdapter.notifyDataSetChanged();
-                break;
-            case R.id.rl_js:
-                mYzAdapter.removeAllFooterView();
-                mJxAdapter.removeAllFooterView();
-                setIconWordColor(2);
-                mCurrentPage = 2;
-                mPage = 0;
-                mRecyclerView.setAdapter(mJsAdapter);
-                mJsAdapter.notifyDataSetChanged();
-                break;
-            case R.id.iv_search:
-                startActivity(new Intent(getActivity(), SearchActivity.class));
-                break;
-            case R.id.tv_search:
-                startActivity(new Intent(getActivity(), SearchActivity.class));
-                break;
-            case R.id.iv_qcode:
-                break;
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
+            lastClickTime = currentTime;
+            switch (view.getId()) {
+                case R.id.rl_yz:
+                    mJxAdapter.removeAllFooterView();
+                    mJsAdapter.removeAllFooterView();
+                    setIconWordColor(0);
+                    mCurrentPage = 0;
+                    mPage = 0;
+                    mRecyclerView.setAdapter(mYzAdapter);
+                    mYzAdapter.notifyDataSetChanged();
+                    break;
+                case R.id.rl_jx:
+                    mYzAdapter.removeAllFooterView();
+                    mJsAdapter.removeAllFooterView();
+                    setIconWordColor(1);
+                    mCurrentPage = 1;
+                    mPage = 0;
+                    mRecyclerView.setAdapter(mJxAdapter);
+                    mJxAdapter.notifyDataSetChanged();
+                    break;
+                case R.id.rl_js:
+                    mYzAdapter.removeAllFooterView();
+                    mJxAdapter.removeAllFooterView();
+                    setIconWordColor(2);
+                    mCurrentPage = 2;
+                    mPage = 0;
+                    mRecyclerView.setAdapter(mJsAdapter);
+                    mJsAdapter.notifyDataSetChanged();
+                    break;
+                case R.id.iv_search:
+                    startActivity(new Intent(getActivity(), SearchActivity.class));
+                    break;
+                case R.id.tv_search:
+                    startActivity(new Intent(getActivity(), SearchActivity.class));
+                    break;
+                case R.id.iv_qcode:
+                    break;
+            }
         }
     }
 
@@ -543,9 +548,7 @@ public class BattleFieldFragment extends Fragment {
                     break;
             }
 
-            String gameDeskId = item.getGameDeskId();
             mOwnerName = item.getOwnerName();
-            getGameDeskWithId(gameDeskId, helper);
             String gameImage = item.getGameImage();
             if (gameImage != null)
                 Picasso.with(mContext).load(item.getGameImage()).into((ImageView) helper.getView(R.id.image));
@@ -560,6 +563,7 @@ public class BattleFieldFragment extends Fragment {
                     @Override
                     public void onResponse(String response) {
                         if (AnalysisJSON.analysisJson(response)) {
+                            Log.e("TAG", "getGameDeskWithId");
                             Gson gson = new Gson();
                             Type type = new TypeToken<GameDeskDetails>() {
                             }.getType();
@@ -600,6 +604,7 @@ public class BattleFieldFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.e("TAG", "onErrorResponse");
                 mToast.setText("获取数据失败!");
                 mToast.show();
             }

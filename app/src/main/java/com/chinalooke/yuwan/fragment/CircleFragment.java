@@ -37,6 +37,7 @@ import com.chinalooke.yuwan.activity.MyCircleActivity;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.Circle;
+import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -92,7 +93,7 @@ public class CircleFragment extends Fragment implements AMapLocationListener {
     private MyAdapt mMyAdapt;
     List<Circle.ResultBean> mCircles = new ArrayList<>();
     private int mPage = 1;
-    private UserInfo mUserInfo;
+    private LoginUser.ResultBean mUserInfo;
     private Circle mMyCircle;
     private List<Circle.ResultBean> mMyCircleResult = new ArrayList<>();
     private GridAdapt mGridAdapt;
