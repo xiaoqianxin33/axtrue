@@ -107,6 +107,8 @@ public class BattleFieldFragment extends Fragment {
     private boolean isFresh = false;
     private View mFootView;
     private LoginUser.ResultBean user;
+    private long refreshLastClickTime = 0;
+    private long itemLastClickTime = 0;
 
 
     @Override
@@ -137,6 +139,7 @@ public class BattleFieldFragment extends Fragment {
         user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
     }
 
+
     private void initEvent() {
         //banner的item点击事件
         mBanner.setOnItemClickListener(new BGABanner.OnItemClickListener() {
@@ -151,8 +154,8 @@ public class BattleFieldFragment extends Fragment {
             @Override
             public void onRefresh() {
                 long currentTime = Calendar.getInstance().getTimeInMillis();
-                if (currentTime - lastClickTime > 3000) {
-                    lastClickTime = currentTime;
+                if (currentTime - refreshLastClickTime > 3000) {
+                    refreshLastClickTime = currentTime;
                     isFresh = true;
                     switch (mCurrentPage) {
                         case 0:
@@ -194,29 +197,20 @@ public class BattleFieldFragment extends Fragment {
             @Override
             public void onItemClick(View view, int i) {
                 long currentTime = Calendar.getInstance().getTimeInMillis();
-                if (currentTime - lastClickTime > 2000) {
-                    lastClickTime = currentTime;
+                if (currentTime - itemLastClickTime > 2000) {
+                    itemLastClickTime = currentTime;
                     if (user == null) {
                         startActivity(new Intent(getActivity(), LoginActivity.class));
                     } else {
                         switch (mCurrentPage) {
                             case 0:
-                                GameDesk.ResultBean resultBean = mYzList.get(i);
-                                String gameDeskId = resultBean.getGameDeskId();
-                                String ownerName = resultBean.getOwnerName();
-                                getGameDeskWithId(gameDeskId, null, ownerName);
+                                interItem(i, mYzList);
                                 break;
                             case 1:
-                                GameDesk.ResultBean resultBean1 = mJxList.get(i);
-                                String gameDeskId1 = resultBean1.getGameDeskId();
-                                String ownerName1 = resultBean1.getOwnerName();
-                                getGameDeskWithId(gameDeskId1, null, ownerName1);
+                                interItem(i, mJxList);
                                 break;
                             case 2:
-                                GameDesk.ResultBean resultBean2 = mJsList.get(i);
-                                String gameDeskId2 = resultBean2.getGameDeskId();
-                                String ownerName2 = resultBean2.getOwnerName();
-                                getGameDeskWithId(gameDeskId2, null, ownerName2);
+                                interItem(i, mJsList);
                                 break;
                         }
                     }
@@ -235,6 +229,14 @@ public class BattleFieldFragment extends Fragment {
         mYzAdapter.setOnLoadMoreListener(new MyRequestLoadMoreListener(0));
         mJxAdapter.setOnLoadMoreListener(new MyRequestLoadMoreListener(1));
         mJsAdapter.setOnLoadMoreListener(new MyRequestLoadMoreListener(2));
+    }
+
+    private void interItem(int i, List<GameDesk.ResultBean> list) {
+        GameDesk.ResultBean resultBean = list.get(i);
+        String gameDeskId = resultBean.getGameDeskId();
+        String ownerName = resultBean.getOwnerName();
+        String netBarId = resultBean.getNetBarId();
+        getGameDeskWithId(gameDeskId, null, ownerName, netBarId);
     }
 
     private class MyRequestLoadMoreListener implements BaseQuickAdapter.RequestLoadMoreListener {
@@ -260,7 +262,6 @@ public class BattleFieldFragment extends Fragment {
             }
             mPage++;
             initData();
-            Log.e("TAG", "onLoadMoreRequested");
             final QuickAdapter finalQuickAdapter = quickAdapter;
             mRecyclerView.post(new Runnable() {
                 @Override
@@ -269,11 +270,9 @@ public class BattleFieldFragment extends Fragment {
                     if (mCurrentCounter >= 0) {
                         finalQuickAdapter.notifyDataChangedAfterLoadMore(false);
                         finalQuickAdapter.addFooterView(mFootView);
-                        Log.e("TAG", ">0");
                     } else {
                         finalQuickAdapter.notifyDataChangedAfterLoadMore(mYzList, true);
                         mCurrentCounter = finalQuickAdapter.getItemCount();
-                        Log.e("TAG", "<0");
                     }
                 }
 
@@ -567,13 +566,12 @@ public class BattleFieldFragment extends Fragment {
     }
 
     //按照游戏桌id取得游戏桌详情
-    private void getGameDeskWithId(final String gameDeskId, final BaseViewHolder helper, final String ownerName) {
+    private void getGameDeskWithId(final String gameDeskId, final BaseViewHolder helper, final String ownerName, final String netBarId) {
         StringRequest stringRequest = new StringRequest(Constant.HOST + "getGameDeskWithId&gameDeskId=" + gameDeskId,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         if (AnalysisJSON.analysisJson(response)) {
-                            Log.e("TAG", "getGameDeskWithId");
                             Gson gson = new Gson();
                             Type type = new TypeToken<GameDeskDetails>() {
                             }.getType();
@@ -598,6 +596,7 @@ public class BattleFieldFragment extends Fragment {
                                     if (!TextUtils.isEmpty(ownerName))
                                         intent.putExtra("ownerName", ownerName);
                                     intent.putExtra("gameDeskId", gameDeskId);
+                                    intent.putExtra("netBarId", netBarId);
                                     intent.putExtras(bundle);
                                     startActivity(intent);
                                 }
@@ -615,7 +614,6 @@ public class BattleFieldFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("TAG", "onErrorResponse");
                 mToast.setText("获取数据失败!");
                 mToast.show();
             }

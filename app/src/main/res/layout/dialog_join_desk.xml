@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="#e0e0e0"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="118px"
+        android:background="#f7f7f7"
+        android:gravity="center"
+        android:text="选择团队"
+        android:textColor="#838688"
+        android:textSize="34px"/>
+
+    <TextView
+        android:id="@+id/tv_left"
+        style="@style/dialog_join_desk"
+        android:layout_marginTop="1dp"
+        android:text="约战方"/>
+
+    <TextView
+        android:id="@+id/tv_right"
+        style="@style/dialog_join_desk"
+        android:layout_marginTop="1dp"
+        android:text="挑战方"/>
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        style="@style/dialog_join_desk"
+        android:layout_marginTop="10px"
+        android:text="取消"/>
+</LinearLayout>

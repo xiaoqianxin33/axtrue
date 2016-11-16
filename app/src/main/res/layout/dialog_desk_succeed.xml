@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="220dp"
+              android:layout_height="wrap_content"
+              android:background="@drawable/dialog_succeed_shape"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="220dp"
+        android:layout_height="112dp">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="28dp"
+            android:text="您已发起挑战"
+            android:textColor="@android:color/black"
+            android:textSize="32px"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="66dp"
+            android:text="系统将自动扣除相应金额"
+            android:textColor="@android:color/black"
+            android:textSize="28px"/>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="220dp"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+    <TextView
+        android:id="@+id/tv_ok"
+        android:layout_width="220dp"
+        android:layout_height="58dp"
+        android:gravity="center"
+        android:text="确认"
+        android:textColor="#167ffc"
+        android:textSize="32px"/>
+
+
+</LinearLayout>

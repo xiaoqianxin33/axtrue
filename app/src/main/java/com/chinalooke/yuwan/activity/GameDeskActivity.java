@@ -1,14 +1,18 @@
 package com.chinalooke.yuwan.activity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -31,10 +35,12 @@ import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.GameDeskDetails;
 import com.chinalooke.yuwan.model.LoginUser;
-import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
+import com.chinalooke.yuwan.utils.NetUtil;
+import com.chinalooke.yuwan.utils.UIUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -46,11 +52,16 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.zip.Inflater;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.chinalooke.yuwan.constant.Constant.MIN_CLICK_DELAY_TIME;
+import static com.chinalooke.yuwan.constant.Constant.lastClickTime;
 
 /**
  * 游戏桌详情
@@ -77,8 +88,12 @@ public class GameDeskActivity extends AutoLayoutActivity {
     GridView mGdYuezhan;
     @Bind(R.id.gd_yingzhan)
     GridView mGdYingzhan;
-
-    private GameDeskDetails.ResultBean mResult;
+    @Bind(R.id.rl_people)
+    RelativeLayout mRlPeople;
+    @Bind(R.id.rl_rule)
+    RelativeLayout mRlRule;
+    @Bind(R.id.tv_fight_number)
+    TextView mTvFightNumber;
 
     private List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> mLeftBeen = new ArrayList<>();
     private List<GameDeskDetails.ResultBean.PlayersBean.RightBean> mRight = new ArrayList<>();
@@ -91,10 +106,9 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private Toast mToast;
     private String mGameDeskId;
     private ProgressDialog mProgressDialog;
-    private MyLeftAdapter mMyLeftAdapter;
-    private MyRightAdapter mMyRightAdapter;
     private String getGameDeskWithId = Constant.mainUri + "getGameDeskWithId&gameDeskId=";
     private GameDeskDetails mGameDeskDetails;
+    //记录游戏桌状态变量 0-迎战中 1-进行中 2-已结束
     private int mStatus;
     private boolean isJoin = false;
 
@@ -130,25 +144,34 @@ public class GameDeskActivity extends AutoLayoutActivity {
     }
 
     private void initView() {
-        mTvChat.setEnabled(isJoin);
-        mResult = mGameDeskDetails.getResult();
-        String status = mResult.getStatus();
+        GameDeskDetails.ResultBean result = mGameDeskDetails.getResult();
+        setIsJoined();
+        String status = result.getStatus();
         if (!TextUtils.isEmpty(status)) {
             switch (status) {
                 case "pedding":
-                    mTvStatus.setText("迎战中");
+                    mStatus = 0;
+                    if (isJoin) {
+                        mTvOk.setText("退出战场");
+                    } else {
+                        mTvOk.setText("我要参战");
+                    }
                     mTvOk.setText("我要参战");
                     mTvStatus.setBackgroundResource(R.mipmap.red_round_background);
                     break;
                 case "doing":
+                    mStatus = 1;
                     mTvStatus.setText("进行中");
                     mTvStatus.setBackgroundResource(R.mipmap.green_round_background);
                     mTvOk.setText("确认交战结果");
                     break;
                 case "done":
+                    mStatus = 2;
                     mTvStatus.setText("已结束");
                     mTvStatus.setBackgroundResource(R.mipmap.orange_round_background);
                     mTvOk.setVisibility(View.GONE);
+                    mRlPeople.setVisibility(View.GONE);
+                    mRlRule.setVisibility(View.GONE);
                     break;
             }
         }
@@ -161,7 +184,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 mOwnerType.setText("个人");
         }
 
-        String bgImage = mResult.getBgImage();
+        String bgImage = result.getBgImage();
         if (!TextUtils.isEmpty(bgImage)) {
             ImageRequest request = new ImageRequest(bgImage, new Response.Listener<Bitmap>() {
                 @Override
@@ -178,14 +201,18 @@ public class GameDeskActivity extends AutoLayoutActivity {
             });
             mQueue.add(request);
         }
-        String gameName = mResult.getGameName();
+        String gameName = result.getGameName();
         if (!TextUtils.isEmpty(gameName)) {
             mTvGameName.setText(gameName);
         }
 
-        String peopleNumber = mResult.getPeopleNumber();
-        int totalPeople = Integer.parseInt(peopleNumber) / 2;
-        GameDeskDetails.ResultBean.PlayersBean players = mResult.getPlayers();
+        String peopleNumber = result.getPeopleNumber();
+        int totalPeople = 0;
+        if (!TextUtils.isEmpty(peopleNumber)) {
+            totalPeople = Integer.parseInt(peopleNumber) / 2;
+        }
+        mTvFightNumber.setText(totalPeople + "VS" + totalPeople);
+        GameDeskDetails.ResultBean.PlayersBean players = result.getPlayers();
         if (players != null) {
             List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> left = players.getLeft();
             if (left != null)
@@ -199,12 +226,33 @@ public class GameDeskActivity extends AutoLayoutActivity {
             mPersonYuezhan.setText("0/" + totalPeople);
             mPersonYingzhan.setText("0/" + totalPeople);
         }
-        mWiner = mResult.getWiner();
+        mWiner = result.getWiner();
         //gridView 添加 adapter
-        mMyLeftAdapter = new MyLeftAdapter();
-        mMyRightAdapter = new MyRightAdapter();
-        mGdYuezhan.setAdapter(mMyLeftAdapter);
-        mGdYingzhan.setAdapter(mMyRightAdapter);
+        MyLeftAdapter myLeftAdapter = new MyLeftAdapter();
+        MyRightAdapter myRightAdapter = new MyRightAdapter();
+        mGdYuezhan.setAdapter(myLeftAdapter);
+        mGdYingzhan.setAdapter(myRightAdapter);
+        UIUtil.setListViewHeightBasedOnChildren(mGdYingzhan);
+        UIUtil.setListViewHeightBasedOnChildren(mGdYuezhan);
+
+    }
+
+    //设置玩家是否已经加入了该游戏桌
+    private void setIsJoined() {
+        String userId = user.getUserId();
+        for (GameDeskDetails.ResultBean.PlayersBean.LeftBean leftBean : mLeftBeen) {
+            if (userId.equals(leftBean.getUserId())) {
+                isJoin = true;
+                break;
+            }
+        }
+        for (GameDeskDetails.ResultBean.PlayersBean.RightBean rightBean : mRight) {
+            if (userId.equals(rightBean.getUserId())) {
+                isJoin = true;
+                break;
+            }
+        }
+        mTvChat.setEnabled(isJoin);
     }
 
     private void initData() {
@@ -213,14 +261,72 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
     @OnClick({R.id.tv_chat, R.id.tv_ok})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_chat:
-                break;
-            case R.id.tv_ok:
-
-                break;
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
+            lastClickTime = currentTime;
+            switch (view.getId()) {
+                case R.id.tv_chat:
+                    break;
+                case R.id.tv_ok:
+                    switch (mStatus) {
+                        case 0:
+                            if (isJoin) {
+                                showQuitDialog();
+                            } else {
+                                showJoinDialog();
+                            }
+                            break;
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                    }
+                    break;
+            }
         }
     }
+
+    //弹出是否确认退出dialog
+    private void showQuitDialog() {
+        MyUtils.showNorDialog(GameDeskActivity.this, "提示", "确定要退出战场么？", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                quitGameDesk();
+            }
+        });
+    }
+
+    //退出游戏桌
+    private void quitGameDesk() {
+        if (NetUtil.is_Network_Available(getApplicationContext())) {
+            mProgressDialog = DialogUtil.initDialog("", GameDeskActivity.this);
+            mProgressDialog.show();
+            exitDesk();
+        } else {
+            mToast.setText("网络不可用，请检查网络连接");
+            mToast.show();
+        }
+    }
+
+    //加入游戏桌
+    private void joinGameDesk(int i) {
+        if (NetUtil.is_Network_Available(getApplicationContext())) {
+            mProgressDialog = MyUtils.initDialog("加入中...", GameDeskActivity.this);
+            mProgressDialog.show();
+            sendInternet(i);
+        } else {
+            mToast.setText("网络不可用，请检查网络连接");
+            mToast.show();
+        }
+
+    }
+
 
     class MyLeftAdapter extends BaseAdapter {
 
@@ -342,74 +448,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 viewHolder.mTvName.setText(nickName);
             }
         }
-
-    }
-
-    //加入游戏桌
-    private void showDialog(ViewHolder viewHolder, final String s) {
-//        viewHolder.mBtnJoin.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if (user != null) {
-//                    DialogUtil.showSingerDialog(GameDeskActivity.this, "提示", s, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//                            if (NetUtil.is_Network_Available(getApplicationContext())) {
-//                                mProgressDialog = DialogUtil.initDialog("加入中...", GameDeskActivity.this);
-//                                mProgressDialog.show();
-//                                sendInternet(s);
-//                            } else {
-//                                mToast.setText("网络不可用，请检查网络连接");
-//                                mToast.show();
-//                            }
-//                        }
-//                    }, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//                        }
-//                    });
-//                } else {
-//                    mToast.setText("请先登录");
-//                    mToast.show();
-//                }
-//            }
-//        });
-    }
-
-    //退出游戏桌
-    private void showDialog2(ViewHolder viewHolder, final String s) {
-//        viewHolder.mBtnJoin.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (user != null) {
-//                    DialogUtil.showSingerDialog(GameDeskActivity.this, "提示", s, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//                            if (NetUtil.is_Network_Available(getApplicationContext())) {
-//                                mProgressDialog = DialogUtil.initDialog("", GameDeskActivity.this);
-//                                mProgressDialog.show();
-//                                exitDesk();
-//                            } else {
-//                                mToast.setText("网络不可用，请检查网络连接");
-//                                mToast.show();
-//                            }
-//                        }
-//                    }, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//                        }
-//                    });
-//                } else {
-//                    mToast.setText("请先登录");
-//                    mToast.show();
-//                }
-//            }
-//        });
     }
 
     //退出游戏桌
@@ -460,42 +498,46 @@ public class GameDeskActivity extends AutoLayoutActivity {
      *
      * @param s 判断约战应战方
      */
-    private void sendInternet(String s) {
-        String role = null;
-        if ("确定加入约战方吗?".equals(s))
-            role = "2";
-        if (("确定加入应战方吗?").equals(s))
-            role = "1";
+    private void sendInternet(int s) {
 
         String netBarId = getIntent().getStringExtra("netBarId");
         String uri;
         if (TextUtils.isEmpty(netBarId)) {
             uri = Constant.mainUri + "takePartInGameDesk&userId=" + user.getUserId()
-                    + "&gameDeskId=" + mGameDeskId + "&role=" + role;
+                    + "&gameDeskId=" + mGameDeskId + "&role=" + s;
         } else {
             uri = Constant.mainUri + "takePartInGameDesk&userId=" + user.getUserId()
-                    + "&gameDeskId=" + mGameDeskId + "&role=" + role + "&netbarId=" + netBarId;
+                    + "&gameDeskId=" + mGameDeskId + "&role=" + s + "&netbarId=" + netBarId;
         }
 
         StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 mProgressDialog.dismiss();
-                String substring = response.substring(11, 16);
-                if (!"false".equals(substring)) {
-                    Gson gson = new Gson();
-                    Type type = new TypeToken<GameDeskDetails>() {
-                    }.getType();
-                    mGameDeskDetails = gson.fromJson(response, type);
-                    if (!mGameDeskDetails.isSuccess()) {
-                        mToast.setText("加入失败!");
-                        mToast.show();
-                    } else {
-                        mToast.setText("加入成功!");
-                        mToast.show();
-                        refreshUI();
+                Log.e("TAG", response);
+                if (AnalysisJSON.analysisJson(response)) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean result = jsonObject.getBoolean("Result");
+                        if (result) {
+                            showJoinSucceedDialog();
+                            refreshUI();
+                        } else {
+                            refreshUI();
+                            try {
+                                JSONObject jsonObject1 = new JSONObject(response);
+                                String msg = jsonObject1.getString("Msg");
+                                mToast.setText("加入失败，" + msg);
+                                mToast.show();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 } else {
+                    refreshUI();
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         String msg = jsonObject.getString("Msg");
@@ -505,12 +547,11 @@ public class GameDeskActivity extends AutoLayoutActivity {
                         e.printStackTrace();
                     }
                 }
-
-
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                refreshUI();
                 mProgressDialog.dismiss();
                 mToast.setText("加入失败，请重试。");
                 mToast.show();
@@ -519,6 +560,63 @@ public class GameDeskActivity extends AutoLayoutActivity {
         mQueue.add(stringRequest);
     }
 
+
+    //弹出确定加入dialog
+    private void showJoinDialog() {
+        Log.e("TAG", "showJoinDialog");
+        final Dialog dialog = new Dialog(GameDeskActivity.this, R.style.Dialog);
+        View inflate = LayoutInflater.from(this).inflate(R.layout.dialog_join_desk, null);
+        TextView tvCancel = (TextView) inflate.findViewById(R.id.tv_cancel);
+        TextView tvLeft = (TextView) inflate.findViewById(R.id.tv_left);
+        TextView tvRight = (TextView) inflate.findViewById(R.id.tv_right);
+        tvCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        tvLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                joinGameDesk(1);
+
+            }
+        });
+        tvRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                joinGameDesk(2);
+
+            }
+        });
+        dialog.setContentView(inflate);
+        Window dialogWindow = dialog.getWindow();
+        assert dialogWindow != null;
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        dialog.show();
+        WindowManager windowManager = getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+        lp.width = (int) (display.getWidth()); //设置宽度
+        dialog.getWindow().setAttributes(lp);
+    }
+
+    private void showJoinSucceedDialog() {
+        final Dialog dialog = new Dialog(GameDeskActivity.this, R.style.Dialog);
+        View inflate = LayoutInflater.from(this).inflate(R.layout.dialog_desk_succeed, null);
+        TextView tvOk = (TextView) inflate.findViewById(R.id.tv_ok);
+        tvOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setContentView(inflate);
+        dialog.show();
+    }
 
     private void refreshUI() {
         StringRequest stringRequest = new StringRequest(getGameDeskWithId + mGameDeskId,
