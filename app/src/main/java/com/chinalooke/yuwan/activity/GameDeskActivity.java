@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -40,7 +39,6 @@ import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
-import com.chinalooke.yuwan.utils.UIUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -54,7 +52,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.zip.Inflater;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -97,8 +94,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
     private List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> mLeftBeen = new ArrayList<>();
     private List<GameDeskDetails.ResultBean.PlayersBean.RightBean> mRight = new ArrayList<>();
-    private GameDeskDetails.ResultBean.PlayersBean.RightBean mRightBean;
-    private GameDeskDetails.ResultBean.PlayersBean.LeftBean mLeftBean;
     private String mWiner;
     private RequestQueue mQueue;
     private int mWidthPixels;
@@ -216,6 +211,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     mTvOk.setVisibility(View.GONE);
                     mRlPeople.setVisibility(View.GONE);
                     mRlRule.setVisibility(View.GONE);
+                    mTvChat.setEnabled(false);
                     break;
             }
         }
@@ -271,6 +267,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
             lastClickTime = currentTime;
             switch (view.getId()) {
                 case R.id.tv_chat:
+                    mToast.setText("啊啊啊啊");
+                    mToast.show();
                     break;
                 case R.id.tv_ok:
                     switch (mStatus) {
@@ -596,7 +594,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
         WindowManager windowManager = getWindowManager();
         Display display = windowManager.getDefaultDisplay();
         WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
-        lp.width = (int) (display.getWidth()); //设置宽度
+        lp.width = display.getWidth(); //设置宽度
         dialog.getWindow().setAttributes(lp);
     }
 
