@@ -45,10 +45,7 @@ public class SplashActivity extends AppCompatActivity {
         getGameMessage();
         LoginUser.ResultBean user = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(this, LoginUserInfoUtils.KEY);
         if (user != null) {
-            Log.e("TAG", "user");
             LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(user);
-        } else {
-            Log.e("TAG", "user=null");
         }
         mHandler.sendEmptyMessageDelayed(1, 2000);
     }

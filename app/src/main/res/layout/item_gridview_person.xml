@@ -35,10 +35,9 @@
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="14px"
-        android:text="张晓明"
+        android:layout_marginTop="90px"
+        android:gravity="center"
         android:textSize="20px"/>
 
 

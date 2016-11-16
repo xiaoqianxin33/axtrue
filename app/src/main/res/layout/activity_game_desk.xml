@@ -160,7 +160,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                android:numColumns="5"/>
+                android:numColumns="5"
+                android:paddingBottom="36px"/>
 
 
             <TextView
@@ -208,7 +209,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                android:numColumns="5"/>
+                android:numColumns="5"
+                android:paddingBottom="36px"/>
 
 
             <LinearLayout
@@ -243,9 +245,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="230px"
-                        android:layout_marginTop="31px"
+                        android:layout_marginTop="30px"
                         android:text="2016-9-26 13:13:00"
-                        android:textColor="#848789"/>
+                        android:textColor="#848789"
+                        android:textSize="30px"/>
 
                 </RelativeLayout>
 
@@ -276,7 +279,8 @@
                         android:layout_marginLeft="230px"
                         android:layout_marginTop="45px"
                         android:text="100元"
-                        android:textColor="#848789"/>
+                        android:textColor="#848789"
+                        android:textSize="30px"/>
 
                 </RelativeLayout>
 
@@ -307,7 +311,8 @@
                         android:layout_marginLeft="230px"
                         android:layout_marginTop="45px"
                         android:text="3vs3"
-                        android:textColor="#848789"/>
+                        android:textColor="#848789"
+                        android:textSize="30px"/>
 
                 </RelativeLayout>
 
@@ -320,14 +325,14 @@
                         android:layout_width="@dimen/small_padding"
                         android:layout_height="@dimen/small_padding"
                         android:layout_marginLeft="30px"
-                        android:layout_marginTop="50px"
+                        android:layout_marginTop="47px"
                         android:src="@mipmap/game_desk_quan"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="70px"
-                        android:layout_marginTop="45px"
+                        android:layout_marginTop="42px"
                         android:text="详细规则"
                         android:textColor="#fecc2c"
                         android:textSize="30px"/>
@@ -337,16 +342,17 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="230px"
                         android:layout_marginRight="56px"
-                        android:layout_marginTop="45px"
+                        android:layout_marginTop="40px"
                         android:lineSpacingExtra="3dp"
                         android:text="@string/game_rule"
-                        android:textColor="#848789"/>
+                        android:textColor="#848789"
+                        android:textSize="30px"/>
                 </RelativeLayout>
 
                 <ImageView
                     android:id="@+id/iv_arrow"
-                    android:layout_width="25dp"
-                    android:layout_height="20dp"
+                    android:layout_width="25px"
+                    android:layout_height="15px"
                     android:layout_gravity="center_horizontal"
                     android:src="@mipmap/arrow_xia"/>
 

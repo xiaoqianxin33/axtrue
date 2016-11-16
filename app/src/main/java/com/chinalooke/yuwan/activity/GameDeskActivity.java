@@ -4,8 +4,11 @@ import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -29,6 +32,7 @@ import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.GameDeskDetails;
 import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.UserInfo;
+import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.google.gson.Gson;
@@ -80,9 +84,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private List<GameDeskDetails.ResultBean.PlayersBean.RightBean> mRight = new ArrayList<>();
     private GameDeskDetails.ResultBean.PlayersBean.RightBean mRightBean;
     private GameDeskDetails.ResultBean.PlayersBean.LeftBean mLeftBean;
-    private int mPeopleNumer;
-    private int mLeftSize;
-    private int mRightSize;
     private String mWiner;
     private RequestQueue mQueue;
     private int mWidthPixels;
@@ -96,6 +97,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private GameDeskDetails mGameDeskDetails;
     private int mStatus;
     private boolean isJoin = false;
+
+    private Handler mHandler = new Handler();
 
 
     @Override
@@ -113,6 +116,17 @@ public class GameDeskActivity extends AutoLayoutActivity {
         mGameDeskDetails = (GameDeskDetails) getIntent().getSerializableExtra("gameDeskDetails");
         initData();
         initView();
+        initEvent();
+    }
+
+    private void initEvent() {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                refreshUI();
+                mHandler.postDelayed(this, 5000);
+            }
+        }, 5000);
     }
 
     private void initView() {
@@ -194,8 +208,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     }
 
     private void initData() {
-
-
+        mGameDeskId = getIntent().getStringExtra("gameDeskId");
     }
 
     @OnClick({R.id.tv_chat, R.id.tv_ok})
@@ -204,6 +217,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             case R.id.tv_chat:
                 break;
             case R.id.tv_ok:
+
                 break;
         }
     }
@@ -295,7 +309,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             viewHolder.mIvCrown.setVisibility(View.GONE);
         }
         if (position == mLeftBeen.size()) {
-            viewHolder.mIvCrown.setImageResource(R.mipmap.vacant);
+            viewHolder.mView.setImageResource(R.mipmap.vacant);
             viewHolder.mTvName.setText("");
         } else {
             GameDeskDetails.ResultBean.PlayersBean.LeftBean leftBean = mLeftBeen.get(position);
@@ -316,7 +330,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             viewHolder.mIvCrown.setVisibility(View.GONE);
         }
         if (position == mRight.size()) {
-            viewHolder.mIvCrown.setImageResource(R.mipmap.vacant);
+            viewHolder.mView.setImageResource(R.mipmap.vacant);
             viewHolder.mTvName.setText("");
         } else {
             GameDeskDetails.ResultBean.PlayersBean.RightBean leftBean = mRight.get(position);
@@ -511,31 +525,19 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        String substring = response.substring(11, 15);
-                        if (substring.equals("true")) {
+                        if (AnalysisJSON.analysisJson(response)) {
                             Gson gson = new Gson();
                             Type type = new TypeToken<GameDeskDetails>() {
                             }.getType();
-                            mGameDeskDetails = gson.fromJson(response, type);
-                            if (!mGameDeskDetails.isSuccess()) {
-                                mToast.setText("获取数据失败!");
-                                mToast.show();
-                            } else {
-                                mResult = mGameDeskDetails.getResult();
-                                initData();
-                                initView();
-                            }
-
-                        } else {
-                            mToast.setText("获取数据失败!");
-                            mToast.show();
+                            GameDeskDetails o = gson.fromJson(response, type);
+                            if (o != null)
+                                mGameDeskDetails = o;
+                            initView();
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mToast.setText("获取数据失败!");
-                mToast.show();
             }
         });
         mQueue.add(stringRequest);

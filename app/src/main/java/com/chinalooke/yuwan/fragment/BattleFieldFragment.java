@@ -107,7 +107,6 @@ public class BattleFieldFragment extends Fragment {
     private boolean isFresh = false;
     private View mFootView;
     private LoginUser.ResultBean user;
-    private String mOwnerName;
 
 
     @Override
@@ -189,33 +188,45 @@ public class BattleFieldFragment extends Fragment {
             }
         });
 
+
         //recycleView item 点击事件
-        mYzAdapter.setOnRecyclerViewItemClickListener(new BaseQuickAdapter.OnRecyclerViewItemClickListener() {
+        BaseQuickAdapter.OnRecyclerViewItemClickListener onRecyclerViewItemClickListener = new BaseQuickAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int i) {
-                if (user == null) {
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
-                } else {
-                    switch (mCurrentPage) {
-                        case 0:
-                            GameDesk.ResultBean resultBean = mYzList.get(i);
-                            String gameDeskId = resultBean.getGameDeskId();
-                            getGameDeskWithId(gameDeskId, null);
-                            break;
-                        case 1:
-                            GameDesk.ResultBean resultBean1 = mJxList.get(i);
-                            String gameDeskId1 = resultBean1.getGameDeskId();
-                            getGameDeskWithId(gameDeskId1, null);
-                            break;
-                        case 2:
-                            GameDesk.ResultBean resultBean2 = mJsList.get(i);
-                            String gameDeskId2 = resultBean2.getGameDeskId();
-                            getGameDeskWithId(gameDeskId2, null);
-                            break;
+                long currentTime = Calendar.getInstance().getTimeInMillis();
+                if (currentTime - lastClickTime > 2000) {
+                    lastClickTime = currentTime;
+                    if (user == null) {
+                        startActivity(new Intent(getActivity(), LoginActivity.class));
+                    } else {
+                        switch (mCurrentPage) {
+                            case 0:
+                                GameDesk.ResultBean resultBean = mYzList.get(i);
+                                String gameDeskId = resultBean.getGameDeskId();
+                                String ownerName = resultBean.getOwnerName();
+                                getGameDeskWithId(gameDeskId, null, ownerName);
+                                break;
+                            case 1:
+                                GameDesk.ResultBean resultBean1 = mJxList.get(i);
+                                String gameDeskId1 = resultBean1.getGameDeskId();
+                                String ownerName1 = resultBean1.getOwnerName();
+                                getGameDeskWithId(gameDeskId1, null, ownerName1);
+                                break;
+                            case 2:
+                                GameDesk.ResultBean resultBean2 = mJsList.get(i);
+                                String gameDeskId2 = resultBean2.getGameDeskId();
+                                String ownerName2 = resultBean2.getOwnerName();
+                                getGameDeskWithId(gameDeskId2, null, ownerName2);
+                                break;
+                        }
                     }
                 }
             }
-        });
+        };
+        mYzAdapter.setOnRecyclerViewItemClickListener(onRecyclerViewItemClickListener);
+        mJxAdapter.setOnRecyclerViewItemClickListener(onRecyclerViewItemClickListener);
+        mJsAdapter.setOnRecyclerViewItemClickListener(onRecyclerViewItemClickListener);
+
 
         mYzAdapter.openLoadMore(PAGE_SIZE, true);
         mJxAdapter.openLoadMore(PAGE_SIZE, true);
@@ -548,7 +559,6 @@ public class BattleFieldFragment extends Fragment {
                     break;
             }
 
-            mOwnerName = item.getOwnerName();
             String gameImage = item.getGameImage();
             if (gameImage != null)
                 Picasso.with(mContext).load(item.getGameImage()).into((ImageView) helper.getView(R.id.image));
@@ -557,7 +567,7 @@ public class BattleFieldFragment extends Fragment {
     }
 
     //按照游戏桌id取得游戏桌详情
-    private void getGameDeskWithId(final String gameDeskId, final BaseViewHolder helper) {
+    private void getGameDeskWithId(final String gameDeskId, final BaseViewHolder helper, final String ownerName) {
         StringRequest stringRequest = new StringRequest(Constant.HOST + "getGameDeskWithId&gameDeskId=" + gameDeskId,
                 new Response.Listener<String>() {
                     @Override
@@ -585,8 +595,9 @@ public class BattleFieldFragment extends Fragment {
                                     Intent intent = new Intent(getActivity(), GameDeskActivity.class);
                                     Bundle bundle = new Bundle();
                                     bundle.putSerializable("gameDeskDetails", gameDesk);
-                                    if (!TextUtils.isEmpty(mOwnerName))
-                                        intent.putExtra("ownerName", mOwnerName);
+                                    if (!TextUtils.isEmpty(ownerName))
+                                        intent.putExtra("ownerName", ownerName);
+                                    intent.putExtra("gameDeskId", gameDeskId);
                                     intent.putExtras(bundle);
                                     startActivity(intent);
                                 }
