@@ -3,7 +3,6 @@ package com.chinalooke.yuwan.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 
 import com.chinalooke.yuwan.model.LoginUser;
@@ -13,7 +12,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.StreamCorruptedException;
 
 /**
  * 用户登录信息工具
@@ -22,7 +20,7 @@ import java.io.StreamCorruptedException;
 public class LoginUserInfoUtils {
 
 
-    public static final String FILENAME = "loginUserInfo";
+    private static final String FILENAME = "loginUserInfo";
     public static final String KEY = "UserInfo";
     private SharedPreferences sharedPreferences;
 
@@ -42,32 +40,14 @@ public class LoginUserInfoUtils {
     }
 
     public void setUserInfo(LoginUser.ResultBean userInfo) {
-        this.userInfo = userInfo;
+        LoginUserInfoUtils.userInfo = userInfo;
     }
 
 
     public static LoginUserInfoUtils getLoginUserInfoUtils() {
         return UserInfoUtils.loginUserInfoUtils;
-       /* if (loginUserInfoUtils==null){
-            loginUserInfoUtils=new LoginUserInfoUtils();
-            return loginUserInfoUtils;
-        }else{
-            return loginUserInfoUtils;
-        }*/
     }
 
-    /*
-    //同样，在读取SharedPreferences数据前要实例化出一个SharedPreferences对象
-        SharedPreferences sharedPreferences= getSharedPreferences("loginUserInfo",
-                                                                 Activity.MODE_PRIVATE);
-        // 使用getString方法获得value，注意第2个参数是value的默认值
-        String name =sharedPreferences.getString("name", "");
-        String habit =sharedPreferences.getString("habit", "");
-    //使用toast信息提示框显示信息
-        Toast.makeText(this, "读取数据如下："+"\n"+"name：" + name + "\n" + "habit：" + habit,
-        Toast.LENGTH_LONG).show();
-        SharedPreferences
-    */
     public static void saveLoginUserInfo(Context context, String key, LoginUser.ResultBean userInfo) throws IOException {
         saveObject(context, key, userInfo);
     }
@@ -83,16 +63,16 @@ public class LoginUserInfoUtils {
     }
 
     public LoginUser.ResultBean getLoginUserInfo(Context context, String key) throws IOException {
-        this.userInfo = (LoginUser.ResultBean) readObject(context, key);
+        userInfo = (LoginUser.ResultBean) readObject(context, key);
         return userInfo;
     }
 
     /**
-     * @param context 上下文对象
-     * @param key     键值
-     * @param obj     对象
+     * @param context    上下文对象
+     * @param key        键值
+     * @param resultBean 对象
      */
-    public static void saveObject(Context context, String key, Object obj) {
+    public static void saveObject(Context context, String key, LoginUser.ResultBean resultBean) {
         try {
             // 保存对象
             SharedPreferences.Editor sharedata = context.getSharedPreferences(FILENAME, 0).edit();
@@ -100,9 +80,9 @@ public class LoginUserInfoUtils {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ObjectOutputStream os = new ObjectOutputStream(bos);
             //将对象序列化写入byte缓存
-            os.writeObject(obj);
+            os.writeObject(resultBean);
             //将序列化的数据转为16进制保存
-            String bytesToHexString = bytesToHexString(Base64.encode(bos.toByteArray(), Base64.DEFAULT));
+            String bytesToHexString = bytesToHexString(bos.toByteArray());
             //保存该16进制数组
             sharedata.putString(key, bytesToHexString);
             sharedata.apply();
@@ -119,7 +99,7 @@ public class LoginUserInfoUtils {
      * @param bArray
      * @return modified:
      */
-    public static String bytesToHexString(byte[] bArray) {
+    private static String bytesToHexString(byte[] bArray) {
         if (bArray == null) {
             return null;
         }
@@ -157,19 +137,12 @@ public class LoginUserInfoUtils {
                     ByteArrayInputStream bis = new ByteArrayInputStream(stringToBytes);
                     ObjectInputStream is = new ObjectInputStream(bis);
                     //返回反序列化得到的对象
-                    Object readObject = is.readObject();
-                    return readObject;
+                    return is.readObject();
                 }
             }
-        } catch (StreamCorruptedException e) {
-            // TODO Auto-generated catch block
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Log.e("TAG", e.getMessage());
         }
         //所有异常返回null
         return null;
@@ -183,7 +156,7 @@ public class LoginUserInfoUtils {
      * @param data
      * @return modified:
      */
-    public static byte[] StringToBytes(String data) {
+    private static byte[] StringToBytes(String data) {
         String hexString = data.toUpperCase().trim();
         if (hexString.length() % 2 != 0) {
             return null;

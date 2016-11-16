@@ -73,7 +73,9 @@
         <!-- 首页 -->
         <activity android:name=".activity.FirstActivity"/>
         <!-- 登录 -->
-        <activity android:name=".activity.LoginActivity"/>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
         <!-- 注册 -->
         <activity android:name=".activity.RegisterActivity"/>
         <!-- 忘记密码 -->

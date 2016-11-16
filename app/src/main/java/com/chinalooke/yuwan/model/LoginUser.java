@@ -1,5 +1,6 @@
 package com.chinalooke.yuwan.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  * Created by xiao on 2016/11/15.
  */
 
-public class LoginUser {
+public class LoginUser implements Serializable {
 
 
     /**
@@ -59,7 +60,7 @@ public class LoginUser {
         this.Success = Success;
     }
 
-    public static class ResultBean {
+    public static class ResultBean implements Serializable{
         private String address;
         private String age;
         private String cardNo;

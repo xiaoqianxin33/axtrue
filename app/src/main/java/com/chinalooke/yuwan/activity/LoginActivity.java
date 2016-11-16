@@ -1,13 +1,16 @@
 package com.chinalooke.yuwan.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,15 +23,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.model.GameDeskDetails;
 import com.chinalooke.yuwan.model.LoginUser;
-import com.chinalooke.yuwan.model.ResultDatas;
-import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.Validator;
-import com.chinalooke.yuwan.view.LoadingProgressDialogView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhy.autolayout.AutoLayoutActivity;
@@ -36,7 +35,6 @@ import com.zhy.autolayout.AutoLayoutActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -72,8 +70,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     private String phone;
     private String passWord;
     private RequestQueue mQueue;
-    //加载的弹出框
-    private LoadingProgressDialogView dialog;
     private Toast mToast;
     private ProgressDialog mProgressDialog;
 
@@ -107,6 +103,32 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                     mBtnLoginLogin.setBackgroundColor(getResources().getColor(R.color.btn_yellow));
                     mBtnLoginLogin.setEnabled(true);
                 }
+            }
+        });
+
+        mEtPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_GO) {
+                    InputMethodManager imm = (InputMethodManager) v
+                            .getContext().getSystemService(
+                                    Context.INPUT_METHOD_SERVICE);
+                    if (imm.isActive()) {
+                        imm.hideSoftInputFromWindow(
+                                v.getApplicationWindowToken(), 0);
+                    }
+                    if (Validator.isNetworkAvailable(LoginActivity.this)) {
+                        //判断是否网络未连接
+                        handleLogin();
+                    } else {
+                        mToast.setText("亲掉线了，换个地方试试");
+                        mToast.show();
+                    }
+                    return true;
+                }
+
+
+                return false;
             }
         });
     }
@@ -179,7 +201,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
         if (phone.equals("")) {
             mEtPhone.setError("请输入手机号码");
             mEtPhone.requestFocus();
-        } else if (!Validator.getValidator().isMobile(phone)) {
+        } else if (!Validator.isMobile(phone)) {
             mEtPhone.setError("请输入正确的手机号码");
             mEtPhone.requestFocus();
         } else if ("".equals(passWord)) {
@@ -299,12 +321,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
             if (userInfo != null) {
                 Log.e("TAG", "userInfo != null");
                 LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo.getResult());//设置userInfo
-                try {
-                    LoginUserInfoUtils.saveLoginUserInfo(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo.getResult());
-                } catch (IOException e) {
-                    Log.e("TAG", "-------存储失败");
-                    e.printStackTrace();
-                }
+                LoginUserInfoUtils.saveObject(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo.getResult());
             }
             mProgressDialog.dismiss();
             loginSuccess();//调用登录成功方法
@@ -342,7 +359,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     /**
      * 第三方登录
      *
-     * @param name
+     * @param name name
      */
     private void disanfangLogin(String name) {
         Platform platform = ShareSDK.getPlatform(this, name);
@@ -438,17 +455,4 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
 
     }
 
-
-    public void showMyDialog(View v) {
-        dialog = new LoadingProgressDialogView(this, "正在加载中...", R.anim.operating);
-        dialog.show();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                mBtnLoginLogin.setClickable(true);
-            }
-        }, 5000);
-    }
 }
