@@ -24,7 +24,7 @@
         android:id="@+id/tv_right"
         style="@style/dialog_join_desk"
         android:layout_marginTop="1dp"
-        android:text="挑战方"/>
+        android:text="迎战方"/>
 
     <TextView
         android:id="@+id/tv_cancel"

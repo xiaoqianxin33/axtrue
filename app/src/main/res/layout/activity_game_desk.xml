@@ -374,7 +374,6 @@
         android:layout_height="100px"
         android:background="#fec100"
         android:gravity="center"
-        android:text="我要参战"
         android:textColor="@android:color/white"
         android:textSize="36px"/>
 

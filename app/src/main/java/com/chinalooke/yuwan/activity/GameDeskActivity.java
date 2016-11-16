@@ -113,6 +113,9 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private boolean isJoin = false;
 
     private Handler mHandler = new Handler();
+    private int mLeftSize;
+    private int mRightSize;
+    private int mTotalPeople;
 
 
     @Override
@@ -140,12 +143,53 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 refreshUI();
                 mHandler.postDelayed(this, 5000);
             }
-        }, 5000);
+        }, 0);
     }
 
     private void initView() {
+        isJoin = false;
         GameDeskDetails.ResultBean result = mGameDeskDetails.getResult();
-        setIsJoined();
+        mLeftBeen.clear();
+        mRight.clear();
+        String peopleNumber = result.getPeopleNumber();
+        mTotalPeople = 0;
+        if (!TextUtils.isEmpty(peopleNumber)) {
+            mTotalPeople = Integer.parseInt(peopleNumber) / 2;
+        }
+        mTvFightNumber.setText(mTotalPeople + "VS" + mTotalPeople);
+        GameDeskDetails.ResultBean.PlayersBean players = result.getPlayers();
+        if (players != null) {
+            List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> left = players.getLeft();
+            if (left != null) {
+                mLeftBeen = players.getLeft();
+                mLeftSize = left.size();
+            }
+
+            mPersonYuezhan.setText(mLeftBeen.size() + "/" + mTotalPeople);
+            List<GameDeskDetails.ResultBean.PlayersBean.RightBean> right = players.getRight();
+            if (right != null) {
+                mRight = players.getRight();
+                mRightSize = right.size();
+            }
+            mPersonYingzhan.setText(mRight.size() + "/" + mTotalPeople);
+        } else {
+            mPersonYuezhan.setText("0/" + mTotalPeople);
+            mPersonYingzhan.setText("0/" + mTotalPeople);
+        }
+        String userId = user.getUserId();
+        for (GameDeskDetails.ResultBean.PlayersBean.LeftBean leftBean : mLeftBeen) {
+            if (userId.equals(leftBean.getUserId())) {
+                isJoin = true;
+                break;
+            }
+        }
+        for (GameDeskDetails.ResultBean.PlayersBean.RightBean rightBean : mRight) {
+            if (userId.equals(rightBean.getUserId())) {
+                isJoin = true;
+                break;
+            }
+        }
+        mTvChat.setEnabled(isJoin);
         String status = result.getStatus();
         if (!TextUtils.isEmpty(status)) {
             switch (status) {
@@ -156,7 +200,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     } else {
                         mTvOk.setText("我要参战");
                     }
-                    mTvOk.setText("我要参战");
+                    mTvStatus.setText("迎战中");
                     mTvStatus.setBackgroundResource(R.mipmap.red_round_background);
                     break;
                 case "doing":
@@ -206,54 +250,15 @@ public class GameDeskActivity extends AutoLayoutActivity {
             mTvGameName.setText(gameName);
         }
 
-        String peopleNumber = result.getPeopleNumber();
-        int totalPeople = 0;
-        if (!TextUtils.isEmpty(peopleNumber)) {
-            totalPeople = Integer.parseInt(peopleNumber) / 2;
-        }
-        mTvFightNumber.setText(totalPeople + "VS" + totalPeople);
-        GameDeskDetails.ResultBean.PlayersBean players = result.getPlayers();
-        if (players != null) {
-            List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> left = players.getLeft();
-            if (left != null)
-                mLeftBeen = players.getLeft();
-            mPersonYuezhan.setText(mLeftBeen.size() + "/" + totalPeople);
-            List<GameDeskDetails.ResultBean.PlayersBean.RightBean> right = players.getRight();
-            if (right != null)
-                mRight = players.getRight();
-            mPersonYingzhan.setText(mRight.size() + "/" + totalPeople);
-        } else {
-            mPersonYuezhan.setText("0/" + totalPeople);
-            mPersonYingzhan.setText("0/" + totalPeople);
-        }
+
         mWiner = result.getWiner();
         //gridView 添加 adapter
         MyLeftAdapter myLeftAdapter = new MyLeftAdapter();
         MyRightAdapter myRightAdapter = new MyRightAdapter();
         mGdYuezhan.setAdapter(myLeftAdapter);
         mGdYingzhan.setAdapter(myRightAdapter);
-        UIUtil.setListViewHeightBasedOnChildren(mGdYingzhan);
-        UIUtil.setListViewHeightBasedOnChildren(mGdYuezhan);
-
     }
 
-    //设置玩家是否已经加入了该游戏桌
-    private void setIsJoined() {
-        String userId = user.getUserId();
-        for (GameDeskDetails.ResultBean.PlayersBean.LeftBean leftBean : mLeftBeen) {
-            if (userId.equals(leftBean.getUserId())) {
-                isJoin = true;
-                break;
-            }
-        }
-        for (GameDeskDetails.ResultBean.PlayersBean.RightBean rightBean : mRight) {
-            if (userId.equals(rightBean.getUserId())) {
-                isJoin = true;
-                break;
-            }
-        }
-        mTvChat.setEnabled(isJoin);
-    }
 
     private void initData() {
         mGameDeskId = getIntent().getStringExtra("gameDeskId");
@@ -307,6 +312,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
         if (NetUtil.is_Network_Available(getApplicationContext())) {
             mProgressDialog = DialogUtil.initDialog("", GameDeskActivity.this);
             mProgressDialog.show();
+            mTvOk.setText("我要参战");
             exitDesk();
         } else {
             mToast.setText("网络不可用，请检查网络连接");
@@ -319,6 +325,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
         if (NetUtil.is_Network_Available(getApplicationContext())) {
             mProgressDialog = MyUtils.initDialog("加入中...", GameDeskActivity.this);
             mProgressDialog.show();
+            mTvOk.setText("退出战场");
             sendInternet(i);
         } else {
             mToast.setText("网络不可用，请检查网络连接");
@@ -332,7 +339,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
         @Override
         public int getCount() {
-            return mLeftBeen.size() + 1;
+            return mLeftSize >= mTotalPeople ? mLeftSize : mLeftBeen.size() + 1;
         }
 
         @Override
@@ -378,7 +385,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
         @Override
         public int getCount() {
-            return mRight.size() + 1;
+            return mRightSize >= mTotalPeople ? mRightSize : mRight.size() + 1;
         }
 
         @Override
@@ -467,11 +474,13 @@ public class GameDeskActivity extends AutoLayoutActivity {
                             mToast.show();
                             refreshUI();
                         } else {
+                            mTvOk.setText("退出战场");
                             String msg = jsonObject.getString("Msg");
                             mToast.setText("退出失败，" + msg);
                             mToast.show();
                         }
                     } else {
+                        mTvOk.setText("退出战场");
                         String msg = jsonObject.getString("Msg");
                         mToast.setText("退出失败，" + msg);
                         mToast.show();
@@ -484,6 +493,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mTvOk.setText("退出战场");
                 mProgressDialog.dismiss();
                 mToast.setText("退出失败，请稍后重试");
                 mToast.show();
@@ -499,7 +509,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
      * @param s 判断约战应战方
      */
     private void sendInternet(int s) {
-
         String netBarId = getIntent().getStringExtra("netBarId");
         String uri;
         if (TextUtils.isEmpty(netBarId)) {
@@ -507,36 +516,23 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     + "&gameDeskId=" + mGameDeskId + "&role=" + s;
         } else {
             uri = Constant.mainUri + "takePartInGameDesk&userId=" + user.getUserId()
-                    + "&gameDeskId=" + mGameDeskId + "&role=" + s + "&netbarId=" + netBarId;
+                    + "&gameDeskId=" + mGameDeskId + "&role=" + s + "&netBarId=" + netBarId;
         }
-
         StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 mProgressDialog.dismiss();
-                Log.e("TAG", response);
                 if (AnalysisJSON.analysisJson(response)) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-                        boolean result = jsonObject.getBoolean("Result");
-                        if (result) {
-                            showJoinSucceedDialog();
-                            refreshUI();
-                        } else {
-                            refreshUI();
-                            try {
-                                JSONObject jsonObject1 = new JSONObject(response);
-                                String msg = jsonObject1.getString("Msg");
-                                mToast.setText("加入失败，" + msg);
-                                mToast.show();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    showJoinSucceedDialog();
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<GameDeskDetails>() {
+                    }.getType();
+                    GameDeskDetails o = gson.fromJson(response, type);
+                    if (o != null)
+                        mGameDeskDetails = o;
+                    initView();
                 } else {
+                    mTvOk.setText("我要参战");
                     refreshUI();
                     try {
                         JSONObject jsonObject = new JSONObject(response);
@@ -552,6 +548,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 refreshUI();
+                mTvOk.setText("我要参战");
                 mProgressDialog.dismiss();
                 mToast.setText("加入失败，请重试。");
                 mToast.show();
@@ -563,7 +560,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
     //弹出确定加入dialog
     private void showJoinDialog() {
-        Log.e("TAG", "showJoinDialog");
         final Dialog dialog = new Dialog(GameDeskActivity.this, R.style.Dialog);
         View inflate = LayoutInflater.from(this).inflate(R.layout.dialog_join_desk, null);
         TextView tvCancel = (TextView) inflate.findViewById(R.id.tv_cancel);
