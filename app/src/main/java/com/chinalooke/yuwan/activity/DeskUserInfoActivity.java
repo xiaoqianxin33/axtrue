@@ -147,7 +147,14 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
         String sumPlayCount = result.getSumPlayCount();
         easySet(sumPlayCount, mTvTotalFight);
         String phone = result.getPhone();
-        easySet(phone, mTvPhone);
+        if (!TextUtils.isEmpty(phone)) {
+            String head = phone.substring(0, 3);
+            String foot = phone.substring(phone.length() - 4);
+            String phone1 = head + "***" + foot;
+            mTvPhone.setText(phone1);
+        }
+
+
         if (!TextUtils.isEmpty(winCount) && !TextUtils.isEmpty(loseCount) && !TextUtils.isEmpty(breakCount)) {
             PieData pieData = getPieData(winCount, loseCount, breakCount);
             setPieChart(pieData);
@@ -160,14 +167,14 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
         int lose = Integer.parseInt(loseCount);
         int breakC = Integer.parseInt(breakCount);
         int total = win + lose + breakC;
-        List<PieEntry> yValues = new ArrayList<PieEntry>();
+        List<PieEntry> yValues = new ArrayList<>();
         float quarterly1 = win * 100 / total;
         float quarterly2 = lose * 100 / total;
         float quarterly3 = breakC * 100 / total;
         yValues.add(new PieEntry(quarterly1, 0));
         yValues.add(new PieEntry(quarterly2, 1));
         yValues.add(new PieEntry(quarterly3, 2));
-        ArrayList<Integer> colors = new ArrayList<Integer>();
+        ArrayList<Integer> colors = new ArrayList<>();
         // 饼图颜色
         colors.add(Color.rgb(254, 193, 0));
         colors.add(Color.rgb(29, 173, 145));
@@ -179,7 +186,6 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
         float px = 5 * (metrics.densityDpi / 160f);
         pieDataSet.setSelectionShift(px); // 选中态多出的长度
         return new PieData(pieDataSet);
-
     }
 
     //初始化饼状图
@@ -188,8 +194,6 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
         mPieChart.setHoleRadius(45);
         mPieChart.setUsePercentValues(true);
         mPieChart.setData(pieData);
-
-
     }
 
     private void easySet(String string, TextView textView) {

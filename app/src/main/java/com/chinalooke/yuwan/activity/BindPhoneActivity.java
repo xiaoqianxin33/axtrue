@@ -21,7 +21,6 @@ import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.ResultDatas;
-import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.GetHTTPDatas;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;

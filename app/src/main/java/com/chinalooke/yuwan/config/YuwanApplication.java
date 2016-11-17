@@ -2,6 +2,7 @@ package com.chinalooke.yuwan.config;
 
 import android.app.Application;
 import android.os.Handler;
+import android.support.multidex.MultiDex;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -50,5 +51,7 @@ public class YuwanApplication extends Application {
         //在做打包混淆时，关闭debug模式，避免消耗不必要的资源
         EMClient.getInstance().setDebugMode(true);
         EaseUI.getInstance().init(getApplicationContext(), options);
+        //编译分包
+        MultiDex.install(this);
     }
 }

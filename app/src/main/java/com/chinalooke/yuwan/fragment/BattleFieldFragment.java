@@ -11,7 +11,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -547,12 +546,14 @@ public class BattleFieldFragment extends Fragment {
                     break;
                 case 1:
                     helper.setText(R.id.tv_status, "进行中")
+                            .setText(R.id.tv_apply, "已开战")
                             .setBackgroundRes(R.id.tv_status, R.mipmap.jxz)
                             .setText(R.id.tv_time, "00:00:00");
                     ;
                     break;
                 case 2:
                     helper.setText(R.id.tv_status, "已结束")
+                            .setText(R.id.tv_apply, "获胜方")
                             .setBackgroundRes(R.id.tv_status, R.mipmap.yjs)
                             .setText(R.id.tv_time, "00:00:00");
                     break;

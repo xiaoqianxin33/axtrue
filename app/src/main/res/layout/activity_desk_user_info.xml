@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="420px"
-            android:background="@color/holo_red_light"/>
+            android:background="@mipmap/desk_user_info_background"/>
 
         <ImageView
             android:id="@+id/iv_back"
@@ -67,14 +67,12 @@
             <TextView
                 android:id="@+id/tv_age"
                 style="@style/desk_user_info_text"
-                android:layout_marginLeft="40px"
-                android:text="22岁"/>
+                android:layout_marginLeft="40px"/>
 
             <TextView
                 android:id="@+id/address"
                 style="@style/desk_user_info_text"
-                android:layout_marginLeft="100px"
-                android:text="河南洛阳"/>
+                android:layout_marginLeft="100px"/>
         </RelativeLayout>
 
     </RelativeLayout>
@@ -96,7 +94,6 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="32px"
-            android:text="80"
             android:textColor="#838688"
             android:textSize="24px"/>
 
@@ -154,7 +151,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="675px"
             android:layout_marginTop="36px"
-            android:text="30"
             android:textColor="@color/black_word"
             android:textSize="20px"/>
 
@@ -180,7 +176,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="675px"
             android:layout_marginTop="86px"
-            android:text="25"
             android:textColor="@color/black_word"
             android:textSize="20px"/>
 
@@ -206,7 +201,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="675px"
             android:layout_marginTop="134px"
-            android:text="3"
             android:textColor="@color/black_word"
             android:textSize="20px"/>
 
@@ -240,7 +234,6 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="32px"
-            android:text="146***1234"
             android:textColor="#838688"
             android:textSize="23px"/>
 
@@ -274,7 +267,6 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="32px"
-            android:text="河南洛阳涧西区"
             android:textColor="#838688"
             android:textSize="23px"/>
 
