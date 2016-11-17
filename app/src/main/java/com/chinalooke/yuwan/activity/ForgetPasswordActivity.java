@@ -89,7 +89,7 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
             case R.id.btn__get_verification_code_forget_password:
                 //判断是否是手机号
                 phone = mphoneForgetPassword.getText().toString();
-                if (Validator.getValidator().isMobile(phone))
+                if (Validator.isMobile(phone))
                     //判断用户是否注册
                     getHTTPIsPhoneExists();
                 else
@@ -107,7 +107,7 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
     private void clickNextBtn() {
         phone = mphoneForgetPassword.getText().toString();
         mVerificationCode = verificationCodeForget.getText().toString();
-        if (!Validator.getValidator().isMobile(phone))
+        if (!Validator.isMobile(phone))
             mphoneForgetPassword.setError("请输入正确的手机号码");
         else {
             //提交验证码

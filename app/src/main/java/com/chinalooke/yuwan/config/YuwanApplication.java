@@ -6,11 +6,14 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMOptions;
+import com.hyphenate.easeui.controller.EaseUI;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 /**
- * 项目配置
+ * 项目初始化配置
  * Created by xiao on 2016/8/23.
  */
 public class YuwanApplication extends Application {
@@ -40,5 +43,12 @@ public class YuwanApplication extends Application {
         mToast = Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT);
         mHandler = new Handler();
         mQueue = Volley.newRequestQueue(getApplicationContext());
+        //环信初始化
+        EMOptions options = new EMOptions();
+        options.setAcceptInvitationAlways(false);
+        EMClient.getInstance().init(getApplicationContext(), options);
+        //在做打包混淆时，关闭debug模式，避免消耗不必要的资源
+        EMClient.getInstance().setDebugMode(true);
+        EaseUI.getInstance().init(getApplicationContext(), options);
     }
 }

@@ -32,19 +32,18 @@
     <!-- 蓝牙分享所需的权限 -->
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
-
-    <!--用于进行网络定位-->
-    <!--用于访问GPS定位-->
-    <!--用于获取运营商信息，用于支持提供运营商信息相关的接口-->
-    <!--用于访问wifi网络信息，wifi信息会用于进行网络定位-->
-    <!--用于获取wifi的获取权限，wifi信息会用来进行网络定位-->
-    <!--用于访问网络，网络定位需要上网-->
-    <!--用于读取手机当前的状态-->
-    <!--用于写入缓存数据到扩展存储卡-->
-    <!--用于申请调用A-GPS模块-->
-
-
+    <!-- 用于进行网络定位 -->
+    <!-- 用于访问GPS定位 -->
+    <!-- 用于获取运营商信息，用于支持提供运营商信息相关的接口 -->
+    <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
+    <!-- 用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <!-- 用于访问网络，网络定位需要上网 -->
+    <!-- 用于读取手机当前的状态 -->
+    <!-- 用于写入缓存数据到扩展存储卡 -->
+    <!-- 用于申请调用A-GPS模块 -->
     <application
         android:name=".config.YuwanApplication"
         android:allowBackup="true"
@@ -60,6 +59,28 @@
             android:name="design_height"
             android:value="1334">
         </meta-data>
+
+        <!-- 环信集成 -->
+        <meta-data
+            android:name="EASEMOB_APPKEY"
+            android:value="chejulooke#leixiong"/>
+        <!-- 声明SDK所需的service SDK核心功能 -->
+        <service
+            android:name="com.hyphenate.chat.EMChatService"
+            android:exported="true"/>
+        <!-- 声明SDK所需的receiver -->
+        <receiver android:name="com.hyphenate.chat.EMMonitorReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+
+                <data android:scheme="package"/>
+            </intent-filter>
+            <!-- 可选filter -->
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
+            </intent-filter>
+        </receiver>
 
         <!-- 主页 -->
         <activity
@@ -152,6 +173,10 @@
         <activity android:name=".activity.FindPwdCompleteActivity">
         </activity>
         <activity android:name=".activity.SearchActivity">
+        </activity>
+        <activity android:name=".activity.EaseGroupChatActivity">
+        </activity>
+        <activity android:name=".activity.DeskUserInfoActivity">
         </activity>
     </application>
 

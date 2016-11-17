@@ -26,6 +26,7 @@ import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.GetHTTPDatas;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
+import com.chinalooke.yuwan.utils.NetUtil;
 import com.zhy.autolayout.AutoLayoutActivity;
 
 import org.json.JSONException;
@@ -252,12 +253,13 @@ public class BindPhoneActivity extends AutoLayoutActivity {
         userInfo.setUserId(userId);
         userInfo.setHeadImg(headImg);
         try {
-            LoginUserInfoUtils.getLoginUserInfoUtils().saveLoginUserInfo(getApplicationContext(),
+            LoginUserInfoUtils.saveLoginUserInfo(getApplicationContext(),
                     LoginUserInfoUtils.KEY, userInfo);
         } catch (IOException e) {
             e.printStackTrace();
         }
         Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
+        NetUtil.registerHx(userInfo);
         Intent intent = new Intent(this, PersonalInfoActivity.class);
         startActivity(intent);
         finish();

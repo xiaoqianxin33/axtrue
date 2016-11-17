@@ -344,4 +344,12 @@
         <item name="android:windowIsFloating">true</item>
     </style>
 
+    <style name="desk_user_info_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">20px</item>
+    </style>
+
 </resources>

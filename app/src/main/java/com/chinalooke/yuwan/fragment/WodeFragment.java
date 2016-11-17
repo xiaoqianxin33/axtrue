@@ -28,6 +28,8 @@ import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.view.CircleImageView;
+import com.hyphenate.EMCallBack;
+import com.hyphenate.chat.EMClient;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -92,6 +94,24 @@ public class WodeFragment extends Fragment {
                     DialogUtil.showSingerDialog(getActivity(), "提示", "确定注销吗？", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            //退出环信
+                            EMClient.getInstance().logout(true, new EMCallBack() {
+
+                                @Override
+                                public void onSuccess() {
+
+                                }
+
+                                @Override
+                                public void onProgress(int progress, String status) {
+
+                                }
+
+                                @Override
+                                public void onError(int code, String message) {
+
+                                }
+                            });
                             LoginUserInfoUtils.getLoginUserInfoUtils().clearData(getActivity());//清除资料
                             LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(null);
                             setCancelDialog();

@@ -3,6 +3,7 @@ package com.chinalooke.yuwan.activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -41,6 +43,8 @@ import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.exceptions.HyphenateException;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
@@ -111,6 +115,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private int mLeftSize;
     private int mRightSize;
     private int mTotalPeople;
+    private String mOwnerName;
 
 
     @Override
@@ -139,6 +144,19 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 mHandler.postDelayed(this, 5000);
             }
         }, 0);
+
+        mGdYingzhan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position != mRight.size()) {
+                    GameDeskDetails.ResultBean.PlayersBean.RightBean rightBean = mRight.get(position);
+                    String userId = rightBean.getUserId();
+                    Intent intent = new Intent(GameDeskActivity.this, DeskUserInfoActivity.class);
+                    intent.putExtra("userId", userId);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     private void initView() {
@@ -216,10 +234,10 @@ public class GameDeskActivity extends AutoLayoutActivity {
             }
         }
 
-        String ownerName = getIntent().getStringExtra("ownerName");
-        if (!TextUtils.isEmpty(ownerName)) {
-            if ("官方".equals(ownerName))
-                mOwnerType.setText(ownerName);
+        mOwnerName = getIntent().getStringExtra("ownerName");
+        if (!TextUtils.isEmpty(mOwnerName)) {
+            if ("官方".equals(mOwnerName))
+                mOwnerType.setText(mOwnerName);
             else
                 mOwnerType.setText("个人");
         }
@@ -267,8 +285,9 @@ public class GameDeskActivity extends AutoLayoutActivity {
             lastClickTime = currentTime;
             switch (view.getId()) {
                 case R.id.tv_chat:
-                    mToast.setText("啊啊啊啊");
-                    mToast.show();
+                    Intent intent = new Intent(GameDeskActivity.this, EaseGroupChatActivity.class);
+                    intent.putExtra("groupId", mOwnerName);
+                    startActivity(intent);
                     break;
                 case R.id.tv_ok:
                     switch (mStatus) {
@@ -287,6 +306,37 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     break;
             }
         }
+    }
+
+    //加入环信群组
+    private void joinEaseGroup() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    EMClient.getInstance().groupManager().joinGroup(mOwnerName);
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+
+    //退出环信群组
+    private void quitEaseGroup() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    EMClient.getInstance().groupManager().leaveGroup(mOwnerName);
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+
     }
 
     //弹出是否确认退出dialog
@@ -470,6 +520,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                         if (result) {
                             mToast.setText("退出成功！");
                             mToast.show();
+                            quitEaseGroup();
                             refreshUI();
                         } else {
                             mTvOk.setText("退出战场");
@@ -529,6 +580,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     if (o != null)
                         mGameDeskDetails = o;
                     initView();
+                    joinEaseGroup();
                 } else {
                     mTvOk.setText("我要参战");
                     refreshUI();

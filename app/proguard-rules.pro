@@ -25,3 +25,6 @@
 
 -keep class com.lsjwzh.widget.recyclerviewpager.**
 -dontwarn com.lsjwzh.widget.recyclerviewpager.**
+
+-keep class com.hyphenate.** {*;}
+-dontwarn  com.hyphenate.**

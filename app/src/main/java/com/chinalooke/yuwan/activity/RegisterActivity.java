@@ -28,6 +28,7 @@ import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.GetHTTPDatas;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
+import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.Validator;
 import com.zhy.autolayout.AutoLayoutActivity;
 
@@ -41,6 +42,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
+
+import static com.chinalooke.yuwan.utils.LoginUserInfoUtils.getLoginUserInfoUtils;
 
 /**
  * 注册缓冲未做，向服务端发送介绍人未写 check的选中未写
@@ -155,12 +158,13 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         userInfo.setUserId(userId);
         userInfo.setHeadImg(headImg);
         try {
-            LoginUserInfoUtils.getLoginUserInfoUtils().saveLoginUserInfo(getApplicationContext(),
+            LoginUserInfoUtils.saveLoginUserInfo(getApplicationContext(),
                     LoginUserInfoUtils.KEY, userInfo);
         } catch (IOException e) {
             e.printStackTrace();
         }
         Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
+        NetUtil.registerHx(userInfo);
         Intent intent = new Intent(this, PersonalInfoActivity.class);
         startActivity(intent);
         finish();

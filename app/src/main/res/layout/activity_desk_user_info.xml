@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_desk_user_info"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.chinalooke.yuwan.activity.DeskUserInfoActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="680px"
+        android:background="@android:color/white">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="420px"
+            android:background="@color/holo_red_light"/>
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="36px"
+            android:layout_height="36px"
+            android:layout_marginLeft="32px"
+            android:layout_marginTop="64px"
+            android:src="@mipmap/left_arrow"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="67px"
+            android:text="战友详情"
+            android:textColor="@android:color/white"
+            android:textSize="32px"/>
+
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/iv_head"
+            android:layout_width="200px"
+            android:layout_height="200px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="320px"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/placeholder"
+            app:riv_oval="true"/>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="550px"
+            android:textColor="@android:color/black"
+            android:textSize="45px"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_sex"
+            android:layout_width="200px"
+            android:layout_height="31px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="615px"
+            android:background="@mipmap/female_background">
+
+            <TextView
+                android:id="@+id/tv_age"
+                style="@style/desk_user_info_text"
+                android:layout_marginLeft="40px"
+                android:text="22岁"/>
+
+            <TextView
+                android:id="@+id/address"
+                style="@style/desk_user_info_text"
+                android:layout_marginLeft="100px"
+                android:text="河南洛阳"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="95px"
+        android:background="@android:color/white">
+
+        <TextView
+            android:id="@+id/tv_total_fight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="32px"
+            android:text="80"
+            android:textColor="#838688"
+            android:textSize="24px"/>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/tv_total_fight"
+            android:layout_marginLeft="32px"
+            android:layout_marginStart="16dp"
+            android:text="总参战次数"
+            android:textColor="@color/black_word"
+            android:textSize="32px"/>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="32px"
+        android:background="@color/line_color"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="344px"
+        android:background="@android:color/white">
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pieChart"
+            android:layout_width="260px"
+            android:layout_height="260px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="75px"/>
+
+
+        <ImageView
+            android:layout_width="20px"
+            android:layout_height="20px"
+            android:layout_marginLeft="440px"
+            android:layout_marginTop="38px"
+            android:src="@mipmap/orange_point"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="480px"
+            android:layout_marginTop="34px"
+            android:text="胜利次数"
+            android:textColor="#838688"
+            android:textSize="25px"/>
+
+        <TextView
+            android:id="@+id/tv_win"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="675px"
+            android:layout_marginTop="36px"
+            android:text="30"
+            android:textColor="@color/black_word"
+            android:textSize="20px"/>
+
+        <ImageView
+            android:layout_width="20px"
+            android:layout_height="20px"
+            android:layout_marginLeft="440px"
+            android:layout_marginTop="86px"
+            android:src="@mipmap/green_point"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="480px"
+            android:layout_marginTop="86px"
+            android:text="失败次数"
+            android:textColor="#838688"
+            android:textSize="25px"/>
+
+        <TextView
+            android:id="@+id/tv_lose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="675px"
+            android:layout_marginTop="86px"
+            android:text="25"
+            android:textColor="@color/black_word"
+            android:textSize="20px"/>
+
+        <ImageView
+            android:layout_width="20px"
+            android:layout_height="20px"
+            android:layout_marginLeft="440px"
+            android:layout_marginTop="134px"
+            android:src="@mipmap/blue_point"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="480px"
+            android:layout_marginTop="134px"
+            android:text="违约次数"
+            android:textColor="#838688"
+            android:textSize="25px"/>
+
+        <TextView
+            android:id="@+id/tv_run"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="675px"
+            android:layout_marginTop="134px"
+            android:text="3"
+            android:textColor="@color/black_word"
+            android:textSize="20px"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="96px"
+        android:background="@android:color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="32px"
+            android:layout_marginStart="16dp"
+            android:text="手机号"
+            android:textColor="@color/black_word"
+            android:textSize="32px"/>
+
+        <TextView
+            android:id="@+id/tv_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="32px"
+            android:text="146***1234"
+            android:textColor="#838688"
+            android:textSize="23px"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="96px"
+        android:background="@android:color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="32px"
+            android:layout_marginStart="16dp"
+            android:text="所在地"
+            android:textColor="@color/black_word"
+            android:textSize="32px"/>
+
+        <TextView
+            android:id="@+id/tv_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="32px"
+            android:text="河南洛阳涧西区"
+            android:textColor="#838688"
+            android:textSize="23px"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"/>
+
+
+</LinearLayout>

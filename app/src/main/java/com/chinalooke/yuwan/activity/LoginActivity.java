@@ -30,6 +30,9 @@ import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.Validator;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.hyphenate.EMCallBack;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.exceptions.HyphenateException;
 import com.zhy.autolayout.AutoLayoutActivity;
 
 import org.json.JSONException;
@@ -51,6 +54,8 @@ import cn.sharesdk.wechat.friends.Wechat;
 
 import static com.chinalooke.yuwan.constant.Constant.MIN_CLICK_DELAY_TIME;
 import static com.chinalooke.yuwan.constant.Constant.lastClickTime;
+import static com.chinalooke.yuwan.utils.NetUtil.loginHx;
+import static com.chinalooke.yuwan.utils.NetUtil.registerHx;
 
 
 public class LoginActivity extends AutoLayoutActivity implements PlatformActionListener {
@@ -126,8 +131,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                     }
                     return true;
                 }
-
-
                 return false;
             }
         });
@@ -322,6 +325,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                 Log.e("TAG", "userInfo != null");
                 LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo.getResult());//设置userInfo
                 LoginUserInfoUtils.saveObject(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo.getResult());
+                registerHx(userInfo.getResult());
             }
             mProgressDialog.dismiss();
             loginSuccess();//调用登录成功方法

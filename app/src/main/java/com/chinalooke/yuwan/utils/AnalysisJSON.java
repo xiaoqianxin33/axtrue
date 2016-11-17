@@ -72,8 +72,12 @@ public class AnalysisJSON {
 
 
     public static boolean analysisJson(String response) {
-        String substring = response.substring(11, 15);
-        return "true".equals(substring);
+        if (response != null) {
+            String substring = response.substring(11, 15);
+            return "true".equals(substring);
+        } else {
+            return false;
+        }
     }
 
 }

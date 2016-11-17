@@ -20,6 +20,7 @@ import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.hyphenate.chat.EMClient;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -47,6 +48,10 @@ public class SplashActivity extends AppCompatActivity {
         if (user != null) {
             LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(user);
         }
+
+        //环信load本地对话和群组
+        EMClient.getInstance().chatManager().loadAllConversations();
+        EMClient.getInstance().groupManager().loadAllGroups();
         mHandler.sendEmptyMessageDelayed(1, 2000);
     }
 

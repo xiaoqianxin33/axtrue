@@ -66,6 +66,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:v1.9.7'
     compile files('libs/hyphenatechat_3.2.1.jar')
+    compile project(path: ':easeui')
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.0'
 }
 
 
