@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.avos.avoscloud.AVOSCloud;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.easeui.controller.EaseUI;
@@ -53,5 +54,7 @@ public class YuwanApplication extends Application {
         EaseUI.getInstance().init(getApplicationContext(), options);
         //编译分包
         MultiDex.install(this);
+        //leanCould初始化
+        AVOSCloud.initialize(this,"ArJkPnYSMCv1MTpGOPU3aHLU-gzGzoHsz","MlCdUI4iB1jucLGs0GIuTwyL");
     }
 }
