@@ -49,6 +49,7 @@ public class NetUtil {
                     loginHx(result);
                 } catch (HyphenateException e) {
                     e.printStackTrace();
+                    Log.e("TAG", e.getMessage());
                     loginHx(result);
                 }
             }
@@ -63,7 +64,7 @@ public class NetUtil {
             public void onSuccess() {
                 EMClient.getInstance().groupManager().loadAllGroups();
                 EMClient.getInstance().chatManager().loadAllConversations();
-                Log.d("main", "登录聊天服务器成功！");
+                Log.e("TAG", "登录聊天服务器成功！");
             }
 
             @Override
@@ -73,7 +74,7 @@ public class NetUtil {
 
             @Override
             public void onError(int code, String message) {
-                Log.d("main", "登录聊天服务器失败！");
+                Log.e("TAG", "登录聊天服务器失败！");
             }
         });
     }

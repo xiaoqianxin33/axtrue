@@ -1,6 +1,8 @@
 package com.chinalooke.yuwan.activity;
 
+import android.Manifest;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -28,19 +30,22 @@ import com.chinalooke.yuwan.fragment.YueZhanFragment;
 import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
+import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.zhy.autolayout.AutoLayoutActivity;
 
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import pub.devrel.easypermissions.EasyPermissions;
 
 import static com.chinalooke.yuwan.constant.Constant.MIN_CLICK_DELAY_TIME;
 import static com.chinalooke.yuwan.constant.Constant.lastClickTime;
 
-public class MainActivity extends AutoLayoutActivity implements AMapLocationListener {
+public class MainActivity extends AutoLayoutActivity implements AMapLocationListener, EasyPermissions.PermissionCallbacks {
 
     @Bind(R.id.iv_zc)
     ImageView mIvZc;
@@ -77,6 +82,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     private long exitTime = 0;
     private Toast mToast;
     private LoginUser.ResultBean mUserInfo;
+    private int RC_ACCESS_FINE_LOCATION = 1;
 
     public RequestQueue getQueue() {
         return mQueue;
@@ -104,7 +110,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         mWodeFragment = new WodeFragment();
         mYueZhanFragment = new YueZhanFragment();
         mBlackFragment = new BlackFragment();
-        mLocationClient = LocationUtils.location(MainActivity.this, this);
+        requestLocationPermission();
         mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         initView();
     }
@@ -195,6 +201,22 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         mTvWd.setSelected(i == 5);
     }
 
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        if (requestCode == RC_ACCESS_FINE_LOCATION)
+            mLocationClient = LocationUtils.location(this, this);
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
 
     public interface IOnFocusListenable {
         public void onWindowFocusChanged(boolean hasFocus);
@@ -241,4 +263,17 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
             finish();
         }
     }
+
+    //请求定位权限
+    private void requestLocationPermission() {
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            mLocationClient = LocationUtils.location(this, this);
+        } else {
+            EasyPermissions.requestPermissions(this, "需要定位权限",
+                    RC_ACCESS_FINE_LOCATION, perms);
+        }
+    }
+
+
 }

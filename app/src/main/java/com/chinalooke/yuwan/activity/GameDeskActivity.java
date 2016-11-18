@@ -34,6 +34,7 @@ import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.model.GameDesk;
 import com.chinalooke.yuwan.model.GameDeskDetails;
 import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
@@ -52,6 +53,7 @@ import com.zhy.autolayout.AutoLayoutActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -115,7 +117,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private int mLeftSize;
     private int mRightSize;
     private int mTotalPeople;
-    private String mOwnerName;
+    private GameDesk.ResultBean mGameDesk;
+    private String mRoomId;
 
 
     @Override
@@ -145,6 +148,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             }
         }, 0);
 
+        //gridView item 点击监听
         mGdYingzhan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -157,11 +161,25 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 }
             }
         });
+        mGdYuezhan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position != mLeftBeen.size()) {
+                    GameDeskDetails.ResultBean.PlayersBean.LeftBean rightBean = mLeftBeen.get(position);
+                    String userId = rightBean.getUserId();
+                    Intent intent = new Intent(GameDeskActivity.this, DeskUserInfoActivity.class);
+                    intent.putExtra("userId", userId);
+                    startActivity(intent);
+                }
+            }
+        });
     }
+
 
     private void initView() {
         isJoin = false;
         GameDeskDetails.ResultBean result = mGameDeskDetails.getResult();
+        mRoomId = result.getRoomId();
         mLeftBeen.clear();
         mRight.clear();
         String peopleNumber = result.getPeopleNumber();
@@ -234,7 +252,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             }
         }
 
-        mOwnerName = getIntent().getStringExtra("ownerName");
+        String mOwnerName = mGameDesk.getOwnerName();
         if (!TextUtils.isEmpty(mOwnerName)) {
             if ("官方".equals(mOwnerName))
                 mOwnerType.setText(mOwnerName);
@@ -276,6 +294,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
     private void initData() {
         mGameDeskId = getIntent().getStringExtra("gameDeskId");
+        mGameDesk = (GameDesk.ResultBean) getIntent().getSerializableExtra("gameDesk");
     }
 
     @OnClick({R.id.tv_chat, R.id.tv_ok})
@@ -286,7 +305,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             switch (view.getId()) {
                 case R.id.tv_chat:
                     Intent intent = new Intent(GameDeskActivity.this, EaseGroupChatActivity.class);
-                    intent.putExtra("groupId", mOwnerName);
+                    intent.putExtra("groupId", mRoomId);
                     startActivity(intent);
                     break;
                 case R.id.tv_ok:
@@ -314,7 +333,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             @Override
             public void run() {
                 try {
-                    EMClient.getInstance().groupManager().joinGroup(mOwnerName);
+                    EMClient.getInstance().groupManager().joinGroup(mRoomId);
                 } catch (HyphenateException e) {
                     e.printStackTrace();
                 }
@@ -329,7 +348,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             @Override
             public void run() {
                 try {
-                    EMClient.getInstance().groupManager().leaveGroup(mOwnerName);
+                    EMClient.getInstance().groupManager().leaveGroup(mRoomId);
                 } catch (HyphenateException e) {
                     e.printStackTrace();
                 }

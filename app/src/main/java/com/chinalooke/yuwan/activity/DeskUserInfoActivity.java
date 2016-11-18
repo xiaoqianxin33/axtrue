@@ -1,9 +1,7 @@
 package com.chinalooke.yuwan.activity;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -19,10 +17,7 @@ import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.DeskUserInfo;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
+import com.chinalooke.yuwan.view.PieChartView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -53,7 +48,7 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
     @Bind(R.id.tv_total_fight)
     TextView mTvTotalFight;
     @Bind(R.id.pieChart)
-    PieChart mPieChart;
+    PieChartView mChart;
     @Bind(R.id.tv_win)
     TextView mTvWin;
     @Bind(R.id.tv_lose)
@@ -129,11 +124,12 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
         String nickName = result.getNickName();
         easySet(nickName, mTvName);
         String age = result.getAge();
-        easySet(age, mTvAge);
+        if (!TextUtils.isEmpty(age))
+            mTvAge.setText(age + "岁");
 
         String address = result.getAddress();
         if (!TextUtils.isEmpty(address)) {
-            String substring = address.substring(0, 6);
+            String substring = address.substring(0, 5);
             mTvLocation.setText(address);
             mAddress.setText(substring);
         }
@@ -156,45 +152,15 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
 
 
         if (!TextUtils.isEmpty(winCount) && !TextUtils.isEmpty(loseCount) && !TextUtils.isEmpty(breakCount)) {
-            PieData pieData = getPieData(winCount, loseCount, breakCount);
-            setPieChart(pieData);
+            List<PieChartView.PieceDataHolder> pieceDataHolders = new ArrayList<>();
+            pieceDataHolders.add(new PieChartView.PieceDataHolder(Integer.parseInt(winCount), 0xFFFEC100, ""));
+            pieceDataHolders.add(new PieChartView.PieceDataHolder(Integer.parseInt(loseCount), 0xFF1DAD91, ""));
+            pieceDataHolders.add(new PieChartView.PieceDataHolder(Integer.parseInt(breakCount), 0xFF01BBF1, ""));
+            mChart.setData(pieceDataHolders);
+            mChart.setMarkerLineLength(0);
         }
-
     }
 
-    private PieData getPieData(String winCount, String loseCount, String breakCount) {
-        int win = Integer.parseInt(winCount);
-        int lose = Integer.parseInt(loseCount);
-        int breakC = Integer.parseInt(breakCount);
-        int total = win + lose + breakC;
-        List<PieEntry> yValues = new ArrayList<>();
-        float quarterly1 = win * 100 / total;
-        float quarterly2 = lose * 100 / total;
-        float quarterly3 = breakC * 100 / total;
-        yValues.add(new PieEntry(quarterly1, 0));
-        yValues.add(new PieEntry(quarterly2, 1));
-        yValues.add(new PieEntry(quarterly3, 2));
-        ArrayList<Integer> colors = new ArrayList<>();
-        // 饼图颜色
-        colors.add(Color.rgb(254, 193, 0));
-        colors.add(Color.rgb(29, 173, 145));
-        colors.add(Color.rgb(0, 186, 242));
-        PieDataSet pieDataSet = new PieDataSet(yValues, "");
-        pieDataSet.setSliceSpace(0f);
-        pieDataSet.setColors(colors);
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        float px = 5 * (metrics.densityDpi / 160f);
-        pieDataSet.setSelectionShift(px); // 选中态多出的长度
-        return new PieData(pieDataSet);
-    }
-
-    //初始化饼状图
-    private void setPieChart(PieData pieData) {
-        mPieChart.setHoleColor(getResources().getColor(R.color.transparent));
-        mPieChart.setHoleRadius(45);
-        mPieChart.setUsePercentValues(true);
-        mPieChart.setData(pieData);
-    }
 
     private void easySet(String string, TextView textView) {
         if (!TextUtils.isEmpty(string))

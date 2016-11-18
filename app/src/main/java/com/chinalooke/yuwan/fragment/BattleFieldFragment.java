@@ -11,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -233,9 +234,7 @@ public class BattleFieldFragment extends Fragment {
     private void interItem(int i, List<GameDesk.ResultBean> list) {
         GameDesk.ResultBean resultBean = list.get(i);
         String gameDeskId = resultBean.getGameDeskId();
-        String ownerName = resultBean.getOwnerName();
-        String netBarId = resultBean.getNetBarId();
-        getGameDeskWithId(gameDeskId, null, ownerName, netBarId);
+        getGameDeskWithId(gameDeskId, null, resultBean);
     }
 
     private class MyRequestLoadMoreListener implements BaseQuickAdapter.RequestLoadMoreListener {
@@ -567,7 +566,7 @@ public class BattleFieldFragment extends Fragment {
     }
 
     //按照游戏桌id取得游戏桌详情
-    private void getGameDeskWithId(final String gameDeskId, final BaseViewHolder helper, final String ownerName, final String netBarId) {
+    private void getGameDeskWithId(final String gameDeskId, final BaseViewHolder helper, final GameDesk.ResultBean resultBean) {
         StringRequest stringRequest = new StringRequest(Constant.HOST + "getGameDeskWithId&gameDeskId=" + gameDeskId,
                 new Response.Listener<String>() {
                     @Override
@@ -594,10 +593,8 @@ public class BattleFieldFragment extends Fragment {
                                     Intent intent = new Intent(getActivity(), GameDeskActivity.class);
                                     Bundle bundle = new Bundle();
                                     bundle.putSerializable("gameDeskDetails", gameDesk);
-                                    if (!TextUtils.isEmpty(ownerName))
-                                        intent.putExtra("ownerName", ownerName);
+                                    bundle.putSerializable("gameDesk", resultBean);
                                     intent.putExtra("gameDeskId", gameDeskId);
-                                    intent.putExtra("netBarId", netBarId);
                                     intent.putExtras(bundle);
                                     startActivity(intent);
                                 }

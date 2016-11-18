@@ -79,6 +79,15 @@ public class GameDeskDetails implements Serializable {
         private String status;
         private String winer;
         private String bgImage;
+        private String roomId;
+
+        public String getRoomId() {
+            return roomId;
+        }
+
+        public void setRoomId(String roomId) {
+            this.roomId = roomId;
+        }
 
         public String getBgImage() {
             return bgImage;

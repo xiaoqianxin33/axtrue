@@ -1,7 +1,5 @@
 package com.chinalooke.yuwan.model;
 
-import java.util.List;
-
 /**
  * 游戏桌玩家资料实体类
  * Created by xiao on 2016/11/17.
@@ -9,9 +7,10 @@ import java.util.List;
 
 public class DeskUserInfo {
 
+
     /**
      * Msg :
-     * Result : {"BreakCount":"0","address":"北京市北京市东城区","age":"22","cardNo":"410724199403280040","gameId":[1,2,3,4],"headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","lat":"112.368","lng":"34.6672","loseCount":"5","nickName":"CD-ROM","phone":"15088888888","playAge":"1","realName":"vcdjjnn","score":"100","sex":"女","slogan":"bh","userId":"1","winCount":"10"}
+     * Result : {"BreakCount":"0","address":"北京市北京市东城区","age":"22","cardNo":"410724199403280040","gameId":"","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","lat":"112.368","lng":"34.6672","loseCount":"5","nickName":"CD-ROM","phone":"15088888888","playAge":"1","realName":"vcdjjnn","score":"100","sex":"女","slogan":"bh","userId":"1","winCount":"10"}
      * Success : true
      */
 
@@ -21,7 +20,7 @@ public class DeskUserInfo {
      * address : 北京市北京市东城区
      * age : 22
      * cardNo : 410724199403280040
-     * gameId : [1,2,3,4]
+     * gameId :
      * headImg : http://oaqx2e3yr.bkt.clouddn.com/head1472707122
      * lat : 112.368
      * lng : 34.6672
@@ -69,6 +68,7 @@ public class DeskUserInfo {
         private String address;
         private String age;
         private String cardNo;
+        private String gameId;
         private String headImg;
         private String lat;
         private String lng;
@@ -83,7 +83,6 @@ public class DeskUserInfo {
         private String userId;
         private String winCount;
         private String sumPlayCount;
-        private List<Integer> gameId;
 
         public String getSumPlayCount() {
             return sumPlayCount;
@@ -123,6 +122,14 @@ public class DeskUserInfo {
 
         public void setCardNo(String cardNo) {
             this.cardNo = cardNo;
+        }
+
+        public String getGameId() {
+            return gameId;
+        }
+
+        public void setGameId(String gameId) {
+            this.gameId = gameId;
         }
 
         public String getHeadImg() {
@@ -227,14 +234,6 @@ public class DeskUserInfo {
 
         public void setWinCount(String winCount) {
             this.winCount = winCount;
-        }
-
-        public List<Integer> getGameId() {
-            return gameId;
-        }
-
-        public void setGameId(List<Integer> gameId) {
-            this.gameId = gameId;
         }
     }
 }

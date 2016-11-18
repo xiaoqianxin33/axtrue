@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 
-public class GameDesk {
+public class GameDesk implements Serializable {
 
 
     /**

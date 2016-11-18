@@ -322,7 +322,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
             }.getType();
             LoginUser userInfo = gson.fromJson(response, type);
             if (userInfo != null) {
-                Log.e("TAG", "userInfo != null");
                 LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo.getResult());//设置userInfo
                 LoginUserInfoUtils.saveObject(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo.getResult());
                 registerHx(userInfo.getResult());
