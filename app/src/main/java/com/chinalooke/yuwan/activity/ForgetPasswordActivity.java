@@ -4,19 +4,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVMobilePhoneVerifyCallback;
+import com.avos.avoscloud.RequestMobileCodeCallback;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.ResultDatas;
 import com.chinalooke.yuwan.utils.GetHTTPDatas;
+import com.chinalooke.yuwan.utils.LeanCloudUtil;
 import com.chinalooke.yuwan.utils.Validator;
 import com.zhy.autolayout.AutoLayoutActivity;
 
@@ -53,6 +60,7 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
     private GetHTTPDatas getHTTPDatas;
     //短信严重的回调
     EventHandler eh;
+    private Toast mToast;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +71,7 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
         mQueue = Volley.newRequestQueue(this);
         getHTTPDatas = new GetHTTPDatas();
         getHTTPDatas.setmQueue(mQueue);
+        mToast = YuwanApplication.getToast();
         //设置初始化倒计时
         mcountTimer = new CountTimer(60000, 1000);
         initView();
@@ -107,11 +116,26 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
     private void clickNextBtn() {
         phone = mphoneForgetPassword.getText().toString();
         mVerificationCode = verificationCodeForget.getText().toString();
+        if (TextUtils.isEmpty(mVerificationCode)) {
+            verificationCodeForget.setError("请输入验证码");
+            verificationCodeForget.requestFocus();
+            return;
+        }
         if (!Validator.isMobile(phone))
             mphoneForgetPassword.setError("请输入正确的手机号码");
         else {
             //提交验证码
-            SMSSDK.submitVerificationCode("86", phone, mVerificationCode);
+            LeanCloudUtil.checkSMS(mVerificationCode, phone, new AVMobilePhoneVerifyCallback() {
+                @Override
+                public void done(AVException e) {
+                    if (e == null) {
+                        getHTTPNext();
+                    } else {
+                        verificationCodeForget.setError("验证码输入错误，请重试");
+                        verificationCodeForget.requestFocus();
+                    }
+                }
+            });
         }
     }
 
@@ -119,32 +143,17 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
      * 发送短信验证码
      */
     private void sendSMSRandom() {
-        eh = new EventHandler() {
+        LeanCloudUtil.sendSMSRandom(phone, "找回密码", new RequestMobileCodeCallback() {
             @Override
-            public void afterEvent(int event, int result, Object data) {
-                Log.i("TAG", event + "--------" + result + "-----" + data);
-                if (result == SMSSDK.RESULT_COMPLETE) {
-                    //回调完成
-                    if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
-                        //提交验证码成功
-                        Log.i("TAG", "提交验证马成功");
-                        //开始网上
-                        getHTTPNext();
-
-                    } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
-                        Log.i("TAG", "获取验证马成功");
-                        //获取验证码成功
-                    } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
-                        //返回支持发送验证码的国家列表
-                    }
+            public void done(AVException e) {
+                if (e == null) {
+                    mToast.setText("验证码发送成功！");
                 } else {
-                    ((Throwable) data).printStackTrace();
+                    mToast.setText("验证码发送失败");
+                    mToast.show();
                 }
             }
-        };
-        SMSSDK.registerEventHandler(eh); //注册短信回调
-
-        SMSSDK.getVerificationCode("86", phone);//获取验证码
+        });
     }
 
     //网络获取  验证手机号是否注册

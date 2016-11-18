@@ -18,14 +18,18 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVMobilePhoneVerifyCallback;
+import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.RequestMobileCodeCallback;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.ResultDatas;
-import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.GetHTTPDatas;
+import com.chinalooke.yuwan.utils.LeanCloudUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
@@ -42,8 +46,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
-
-import static com.chinalooke.yuwan.utils.LoginUserInfoUtils.getLoginUserInfoUtils;
 
 /**
  * 注册缓冲未做，向服务端发送介绍人未写 check的选中未写
@@ -89,6 +91,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
     String headImg;
     private Toast mToast;
     private ProgressDialog mProgressDialog;
+    private String mCode;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,7 +134,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
             case R.id.btn__get_verification_code_register:
                 //判断是否是手机号
                 phone = mphoneRegister.getText().toString();
-                if (Validator.getValidator().isMobile(phone))
+                if (Validator.isMobile(phone))
                     getHTTPIsPhoneExists(); //判断用户是否注册
                 else {
                     mphoneRegister.setError("请输入正确的手机号码");
@@ -170,64 +173,32 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         finish();
     }
 
-    /**
-     * 发送短信验证码
-     */
-    private void sendSMSRandom() {
-
-        eh = new EventHandler() {
-            @Override
-            public void afterEvent(int event, int result, Object data) {
-                Log.i("TAG", event + "--------" + result + "-----" + data);
-                if (result == SMSSDK.RESULT_COMPLETE) {
-                    //回调完成
-                    if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
-                        //提交验证码成功
-                        Log.i("TAG", "提交验证码成功");
-                        //开始网上注册
-                        getHTTPRegister();
-                    } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
-                        Log.i("TAG", "获取验证码成功");
-                        mToast.setText("短信验证码已发送！");
-                        mToast.show();
-                        //获取验证码成功
-                    } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
-                        //返回支持发送验证码的国家列表
-                    }
-                } else {
-                    mToast.setText("验证码输入错误");
-                    mToast.show();
-                    ((Throwable) data).printStackTrace();
-                }
-            }
-        };
-        //注册短信回调
-        SMSSDK.registerEventHandler(eh);
-        //获取验证码
-        SMSSDK.getVerificationCode("86", phone);
-    }
 
     /**
      * 开始注册
      */
 
     private void beginRegister() {
-        String verificationCode = mETVerification.getText().toString();
-        Log.i("TAG", "验证码为-----" + verificationCode);
+        mCode = mETVerification.getText().toString();
+        if (TextUtils.isEmpty(mCode)) {
+            mToast.setText("请输入验证码");
+            mToast.show();
+            return;
+        }
+        Log.i("TAG", "验证码为-----" + mCode);
         //重新获取当前信息
         phone = mphoneRegister.getText().toString();
-        String introducePhone = mIntroducePhoneRegister.getText().toString();
         passWord = mpasswordRegister.getText().toString();
         String repassWord = mrepasswordRegister.getText().toString();
         mIntroducePhone = mIntroducePhoneRegister.getText().toString();
-        if (!Validator.getValidator().isMobile(phone))
+        if (!Validator.isMobile(phone))
             mphoneRegister.setError("请输入正确的手机号码");
         else if (!passWord.equals(repassWord)) {
             mrepasswordRegister.setError("请输入两次相同密码");
             mrepasswordRegister.setText("");
             mpasswordRegister.setText("");
             mpasswordRegister.requestFocus();
-        } else if (!Validator.getValidator().isPassword(passWord)) {
+        } else if (!Validator.isPassword(passWord)) {
             //密码不在6-16位之间
             mpasswordRegister.setError("请输入6至16位密码");
             mpasswordRegister.requestFocus();
@@ -236,16 +207,30 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
             mProgressDialog = MyUtils.initDialog("正在注册...", RegisterActivity.this);
             mProgressDialog.show();
             if (!TextUtils.isEmpty(mIntroducePhone)) {
-                if (!Validator.getValidator().isMobile(mIntroducePhone))
+                if (!Validator.isMobile(mIntroducePhone))
                     mIntroducePhoneRegister.setError("推荐人手机号码错误，改改试试吧");
                 else {
-                    SMSSDK.submitVerificationCode("86", phone, verificationCode);
+                    checkSMS();
                 }
             } else {
-                SMSSDK.submitVerificationCode("86", phone, verificationCode);
+                checkSMS();
             }
         }
 
+    }
+
+    private void checkSMS() {
+        LeanCloudUtil.checkSMS(mCode, phone, new AVMobilePhoneVerifyCallback() {
+            @Override
+            public void done(AVException e) {
+                if (e == null) {
+                    getHTTPRegister();
+                } else {
+                    mToast.setText("验证码错误，请重试");
+                    mToast.show();
+                }
+            }
+        });
     }
 
 
@@ -292,7 +277,16 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
                 //启动倒计时
                 mcountTimer.start();
                 //获取验证码 开始获取验证码
-                sendSMSRandom();
+                LeanCloudUtil.sendSMSRandom(phone, "注册账号", new RequestMobileCodeCallback() {
+                    @Override
+                    public void done(AVException e) {
+                        if (e == null) {
+                            mETVerification.requestFocus();
+                        } else {
+                            Log.e("Home.OperationVerify", e.getMessage());
+                        }
+                    }
+                });
             }
             if ("true".equals(result.getSuccess()) && "true".equals(result.getResult())) {
                 Log.d("TAG", "验证密码");
