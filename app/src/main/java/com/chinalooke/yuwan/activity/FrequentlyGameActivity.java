@@ -18,6 +18,8 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.db.DBManager;
 import com.chinalooke.yuwan.model.GameMessage;
+import com.chinalooke.yuwan.model.LoginUser;
+import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
@@ -46,6 +48,7 @@ public class FrequentlyGameActivity extends AutoLayoutActivity {
     private List<GameMessage.ResultBean> mChose = new ArrayList<>();
     private HashMap<GameMessage.ResultBean, String> mHashMap = new HashMap<>();
     private int mCount;
+    private boolean isYueZhan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,19 +64,27 @@ public class FrequentlyGameActivity extends AutoLayoutActivity {
         mGdPlusgame.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                GameMessage.ResultBean resultBean = (GameMessage.ResultBean) parent.getItemAtPosition(position);
-                ImageView viewById = (ImageView) view.findViewById(R.id.iv_check);
-                String s = mHashMap.get(resultBean);
-                if ("0".equals(s)) {
-                    viewById.setVisibility(View.VISIBLE);
-                    mHashMap.put(resultBean, "1");
-                    mCount++;
-                } else if ("1".equals(s)) {
-                    viewById.setVisibility(View.GONE);
-                    mHashMap.put(resultBean, "0");
-                    mCount--;
+                if (isYueZhan) {
+                    GameMessage.ResultBean resultBean = mResult.get(position);
+                    Intent intent = new Intent();
+                    intent.putExtra("choseGame", resultBean);
+                    setResult(0, intent);
+                    finish();
+                } else {
+                    GameMessage.ResultBean resultBean = (GameMessage.ResultBean) parent.getItemAtPosition(position);
+                    ImageView viewById = (ImageView) view.findViewById(R.id.iv_check);
+                    String s = mHashMap.get(resultBean);
+                    if ("0".equals(s)) {
+                        viewById.setVisibility(View.VISIBLE);
+                        mHashMap.put(resultBean, "1");
+                        mCount++;
+                    } else if ("1".equals(s)) {
+                        viewById.setVisibility(View.GONE);
+                        mHashMap.put(resultBean, "0");
+                        mCount--;
+                    }
+                    mSavePersonalInfo.setText("已选(" + mCount + ")");
                 }
-                mSavePersonalInfo.setText("已选(" + mCount + ")");
             }
         });
 
@@ -109,7 +120,19 @@ public class FrequentlyGameActivity extends AutoLayoutActivity {
 
     private void initData() {
         DBManager dbManager = new DBManager(getApplicationContext());
-        mResult = dbManager.query();
+        isYueZhan = getIntent().getBooleanExtra("isYueZhan", false);
+        if (isYueZhan) {
+            mSavePersonalInfo.setVisibility(View.GONE);
+            LoginUser.ResultBean userInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
+            assert userInfo != null;
+            String[] gameId = userInfo.getGameId();
+            for (String id : gameId) {
+                GameMessage.ResultBean resultBean = dbManager.queryById(id);
+                mResult.add(resultBean);
+            }
+        } else {
+            mResult = dbManager.query();
+        }
         for (int i = 0; i < mResult.size(); i++) {
             GameMessage.ResultBean resultBean = mResult.get(i);
             mHashMap.put(resultBean, "0");
@@ -186,5 +209,6 @@ public class FrequentlyGameActivity extends AutoLayoutActivity {
         Intent intent = new Intent();
         intent.putExtra("list", (Serializable) mChose);
         setResult(1, intent);
+        finish();
     }
 }

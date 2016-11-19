@@ -1,16 +1,18 @@
 package com.chinalooke.yuwan.fragment;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -22,23 +24,35 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bigkoo.pickerview.OptionsPickerView;
+import com.bigkoo.pickerview.TimePickerView;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.activity.FrequentlyGameActivity;
+import com.chinalooke.yuwan.activity.LoginActivity;
+import com.chinalooke.yuwan.activity.PersonalInfoActivity;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.db.DBManager;
 import com.chinalooke.yuwan.model.GameList;
+import com.chinalooke.yuwan.model.GameMessage;
 import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.NearNetBar;
-import com.chinalooke.yuwan.model.UserInfo;
+import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
+import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.makeramen.roundedimageview.RoundedImageView;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -54,28 +68,29 @@ import butterknife.OnClick;
  * create an instance of this fragment.
  */
 public class YueZhanFragment extends Fragment implements AMapLocationListener {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    @Bind(R.id.iv_back)
+    ImageView mIvBack;
+    @Bind(R.id.tv_title)
+    TextView mTvTitle;
+    @Bind(R.id.tv_skip)
+    TextView mTvSkip;
+    @Bind(R.id.tv_game_name)
+    TextView mTvGameName;
+    @Bind(R.id.iv_gameimage)
+    RoundedImageView mIvGameimage;
+    @Bind(R.id.tv_time)
+    TextView mTvTime;
+    @Bind(R.id.tv_address)
+    TextView mTvAddress;
+    @Bind(R.id.tv_people)
+    TextView mTvPeople;
+    @Bind(R.id.tv_money)
+    TextView mTvMoney;
 
-    //游戏名字
-    @Bind(R.id.game_name_yuezhan)
-    Spinner gameNameYuezhan;
-    //游戏时间
-    @Bind(R.id.game_time_yuezhan)
-    Spinner gameTimeYuezhan;
-    //游戏地址
-    @Bind(R.id.game_address_yuezhan)
-    Spinner gameAddressYuezhan;
-    //游戏价格
-    @Bind(R.id.game_price_yuezhan)
-    Spinner gamePriceYuezhan;
-    //保存
-    @Bind(R.id.save_personal_info)
-    Button savePersonalInfo;
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private RequestQueue mQueue;
@@ -87,6 +102,8 @@ public class YueZhanFragment extends Fragment implements AMapLocationListener {
     private double mLatitude;
     private NearNetBar mNearNetBar;
     private String mNetBarid;
+    private LoginUser.ResultBean mUsrInfo;
+    private int CHOOSE_GAME = 1;
 
 
     public YueZhanFragment() {
@@ -128,8 +145,23 @@ public class YueZhanFragment extends Fragment implements AMapLocationListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initView();
+        initData();
         location();
-        getGameIdDatas();
+
+    }
+
+    private void initData() {
+        mUsrInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getActivity(), LoginUserInfoUtils.KEY);
+        if (mUsrInfo != null) {
+            gameID = mUsrInfo.getGameId();
+        }
+    }
+
+    private void initView() {
+        mIvBack.setVisibility(View.GONE);
+        mTvTitle.setText("约战");
+        mTvSkip.setText("发布");
     }
 
 
@@ -161,7 +193,7 @@ public class YueZhanFragment extends Fragment implements AMapLocationListener {
     @Override
     public void onPause() {
         super.onPause();
-        getGameIdDatas();
+        getGameIdData();
     }
 
     @Override
@@ -172,12 +204,12 @@ public class YueZhanFragment extends Fragment implements AMapLocationListener {
             mLocationClient.stopLocation();
     }
 
-    @OnClick({R.id.save_personal_info})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.save_personal_info:
-                //保存按钮
-                break;
+//    @OnClick({R.id.save_personal_info})
+//    public void onClick(View view) {
+//        switch (view.getId()) {
+//            case R.id.save_personal_info:
+//                //保存按钮
+//                break;
 //            case R.id.game_time_yuezhan:
 //                TimePickerView timePickerView = new TimePickerView(getActivity(), TimePickerView.Type.ALL);
 //                timePickerView.setTime(new Date());
@@ -192,94 +224,101 @@ public class YueZhanFragment extends Fragment implements AMapLocationListener {
 //                    }
 //                });
 //                break;
-        }
-    }
+//        }
+//    }
 
     String[] gameID;
 
     /**
      * h获取游戏id的数据
      */
-    private void getGameIdDatas() {
+    private void getGameIdData() {
 
-        LoginUser.ResultBean userInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
-        if (userInfo != null) {
-            gameID = userInfo.getGameId();
-            StringBuilder stringBuffer = new StringBuilder();
-            for (int i = 0; i < gameID.length; i++) {
 
-                if (i == gameID.length - 1) {
-                    stringBuffer.append(gameID[i]);
-                } else {
-                    stringBuffer.append(gameID[i]).append(",");
-                }
+        if (gameID != null) {
+            DBManager dbManager = new DBManager(getActivity());
+            for (String id : gameID) {
+                GameMessage.ResultBean game = dbManager.queryById(id);
+
 
             }
-            String uri = Constant.HOST + "getGameInfoWithGameId&gameId=" + stringBuffer.toString();
 
-            StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    String substring = response.substring(11, 15);
-                    if ("true".equals(substring)) {
-                        Gson gson = new Gson();
-                        Type type = new TypeToken<GameList>() {
-                        }.getType();
-                        mGameMessage = gson.fromJson(response, type);
-                        if (mGameMessage != null) {
-                            List<GameList.ResultBean> result = mGameMessage.getResult();
-                            String[] strings = new String[result.size()];
-                            for (int i = 0; i < result.size(); i++) {
-                                String name = result.get(i).getGameName();
-                                strings[i] = name;
-                            }
-                            bindAdapt(strings);
+        }
+
+
+        StringBuilder stringBuffer = new StringBuilder();
+        for (int i = 0; i < gameID.length; i++) {
+
+            if (i == gameID.length - 1) {
+                stringBuffer.append(gameID[i]);
+            } else {
+                stringBuffer.append(gameID[i]).append(",");
+            }
+
+        }
+        String uri = Constant.HOST + "getGameInfoWithGameId&gameId=" + stringBuffer.toString();
+
+        StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String substring = response.substring(11, 15);
+                if ("true".equals(substring)) {
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<GameList>() {
+                    }.getType();
+                    mGameMessage = gson.fromJson(response, type);
+                    if (mGameMessage != null) {
+                        List<GameList.ResultBean> result = mGameMessage.getResult();
+                        String[] strings = new String[result.size()];
+                        for (int i = 0; i < result.size(); i++) {
+                            String name = result.get(i).getGameName();
+                            strings[i] = name;
                         }
-                    } else {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String msg = jsonObject.getString("Msg");
-                            mToast.setText(msg);
-                            mToast.show();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        bindAdapt(strings);
+                    }
+                } else {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        String msg = jsonObject.getString("Msg");
+                        mToast.setText(msg);
+                        mToast.show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
-                }
-            });
-            mQueue.add(stringRequest);
-        }
+            }
+        });
+        mQueue.add(stringRequest);
     }
 
     private void bindAdapt(String[] strings) {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, strings);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //绑定 Adapter到控件
-        Log.d("TAG", gameNameYuezhan + "---");
-        Log.d("TAG", adapter + "---");
-        if (gameNameYuezhan != null) {
-            gameNameYuezhan.setAdapter(adapter);
-            gameNameYuezhan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    GameList.ResultBean resultBean = mGameMessage.getResult().get(position);
-                    mChoseGameId = resultBean.getGameId();
-                    String wagerMin = resultBean.getWagerMin();
-                    String wagerMax = resultBean.getWagerMax();
-                    initPrice(wagerMin, wagerMax);
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
-        }
+//
+//        if (gameNameYuezhan != null) {
+//            gameNameYuezhan.setAdapter(adapter);
+//            gameNameYuezhan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                @Override
+//                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                    GameList.ResultBean resultBean = mGameMessage.getResult().get(position);
+//                    mChoseGameId = resultBean.getGameId();
+//                    String wagerMin = resultBean.getWagerMin();
+//                    String wagerMax = resultBean.getWagerMax();
+//                    initPrice(wagerMin, wagerMax);
+//                }
+//
+//                @Override
+//                public void onNothingSelected(AdapterView<?> parent) {
+//
+//                }
+//            });
+//        }
     }
 
     /**
@@ -289,7 +328,6 @@ public class YueZhanFragment extends Fragment implements AMapLocationListener {
      * @param wagerMax 最大价格
      */
     private void initPrice(String wagerMin, String wagerMax) {
-        // TODO: 2016/9/20  初始化价格
     }
 
 
@@ -356,19 +394,104 @@ public class YueZhanFragment extends Fragment implements AMapLocationListener {
             }
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, netBars);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            if (gameAddressYuezhan != null) {
-                gameAddressYuezhan.setAdapter(adapter);
-                gameAddressYuezhan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        mNetBarid = result.get(position).getNetBarid();
+//            if (gameAddressYuezhan != null) {
+//                gameAddressYuezhan.setAdapter(adapter);
+//                gameAddressYuezhan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                    @Override
+//                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                        mNetBarid = result.get(position).getNetBarid();
+//                    }
+//
+//                    @Override
+//                    public void onNothingSelected(AdapterView<?> parent) {
+//
+//                    }
+//                });
+//            }
+        }
+    }
+
+    @OnClick({R.id.rl_game_name, R.id.rl_time, R.id.rl_address, R.id.rl_people, R.id.rl_money, R.id.rl_friend, R.id.rl_rule})
+    public void onClick(View view) {
+        if (mUsrInfo == null) {
+            startActivity(new Intent(getActivity(), LoginActivity.class));
+        } else {
+            switch (view.getId()) {
+                case R.id.rl_game_name:
+                    if (mChoseGameId == null) {
+                        MyUtils.showCustomDialog(getActivity(), "提示", "还没有添加常玩游戏无法约战，现在就去添加常玩游戏么?"
+                                , "不了", "好的", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        startActivity(new Intent(getActivity(), PersonalInfoActivity.class));
+                                    }
+                                });
+                    } else {
+                        Intent intent = new Intent(getActivity(), FrequentlyGameActivity.class);
+                        intent.putExtra("isYueZhan", true);
+                        startActivityForResult(intent, CHOOSE_GAME);
                     }
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
+                    break;
+                case R.id.rl_time:
+                    alertTimePicker();
+                    break;
+                case R.id.rl_address:
 
-                    }
-                });
+                    break;
+                case R.id.rl_people:
+                    break;
+                case R.id.rl_money:
+                    break;
+                case R.id.rl_friend:
+                    break;
+                case R.id.rl_rule:
+                    break;
+            }
+        }
+
+    }
+
+    private void alertTimePicker() {
+        OptionsPickerView<String> optionsPickerView = new OptionsPickerView<>(getActivity());
+        optionsPickerView.setTitle("选择开战时间");
+        ArrayList<String> dayList = new ArrayList<>();
+        dayList.add("今天");
+        dayList.add("明天");
+        dayList.add("后天");
+        ArrayList<ArrayList<String>> hourList = new ArrayList<>();
+        hourList.add(dayList);
+        for(ArrayList<String> arrayList:hourList){
+            for(String day:arrayList){
+
+            }
+        }
+
+        ArrayList<String> minList = new ArrayList<>();
+        for (int i = 0; i < 60; i++) {
+            minList.add(i + "");
+        }
+        optionsPickerView.setPicker(dayList, hourList, minList, true);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CHOOSE_GAME) {
+            if (data != null) {
+                GameMessage.ResultBean choseGame = (GameMessage.ResultBean) data.getSerializableExtra("choseGame");
+                String thumb = choseGame.getThumb();
+                if (!TextUtils.isEmpty(thumb))
+                    Picasso.with(getActivity()).load(thumb).resize(60, 60).centerCrop().into(mIvGameimage);
+                String name = choseGame.getName();
+                if (!TextUtils.isEmpty(name))
+                    mTvGameName.setText(name);
             }
         }
     }

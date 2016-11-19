@@ -118,6 +118,17 @@ public class MyUtils {
         builder.show();
     }
 
+    public static void showCustomDialog(final Activity context, String title, String message, String leftMessage, String rightMessage, DialogInterface.OnClickListener noClickListener
+            , DialogInterface.OnClickListener yesClickListener) {
+
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setNegativeButton(leftMessage, noClickListener);
+        builder.setPositiveButton(rightMessage, yesClickListener);
+        builder.show();
+    }
+
     public static void showMsg(Toast toast, String response) {
         try {
             JSONObject jsonObject = new JSONObject(response);

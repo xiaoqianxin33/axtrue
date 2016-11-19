@@ -31,6 +31,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVInstallation;
+import com.avos.avoscloud.AVPush;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.SendCallback;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
@@ -53,7 +58,6 @@ import com.zhy.autolayout.AutoLayoutActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -119,6 +123,10 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private int mTotalPeople;
     private GameDesk.ResultBean mGameDesk;
     private String mRoomId;
+    private int DESK_TYPE;
+    private ProgressDialog mSubmitDialog;
+    private int mGroup;
+    private boolean isJudge = false;
 
 
     @Override
@@ -211,15 +219,30 @@ public class GameDeskActivity extends AutoLayoutActivity {
         for (GameDeskDetails.ResultBean.PlayersBean.LeftBean leftBean : mLeftBeen) {
             if (userId.equals(leftBean.getUserId())) {
                 isJoin = true;
+                mGroup = 1;
                 break;
             }
         }
         for (GameDeskDetails.ResultBean.PlayersBean.RightBean rightBean : mRight) {
             if (userId.equals(rightBean.getUserId())) {
                 isJoin = true;
+                mGroup = 2;
                 break;
             }
         }
+
+        String mOwnerName = mGameDesk.getOwnerName();
+        int DESK_TYPE_PERSONAL = 1;
+        if (!TextUtils.isEmpty(mOwnerName)) {
+            if ("官方".equals(mOwnerName)) {
+                DESK_TYPE = 0;
+                mOwnerType.setText(mOwnerName);
+            } else {
+                DESK_TYPE = DESK_TYPE_PERSONAL;
+                mOwnerType.setText("个人");
+            }
+        }
+
         mTvChat.setEnabled(isJoin);
         String status = result.getStatus();
         if (!TextUtils.isEmpty(status)) {
@@ -238,7 +261,13 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     mStatus = 1;
                     mTvStatus.setText("进行中");
                     mTvStatus.setBackgroundResource(R.mipmap.green_round_background);
-                    mTvOk.setText("确认交战结果");
+                    if (isJoin && DESK_TYPE == DESK_TYPE_PERSONAL) {
+                        mTvOk.setVisibility(View.VISIBLE);
+                        mTvOk.setText("确认交战结果");
+                        setResult();
+                    } else {
+                        mTvOk.setVisibility(View.GONE);
+                    }
                     break;
                 case "done":
                     mStatus = 2;
@@ -250,14 +279,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     mTvChat.setEnabled(false);
                     break;
             }
-        }
-
-        String mOwnerName = mGameDesk.getOwnerName();
-        if (!TextUtils.isEmpty(mOwnerName)) {
-            if ("官方".equals(mOwnerName))
-                mOwnerType.setText(mOwnerName);
-            else
-                mOwnerType.setText("个人");
         }
 
         String bgImage = result.getBgImage();
@@ -293,8 +314,61 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
 
     private void initData() {
-        mGameDeskId = getIntent().getStringExtra("gameDeskId");
         mGameDesk = (GameDesk.ResultBean) getIntent().getSerializableExtra("gameDesk");
+        mGameDeskId = mGameDesk.getGameDeskId();
+    }
+
+    private void setResult() {
+        boolean isReceiver = getIntent().getBooleanExtra("isReceiver", false);
+        if (isReceiver) {
+            MyUtils.showCustomDialog(GameDeskActivity.this, "提示", "确认此战场您的结果为输吗？"
+                    , "不同意，裁判仲裁", "确认", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            if (NetUtil.is_Network_Available(getApplicationContext())) {
+                                loserConfirm();
+                                mProgressDialog.setMessage("提交中");
+                                mProgressDialog.show();
+                            } else {
+                                mToast.setText("网络未连接，请检查网络");
+                                mToast.show();
+                            }
+                        }
+                    });
+        }
+    }
+
+    //输家确定输
+    private void loserConfirm() {
+        String uri = Constant.HOST + "loserConfirm&userId=" + user.getUserId() + "&gameDeskId=" + mGameDeskId;
+        StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                mProgressDialog.dismiss();
+                if (AnalysisJSON.analysisJson(response)) {
+                    mToast.setText("提交成功");
+                    mToast.show();
+                    mTvOk.setVisibility(View.GONE);
+                } else {
+                    mToast.setText("服务器抽风了，请稍后重试");
+                    mToast.show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                mToast.setText("提交失败，请重试");
+                mToast.show();
+            }
+        });
+        mQueue.add(request);
     }
 
     @OnClick({R.id.tv_chat, R.id.tv_ok})
@@ -318,14 +392,120 @@ public class GameDeskActivity extends AutoLayoutActivity {
                             }
                             break;
                         case 1:
-                            break;
-                        case 2:
+                            MyUtils.showNorDialog(GameDeskActivity.this, "提示", "确定提交您为赢家吗？"
+                                    , new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    }, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            submitWinner();
+                                        }
+                                    });
                             break;
                     }
                     break;
             }
         }
     }
+
+    //用户提交自己为赢家
+    private void submitWinner() {
+        if (NetUtil.is_Network_Available(getApplicationContext())) {
+            mSubmitDialog = MyUtils.initDialog("提交结果中", this);
+            mSubmitDialog.show();
+            String uri = Constant.HOST + "JudgeWinerForUser&userId=" + user.getUserId() +
+                    "&gameDeskId=" + mGameDeskId;
+            StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    mSubmitDialog.dismiss();
+                    if (AnalysisJSON.analysisJson(response)) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            boolean result = jsonObject.getBoolean("Result");
+                            if (result) {
+                                pushToLose();
+                                isJudge = true;
+                                mTvOk.setText("请等待对方确认");
+                                mTvOk.setEnabled(false);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String msg = jsonObject.getString("Msg");
+                            mToast.setText("提交失败，" + msg);
+                            mToast.show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    mSubmitDialog.dismiss();
+                    mToast.setText("提交失败，请稍后尝试");
+                    mToast.show();
+                }
+            });
+            mQueue.add(request);
+
+        } else {
+            mToast.setText("网络未连接，请稍后尝试");
+            mToast.show();
+        }
+    }
+
+    //推送消息给输家
+    private void pushToLose() {
+        String pushUserId = null;
+        switch (mGroup) {
+            case 1:
+                pushUserId = mRight.get(0).getUserId();
+                break;
+            case 2:
+                pushUserId = mLeftBeen.get(0).getUserId();
+                break;
+        }
+        AVQuery<AVInstallation> pushQuery = AVInstallation.getQuery();
+        pushQuery.whereEqualTo("channels", pushUserId + "game_result");
+        AVPush push = new AVPush();
+        JSONObject jsonObject = new JSONObject();
+        Gson gson = new Gson();
+        String gameDesk = gson.toJson(mGameDesk);
+        String gameDeskDetails = gson.toJson(mGameDeskDetails);
+        try {
+            jsonObject.put("action", "com.chinalooke.yuwan");
+            jsonObject.put("title", "雷熊");
+            jsonObject.put("alert", "您有战场结果出炉了，请确认输赢");
+            jsonObject.put("gameDesk", gameDesk);
+            jsonObject.put("gameDeskDetails", gameDeskDetails);
+            push.setData(jsonObject);
+            push.setQuery(pushQuery);
+            push.setPushToAndroid(true);
+            push.setPushToIOS(true);
+            push.sendInBackground(new SendCallback() {
+                @Override
+                public void done(AVException e) {
+                    if (e == null) {
+
+                    } else {
+                        pushToLose();
+                    }
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     //加入环信群组
     private void joinEaseGroup() {
@@ -634,6 +814,15 @@ public class GameDeskActivity extends AutoLayoutActivity {
         TextView tvCancel = (TextView) inflate.findViewById(R.id.tv_cancel);
         TextView tvLeft = (TextView) inflate.findViewById(R.id.tv_left);
         TextView tvRight = (TextView) inflate.findViewById(R.id.tv_right);
+        if (mLeftSize >= mTotalPeople)
+            tvLeft.setVisibility(View.GONE);
+        else
+            tvLeft.setVisibility(View.VISIBLE);
+        if (mRightSize >= mTotalPeople)
+            tvRight.setVisibility(View.GONE);
+        else
+            tvRight.setVisibility(View.VISIBLE);
+
         tvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

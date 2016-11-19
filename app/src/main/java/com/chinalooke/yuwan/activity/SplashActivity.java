@@ -11,6 +11,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.avos.avoscloud.AVInstallation;
+import com.avos.avoscloud.PushService;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
@@ -52,6 +54,9 @@ public class SplashActivity extends AppCompatActivity {
         //环信load本地对话和群组
         EMClient.getInstance().chatManager().loadAllConversations();
         EMClient.getInstance().groupManager().loadAllGroups();
+        //leanCloud推送服务
+        AVInstallation.getCurrentInstallation().saveInBackground();
+        PushService.setDefaultPushCallback(this, MainActivity.class);
         mHandler.sendEmptyMessageDelayed(1, 2000);
     }
 

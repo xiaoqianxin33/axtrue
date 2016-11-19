@@ -1,6 +1,7 @@
 package com.chinalooke.yuwan.config;
 
 import android.app.Application;
+import android.content.Context;
 import android.os.Handler;
 import android.support.multidex.MultiDex;
 import android.widget.Toast;
@@ -24,6 +25,12 @@ public class YuwanApplication extends Application {
     private static Handler mHandler;
     private static RequestQueue mQueue;
 
+    public static Context getmApplicationContext() {
+        return mApplicationContext;
+    }
+
+    public static Context mApplicationContext;
+
     public static RequestQueue getQueue() {
         return mQueue;
     }
@@ -45,6 +52,7 @@ public class YuwanApplication extends Application {
         mToast = Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT);
         mHandler = new Handler();
         mQueue = Volley.newRequestQueue(getApplicationContext());
+        mApplicationContext = getApplicationContext();
         //环信初始化
         EMOptions options = new EMOptions();
         options.setAcceptInvitationAlways(false);
@@ -55,6 +63,6 @@ public class YuwanApplication extends Application {
         //编译分包
         MultiDex.install(this);
         //leanCould初始化
-        AVOSCloud.initialize(this,"ArJkPnYSMCv1MTpGOPU3aHLU-gzGzoHsz","MlCdUI4iB1jucLGs0GIuTwyL");
+        AVOSCloud.initialize(this, "ArJkPnYSMCv1MTpGOPU3aHLU-gzGzoHsz", "MlCdUI4iB1jucLGs0GIuTwyL");
     }
 }

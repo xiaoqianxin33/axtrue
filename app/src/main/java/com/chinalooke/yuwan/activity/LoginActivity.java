@@ -20,6 +20,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.avos.avoscloud.PushService;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
@@ -325,6 +326,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                 LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo.getResult());//设置userInfo
                 LoginUserInfoUtils.saveObject(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo.getResult());
                 registerHx(userInfo.getResult());
+                PushService.subscribe(this, userInfo.getResult().getUserId() + "game_result", MainActivity.class);
             }
             mProgressDialog.dismiss();
             loginSuccess();//调用登录成功方法

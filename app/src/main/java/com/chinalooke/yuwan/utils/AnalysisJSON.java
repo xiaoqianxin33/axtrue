@@ -7,7 +7,10 @@ import com.chinalooke.yuwan.model.ResultDatas;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 /**
+ * json工具类
  * Created by Administrator on 2016/8/23.
  */
 
@@ -15,17 +18,8 @@ import org.json.JSONObject;
  * 解析数据
  */
 public class AnalysisJSON {
-    /**
-     * 解析登录注册返回的数据
-     *
-     * @return
-     * @paramdatas
-     */
-    private AnalysisJSON() {
-    }
 
-    ;
-    public static AnalysisJSON analysisJSON;
+    private static AnalysisJSON analysisJSON;
 
     public static AnalysisJSON getAnalysisJSON() {
         if (analysisJSON == null) {
@@ -65,7 +59,7 @@ public class AnalysisJSON {
     public void getSubStringAddress(String address) {
         String[] city = new String[3];
         String province = address.substring(0, address.indexOf("省"));
-        if (province == null || "".equals(province)) {
+        if ("".equals(province)) {
             province = address.substring(0, address.indexOf("市"));
         }
     }

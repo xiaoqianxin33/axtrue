@@ -96,12 +96,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <android.support.v7.widget.RecyclerView
+                <cn.iwgang.familiarrecyclerview.FamiliarRefreshRecyclerView
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:divider="@color/background"
-                    android:dividerHeight="@dimen/small_padding"/>
+                    android:dividerHeight="@dimen/small_padding"
+                    app:frv_layoutManager="linear"/>
+
+                <cn.iwgang.familiarrecyclerview.FamiliarRefreshRecyclerView
+                    android:id="@+id/recyclerView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@color/background"
+                    android:dividerHeight="@dimen/small_padding"
+                    app:frv_layoutManager="linear"/>
+
+                <cn.iwgang.familiarrecyclerview.FamiliarRefreshRecyclerView
+                    android:id="@+id/recyclerView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@color/background"
+                    android:dividerHeight="@dimen/small_padding"
+                    app:frv_layoutManager="linear"/>
+
 
                 <ProgressBar
                     android:id="@+id/pb_load"
