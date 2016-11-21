@@ -379,4 +379,13 @@
         <item name="android:textSize">@dimen/mid_padding</item>
     </style>
 
+    <style name="botton_btn">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">100px</item>
+        <item name="android:background">#fec100</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">36px</item>
+    </style>
+
 </resources>

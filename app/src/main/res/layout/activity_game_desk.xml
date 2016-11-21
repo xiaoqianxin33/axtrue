@@ -370,11 +370,6 @@
 
     <TextView
         android:id="@+id/tv_ok"
-        android:layout_width="match_parent"
-        android:layout_height="100px"
-        android:background="#fec100"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        android:textSize="36px"/>
+        style="@style/botton_btn"/>
 
 </LinearLayout>

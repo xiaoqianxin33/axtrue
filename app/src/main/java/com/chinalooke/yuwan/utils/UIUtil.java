@@ -1,9 +1,17 @@
 package com.chinalooke.yuwan.utils;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ListAdapter;
+import android.widget.TextView;
+
+import com.android.volley.toolbox.StringRequest;
+import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.activity.GameDeskActivity;
 
 /**
  * UI工具类
@@ -42,4 +50,19 @@ public class UIUtil {
         listView.setLayoutParams(params);
     }
 
+    public static void showJoinSucceedDialog(Activity activity, String message) {
+        final Dialog dialog = new Dialog(activity, R.style.Dialog);
+        View inflate = LayoutInflater.from(activity).inflate(R.layout.dialog_desk_succeed, null);
+        TextView tvOk = (TextView) inflate.findViewById(R.id.tv_ok);
+        TextView tvMessage = (TextView) inflate.findViewById(R.id.tv_message);
+        tvMessage.setText(message);
+        tvOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setContentView(inflate);
+        dialog.show();
+    }
 }

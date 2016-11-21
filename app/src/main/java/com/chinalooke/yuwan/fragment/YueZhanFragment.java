@@ -1,18 +1,27 @@
 package com.chinalooke.yuwan.fragment;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -25,23 +34,27 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bigkoo.pickerview.OptionsPickerView;
-import com.bigkoo.pickerview.TimePickerView;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.activity.AddFriendActivity;
 import com.chinalooke.yuwan.activity.FrequentlyGameActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.PersonalInfoActivity;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.DBManager;
+import com.chinalooke.yuwan.model.FriendInfo;
 import com.chinalooke.yuwan.model.GameList;
 import com.chinalooke.yuwan.model.GameMessage;
 import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.NearNetBar;
+import com.chinalooke.yuwan.model.SortModel;
+import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
+import com.chinalooke.yuwan.utils.UIUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -64,10 +77,9 @@ import butterknife.OnClick;
  * Activities that contain this fragment must implement the
  * {@linkYueZhanFragmentOnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link YueZhanFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class YueZhanFragment extends Fragment implements AMapLocationListener {
+public class YueZhanFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -83,61 +95,55 @@ public class YueZhanFragment extends Fragment implements AMapLocationListener {
     RoundedImageView mIvGameimage;
     @Bind(R.id.tv_time)
     TextView mTvTime;
-    @Bind(R.id.tv_address)
-    TextView mTvAddress;
     @Bind(R.id.tv_people)
     TextView mTvPeople;
     @Bind(R.id.tv_money)
     TextView mTvMoney;
+    @Bind(R.id.tv_friends)
+    TextView mTvFriends;
 
-
-    private String mParam1;
-    private String mParam2;
-    private RequestQueue mQueue;
     private Toast mToast;
-    private GameList mGameMessage;
-    private String mChoseGameId;
-    private AMapLocationClient mLocationClient;
-    private double mLongitude;
-    private double mLatitude;
-    private NearNetBar mNearNetBar;
-    private String mNetBarid;
     private LoginUser.ResultBean mUsrInfo;
     private int CHOOSE_GAME = 1;
-
-
-    public YueZhanFragment() {
-        // Required empty public constructor
-    }
-
-    public static YueZhanFragment newInstance(String param1, String param2) {
-        YueZhanFragment fragment = new YueZhanFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
+    private Date mBeginDate;
+    private ArrayList<String> mPeopleNumberList = new ArrayList<>();
+    private ArrayList<String> mMoneyList = new ArrayList<>();
+    private GameMessage.ResultBean mChoseGame;
+    private int ADD_FRIENDS = 2;
+    private String mRule;
+    private boolean isPeopleChose = false;
+    private boolean isGameChose = false;
+    private boolean isTimeChose = false;
+    private boolean isMoneyChose = false;
     View view;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 1) {
+                if (isPeopleChose && isGameChose && isMoneyChose && isTimeChose) {
+                    mTvSkip.setEnabled(true);
+                    mTvSkip.setTextColor(getResources().getColor(R.color.white));
+                } else {
+                    mTvSkip.setEnabled(false);
+                    mTvSkip.setTextColor(getResources().getColor(R.color.grey));
+                }
+            }
+        }
+    };
+    private String mGameId;
+    private List<SortModel> mChoseFriends;
+    private RequestQueue mQueue;
+    private ProgressDialog mProgressDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_yue_zhan, container, false);
         ButterKnife.bind(this, view);
-        mQueue = Volley.newRequestQueue(getActivity());
         mToast = YuwanApplication.getToast();
+        mQueue = YuwanApplication.getQueue();
         return view;
     }
 
@@ -147,9 +153,41 @@ public class YueZhanFragment extends Fragment implements AMapLocationListener {
         super.onActivityCreated(savedInstanceState);
         initView();
         initData();
-        location();
-
+        initEvent();
     }
+
+    private void initEvent() {
+        mTvPeople.addTextChangedListener(new CustomerTextWatcher(isPeopleChose));
+        mTvTime.addTextChangedListener(new CustomerTextWatcher(isTimeChose));
+        mTvGameName.addTextChangedListener(new CustomerTextWatcher(isGameChose));
+        mTvMoney.addTextChangedListener(new CustomerTextWatcher(isMoneyChose));
+    }
+
+
+    class CustomerTextWatcher implements TextWatcher {
+        private boolean isChose;
+
+        CustomerTextWatcher(boolean isChose) {
+            this.isChose = isChose;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            isChose = !TextUtils.isEmpty(s.toString());
+            mHandler.sendEmptyMessage(1);
+        }
+    }
+
 
     private void initData() {
         mUsrInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getActivity(), LoginUserInfoUtils.KEY);
@@ -162,263 +200,38 @@ public class YueZhanFragment extends Fragment implements AMapLocationListener {
         mIvBack.setVisibility(View.GONE);
         mTvTitle.setText("约战");
         mTvSkip.setText("发布");
-    }
-
-
-    private void location() {
-        //声明mLocationOption对象
-
-        mLocationClient = new AMapLocationClient(getActivity());
-        //初始化定位参数
-        AMapLocationClientOption locationOption = new AMapLocationClientOption();
-        //设置定位监听
-
-        locationOption.setOnceLocation(true);
-        mLocationClient.setLocationListener(this);
-        //设置定位模式为高精度模式，Battery_Saving为低功耗模式，Device_Sensors是仅设备模式
-        locationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-        //设置定位间隔,单位毫秒,默认为2000ms
-        locationOption.setInterval(2000);
-        //设置定位参数
-        mLocationClient.setLocationOption(locationOption);
-        // 此方法为每隔固定时间会发起一次定位请求，为了减少电量消耗或网络流量消耗，
-        // 注意设置合适的定位时间的间隔（最小间隔支持为2000ms），并且在合适时间调用stopLocation()方法来取消定位请求
-        // 在定位结束后，在合适的生命周期调用onDestroy()方法
-        // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
-        //启动定位
-        mLocationClient.startLocation();
+        mTvSkip.setTextColor(getResources().getColor(R.color.grey));
+        mTvSkip.setEnabled(false);
     }
 
 
     @Override
     public void onPause() {
         super.onPause();
-        getGameIdData();
+        initData();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
-        if (mLocationClient != null)
-            mLocationClient.stopLocation();
     }
-
-//    @OnClick({R.id.save_personal_info})
-//    public void onClick(View view) {
-//        switch (view.getId()) {
-//            case R.id.save_personal_info:
-//                //保存按钮
-//                break;
-//            case R.id.game_time_yuezhan:
-//                TimePickerView timePickerView = new TimePickerView(getActivity(), TimePickerView.Type.ALL);
-//                timePickerView.setTime(new Date());
-//                timePickerView.setCyclic(false);
-//                timePickerView.setCancelable(true);
-//                timePickerView.show();
-//                timePickerView.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {
-//                    @Override
-//                    public void onTimeSelect(Date date) {
-//                        String time = MyUtils.getTime(date);
-//
-//                    }
-//                });
-//                break;
-//        }
-//    }
 
     String[] gameID;
 
-    /**
-     * h获取游戏id的数据
-     */
-    private void getGameIdData() {
 
-
-        if (gameID != null) {
-            DBManager dbManager = new DBManager(getActivity());
-            for (String id : gameID) {
-                GameMessage.ResultBean game = dbManager.queryById(id);
-
-
-            }
-
-        }
-
-
-        StringBuilder stringBuffer = new StringBuilder();
-        for (int i = 0; i < gameID.length; i++) {
-
-            if (i == gameID.length - 1) {
-                stringBuffer.append(gameID[i]);
-            } else {
-                stringBuffer.append(gameID[i]).append(",");
-            }
-
-        }
-        String uri = Constant.HOST + "getGameInfoWithGameId&gameId=" + stringBuffer.toString();
-
-        StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                String substring = response.substring(11, 15);
-                if ("true".equals(substring)) {
-                    Gson gson = new Gson();
-                    Type type = new TypeToken<GameList>() {
-                    }.getType();
-                    mGameMessage = gson.fromJson(response, type);
-                    if (mGameMessage != null) {
-                        List<GameList.ResultBean> result = mGameMessage.getResult();
-                        String[] strings = new String[result.size()];
-                        for (int i = 0; i < result.size(); i++) {
-                            String name = result.get(i).getGameName();
-                            strings[i] = name;
-                        }
-                        bindAdapt(strings);
-                    }
-                } else {
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-                        String msg = jsonObject.getString("Msg");
-                        mToast.setText(msg);
-                        mToast.show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        mQueue.add(stringRequest);
-    }
-
-    private void bindAdapt(String[] strings) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, strings);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //绑定 Adapter到控件
-//
-//        if (gameNameYuezhan != null) {
-//            gameNameYuezhan.setAdapter(adapter);
-//            gameNameYuezhan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                @Override
-//                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                    GameList.ResultBean resultBean = mGameMessage.getResult().get(position);
-//                    mChoseGameId = resultBean.getGameId();
-//                    String wagerMin = resultBean.getWagerMin();
-//                    String wagerMax = resultBean.getWagerMax();
-//                    initPrice(wagerMin, wagerMax);
-//                }
-//
-//                @Override
-//                public void onNothingSelected(AdapterView<?> parent) {
-//
-//                }
-//            });
-//        }
-    }
-
-    /**
-     * 初始化价格下拉数据
-     *
-     * @param wagerMin 最小价格
-     * @param wagerMax 最大价格
-     */
-    private void initPrice(String wagerMin, String wagerMax) {
-    }
-
-
-    @Override
-    public void onLocationChanged(AMapLocation aMapLocation) {
-        if (aMapLocation != null) {
-            mLongitude = aMapLocation.getLongitude();
-            mLatitude = aMapLocation.getLatitude();
-            PreferenceUtils.setPrefString(getActivity(), "longitude", mLongitude + "");
-            PreferenceUtils.setPrefString(getActivity(), "latitude", mLatitude + "");
-            if (NetUtil.is_Network_Available(getActivity())) {
-                getNet();
-            } else {
-                mToast.setText("网络不可用，请检查网络连接");
-                mToast.show();
-            }
-        }
-    }
-
-    private void getNet() {
-        String uri = Constant.mainUri + "getNetBarWithGPS&lng=" + mLongitude + "&lat=" + mLatitude;
-        StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                if (response != null) {
-                    String substring = response.substring(11, 15);
-                    if ("true".equals(substring)) {
-                        Gson gson = new Gson();
-                        Type type = new TypeToken<NearNetBar>() {
-                        }.getType();
-                        mNearNetBar = gson.fromJson(response, type);
-                        setNearNetBar();
-                    } else {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String msg = jsonObject.getString("Msg");
-                            mToast.setText(msg);
-                            mToast.show();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else {
-                    mToast.setText("获取附近网吧失败");
-                    mToast.show();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        mQueue.add(request);
-    }
-
-    private void setNearNetBar() {
-        final List<NearNetBar.ResultBean> result = mNearNetBar.getResult();
-        if (result != null) {
-            String[] netBars = new String[result.size()];
-            for (int i = 0; i < result.size(); i++) {
-                String netBarName = result.get(i).getNetBarName();
-                netBars[i] = netBarName;
-            }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, netBars);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//            if (gameAddressYuezhan != null) {
-//                gameAddressYuezhan.setAdapter(adapter);
-//                gameAddressYuezhan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                    @Override
-//                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                        mNetBarid = result.get(position).getNetBarid();
-//                    }
-//
-//                    @Override
-//                    public void onNothingSelected(AdapterView<?> parent) {
-//
-//                    }
-//                });
-//            }
-        }
-    }
-
-    @OnClick({R.id.rl_game_name, R.id.rl_time, R.id.rl_address, R.id.rl_people, R.id.rl_money, R.id.rl_friend, R.id.rl_rule})
+    @OnClick({R.id.rl_game_name, R.id.rl_time, R.id.rl_people, R.id.rl_money,
+            R.id.tv_skip, R.id.rl_friend, R.id.rl_rule})
     public void onClick(View view) {
         if (mUsrInfo == null) {
             startActivity(new Intent(getActivity(), LoginActivity.class));
         } else {
             switch (view.getId()) {
+                case R.id.tv_skip:
+                    createDesk();
+                    break;
                 case R.id.rl_game_name:
-                    if (mChoseGameId == null) {
+                    if (gameID == null) {
                         MyUtils.showCustomDialog(getActivity(), "提示", "还没有添加常玩游戏无法约战，现在就去添加常玩游戏么?"
                                 , "不了", "好的", new DialogInterface.OnClickListener() {
                                     @Override
@@ -441,42 +254,215 @@ public class YueZhanFragment extends Fragment implements AMapLocationListener {
                 case R.id.rl_time:
                     alertTimePicker();
                     break;
-                case R.id.rl_address:
-
-                    break;
                 case R.id.rl_people:
+                    if (mPeopleNumberList.size() == 0) {
+                        mToast.setText("请先选择游戏");
+                        mToast.show();
+                    } else {
+                        alertPicker(mPeopleNumberList, "选择游戏参与人数", 0);
+                    }
                     break;
                 case R.id.rl_money:
+                    if (mChoseGame != null) {
+                        alertPicker(mMoneyList, "选择游戏币金额", 1);
+                    } else {
+                        mToast.setText("请先选择游戏");
+                        mToast.show();
+                    }
                     break;
                 case R.id.rl_friend:
+                    if (mChoseGame != null) {
+                        String maxPeopleNumber = mChoseGame.getMaxPeopleNumber();
+                        Intent intent = new Intent(getActivity(), AddFriendActivity.class);
+                        intent.putExtra("maxPeopleNumber", maxPeopleNumber);
+                        startActivityForResult(intent, ADD_FRIENDS);
+                    } else {
+                        mToast.setText("请先选择游戏");
+                        mToast.show();
+                    }
                     break;
                 case R.id.rl_rule:
+                    showRuleDialog();
                     break;
             }
         }
 
     }
 
+    private void createDesk() {
+        if (NetUtil.is_Network_Available(getActivity())) {
+            mProgressDialog = MyUtils.initDialog("正在提交", getActivity());
+            mProgressDialog.show();
+            String time = mTvTime.getText().toString();
+            String people = mTvPeople.getText().toString();
+            String money = mTvMoney.getText().toString();
+            String uri = Constant.HOST + "addGameDesk&gameId=" + mGameId + "&startTime=" + time +
+                    "&playerNum=" + Integer.parseInt(people) * 2 + "&gamePay=" + money
+                    + "&ownerId=" + mUsrInfo.getUserId() + "&roomId=" + mUsrInfo.getUserId();
+            if (mRule != null) {
+                uri = uri + "&gameRule=" + mRule;
+            }
+
+            if (mChoseFriends != null) {
+                StringBuilder stringBuffer = new StringBuilder();
+                for (int i = 0; i < mChoseFriends.size(); i++) {
+                    String userId = mChoseFriends.get(i).getFriend().getUserId();
+                    stringBuffer.append(userId);
+                    if (i != mChoseFriends.size() - 1)
+                        stringBuffer.append(",");
+                }
+                uri = uri + "&userId=" + stringBuffer.toString();
+            }
+
+            StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    mProgressDialog.dismiss();
+                    if (AnalysisJSON.analysisJson(response)) {
+                        UIUtil.showJoinSucceedDialog(getActivity(), "您已发起了约战");
+                        mTvGameName.setText("");
+                        mTvPeople.setText("");
+                        mTvMoney.setText("");
+                        mTvFriends.setText("");
+                        mTvTime.setText("");
+                    } else {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String msg = jsonObject.getString("Msg");
+                            mToast.setText(msg);
+                            mToast.show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    mProgressDialog.dismiss();
+                    mToast.setText("服务器抽风了，请稍后再试");
+                    mToast.show();
+                }
+            });
+            mQueue.add(request);
+        } else {
+            mToast.setText("网络不可用，请检查网络连接");
+            mToast.show();
+        }
+    }
+
+    private void showCreateSucceedDialog() {
+
+    }
+
+    private void showRuleDialog() {
+        final Dialog dialog = new Dialog(getActivity(), R.style.Dialog);
+        View inflate = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_add_game_rule, null);
+        TextView tvOk = (TextView) inflate.findViewById(R.id.tv_ok);
+        TextView tvCancel = (TextView) inflate.findViewById(R.id.tv_cancel);
+        final EditText etRule = (EditText) inflate.findViewById(R.id.et_rule);
+        if (!TextUtils.isEmpty(mRule))
+            etRule.setText(mRule);
+        tvCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        tvOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                mRule = etRule.getText().toString();
+            }
+        });
+
+        dialog.show();
+        WindowManager windowManager = getActivity().getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+        lp.width = display.getWidth(); //设置宽度
+        dialog.getWindow().setAttributes(lp);
+    }
+
+    private void alertPicker(ArrayList<String> list, String title, final int type) {
+        OptionsPickerView<String> optionsPickerView = new OptionsPickerView<>(getActivity());
+        optionsPickerView.setTitle(title);
+        optionsPickerView.setPicker(list);
+        optionsPickerView.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
+            @Override
+            public void onOptionsSelect(int options1, int option2, int options3) {
+                switch (type) {
+                    case 0:
+                        mTvPeople.setText(mPeopleNumberList.get(options1));
+                        break;
+                    case 1:
+                        mTvMoney.setText(mMoneyList.get(options1));
+                        break;
+                }
+            }
+        });
+        optionsPickerView.show();
+    }
+
     private void alertTimePicker() {
         OptionsPickerView<String> optionsPickerView = new OptionsPickerView<>(getActivity());
         optionsPickerView.setTitle("选择开战时间");
-        ArrayList<String> dayList = new ArrayList<>();
+        final ArrayList<String> dayList = new ArrayList<>();
+        final ArrayList<ArrayList<String>> options2Items = new ArrayList<>();
+        final ArrayList<ArrayList<ArrayList<String>>> options3Items = new ArrayList<>();
         dayList.add("今天");
         dayList.add("明天");
         dayList.add("后天");
-        ArrayList<ArrayList<String>> hourList = new ArrayList<>();
-        hourList.add(dayList);
-        for(ArrayList<String> arrayList:hourList){
-            for(String day:arrayList){
-
+        for (int i = 0; i < 3; i++) {
+            ArrayList<String> arrayList = new ArrayList<>();
+            for (int j = 0; j < 24; j++) {
+                arrayList.add(j + "");
             }
+            options2Items.add(arrayList);
         }
 
-        ArrayList<String> minList = new ArrayList<>();
-        for (int i = 0; i < 60; i++) {
-            minList.add(i + "");
+        for (int k = 0; k < 3; k++) {
+            ArrayList<ArrayList<String>> arrayLists = new ArrayList<>();
+            for (int j = 0; j < 24; j++) {
+                ArrayList<String> arrayList = new ArrayList<>();
+                for (int i = 0; i < 60; i++) {
+                    arrayList.add(i + "");
+                }
+                arrayLists.add(arrayList);
+            }
+            options3Items.add(arrayLists);
         }
-        optionsPickerView.setPicker(dayList, hourList, minList, true);
+        optionsPickerView.setPicker(dayList, options2Items, options3Items, true);
+
+        optionsPickerView.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
+            @Override
+            public void onOptionsSelect(int options1, int option2, int options3) {
+                switch (options1) {
+                    case 0:
+                        mBeginDate = DateUtils.getCurrentDay(new Date());
+                        break;
+                    case 1:
+                        mBeginDate = DateUtils.getNextDay(new Date());
+                        break;
+                    case 2:
+                        mBeginDate = DateUtils.getNextNextDay(new Date());
+                        break;
+                }
+
+                String hour = options2Items.get(options1).get(option2);
+                if (hour.length() == 1)
+                    hour = "0" + hour;
+                String minute = options3Items.get(0).get(0).get(options3);
+                if (minute.length() == 1)
+                    minute = "0" + hour;
+                mTvTime.setText(DateUtils.getFormatShortTime(mBeginDate) + "     " + hour + ":" + minute);
+            }
+        });
+        optionsPickerView.setLabels("", "时", "分");
+        optionsPickerView.setCyclic(false);
+        optionsPickerView.show();
     }
 
 
@@ -485,13 +471,56 @@ public class YueZhanFragment extends Fragment implements AMapLocationListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CHOOSE_GAME) {
             if (data != null) {
-                GameMessage.ResultBean choseGame = (GameMessage.ResultBean) data.getSerializableExtra("choseGame");
-                String thumb = choseGame.getThumb();
+                mChoseGame = (GameMessage.ResultBean) data.getSerializableExtra("choseGame");
+                String thumb = mChoseGame.getThumb();
+                mGameId = mChoseGame.getGameId();
                 if (!TextUtils.isEmpty(thumb))
                     Picasso.with(getActivity()).load(thumb).resize(60, 60).centerCrop().into(mIvGameimage);
-                String name = choseGame.getName();
+                String name = mChoseGame.getName();
                 if (!TextUtils.isEmpty(name))
                     mTvGameName.setText(name);
+                setPeopleCount(mChoseGame);
+                setMoneyCount();
+            }
+        } else if (requestCode == ADD_FRIENDS) {
+            if (data != null) {
+                mChoseFriends = (List<SortModel>) data.getSerializableExtra("mChose");
+                setFriends(mChoseFriends);
+            }
+        }
+    }
+
+    //处理选择好友结果
+    private void setFriends(List<SortModel> choseFriends) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (SortModel sortModel : choseFriends) {
+            FriendInfo.ResultBean friend = sortModel.getFriend();
+            String nickName = friend.getNickName();
+            stringBuilder.append(nickName).append(",");
+        }
+        mTvFriends.setText(stringBuilder.toString());
+    }
+
+    //设置参与游戏币范围
+    private void setMoneyCount() {
+        String wagerMin = mChoseGame.getWagerMin();
+        String wagerMax = mChoseGame.getWagerMax();
+        if (!TextUtils.isEmpty(wagerMin) && !TextUtils.isEmpty(wagerMax)) {
+            int min = Integer.parseInt(wagerMin);
+            int max = Integer.parseInt(wagerMax);
+            for (int i = min; i <= max; i++) {
+                mMoneyList.add(i + "");
+            }
+        }
+    }
+
+    //设置游戏人数范围
+    private void setPeopleCount(GameMessage.ResultBean choseGame) {
+        String maxPeopleNumber = choseGame.getMaxPeopleNumber();
+        if (!TextUtils.isEmpty(maxPeopleNumber)) {
+            int maxPeople = Integer.parseInt(maxPeopleNumber);
+            for (int i = 1; i < maxPeople + 1; i++) {
+                mPeopleNumberList.add(i + "");
             }
         }
     }

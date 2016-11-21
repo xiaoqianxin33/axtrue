@@ -511,5 +511,32 @@ public final class DateUtils implements Serializable {
                 && endDate.compareTo(srcDate) >= 0;
     }
 
+    //获取当天的日期
+    public static Date getCurrentDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, 0);
+        date = calendar.getTime();
+        return date;
+    }
+
+
+    //获取明天的日期
+    public static Date getNextDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        date = calendar.getTime();
+        return date;
+    }
+
+    //获取后天的日期
+    public static Date getNextNextDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, 2);
+        date = calendar.getTime();
+        return date;
+    }
 
 }

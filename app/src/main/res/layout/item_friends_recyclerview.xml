@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="206px"
+                android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/tv_letter"
+        android:layout_width="match_parent"
+        android:layout_height="56px"
+        android:background="#f2f2f2"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/mid_padding"
+        android:text="A"
+        android:textColor="@color/black_word"
+        android:textSize="25px"
+        android:textStyle="bold"/>
+
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/iv_head"
+        android:layout_width="100px"
+        android:layout_height="100px"
+        android:layout_marginLeft="@dimen/mid_padding"
+        android:layout_marginTop="85px"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/placeholder"
+        app:riv_oval="true"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="150px"
+        android:layout_marginTop="96px"
+        android:textColor="@color/black_word"
+        android:textSize="@dimen/mid_padding"/>
+
+    <TextView
+        android:id="@+id/tv_slogen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="150px"
+        android:layout_marginTop="146px"
+        android:textColor="#848787"
+        android:textSize="26px"/>
+
+    <ImageView
+        android:id="@+id/iv_check"
+        android:layout_width="27px"
+        android:layout_height="27px"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/mid_padding"
+        android:layout_marginTop="130px"
+        android:src="@mipmap/friend_check"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="150px"
+        android:layout_marginTop="206px"
+        android:background="@color/line_color"/>
+</RelativeLayout>
