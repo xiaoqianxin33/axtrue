@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="200px"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white">
+
+    <ImageView
+        android:id="@id/iv_image"
+        android:layout_width="200px"
+        android:layout_height="200px"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/placeholder"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_image"
+        android:layout_marginTop="@dimen/small_padding"
+        android:text="为正义而战"
+        android:textColor="@color/black_word"
+        android:textSize="27px"/>
+
+    <TextView
+        android:id="@+id/tv_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_name"
+        android:layout_marginTop="26px"
+        android:text="人气 331914"
+        android:textColor="@color/shallow_word"
+        android:textSize="23px"/>
+
+
+</RelativeLayout>

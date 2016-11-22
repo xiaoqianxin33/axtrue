@@ -1,7 +1,6 @@
 package com.chinalooke.yuwan.fragment;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,57 +8,25 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.AMap;
-import com.amap.api.maps2d.CameraUpdate;
-import com.amap.api.maps2d.CameraUpdateFactory;
-import com.amap.api.maps2d.MapView;
-import com.amap.api.maps2d.model.CameraPosition;
-import com.amap.api.maps2d.model.LatLng;
-import com.amap.api.maps2d.model.MarkerOptions;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.astuetz.PagerSlidingTabStrip;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.MainActivity;
-import com.chinalooke.yuwan.activity.MoreCircleActivity;
-import com.chinalooke.yuwan.activity.MyCircleActivity;
 import com.chinalooke.yuwan.adapter.MainPagerAdapter;
 import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.Circle;
 import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
-import com.chinalooke.yuwan.utils.MyUtils;
-import com.chinalooke.yuwan.utils.NetUtil;
-import com.chinalooke.yuwan.view.GrapeGridview;
-import com.chinalooke.yuwan.view.NoSlidingListView;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.squareup.picasso.Picasso;
+import com.chinalooke.yuwan.view.PagerSlidingTabStrip;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -145,18 +112,11 @@ public class CircleFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        mMapview.onCreate(savedInstanceState);
-//        mMap = mMapview.getMap();
         mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         mQueue = ((MainActivity) getActivity()).getQueue();
         mToast = YuwanApplication.getToast();
         mLatitude = (((MainActivity) getActivity()).getLatitude());
         mLongitude = ((MainActivity) getActivity()).getLongitude();
-//        mMyAdapt = new MyAdapt();
-//        mLvCircle.setAdapter(mMyAdapt);
-//        mGridAdapt = new GridAdapt();
-//        mGvCircle.setAdapter(mGridAdapt);
-//        initData();
     }
 
 
@@ -166,6 +126,10 @@ public class CircleFragment extends Fragment {
         list.add(new CircleWodeFragment());
         mViewpage.setAdapter(new MainPagerAdapter(getChildFragmentManager(), list));
         mTabs.setViewPager(mViewpage);
+        mTabs.setIndicatorColor(getResources().getColor(R.color.indicator_color));
+        mTabs.setIndicatorHeight(5);
+        mTabs.setSelectedTextColor(getResources().getColor(R.color.indicator_color));
+        mTabs.setTextColor(getResources().getColor(R.color.white));
 
 
 //        if (mLatitude != 0 && mLongitude != 0) {
@@ -197,108 +161,6 @@ public class CircleFragment extends Fragment {
 //        initEvent();
     }
 
-//    private void initEvent() {
-//        mLvCircle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//            }
-//        });
-//    }
-
-
-//    private void initData() {
-//        if (mLatitude != 0 && mLongitude != 0) {
-//            if (NetUtil.is_Network_Available(getActivity())) {
-//                getNearbyCircle();
-//                if (mUserInfo != null)
-//                    getMyCircle();
-//            } else {
-//                mToast.setText("网络不可用，请检查网络连接");
-//                mToast.show();
-//            }
-//        } else {
-//            location();
-//        }
-//    }
-
-//    private void getMyCircle() {
-//        String[] strings = mUserInfo.getGameId();
-//        StringBuilder stringBuffer = new StringBuilder();
-//        for (int i = 0; i < strings.length; i++) {
-//            if (i == strings.length - 1) {
-//                stringBuffer.append(strings[i]);
-//            } else {
-//                stringBuffer.append(strings[i]).append(",");
-//            }
-//        }
-//        String uri = Constant.HOST + "getGroupListWithType&userId=" + mUserInfo.getUserId()
-//                + "&interest=" + stringBuffer.toString();
-//        StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                String substring = response.substring(11, 15);
-//                if ("true".equals(substring)) {
-//                    Gson gson = new Gson();
-//                    Type type = new TypeToken<Circle>() {
-//                    }.getType();
-//                    mMyCircle = gson.fromJson(response, type);
-//                    if (mMyCircle != null) {
-//                        mMyCircleResult = mMyCircle.getResult();
-//                        mGridAdapt.notifyDataSetChanged();
-//                    }
-//                } else {
-//                    try {
-//                        JSONObject jsonObject = new JSONObject(response);
-//                        String msg = jsonObject.getString("Msg");
-//                        mToast.setText(msg);
-//                        mToast.show();
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//
-//            }
-//        });
-//        mQueue.add(stringRequest);
-//    }
-
-//    private void getNearbyCircle() {
-//        String uri = Constant.HOST + "getGroupWithGPS&lng=" + mLongitude + "&lat=" + mLatitude + "&pageNo=" + mPage + "&pageSize=2";
-//
-//        StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                mProgressBar.setVisibility(View.GONE);
-//                mTvMore.setVisibility(View.VISIBLE);
-//                String substring = response.substring(11, 15);
-//                if ("true".equals(substring)) {
-//                    Gson gson = new Gson();
-//                    Type type = new TypeToken<Circle>() {
-//                    }.getType();
-//                    mCircle = gson.fromJson(response, type);
-//                    if (mCircle != null) {
-//                        initView();
-//                    }
-//
-//                } else {
-//                    MyUtils.showMsg(mToast, response);
-//                }
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                mProgressBar.setVisibility(View.GONE);
-//                mTvMore.setVisibility(View.VISIBLE);
-//            }
-//        });
-//
-//        mQueue.add(stringRequest);
-//    }
 
 //    @Override
 //    public void onResume() {
@@ -330,41 +192,6 @@ public class CircleFragment extends Fragment {
 //            mMapview.onDestroy();
 //    }
 
-//    private void location() {
-//        mLocationClient = new AMapLocationClient(getActivity());
-//        //初始化定位参数
-//        AMapLocationClientOption locationOption = new AMapLocationClientOption();
-//        //设置定位监听
-//
-//        locationOption.setOnceLocation(true);
-////        mLocationClient.setLocationListener(this);
-//        //设置定位模式为高精度模式，Battery_Saving为低功耗模式，Device_Sensors是仅设备模式
-//        locationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-//        //设置定位间隔,单位毫秒,默认为2000ms
-//        locationOption.setInterval(2000);
-//        //设置定位参数
-//        mLocationClient.setLocationOption(locationOption);
-//        // 此方法为每隔固定时间会发起一次定位请求，为了减少电量消耗或网络流量消耗，
-//        // 注意设置合适的定位时间的间隔（最小间隔支持为2000ms），并且在合适时间调用stopLocation()方法来取消定位请求
-//        // 在定位结束后，在合适的生命周期调用onDestroy()方法
-//        // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
-//        //启动定位
-//        mLocationClient.startLocation();
-//    }
-
-//    @Override
-//    public void onLocationChanged(AMapLocation aMapLocation) {
-//        if (aMapLocation != null) {
-//            mLongitude = aMapLocation.getLongitude();
-//            mLatitude = aMapLocation.getLatitude();
-//            if (NetUtil.is_Network_Available(getActivity())) {
-//                getNearbyCircle();
-//            } else {
-//                mToast.setText("网络不可用，请检查网络连接");
-//                mToast.show();
-//            }
-//        }
-//    }
 
     @Override
     public void onDestroyView() {
@@ -372,119 +199,4 @@ public class CircleFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
-//    @OnClick({R.id.tv_more, R.id.iv_wodequanzi})
-//    public void onClick(View view) {
-//        switch (view.getId()) {
-//            case R.id.tv_more:
-//                if (mLongitude != 0 && mLatitude != 0) {
-//                    Intent intent = new Intent();
-//                    intent.putExtra("longitude", mLongitude);
-//                    intent.putExtra("latitude", mLatitude);
-//                    intent.setClass(getActivity(), MoreCircleActivity.class);
-//                    startActivity(intent);
-//                }
-//                break;
-//            case R.id.iv_wodequanzi:
-//                startActivity(new Intent(getActivity(), MyCircleActivity.class));
-//                break;
-//        }
-//    }
-
-//    class MyAdapt extends BaseAdapter {
-//
-//        @Override
-//        public int getCount() {
-//            return mCircles.size();
-//        }
-//
-//        @Override
-//        public Object getItem(int position) {
-//            return null;
-//        }
-//
-//        @Override
-//        public long getItemId(int position) {
-//            return 0;
-//        }
-//
-//        @Override
-//        public View getView(int position, View convertView, ViewGroup parent) {
-//            ViewHolder viewHolder;
-//            if (convertView == null) {
-//                convertView = View.inflate(getActivity(), R.layout.item_circle_listview, null);
-//                viewHolder = new ViewHolder(convertView);
-//                convertView.setTag(viewHolder);
-//            } else {
-//                viewHolder = (ViewHolder) convertView.getTag();
-//            }
-//            Circle.ResultBean resultBean = mCircles.get(position);
-//            Picasso.with(getActivity()).load(resultBean.getHeadImg()).resize(MyUtils.Dp2Px(getActivity()
-//                    , 80), MyUtils.Dp2Px(getActivity(), 80)).centerCrop().into(viewHolder.mIvCircleImage);
-//            viewHolder.mTvCircleName.setText(resultBean.getGroupName());
-//            viewHolder.mTvCircleDetails.setText(resultBean.getDetails());
-//            viewHolder.mTvDiscountCircle.setText(resultBean.getDistance() + "m");
-//            return convertView;
-//        }
-//
-//    }
-//
-//    class GridAdapt extends BaseAdapter {
-//        @Override
-//        public int getCount() {
-//            return mMyCircleResult.size();
-//        }
-//
-//        @Override
-//        public Object getItem(int position) {
-//            return null;
-//        }
-//
-//        @Override
-//        public long getItemId(int position) {
-//            return 0;
-//        }
-//
-//        @Override
-//        public View getView(int position, View convertView, ViewGroup parent) {
-//            ViewHolder viewHolder;
-//            if (convertView == null) {
-//                convertView = View.inflate(getActivity(), R.layout.item_gamelist_gradview, null);
-//                viewHolder = new ViewHolder(convertView);
-//                convertView.setTag(viewHolder);
-//            } else {
-//                viewHolder = (ViewHolder) convertView.getTag();
-//            }
-//            Circle.ResultBean resultBean = mMyCircleResult.get(position);
-//            viewHolder.mTvGameName.setText(resultBean.getGroupName());
-//            Picasso.with(getActivity()).load(resultBean.getHeadImg()).resize(120, 120).centerCrop()
-//                    .into(viewHolder.mIvGameimage);
-//            return convertView;
-//        }
-//
-//        class ViewHolder {
-//            @Bind(R.id.iv_gameimage)
-//            ImageView mIvGameimage;
-//            @Bind(R.id.tv_game_name)
-//            TextView mTvGameName;
-//
-//            ViewHolder(View view) {
-//                ButterKnife.bind(this, view);
-//            }
-//        }
-//    }
-//
-//    static class ViewHolder {
-//        @Bind(R.id.iv_circle_image)
-//        ImageView mIvCircleImage;
-//        @Bind(R.id.tv_circle_name)
-//        TextView mTvCircleName;
-//        @Bind(R.id.tv_circle_details)
-//        TextView mTvCircleDetails;
-//        @Bind(R.id.tv_discount_circle)
-//        TextView mTvDiscountCircle;
-//
-//        ViewHolder(View view) {
-//            ButterKnife.bind(this, view);
-//        }
-//    }
 }

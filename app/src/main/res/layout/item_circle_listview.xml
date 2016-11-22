@@ -1,77 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@android:color/white"
-              android:orientation="vertical">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="88dp"
-        android:orientation="horizontal"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp">
-
-        <ImageView
-            android:id="@+id/iv_circle_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="8dp"
-            android:paddingLeft="8dp"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/placeholder"
-            />
-
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="8dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_circle_name"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1.5"
-                android:gravity="center_vertical"
-                android:text="味多美"
-                android:textColor="@android:color/black"
-                android:textSize="16sp"/>
+                android:layout_height="160px"
+                android:background="@android:color/white">
 
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/iv_image"
+        android:layout_width="100px"
+        android:layout_height="100px"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/mid_padding"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/placeholder"
+        app:riv_corner_radius="5dp"/>
 
-            <TextView
-                android:id="@+id/tv_circle_details"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:singleLine="true"
-                android:text="中关村"
-                android:textSize="14sp"/>
-        </LinearLayout>
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24px"
+        android:layout_marginTop="40px"
+        android:layout_toRightOf="@id/iv_image"
+        android:text="为正义而战"
+        android:textColor="@color/black_word"
+        android:textSize="32px"/>
 
-        <LinearLayout
-            android:layout_width="64dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+    <TextView
+        android:id="@+id/tv_slogen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_name"
+        android:layout_marginLeft="24px"
+        android:layout_marginTop="@dimen/small_padding"
+        android:layout_toRightOf="@id/iv_image"
+        android:text="八字刻在石头上"
+        android:textColor="@color/shallow_word"
+        android:textSize="24px"/>
 
-            <TextView
-                android:id="@+id/tv_discount_circle"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingTop="2dp"
-                android:textSize="12sp"/>
+    <TextView
+        android:id="@+id/tv_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/mid_padding"
+        android:layout_marginTop="48px"
+        android:text="10.56KM"
+        android:textColor="@color/shallow_word"
+        android:textSize="20px"/>
 
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-
-</LinearLayout>
+</RelativeLayout>

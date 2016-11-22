@@ -1,12 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="circlenormal"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/mid_padding">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/iv_image"
+            android:layout_width="match_parent"
+            android:layout_height="200px"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/placeholder"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100px"
+            android:layout_marginTop="@dimen/small_padding"
+            android:background="@android:color/white">
+
+            <TextView
+                android:id="@+id/tv1"
+                android:layout_width="8px"
+                android:layout_height="38px"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/mid_padding"
+                android:background="@color/orange"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="22px"
+                android:layout_toRightOf="@id/tv1"
+                android:text="附近的圈子"
+                android:textColor="@color/black_word"
+                android:textSize="28px"/>
+
+            <ImageView
+                android:id="@+id/iv_refresh"
+                android:layout_width="36px"
+                android:layout_height="36px"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/mid_padding"
+                android:src="@mipmap/refresh"/>
+
+            <TextView
+                android:id="@+id/tv_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/small_padding"
+                android:layout_toLeftOf="@id/iv_refresh"
+                android:text="南山区深南大道9678号"
+                android:textColor="@color/shallow_word"
+                android:textSize="25px"/>
+        </RelativeLayout>
+
+        <com.amap.api.maps2d.MapView
+            android:id="@+id/mapview"
+            android:layout_width="match_parent"
+            android:layout_height="320px"
+            android:background="@android:color/white"
+            android:paddingLeft="@dimen/mid_padding"
+            android:paddingRight="@dimen/mid_padding"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp">
+
+            <com.chinalooke.yuwan.view.NoSlidingListView
+                android:id="@+id/lv_circle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ProgressBar
+                android:id="@+id/pb_load"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_more"
+            android:layout_width="match_parent"
+            android:layout_height="80px"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:text="加载更多"
+            android:textColor="@color/shallow_word"
+            android:textSize="24px"/>
+
+        <LinearLayout
+            android:id="@+id/ll_interest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="100px"
+                android:layout_marginTop="24px"
+                android:background="@android:color/white">
+
+                <TextView
+                    android:id="@+id/tv2"
+                    android:layout_width="8px"
+                    android:layout_height="38px"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/mid_padding"
+                    android:background="@color/orange"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="22px"
+                    android:layout_toRightOf="@id/tv2"
+                    android:text="兴趣圈子"
+                    android:textColor="@color/black_word"
+                    android:textSize="28px"/>
+            </RelativeLayout>
+
+            <GridView
+                android:id="@+id/gd_interest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:numColumns="3"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100px"
+            android:layout_marginTop="24px"
+            android:background="@android:color/white">
+
+            <TextView
+                android:id="@+id/tv3"
+                android:layout_width="8px"
+                android:layout_height="38px"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/mid_padding"
+                android:background="@color/orange"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="22px"
+                android:layout_toRightOf="@id/tv3"
+                android:text="热门圈子"
+                android:textColor="@color/black_word"
+                android:textSize="28px"/>
+        </RelativeLayout>
+
+        <GridView
+            android:id="@+id/gd_hot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="3"/>
+
+    </LinearLayout>
+</ScrollView>

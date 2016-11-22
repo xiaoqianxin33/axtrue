@@ -143,6 +143,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null) {
             if (aMapLocation.getErrorCode() == 0) {
+                LocationUtils.setAMapLocation(aMapLocation);
                 mLongitude = aMapLocation.getLongitude();
                 PreferenceUtils.setPrefString(getApplicationContext(), "longitude", mLongitude + "");
                 mLatitude = aMapLocation.getLatitude();

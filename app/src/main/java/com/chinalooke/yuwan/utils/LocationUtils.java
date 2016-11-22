@@ -20,6 +20,15 @@ public class LocationUtils {
     private static final double EARTH_RADIUS = 6378137.0;
     private static LocationManager mLocationManager;
     private static Activity mActivity;
+    private static AMapLocation mAMapLocation;
+
+    public static AMapLocation getAMapLocation() {
+        return mAMapLocation;
+    }
+
+    public static void setAMapLocation(AMapLocation AMapLocation) {
+        mAMapLocation = AMapLocation;
+    }
 
     public LocationUtils(Activity activity, LocationManager locationManager) {
         this.mActivity = activity;
