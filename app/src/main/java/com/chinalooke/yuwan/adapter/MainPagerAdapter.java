@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * viewPage adapter
  * Created by xiao on 2016/8/23.
  */
 public class MainPagerAdapter extends FragmentPagerAdapter {
+    private final String[] TITLES = {"圈子", "我的"};
 
     private List<Fragment> fragments = new ArrayList<Fragment>();
 
@@ -34,5 +36,8 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
         return fragments.size();
     }
 
-
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return TITLES[position];
+    }
 }

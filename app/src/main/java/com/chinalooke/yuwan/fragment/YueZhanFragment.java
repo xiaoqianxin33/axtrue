@@ -351,10 +351,6 @@ public class YueZhanFragment extends Fragment {
         }
     }
 
-    private void showCreateSucceedDialog() {
-
-    }
-
     private void showRuleDialog() {
         final Dialog dialog = new Dialog(getActivity(), R.style.Dialog);
         View inflate = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_add_game_rule, null);
