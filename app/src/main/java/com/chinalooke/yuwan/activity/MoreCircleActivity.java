@@ -1,5 +1,6 @@
 package com.chinalooke.yuwan.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -199,6 +200,7 @@ public class MoreCircleActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.iv_create_circle:
+                startActivity(new Intent(this,CreateCircleActivity.class));
                 break;
         }
     }
@@ -241,13 +243,13 @@ public class MoreCircleActivity extends AppCompatActivity {
     }
 
     static class ViewHolder {
-        @Bind(R.id.iv_circle_image)
+        @Bind(R.id.iv_image)
         ImageView mIvCircleImage;
-        @Bind(R.id.tv_circle_name)
+        @Bind(R.id.tv_name)
         TextView mTvCircleName;
-        @Bind(R.id.tv_circle_details)
+        @Bind(R.id.tv_slogen)
         TextView mTvCircleDetails;
-        @Bind(R.id.tv_discount_circle)
+        @Bind(R.id.tv_distance)
         TextView mTvDiscountCircle;
 
         ViewHolder(View view) {

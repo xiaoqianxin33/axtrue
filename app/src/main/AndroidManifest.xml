@@ -193,6 +193,8 @@
         </activity>
         <activity android:name=".activity.CircleDynamicActivity">
         </activity>
+        <activity android:name=".activity.CreateCircleActivity">
+        </activity>
     </application>
 
 </manifest>

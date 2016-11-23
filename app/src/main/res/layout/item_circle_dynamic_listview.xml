@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@android:color/white"
+              android:descendantFocusability="blocksDescendants"
+              android:orientation="vertical"
+              android:paddingLeft="@dimen/small_padding"
+              android:paddingRight="@dimen/small_padding"
+              android:paddingTop="42px">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="72px">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/roundedImageView"
+            android:layout_width="72px"
+            android:layout_height="72px"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/placeholder"
+            app:riv_oval="true"/>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="28px"
+            android:layout_toRightOf="@id/roundedImageView"
+            android:text="栀子花白花瓣"
+            android:textColor="@color/black_word"
+            android:textSize="26px"/>
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="28px"
+            android:layout_toRightOf="@id/roundedImageView"
+            android:text="刚刚"
+            android:textColor="@color/shallow_word"
+            android:textSize="22px"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35px"
+        android:text="今天在3VS3中取得胜利，获得奖金100元，快来"
+        android:textColor="@color/black_word"
+        android:textSize="30px"/>
+
+    <GridView
+        android:id="@+id/gridView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30px"
+        android:numColumns="3"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30px"
+        android:layout_marginBottom="36px"
+        android:layout_marginTop="26px">
+
+        <ImageView
+            android:id="@+id/iv1"
+            android:layout_width="25px"
+            android:layout_height="30px"
+            android:src="@mipmap/circle_dynamic_zuobiao"/>
+
+        <TextView
+            android:id="@+id/tv_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/small_padding"
+            android:layout_toRightOf="@id/iv1"
+            android:text="来自河南洛阳"
+            android:textColor="@color/orange"
+            android:textSize="27px"/>
+
+
+        <ImageView
+            android:id="@+id/iv_pinglun"
+            android:layout_width="28px"
+            android:layout_height="28px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="460px"
+            android:src="@mipmap/circle_pinglun"/>
+
+
+        <TextView
+            android:id="@+id/tv_pinglun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/small_padding"
+            android:layout_toRightOf="@id/iv_pinglun"
+            android:text="20"
+            android:textColor="@color/shallow_word"
+            android:textSize="20px"/>
+
+
+        <TextView
+            android:id="@+id/tv_dianzan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="296"
+            android:textColor="@color/shallow_word"
+            android:textSize="20px"/>
+
+        <ImageView
+            android:id="@+id/iv_dianzan"
+            android:layout_width="28px"
+            android:layout_height="28px"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/small_padding"
+            android:layout_toLeftOf="@id/tv_dianzan"
+            android:src="@mipmap/circle_dianzan"/>
+
+    </RelativeLayout>
+</LinearLayout>

@@ -252,6 +252,8 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
                 }
             }
         });
+
+        editNameDialog.show();
     }
 
     /**

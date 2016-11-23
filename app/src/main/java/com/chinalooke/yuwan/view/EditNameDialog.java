@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
 
@@ -30,6 +31,8 @@ public class EditNameDialog extends AlertDialog {
     Button mBtnCancel;
     @Bind(R.id.btn_ok)
     Button mBtnOk;
+    @Bind(R.id.tv_title)
+    TextView mTvTitle;
 
     private onNoOnclickListener noOnclickListener;//取消按钮被点击了的监听器
     private onYesOnclickListener yesOnclickListener;//确定按钮被点击了的监听器
@@ -44,6 +47,10 @@ public class EditNameDialog extends AlertDialog {
 
     protected EditNameDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
+    }
+
+    public void setTvTitle(String title) {
+        mTvTitle.setText(title);
     }
 
     @Override

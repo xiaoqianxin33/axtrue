@@ -72,7 +72,7 @@ public class DynamicFragment extends Fragment {
     private RequestQueue mQueue;
     private LoginUser.ResultBean mUserInfo;
     private boolean isFirst = true;
-    private List<Dynamic.ResultBean> mDynamics = new ArrayList<>();
+    private List<Dynamic.ResultBean.ListBean> mDynamics = new ArrayList<>();
     private Toast mToast;
     private MyListAdapater mMyListAdapater;
     private float mWidth;
@@ -190,7 +190,7 @@ public class DynamicFragment extends Fragment {
                         Dynamic dynamic = gson.fromJson(response, type);
                         if (dynamic != null) {
                             mTvNo.setVisibility(View.GONE);
-                            mDynamics.addAll(dynamic.getResult());
+                            mDynamics.addAll(dynamic.getResult().getList());
                             mMyListAdapater.notifyDataSetChanged();
                             mPage++;
                         } else {
@@ -269,13 +269,13 @@ public class DynamicFragment extends Fragment {
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-            final Dynamic.ResultBean resultBean = mDynamics.get(position);
+            final Dynamic.ResultBean.ListBean resultBean = mDynamics.get(position);
             Picasso.with(getActivity()).load(resultBean.getHeadImg()).resize(MyUtils.Dp2Px(getActivity(), 32)
                     , MyUtils.Dp2Px(getActivity(), 32)).centerCrop().into(viewHolder.mCircleImageView);
             viewHolder.mTvContent.setText(resultBean.getContent());
             viewHolder.mTvNameUp.setText(resultBean.getNickName());
             viewHolder.mTvName.setText(resultBean.getNickName());
-            viewHolder.mTvTime.setText(resultBean.getCreateTime().substring(0, 10));
+            viewHolder.mTvTime.setText(resultBean.getAddTime().substring(0, 10));
             viewHolder.mTvDianzan.setText(resultBean.getLikes());
             viewHolder.mTextView6.setText(resultBean.getComments());
             viewHolder.mTvLocation.setText(resultBean.getAddress());
@@ -287,7 +287,7 @@ public class DynamicFragment extends Fragment {
 
 
             if (mUserInfo != null) {
-                loginUserLike = resultBean.isLoginUserLike();
+                loginUserLike = resultBean.isIsLoginUserLike();
                 if (loginUserLike) {
                     viewHolder.mIvDianzan.setImageResource(R.mipmap.dianzanhou);
                 } else {

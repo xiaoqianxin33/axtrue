@@ -7,26 +7,18 @@ public class Dynamic {
 
     /**
      * Msg :
-     * Result : [{"activeId":"33","address":"河南省涧西","comments":"1","content":"开学了，大家都来上学呀哈哈哈哈哈哈","createTime":"2016-09-03 17:56:35","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"http://oaqx2e3yr.bkt.clouddn.com/Active14728965951,http://oaqx2e3yr.bkt.clouddn.com/Active14728965950,http://oaqx2e3yr.bkt.clouddn.com/Active14728965952,http://oaqx2e3yr.bkt.clouddn.com/Active14728965953","lastComment":[{"addTime":"2016-09-04 10:26:16","commentId":"502","content":"Resghh ccvbfbb fcvnkyt","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"2","nickName":"CD-ROM"},{"activeId":"32","comments":"0","content":"来咯娱乐女可恶可以撒额醉的与他","createTime":"2016-09-01 11:15:19","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472546611","images":"http://oaqx2e3yr.bkt.clouddn.com/Active14726997192,http://oaqx2e3yr.bkt.clouddn.com/Active14726997190,http://oaqx2e3yr.bkt.clouddn.com/Active14726997193,http://oaqx2e3yr.bkt.clouddn.com/Active14726997204,http://oaqx2e3yr.bkt.clouddn.com/Active14726997191,http://oaqx2e3yr.bkt.clouddn.com/Active14726997205","likes":"0","nickName":"哈哈哈"},{"activeId":"31","comments":"0","content":"测试合并代码是否出错","createTime":"2016-08-31 10:28:00","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472455719","images":"","likes":"2","nickName":"DK"},{"activeId":"30","comments":"1","content":"测试合并代码是否出错","createTime":"2016-08-31 10:26:12","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472455719","images":"","lastComment":[{"addTime":"2016-09-02 14:57:25","commentId":"496","content":"宇宛","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","nickName":"南极熊"}],"likes":"1","nickName":"DK"},{"activeId":"29","comments":"0","content":"\u2026","createTime":"2016-08-31 10:19:22","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472455719","images":"","likes":"0","nickName":"DK"},{"activeId":"28","comments":"0","content":"Ghkh","createTime":"2016-08-30 18:48:45","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","images":"","likes":"0","nickName":"123"},{"activeId":"27","comments":"0","content":"Dyhht","createTime":"2016-08-30 16:31:15","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"","likes":"1","nickName":"CD-ROM"},{"activeId":"26","comments":"0","content":"1231231231231321231231231231321321321321321321231321321321","createTime":"2016-08-30 15:22:11","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","images":"","likes":"1","nickName":"123"},{"activeId":"25","comments":"0","content":"删了哈","createTime":"2016-08-30 11:53:15","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472546611","images":"","likes":"1","nickName":"哈哈哈"},{"activeId":"24","comments":"0","content":"接力","createTime":"2016-08-29 17:43:39","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"http://oaqx2e3yr.bkt.clouddn.com/Active14724638190","likes":"1","nickName":"CD-ROM"}]
+     * Result : {"isUserJoin":false,"list":[{"activeId":"177","addTime":"2016-09-18 00:00:00","comments":"0","content":"1111111","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"","isLoginUserLike":false,"likes":"0","nickName":"CD-ROM","source":"1","userId":"1"},{"activeId":"178","addTime":"2016-09-18 00:00:00","address":"洛阳市涧西区","comments":"0","content":"1111111","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"","isLoginUserLike":false,"likes":"0","nickName":"CD-ROM","source":"1","userId":"1"},{"activeId":"162","addTime":"2016-08-18 10:33:04","comments":"9","content":"饿啊","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"http://oaqx2e3yr.bkt.clouddn.com/Active14714875840,http://oaqx2e3yr.bkt.clouddn.com/Active14714876031,http://oaqx2e3yr.bkt.clouddn.com/Active14714876074,http://oaqx2e3yr.bkt.clouddn.com/Active14714876032,http://oaqx2e3yr.bkt.clouddn.com/Active14714876033,http://oaqx2e3yr.bkt.clouddn.com/Active14714876076,http://oaqx2e3yr.bkt.clouddn.com/Active14714876075,http://oaqx2e3yr.bkt.clouddn.com/Active14714876078,http://oaqx2e3yr.bkt.clouddn.com/Active14714876077","isLoginUserLike":false,"lastComment":[{"addTime":"2016-08-24 10:54:38","commentId":"464","content":"1","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"},{"addTime":"2016-08-23 15:55:34","commentId":"358","content":"可以","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"0","nickName":"CD-ROM","source":"1","userId":"1"},{"activeId":"154","addTime":"2016-08-17 21:24:14","comments":"17","content":"哈哈","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"","isLoginUserLike":true,"lastComment":[{"addTime":"2016-08-24 09:33:48","commentId":"413","content":"饿","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"},{"addTime":"2016-08-24 09:33:40","commentId":"412","content":"好","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"1","nickName":"CD-ROM","source":"1","userId":"1"},{"activeId":"146","addTime":"2016-08-17 17:41:31","comments":"18","content":"Huang zhengwei.   Nishibushisha. Hahahahahahhahahhahahahahahahh","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"","isLoginUserLike":true,"lastComment":[{"addTime":"2016-08-24 09:33:17","commentId":"410","content":"的","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"},{"addTime":"2016-08-24 09:33:05","commentId":"409","content":"可以","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"1","nickName":"CD-ROM","source":"1","userId":"1"},{"activeId":"145","addTime":"2016-08-17 17:39:47","comments":"27","content":"Hi.  12345678991234567897000000.  Hahahahahahhaahhahahahahahahahahahaha","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"","isLoginUserLike":true,"lastComment":[{"addTime":"2016-08-24 10:54:06","commentId":"460","content":"3","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"},{"addTime":"2016-08-24 10:04:08","commentId":"440","content":"3","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"1","nickName":"CD-ROM","source":"1","userId":"1"},{"activeId":"142","addTime":"2016-08-17 10:25:08","comments":"14","content":"123123","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"","isLoginUserLike":false,"lastComment":[{"addTime":"2016-08-24 10:05:51","commentId":"449","content":"12","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"},{"addTime":"2016-08-24 10:04:44","commentId":"443","content":"3","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"0","nickName":"CD-ROM","source":"1","userId":"1"},{"activeId":"119","addTime":"2016-08-12 00:00:00","comments":"3","content":"9","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"lastComment":[{"addTime":"2016-08-22 09:26:53","commentId":"309","content":"123","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472546611","nickName":"哈哈哈"},{"addTime":"2016-08-22 09:26:44","commentId":"308","content":"二楼","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472546611","nickName":"哈哈哈"}],"likes":"0","source":"1"},{"activeId":"120","addTime":"2016-08-12 00:00:00","comments":"1","content":"9","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":true,"lastComment":[{"addTime":"2016-08-21 10:42:49","commentId":"260","content":"9咋啦","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"2","nickName":"123","source":"1","userId":"3"},{"activeId":"6","addTime":"2008-08-08 00:00:00","comments":"3","content":"HelloiOS","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":true,"lastComment":[{"addTime":"2016-08-13 17:15:16","commentId":"64","content":"123","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"},{"addTime":"2016-08-13 17:13:32","commentId":"63","content":"123","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"1"},{"activeId":"7","addTime":"2008-08-08 00:00:00","comments":"2","content":"HelloiOS","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"lastComment":[{"addTime":"2016-08-21 10:41:28","commentId":"258","content":"iOS","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"},{"addTime":"2016-08-21 10:41:17","commentId":"257","content":"hello。 －iOS","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"0"},{"activeId":"8","addTime":"2008-08-08 00:00:00","comments":"0","content":"HelloiOS","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":true,"likes":"1","nickName":"123","userId":"3"},{"activeId":"10","addTime":"2008-08-08 00:00:00","comments":"0","content":"HelloiOS","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"likes":"0"},{"activeId":"11","addTime":"2008-08-08 00:00:00","comments":"0","content":"HelloiOS","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"likes":"0"},{"activeId":"12","addTime":"2008-08-08 00:00:00","comments":"0","content":"HelloiOS","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"likes":"0","nickName":"大黄峰","userId":"5"},{"activeId":"19","addTime":"2008-08-08 00:00:00","comments":"0","content":"Hello","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"likes":"0"},{"activeId":"20","addTime":"2008-08-08 00:00:00","comments":"0","content":"Hello","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"likes":"0","nickName":"123","userId":"3"},{"activeId":"21","addTime":"2008-08-08 00:00:00","comments":"0","content":"Hello","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"likes":"0","nickName":"123","userId":"3"}]}
      * Success : true
      */
 
     private String Msg;
-    private boolean Success;
     /**
-     * activeId : 33
-     * address : 河南省涧西
-     * comments : 1
-     * content : 开学了，大家都来上学呀哈哈哈哈哈哈
-     * createTime : 2016-09-03 17:56:35
-     * headImg : http://oaqx2e3yr.bkt.clouddn.com/head1472707122
-     * images : http://oaqx2e3yr.bkt.clouddn.com/Active14728965951,http://oaqx2e3yr.bkt.clouddn.com/Active14728965950,http://oaqx2e3yr.bkt.clouddn.com/Active14728965952,http://oaqx2e3yr.bkt.clouddn.com/Active14728965953
-     * lastComment : [{"addTime":"2016-09-04 10:26:16","commentId":"502","content":"Resghh ccvbfbb fcvnkyt","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}]
-     * likes : 2
-     * nickName : CD-ROM
+     * isUserJoin : false
+     * list : [{"activeId":"177","addTime":"2016-09-18 00:00:00","comments":"0","content":"1111111","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"","isLoginUserLike":false,"likes":"0","nickName":"CD-ROM","source":"1","userId":"1"},{"activeId":"178","addTime":"2016-09-18 00:00:00","address":"洛阳市涧西区","comments":"0","content":"1111111","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"","isLoginUserLike":false,"likes":"0","nickName":"CD-ROM","source":"1","userId":"1"},{"activeId":"162","addTime":"2016-08-18 10:33:04","comments":"9","content":"饿啊","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"http://oaqx2e3yr.bkt.clouddn.com/Active14714875840,http://oaqx2e3yr.bkt.clouddn.com/Active14714876031,http://oaqx2e3yr.bkt.clouddn.com/Active14714876074,http://oaqx2e3yr.bkt.clouddn.com/Active14714876032,http://oaqx2e3yr.bkt.clouddn.com/Active14714876033,http://oaqx2e3yr.bkt.clouddn.com/Active14714876076,http://oaqx2e3yr.bkt.clouddn.com/Active14714876075,http://oaqx2e3yr.bkt.clouddn.com/Active14714876078,http://oaqx2e3yr.bkt.clouddn.com/Active14714876077","isLoginUserLike":false,"lastComment":[{"addTime":"2016-08-24 10:54:38","commentId":"464","content":"1","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"},{"addTime":"2016-08-23 15:55:34","commentId":"358","content":"可以","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"0","nickName":"CD-ROM","source":"1","userId":"1"},{"activeId":"154","addTime":"2016-08-17 21:24:14","comments":"17","content":"哈哈","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"","isLoginUserLike":true,"lastComment":[{"addTime":"2016-08-24 09:33:48","commentId":"413","content":"饿","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"},{"addTime":"2016-08-24 09:33:40","commentId":"412","content":"好","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"1","nickName":"CD-ROM","source":"1","userId":"1"},{"activeId":"146","addTime":"2016-08-17 17:41:31","comments":"18","content":"Huang zhengwei.   Nishibushisha. Hahahahahahhahahhahahahahahahh","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"","isLoginUserLike":true,"lastComment":[{"addTime":"2016-08-24 09:33:17","commentId":"410","content":"的","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"},{"addTime":"2016-08-24 09:33:05","commentId":"409","content":"可以","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"1","nickName":"CD-ROM","source":"1","userId":"1"},{"activeId":"145","addTime":"2016-08-17 17:39:47","comments":"27","content":"Hi.  12345678991234567897000000.  Hahahahahahhaahhahahahahahahahahahaha","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"","isLoginUserLike":true,"lastComment":[{"addTime":"2016-08-24 10:54:06","commentId":"460","content":"3","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"},{"addTime":"2016-08-24 10:04:08","commentId":"440","content":"3","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"1","nickName":"CD-ROM","source":"1","userId":"1"},{"activeId":"142","addTime":"2016-08-17 10:25:08","comments":"14","content":"123123","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","images":"","isLoginUserLike":false,"lastComment":[{"addTime":"2016-08-24 10:05:51","commentId":"449","content":"12","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"},{"addTime":"2016-08-24 10:04:44","commentId":"443","content":"3","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"0","nickName":"CD-ROM","source":"1","userId":"1"},{"activeId":"119","addTime":"2016-08-12 00:00:00","comments":"3","content":"9","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"lastComment":[{"addTime":"2016-08-22 09:26:53","commentId":"309","content":"123","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472546611","nickName":"哈哈哈"},{"addTime":"2016-08-22 09:26:44","commentId":"308","content":"二楼","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472546611","nickName":"哈哈哈"}],"likes":"0","source":"1"},{"activeId":"120","addTime":"2016-08-12 00:00:00","comments":"1","content":"9","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":true,"lastComment":[{"addTime":"2016-08-21 10:42:49","commentId":"260","content":"9咋啦","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"2","nickName":"123","source":"1","userId":"3"},{"activeId":"6","addTime":"2008-08-08 00:00:00","comments":"3","content":"HelloiOS","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":true,"lastComment":[{"addTime":"2016-08-13 17:15:16","commentId":"64","content":"123","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"},{"addTime":"2016-08-13 17:13:32","commentId":"63","content":"123","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"1"},{"activeId":"7","addTime":"2008-08-08 00:00:00","comments":"2","content":"HelloiOS","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"lastComment":[{"addTime":"2016-08-21 10:41:28","commentId":"258","content":"iOS","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"},{"addTime":"2016-08-21 10:41:17","commentId":"257","content":"hello。 －iOS","headImg":"http://oaqx2e3yr.bkt.clouddn.com/head1472707122","nickName":"CD-ROM"}],"likes":"0"},{"activeId":"8","addTime":"2008-08-08 00:00:00","comments":"0","content":"HelloiOS","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":true,"likes":"1","nickName":"123","userId":"3"},{"activeId":"10","addTime":"2008-08-08 00:00:00","comments":"0","content":"HelloiOS","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"likes":"0"},{"activeId":"11","addTime":"2008-08-08 00:00:00","comments":"0","content":"HelloiOS","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"likes":"0"},{"activeId":"12","addTime":"2008-08-08 00:00:00","comments":"0","content":"HelloiOS","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"likes":"0","nickName":"大黄峰","userId":"5"},{"activeId":"19","addTime":"2008-08-08 00:00:00","comments":"0","content":"Hello","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"likes":"0"},{"activeId":"20","addTime":"2008-08-08 00:00:00","comments":"0","content":"Hello","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"likes":"0","nickName":"123","userId":"3"},{"activeId":"21","addTime":"2008-08-08 00:00:00","comments":"0","content":"Hello","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","images":"http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200","isLoginUserLike":false,"likes":"0","nickName":"123","userId":"3"}]
      */
 
-    private List<ResultBean> Result;
+    private ResultBean Result;
+    private boolean Success;
 
     public String getMsg() {
         return Msg;
@@ -34,6 +26,14 @@ public class Dynamic {
 
     public void setMsg(String Msg) {
         this.Msg = Msg;
+    }
+
+    public ResultBean getResult() {
+        return Result;
+    }
+
+    public void setResult(ResultBean Result) {
+        this.Result = Result;
     }
 
     public boolean isSuccess() {
@@ -44,131 +44,77 @@ public class Dynamic {
         this.Success = Success;
     }
 
-    public List<ResultBean> getResult() {
-        return Result;
-    }
-
-    public void setResult(List<ResultBean> Result) {
-        this.Result = Result;
-    }
-
     public static class ResultBean {
-        private String activeId;
-        private String address;
-        private String comments;
-        private String content;
-        private String createTime;
-        private String headImg;
-        private String images;
-        private String likes;
-        private String nickName;
-        private boolean isLoginUserLike;
-
-        public boolean isLoginUserLike() {
-            return isLoginUserLike;
-        }
-
-        public void setLoginUserLike(boolean loginUserLike) {
-            isLoginUserLike = loginUserLike;
-        }
-
+        private boolean isUserJoin;
         /**
-         * addTime : 2016-09-04 10:26:16
-         * commentId : 502
-         * content : Resghh ccvbfbb fcvnkyt
+         * activeId : 177
+         * addTime : 2016-09-18 00:00:00
+         * comments : 0
+         * content : 1111111
          * headImg : http://oaqx2e3yr.bkt.clouddn.com/head1472707122
+         * images :
+         * isLoginUserLike : false
+         * likes : 0
          * nickName : CD-ROM
+         * source : 1
+         * userId : 1
          */
 
-        private List<LastCommentBean> lastComment;
+        private List<ListBean> list;
 
-        public String getActiveId() {
-            return activeId;
+        public boolean isIsUserJoin() {
+            return isUserJoin;
         }
 
-        public void setActiveId(String activeId) {
-            this.activeId = activeId;
+        public void setIsUserJoin(boolean isUserJoin) {
+            this.isUserJoin = isUserJoin;
         }
 
-        public String getAddress() {
-            return address;
+        public List<ListBean> getList() {
+            return list;
         }
 
-        public void setAddress(String address) {
-            this.address = address;
+        public void setList(List<ListBean> list) {
+            this.list = list;
         }
 
-        public String getComments() {
-            return comments;
-        }
-
-        public void setComments(String comments) {
-            this.comments = comments;
-        }
-
-        public String getContent() {
-            return content;
-        }
-
-        public void setContent(String content) {
-            this.content = content;
-        }
-
-        public String getCreateTime() {
-            return createTime;
-        }
-
-        public void setCreateTime(String createTime) {
-            this.createTime = createTime;
-        }
-
-        public String getHeadImg() {
-            return headImg;
-        }
-
-        public void setHeadImg(String headImg) {
-            this.headImg = headImg;
-        }
-
-        public String getImages() {
-            return images;
-        }
-
-        public void setImages(String images) {
-            this.images = images;
-        }
-
-        public String getLikes() {
-            return likes;
-        }
-
-        public void setLikes(String likes) {
-            this.likes = likes;
-        }
-
-        public String getNickName() {
-            return nickName;
-        }
-
-        public void setNickName(String nickName) {
-            this.nickName = nickName;
-        }
-
-        public List<LastCommentBean> getLastComment() {
-            return lastComment;
-        }
-
-        public void setLastComment(List<LastCommentBean> lastComment) {
-            this.lastComment = lastComment;
-        }
-
-        public static class LastCommentBean {
+        public static class ListBean {
+            private String activeId;
             private String addTime;
-            private String commentId;
+            private String comments;
             private String content;
             private String headImg;
+            private String images;
+            private boolean isLoginUserLike;
+            private String likes;
             private String nickName;
+            private String source;
+            private String userId;
+            private String address;
 
+            public String getAddress() {
+                return address;
+            }
+
+            public void setAddress(String address) {
+                this.address = address;
+            }
+
+            public boolean isLoginUserLike() {
+                return isLoginUserLike;
+            }
+
+            public void setLoginUserLike(boolean loginUserLike) {
+                isLoginUserLike = loginUserLike;
+            }
+
+            public String getActiveId() {
+                return activeId;
+            }
+
+            public void setActiveId(String activeId) {
+                this.activeId = activeId;
+            }
 
             public String getAddTime() {
                 return addTime;
@@ -178,12 +124,12 @@ public class Dynamic {
                 this.addTime = addTime;
             }
 
-            public String getCommentId() {
-                return commentId;
+            public String getComments() {
+                return comments;
             }
 
-            public void setCommentId(String commentId) {
-                this.commentId = commentId;
+            public void setComments(String comments) {
+                this.comments = comments;
             }
 
             public String getContent() {
@@ -202,12 +148,52 @@ public class Dynamic {
                 this.headImg = headImg;
             }
 
+            public String getImages() {
+                return images;
+            }
+
+            public void setImages(String images) {
+                this.images = images;
+            }
+
+            public boolean isIsLoginUserLike() {
+                return isLoginUserLike;
+            }
+
+            public void setIsLoginUserLike(boolean isLoginUserLike) {
+                this.isLoginUserLike = isLoginUserLike;
+            }
+
+            public String getLikes() {
+                return likes;
+            }
+
+            public void setLikes(String likes) {
+                this.likes = likes;
+            }
+
             public String getNickName() {
                 return nickName;
             }
 
             public void setNickName(String nickName) {
                 this.nickName = nickName;
+            }
+
+            public String getSource() {
+                return source;
+            }
+
+            public void setSource(String source) {
+                this.source = source;
+            }
+
+            public String getUserId() {
+                return userId;
+            }
+
+            public void setUserId(String userId) {
+                this.userId = userId;
             }
         }
     }
