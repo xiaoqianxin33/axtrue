@@ -7,11 +7,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.activity.CircleDynamicActivity;
 import com.chinalooke.yuwan.activity.MoreCircleActivity;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
@@ -65,10 +68,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
 
     @Bind(R.id.iv_image)
     ImageView mIvImage;
-    @Bind(R.id.tv1)
-    TextView mTv1;
-    @Bind(R.id.iv_refresh)
-    ImageView mIvRefresh;
     @Bind(R.id.tv_address)
     TextView mTvAddress;
     @Bind(R.id.mapview)
@@ -77,12 +76,8 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     NoSlidingListView mLvCircle;
     @Bind(R.id.tv_more)
     TextView mTvMore;
-    @Bind(R.id.tv2)
-    TextView mTv2;
     @Bind(R.id.gd_interest)
     GridView mGdInterest;
-    @Bind(R.id.tv3)
-    TextView mTv3;
     @Bind(R.id.gd_hot)
     GridView mGdHot;
     @Bind(R.id.pb_load)
@@ -121,6 +116,23 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         mMap = mMapview.getMap();
         initView();
         initData();
+        initEvent();
+    }
+
+    private void initEvent() {
+        //附近圈子item点击事件
+        mLvCircle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Circle.ResultBean resultBean = mNearbyCircles.get(position);
+                Intent intent = new Intent(getActivity(), CircleDynamicActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("circle", resultBean);
+                intent.putExtra("circle_type", 0);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initView() {
@@ -161,6 +173,8 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             mAMapLocationClient.stopLocation();
             mAMapLocationClient.onDestroy();
         }
+        if (mMapview != null)
+            mMapview.onDestroy();
     }
 
     @OnClick({R.id.iv_refresh, R.id.tv_more})
@@ -409,5 +423,25 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mMapview != null)
+            mMapview.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mMapview != null)
+            mMapview.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mMapview != null)
+            mMapview.onSaveInstanceState(outState);
+    }
 
 }

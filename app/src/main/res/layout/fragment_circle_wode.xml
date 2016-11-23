@@ -4,9 +4,41 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <TextView
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="90px"
+        android:background="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="58px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:layout_marginRight="@dimen/mid_padding"
+            android:background="@drawable/wode_circle_shape"
+            android:orientation="horizontal"
+            android:padding="2dp">
+
+            <TextView
+                android:id="@+id/tv_wode"
+                style="@style/circle_top_textview"
+                android:text="我的圈子"/>
+
+
+            <TextView
+                android:id="@+id/tv_create"
+                style="@style/circle_top_textview"
+                android:text="我创建的圈子"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+    <FrameLayout
+        android:id="@+id/fl_circle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="circlewode"/>
+        android:layout_marginTop="1dp"/>
 
 </LinearLayout>

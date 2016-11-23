@@ -131,72 +131,11 @@ public class CircleFragment extends Fragment {
         mTabs.setSelectedTextColor(getResources().getColor(R.color.indicator_color));
         mTabs.setTextColor(getResources().getColor(R.color.white));
 
-
-//        if (mLatitude != 0 && mLongitude != 0) {
-//            LatLng latLng = new LatLng(mLatitude, mLongitude);
-//            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(
-//                    latLng,//新的中心点坐标
-//                    15, //新的缩放级别
-//                    30, //俯仰角0°~45°（垂直与地图时为0）
-//                    0  ////偏航角 0~360° (正北方为0)
-//            ));
-//            mMap.moveCamera(cameraUpdate);
-//            mMap.addMarker(new MarkerOptions().
-//                    position(latLng).
-//                    title("我的位置").
-//                    snippet("DefaultMarker"));
-//        }
-//
-//        List<Circle.ResultBean> result = mCircle.getResult();
-//
-//        if (result != null && result.size() != 0) {
-//            mCircles.addAll(result);
-//            mMyAdapt.notifyDataSetChanged();
-//            for (Circle.ResultBean resultBean : result) {
-//                LatLng latLng2 = new LatLng(Double.parseDouble(resultBean.getLat()), Double.parseDouble(resultBean.getLng()));
-//                mMap.addMarker(new MarkerOptions().position(latLng2).title(resultBean.getGroupName()).snippet("DefaultMarker"));
-//            }
-//        }
-
-//        initEvent();
     }
-
-
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if (mMapview != null)
-//            mMapview.onResume();
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        if (mMapview != null)
-//            mMapview.onPause();
-//    }
-
-//    @Override
-//    public void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        if (mMapview != null)
-//            mMapview.onSaveInstanceState(outState);
-//    }
-
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//        if (mLocationClient != null)
-//            mLocationClient.stopLocation();
-//        if (mMapview != null)
-//            mMapview.onDestroy();
-//    }
-
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
-
 }

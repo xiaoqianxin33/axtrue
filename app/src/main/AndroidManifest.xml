@@ -191,6 +191,8 @@
 
         <activity android:name=".activity.AddFriendActivity">
         </activity>
+        <activity android:name=".activity.CircleDynamicActivity">
+        </activity>
     </application>
 
 </manifest>
