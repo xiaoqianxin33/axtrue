@@ -3,6 +3,7 @@ package com.chinalooke.yuwan.constant;
 import com.chinalooke.yuwan.R;
 
 /**
+ * 常量类
  * Created by xiao on 2016/8/23.
  */
 public class Constant {

@@ -23,6 +23,8 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.Circle;
+import com.chinalooke.yuwan.model.LoginUser;
+import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.google.gson.Gson;
@@ -60,6 +62,7 @@ public class MoreCircleActivity extends AppCompatActivity {
     private Circle mMyCircle;
     private List<Circle.ResultBean> mMyCircleResult = new ArrayList<>();
     private boolean isFirst = true;
+    private LoginUser.ResultBean mUserInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,7 @@ public class MoreCircleActivity extends AppCompatActivity {
         mLvMorecircle.setAdapter(mMyAdapt);
         mLongitude = getIntent().getDoubleExtra("longitude", 0);
         mLatitude = getIntent().getDoubleExtra("latitude", 0);
+        mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         initEvent();
 
     }
@@ -200,7 +204,10 @@ public class MoreCircleActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.iv_create_circle:
-                startActivity(new Intent(this,CreateCircleActivity.class));
+                if (mUserInfo != null)
+                    startActivity(new Intent(this, CreateCircleActivity.class));
+                else
+                    startActivity(new Intent(this, LoginActivity.class));
                 break;
         }
     }
