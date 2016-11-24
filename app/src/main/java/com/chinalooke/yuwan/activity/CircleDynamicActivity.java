@@ -190,7 +190,6 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
     private void initData() {
         mCircle = (Circle.ResultBean) getIntent().getSerializableExtra("circle");
         mCircle_type = getIntent().getIntExtra("circle_type", 0);
-        
     }
 
     //获取圈子动态信息
@@ -258,6 +257,11 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                 finish();
                 break;
             case R.id.iv_camera:
+                Intent intent = new Intent(this, SendDynamicActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("circle", mCircle);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.roundedImageView:
                 skipToInfo();
