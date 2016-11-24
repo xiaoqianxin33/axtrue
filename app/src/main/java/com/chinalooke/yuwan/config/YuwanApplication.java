@@ -14,6 +14,9 @@ import com.hyphenate.chat.EMOptions;
 import com.hyphenate.easeui.controller.EaseUI;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.qiniu.android.common.Zone;
+import com.qiniu.android.storage.Configuration;
+import com.qiniu.android.storage.UploadManager;
 
 /**
  * 项目初始化配置
@@ -24,12 +27,17 @@ public class YuwanApplication extends Application {
     private static Toast mToast;
     private static Handler mHandler;
     private static RequestQueue mQueue;
+    private static UploadManager  mUploadManager;
 
     public static Context getmApplicationContext() {
         return mApplicationContext;
     }
 
     public static Context mApplicationContext;
+
+    public static UploadManager getmUploadManager() {
+        return mUploadManager;
+    }
 
     public static RequestQueue getQueue() {
         return mQueue;
@@ -64,5 +72,9 @@ public class YuwanApplication extends Application {
         MultiDex.install(this);
         //leanCould初始化
         AVOSCloud.initialize(this, "ArJkPnYSMCv1MTpGOPU3aHLU-gzGzoHsz", "MlCdUI4iB1jucLGs0GIuTwyL");
+
+        //七牛初始化
+        Configuration config = new Configuration.Builder().zone(Zone.zone1).build();
+        mUploadManager = new UploadManager(config);
     }
 }

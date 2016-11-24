@@ -195,6 +195,8 @@
         </activity>
         <activity android:name=".activity.CreateCircleActivity">
         </activity>
+        <activity android:name=".activity.CircleInfoActivity">
+        </activity>
     </application>
 
 </manifest>

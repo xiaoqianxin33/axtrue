@@ -64,6 +64,24 @@ public class Circle {
         private String lng;
         private String lat;
         private String createTime;
+        private String userId;
+        private String games;
+
+        public String getGames() {
+            return games;
+        }
+
+        public void setGames(String games) {
+            this.games = games;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
 
         public String getGroupId() {
             return groupId;

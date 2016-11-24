@@ -319,7 +319,7 @@ public class YueZhanFragment extends Fragment {
                 public void onResponse(String response) {
                     mProgressDialog.dismiss();
                     if (AnalysisJSON.analysisJson(response)) {
-                        UIUtil.showJoinSucceedDialog(getActivity(), "您已发起了约战");
+                        UIUtil.showJoinSucceedDialog(getActivity(), "您已发起了约战", "系统将自动扣除相应金额");
                         mTvGameName.setText("");
                         mTvPeople.setText("");
                         mTvMoney.setText("");

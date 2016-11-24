@@ -39,7 +39,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/mid_padding"
             android:layout_marginTop="63px"
-            android:src="@mipmap/bga_pp_ic_gallery_camera"/>
+            android:src="@mipmap/camera"/>
 
 
         <RelativeLayout

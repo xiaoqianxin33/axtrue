@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,8 +30,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.db.DBManager;
+import com.chinalooke.yuwan.model.Circle;
 import com.chinalooke.yuwan.model.GameMessage;
 import com.chinalooke.yuwan.model.LoginUser;
+import com.chinalooke.yuwan.utils.Auth;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -41,6 +43,9 @@ import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.chinalooke.yuwan.view.EditNameDialog;
 import com.lljjcoder.citypickerview.widget.CityPickerView;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UploadManager;
 import com.squareup.picasso.Picasso;
 import com.yuyh.library.imgsel.ImageLoader;
 import com.yuyh.library.imgsel.ImgSelActivity;
@@ -66,48 +71,24 @@ import static com.chinalooke.yuwan.constant.Constant.lastClickTime;
 
 public class CreateCircleActivity extends AutoLayoutActivity implements EasyPermissions.PermissionCallbacks {
 
-    @Bind(R.id.iv_back)
-    ImageView mIvBack;
     @Bind(R.id.tv_title)
     TextView mTvTitle;
     @Bind(R.id.tv_skip)
     TextView mTvSkip;
     @Bind(R.id.tv_circle_name)
     TextView mTvCircleName;
-    @Bind(R.id.rl_game_name)
-    RelativeLayout mRlGameName;
-    @Bind(R.id.iv1)
-    ImageView mIv1;
     @Bind(R.id.iv_gameimage)
     RoundedImageView mIvGameimage;
-    @Bind(R.id.rl_head)
-    RelativeLayout mRlHead;
-    @Bind(R.id.iv2)
-    ImageView mIv2;
     @Bind(R.id.ll_game)
     LinearLayout mLlGame;
-    @Bind(R.id.rl_game)
-    RelativeLayout mRlGame;
-    @Bind(R.id.iv3)
-    ImageView mIv3;
     @Bind(R.id.tv_circle_address)
     TextView mTvCircleAddress;
-    @Bind(R.id.rl_address)
-    RelativeLayout mRlAddress;
     @Bind(R.id.tv_time)
     TextView mTvTime;
-    @Bind(R.id.rl_time)
-    RelativeLayout mRlTime;
-    @Bind(R.id.iv4)
-    ImageView mIv4;
     @Bind(R.id.tv_circle_expalin)
     TextView mTvCircleExpalin;
-    @Bind(R.id.rl_explain)
-    RelativeLayout mRlExplain;
     @Bind(R.id.btn_create)
     Button mBtnCreate;
-    @Bind(R.id.activity_create_circle)
-    LinearLayout mActivityCreateCircle;
     private int RC_ACCESS_FINE_LOCATION = 0;
     private ImageLoader loader = new ImageLoader() {
         @Override
@@ -119,7 +100,7 @@ public class CreateCircleActivity extends AutoLayoutActivity implements EasyPerm
     private int REQUEST_CODE = 2;
     private int CHOSE_GAME = 3;
     private List<GameMessage.ResultBean> mChose = new ArrayList<>();
-    private String[] mStrings;
+    private String mStrings;
     private String mRule;
     private LoginUser.ResultBean mUserInfo;
     private String mCircleName;
@@ -128,6 +109,9 @@ public class CreateCircleActivity extends AutoLayoutActivity implements EasyPerm
     private String mCircleAddress;
     private ProgressDialog mProgressDialog;
     private RequestQueue mQueue;
+    private UploadManager mUploadManager;
+    private Circle.ResultBean mCircle;
+    private boolean isImageChange = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,8 +121,67 @@ public class CreateCircleActivity extends AutoLayoutActivity implements EasyPerm
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         mToast = YuwanApplication.getToast();
         mQueue = YuwanApplication.getQueue();
-        initView();
+        mUploadManager = YuwanApplication.getmUploadManager();
+        mCircle = (Circle.ResultBean) getIntent().getSerializableExtra("circle");
+        if (mCircle != null) {
+            initDoneView();
+        } else {
+            initView();
+        }
         initEvent();
+    }
+
+    private void initDoneView() {
+        mTvSkip.setVisibility(View.GONE);
+        mBtnCreate.setText("确定修改");
+        mTvTitle.setText("编辑圈子");
+        String headImg = mCircle.getHeadImg();
+        if (!TextUtils.isEmpty(headImg))
+            setHeadImg(headImg);
+
+        String groupName = mCircle.getGroupName();
+        if (!TextUtils.isEmpty(groupName))
+            mTvCircleName.setText(groupName);
+        String address = mCircle.getAddress();
+        if (!TextUtils.isEmpty(address))
+            mTvCircleAddress.setText(address);
+        String createTime = mCircle.getCreateTime();
+        if (!TextUtils.isEmpty(createTime))
+            mTvTime.setText(createTime);
+        String details = mCircle.getDetails();
+        if (!TextUtils.isEmpty(details)) {
+            mRule = details;
+            mTvCircleExpalin.setText(details);
+        }
+        setGame();
+    }
+
+
+    //设置游戏
+    private void setGame() {
+        String games = mCircle.getGames();
+        if (!TextUtils.isEmpty(games)) {
+            String[] game = games.split(",");
+            DBManager dbManager = new DBManager(getApplicationContext());
+            for (String s : game) {
+                GameMessage.ResultBean gameInfo = dbManager.queryById(s);
+                mChose.add(gameInfo);
+                String thumb = gameInfo.getThumb();
+                RoundedImageView imageView = new RoundedImageView(getApplicationContext());
+                imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(60, 60));
+                imageView.setPaddingRelative(5, 0, 5, 0);
+                Picasso.with(getApplicationContext()).load(thumb).resize(60, 60).centerCrop().into(imageView);
+                imageView.setOval(true);
+                mLlGame.addView(imageView);
+            }
+        }
+    }
+
+    //设置头像
+    private void setHeadImg(String headImg) {
+        mPath = headImg;
+        String uri = headImg + "?imageView2/1/w/120/h/120";
+        Picasso.with(getApplicationContext()).load(uri).into(mIvGameimage);
     }
 
     private void initEvent() {
@@ -213,7 +256,10 @@ public class CreateCircleActivity extends AutoLayoutActivity implements EasyPerm
                         if (NetUtil.is_Network_Available(getApplicationContext())) {
                             mProgressDialog = MyUtils.initDialog("创建中", this);
                             mProgressDialog.show();
-                            checkIsExistGroup();
+                            if (mCircle == null)
+                                checkIsExistGroup();
+                            else
+                                updateGroup();
                         } else {
                             mToast.setText("网络不可用，请检查网络连接");
                             mToast.show();
@@ -223,6 +269,84 @@ public class CreateCircleActivity extends AutoLayoutActivity implements EasyPerm
                     break;
             }
         }
+    }
+
+    //更新圈子
+    private void updateGroup() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < mChose.size(); i++) {
+            String gameId = mChose.get(i).getGameId();
+            if (i != mChose.size() - 1) {
+                stringBuilder.append(gameId).append(",");
+            } else {
+                stringBuilder.append(gameId);
+            }
+        }
+        mStrings = stringBuilder.toString();
+        if (isImageChange) {
+            Auth auth = Auth.create(Constant.QINIU_ACCESSKEY, Constant.QINIU_SECRETKEY);
+            String token = auth.uploadToken("yuwan");
+            final String fileName = "circle_name" + new Date().getTime();
+            if (TextUtils.isEmpty(mRule))
+                mRule = "";
+            mUploadManager.put(mPath, fileName, token, new UpCompletionHandler() {
+                @Override
+                public void complete(String key, ResponseInfo info, JSONObject response) {
+                    if (info.error == null) {
+                        update();
+                    } else {
+                        mProgressDialog.dismiss();
+                        mToast.setText("图片上传失败，请稍后重试");
+                        mToast.show();
+                    }
+                }
+            }, null);
+        } else {
+            update();
+        }
+
+
+    }
+
+    private void update() {
+        String longitude = PreferenceUtils.getPrefString(getApplicationContext(), "longitude", "");
+        String latitude = PreferenceUtils.getPrefString(getApplicationContext(), "latitude", "");
+        String uri = Constant.HOST + "updateGroup&groupId=" + mCircle.getGroupId() + "&userId=" + mUserInfo.getUserId() + "&lng=" + longitude + "&lat="
+                + latitude + "&head=" + mPath + "&gameIds" + mStrings + "&groupName=" + mTvCircleName.getText().toString() + "&slogan" + mRule + "&address=" + mTvCircleAddress.getText().toString();
+        StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                mProgressDialog.dismiss();
+                if (response != null) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("Success");
+                        if (success) {
+                            boolean result = jsonObject.getBoolean("Result");
+                            if (result) {
+                                showSucceedDialog("圈子信息更新成功！");
+                            }
+                        } else {
+                            String msg = jsonObject.getString("Msg");
+                            mToast.setText(msg);
+                            mToast.show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                mToast.setText("服务器抽风了，请稍后重试");
+                mToast.show();
+            }
+        });
+
+        mQueue.add(request);
     }
 
     //判断圈子是否存在，创建时防止圈子名称重复
@@ -266,27 +390,88 @@ public class CreateCircleActivity extends AutoLayoutActivity implements EasyPerm
 
     //上传创建圈子
     private void createCircle() {
-// TODO: 2016/11/23 头像云存储
-        if (TextUtils.isEmpty(mRule))
-            mRule = "";
-        String longitude = PreferenceUtils.getPrefString(getApplicationContext(), "longitude", "");
-        String latitude = PreferenceUtils.getPrefString(getApplicationContext(), "latitude", "");
-        String uri = Constant.HOST + "addGroup&userId=" + mUserInfo.getUserId() + "&lng=" + longitude + "&lat="
-                + latitude + "&address=" + mCircleAddress + "&gameIds=" + Arrays.toString(mStrings) + "&groupName=" + mCircleName
-                + "&createTime=" + mTvTime.getText().toString() + "&slogan=" + mRule;
-        StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+        Auth auth = Auth.create(Constant.QINIU_ACCESSKEY, Constant.QINIU_SECRETKEY);
+        String token = auth.uploadToken("yuwan");
+        final String fileName = "circle_name" + new Date().getTime();
+        mUploadManager.put(mPath, fileName, token, new UpCompletionHandler() {
             @Override
-            public void onResponse(String response) {
+            public void complete(String key, ResponseInfo info, JSONObject response) {
+                if (info.error == null) {
+                    if (TextUtils.isEmpty(mRule))
+                        mRule = "";
+                    String longitude = PreferenceUtils.getPrefString(getApplicationContext(), "longitude", "");
+                    String latitude = PreferenceUtils.getPrefString(getApplicationContext(), "latitude", "");
+                    String uri = Constant.HOST + "addGroup&userId=" + mUserInfo.getUserId() + "&lng=" + longitude + "&lat="
+                            + latitude + "&address=" + mCircleAddress + "&gameIds=" + mStrings + "&groupName=" + mCircleName
+                            + "&createTime=" + mTvTime.getText().toString() + "&slogan=" + mRule + "&head=" + Constant.QINIU_DOMAIN + "/" + fileName;
+                    StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            mProgressDialog.dismiss();
+                            if (response != null) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    boolean success = jsonObject.getBoolean("Success");
+                                    if (success) {
+                                        boolean result = jsonObject.getBoolean("Result");
+                                        if (result) {
+                                            showSucceedDialog("圈子创建成功!");
+                                        }
 
+                                    } else {
+                                        String msg = jsonObject.getString("Msg");
+                                        mToast.setText(msg);
+                                        mToast.show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            mProgressDialog.dismiss();
+                            mToast.setText("服务器抽风了，请稍后重试");
+                            mToast.show();
+                        }
+                    });
+                    mQueue.add(request);
+
+                } else {
+                    mProgressDialog.dismiss();
+                    mToast.setText("图片上传失败，请稍后重试");
+                    mToast.show();
+                }
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+        }, null);
+    }
 
+    //弹出创建成功对话框
+    private void showSucceedDialog(String message) {
+        final Dialog dialog = new Dialog(this, R.style.Dialog);
+        View inflate = LayoutInflater.from(this).inflate(R.layout.dialog_ok_cancle, null);
+        TextView textViewCancel = (TextView) inflate.findViewById(R.id.tv_cancel);
+        TextView textViewOK = (TextView) inflate.findViewById(R.id.tv_ok);
+        TextView textViewTitle = (TextView) inflate.findViewById(R.id.tv_title);
+        textViewTitle.setText(message);
+        textViewCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
             }
         });
-        mQueue.add(request);
-
+        textViewOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                startActivity(new Intent(CreateCircleActivity.this, MainActivity.class));
+                finish();
+            }
+        });
+        dialog.show();
     }
 
     //检查建圈子信息
@@ -319,6 +504,7 @@ public class CreateCircleActivity extends AutoLayoutActivity implements EasyPerm
         return true;
     }
 
+    //编辑圈子昵称dialog
     private void showEditDialog() {
         final EditNameDialog editNameDialog = new EditNameDialog(this);
         editNameDialog.setTvTitle("编辑圈子昵称");
@@ -424,6 +610,7 @@ public class CreateCircleActivity extends AutoLayoutActivity implements EasyPerm
         super.onActivityResult(requestCode, resultCode, data);
         // 图片选择结果回调
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            isImageChange = true;
             List<String> pathList = data.getStringArrayListExtra(ImgSelActivity.INTENT_RESULT);
             mPath = pathList.get(0);
             Picasso.with(getApplicationContext()).load("file://" + mPath).into(mIvGameimage);
@@ -437,10 +624,16 @@ public class CreateCircleActivity extends AutoLayoutActivity implements EasyPerm
                 imageView.setOval(true);
                 mLlGame.addView(imageView);
             }
-            mStrings = new String[mChose.size()];
+            StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < mChose.size(); i++) {
-                mStrings[i] = mChose.get(i).getGameId();
+                String gameId = mChose.get(i).getGameId();
+                if (i != mChose.size() - 1) {
+                    stringBuilder.append(gameId).append(",");
+                } else {
+                    stringBuilder.append(gameId);
+                }
             }
+            mStrings = stringBuilder.toString();
         }
     }
 }

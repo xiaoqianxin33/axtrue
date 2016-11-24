@@ -1,5 +1,6 @@
 package com.chinalooke.yuwan.activity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -28,13 +29,11 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.fragment.DynamicFragment;
 import com.chinalooke.yuwan.model.Circle;
 import com.chinalooke.yuwan.model.Dynamic;
 import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
-import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.ViewHelper;
 import com.chinalooke.yuwan.view.NoSlidingListView;
@@ -251,7 +250,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
 
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_camera})
+    @OnClick({R.id.iv_back, R.id.iv_camera, R.id.roundedImageView, R.id.tv_name})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
@@ -259,7 +258,20 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                 break;
             case R.id.iv_camera:
                 break;
+            case R.id.roundedImageView:
+                skipToInfo();
+                break;
+            case R.id.tv_name:
+                break;
         }
+    }
+
+    private void skipToInfo() {
+        Intent intent = new Intent(this, CircleInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("circle", mCircle);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     class MyAdapter extends MyBaseAdapter {

@@ -50,11 +50,13 @@ public class UIUtil {
         listView.setLayoutParams(params);
     }
 
-    public static void showJoinSucceedDialog(Activity activity, String message) {
+    public static void showJoinSucceedDialog(Activity activity, String message, String content) {
         final Dialog dialog = new Dialog(activity, R.style.Dialog);
         View inflate = LayoutInflater.from(activity).inflate(R.layout.dialog_desk_succeed, null);
         TextView tvOk = (TextView) inflate.findViewById(R.id.tv_ok);
         TextView tvMessage = (TextView) inflate.findViewById(R.id.tv_message);
+        TextView tvContent = (TextView) inflate.findViewById(R.id.tv_content);
+        tvContent.setText(content);
         tvMessage.setText(message);
         tvOk.setOnClickListener(new View.OnClickListener() {
             @Override
