@@ -1,9 +1,11 @@
 package com.chinalooke.yuwan.fragment;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +15,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,12 +25,14 @@ import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdate;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.CameraPosition;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.CircleDynamicActivity;
@@ -399,9 +402,22 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
 
     private void setAMap() {
         if (mNearbyCircles.size() != 0) {
-            for (Circle.ResultBean resultBean : mNearbyCircles) {
-                LatLng latLng2 = new LatLng(Double.parseDouble(resultBean.getLat()), Double.parseDouble(resultBean.getLng()));
-                mMap.addMarker(new MarkerOptions().position(latLng2).title(resultBean.getGroupName()).snippet("DefaultMarker"));
+            for (final Circle.ResultBean resultBean : mNearbyCircles) {
+                String bgImage = resultBean.getBgImage();
+                if (!TextUtils.isEmpty(bgImage)) {
+                    ImageRequest request = new ImageRequest(bgImage, new Response.Listener<Bitmap>() {
+                        @Override
+                        public void onResponse(Bitmap response) {
+                            LatLng latLng2 = new LatLng(Double.parseDouble(resultBean.getLat()), Double.parseDouble(resultBean.getLng()));
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            markerOptions.position(latLng2);
+                            markerOptions.draggable(false);
+                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(response));
+                            mMap.addMarker(new MarkerOptions().position(latLng2).title(resultBean.getGroupName()).snippet("DefaultMarker"));
+                        }
+                    }, 100, 100, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, null);
+                }
+
             }
         }
     }
