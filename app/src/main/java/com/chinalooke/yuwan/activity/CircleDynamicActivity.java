@@ -190,6 +190,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
     private void initData() {
         mCircle = (Circle.ResultBean) getIntent().getSerializableExtra("circle");
         mCircle_type = getIntent().getIntExtra("circle_type", 0);
+        
     }
 
     //获取圈子动态信息

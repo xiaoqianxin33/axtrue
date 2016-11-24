@@ -197,6 +197,8 @@
         </activity>
         <activity android:name=".activity.CircleInfoActivity">
         </activity>
+        <activity android:name=".activity.SendDynamicActivity">
+        </activity>
     </application>
 
 </manifest>

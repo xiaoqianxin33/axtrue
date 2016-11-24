@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_send_dynamic"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.chinalooke.yuwan.activity.SendDynamicActivity">
+
+    <include layout="@layout/include_head"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_content"
+            android:layout_width="match_parent"
+            android:layout_height="190px"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:layout_marginRight="@dimen/mid_padding"
+            android:gravity="top"
+            android:hint="这一刻的想法"
+            android:inputType="textMultiLine"
+            android:maxLines="3"
+            android:textSize="30px"/>
+
+        <cn.bingoogolapple.photopicker.widget.BGASortableNinePhotoLayout
+            android:id="@+id/snpl_moment_add_photos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/mid_padding"
+            android:background="@android:color/white"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_address"
+            android:layout_width="match_parent"
+            android:layout_height="97px">
+
+            <ImageView
+                android:id="@+id/iv1"
+                android:layout_width="30px"
+                android:layout_height="30px"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/mid_padding"
+                android:src="@mipmap/location_dark"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/mid_padding"
+                android:layout_toRightOf="@id/iv1"
+                android:text="所在位置"
+                android:textColor="@color/black_word"
+                android:textSize="@dimen/mid_padding"/>
+
+
+            <ImageView
+                android:layout_width="16px"
+                android:layout_height="26px"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/mid_padding"
+                android:src="@mipmap/arrow_right"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_color"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/mid_padding"
+        android:layout_marginTop="@dimen/small_padding"
+        android:text="添加图片不超过9张，动态文字不超过300字"
+        android:textColor="@color/shallow_word"
+        android:textSize="25px"/>
+
+</LinearLayout>
