@@ -54,8 +54,7 @@ import butterknife.OnClick;
 
 public class DynamicFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+
     @Bind(R.id.lv_dynamic)
     ListView mLvDynamic;
     @Bind(R.id.sr)
@@ -66,8 +65,6 @@ public class DynamicFragment extends Fragment {
     TextView mTvNo;
 
 
-    private String mParam1;
-    private String mParam2;
     private int mPage = 1;
     private boolean isLoading = false;
     private RequestQueue mQueue;
@@ -78,24 +75,6 @@ public class DynamicFragment extends Fragment {
     private MyListAdapater mMyListAdapater;
     private float mWidth;
 
-
-    public static DynamicFragment newInstance(String param1, String param2) {
-        DynamicFragment fragment = new DynamicFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -109,15 +88,21 @@ public class DynamicFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mQueue = ((MainActivity) getActivity()).getQueue();
-        mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         mToast = YuwanApplication.getToast();
         WindowManager wm = (WindowManager) getContext()
                 .getSystemService(Context.WINDOW_SERVICE);
         mWidth = wm.getDefaultDisplay().getWidth();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         initHead();
         mMyListAdapater = new MyListAdapater();
         mLvDynamic.setAdapter(mMyListAdapater);
         initEvent();
+
     }
 
     private void initHead() {

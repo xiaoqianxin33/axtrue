@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -84,10 +85,11 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
     SwipeRefreshLayout mSr;
     private LoginUser.ResultBean mUserInfo;
     private int RANKING_TYPE;
-    private int PAGE_NO = 1;
+    private int PAGE_NO;
     private RequestQueue mQueue;
     private List<CircleRanking.ResultBean> mRankings = new ArrayList<>();
     private MyAdapter mMyAdapter;
+    private boolean isLoading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +106,48 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
     }
 
     private void initEvent() {
+        mSr.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
+        mSr.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mRankings.clear();
+                PAGE_NO = 1;
+                initData();
+                String city = mTvCity.getText().toString();
+                getScoreList(city);
+                mSr.setRefreshing(false);
+            }
+        });
+
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (mListView != null && mListView.getChildCount() > 0) {
+                    boolean enable = (firstVisibleItem == 0) && (view.getChildAt(firstVisibleItem).getTop() == 0);
+                    mSr.setEnabled(enable);
+                }
+
+                String city = mTvCity.getText().toString();
+                if (firstVisibleItem + visibleItemCount == totalItemCount && !isLoading && !TextUtils.isEmpty(city)) {
+                    loadMore();
+                }
+            }
+        });
+    }
+
+    private void loadMore() {
+        isLoading = true;
+        PAGE_NO++;
+        getScoreList(mTvCity.getText().toString());
     }
 
     private void initView() {
@@ -123,7 +166,7 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
         AMapLocation aMapLocation = LocationUtils.getAMapLocation();
         if (aMapLocation != null) {
             mRankings.clear();
-            getScoreList(aMapLocation.getCity());
+            mTvCity.setText(aMapLocation.getCity());
         } else {
             LocationUtils.location(this, this);
         }
@@ -266,7 +309,7 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
         if (aMapLocation != null) {
             if (aMapLocation.getErrorCode() == 0) {
                 mRankings.clear();
-                getScoreList(aMapLocation.getCity());
+                mTvCity.setText(aMapLocation.getCity()+aMapLocation.getDistrict());
             }
         }
     }

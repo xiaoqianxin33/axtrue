@@ -54,7 +54,6 @@ import com.chinalooke.yuwan.utils.ViewHelper;
 import com.chinalooke.yuwan.view.NoSlidingListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.hyphenate.util.ImageUtils;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.utils.AutoUtils;
 
@@ -110,12 +109,10 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     private List<Circle.ResultBean> mNearbyCircles = new ArrayList<>();
     private List<Circle.ResultBean> mInterestCircles = new ArrayList<>();
     private List<Circle.ResultBean> mHotCircles = new ArrayList<>();
-    private List<Advertisement.ResultBean> mShowAd = new ArrayList<>();
     private List<View> mAdList = new ArrayList<>();
     private MyAdapt mMyAdapt;
     private LoginUser.ResultBean mUserInfo;
     private GridAdapt mInterestGridAdapt;
-    private GridAdapt mHotGridAdapt;
     private AMap mMap;
 
     @Override
@@ -182,8 +179,8 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         mLvCircle.setAdapter(mMyAdapt);
         mInterestGridAdapt = new GridAdapt(mInterestCircles);
         mGdInterest.setAdapter(mInterestGridAdapt);
-        mHotGridAdapt = new GridAdapt(mHotCircles);
-        mGdHot.setAdapter(mHotGridAdapt);
+        GridAdapt hotGridAdapt = new GridAdapt(mHotCircles);
+        mGdHot.setAdapter(hotGridAdapt);
     }
 
     private void initData() {
@@ -250,7 +247,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 Picasso.with(getActivity()).load(img).resize(MyUtils.Dp2Px(getActivity(), ViewHelper.getDisplayMetrics(getActivity()).widthPixels), 340)
                         .centerCrop().into(imageView);
-                mShowAd.add(resultBean);
                 mAdList.add(imageView);
             }
         }
@@ -529,6 +525,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                             mMap.addMarker(new MarkerOptions().position(latLng2).title(resultBean.getGroupName()).snippet("DefaultMarker"));
                         }
                     }, 100, 100, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, null);
+                    mQueue.add(request);
                 }
             }
         }
