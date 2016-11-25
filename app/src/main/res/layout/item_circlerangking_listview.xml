@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="153px"
+                android:background="@android:color/white"
+                android:orientation="vertical">
+
+
+    <FrameLayout
+        android:id="@+id/fl1"
+        android:layout_width="56px"
+        android:layout_height="73px"
+        android:layout_centerVertical="true">
+
+        <ImageView
+            android:id="@+id/iv_ranking"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/champions"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tv_ranking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="4"
+            android:textColor="#4f4f4f"
+            android:textSize="24px"/>
+
+    </FrameLayout>
+
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/roundedImageView"
+        android:layout_width="80px"
+        android:layout_height="80px"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/small_padding"
+        android:layout_toRightOf="@id/fl1"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/placeholder"
+        app:riv_oval="true"/>
+
+    <TextView
+        android:id="@+id/tv_name_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/small_padding"
+        android:layout_marginTop="42px"
+        android:layout_toRightOf="@id/roundedImageView"
+        android:text="哈哈 | 穿越火线"
+        android:textColor="#4f4f4f"
+        android:textSize="@dimen/mid_padding"/>
+
+    <TextView
+        android:id="@+id/tv_slogen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_name_game"
+        android:layout_marginLeft="@dimen/small_padding"
+        android:layout_marginTop="@dimen/small_padding"
+        android:layout_toRightOf="@id/roundedImageView"
+        android:text="今天天气不错"
+        android:textColor="@color/shallow_word"
+        android:textSize="24px"/>
+
+
+    <TextView
+        android:id="@+id/tv_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/mid_padding"
+        android:layout_marginTop="42px"
+        android:text="23046"
+        android:textColor="@color/orange"
+        android:textSize="@dimen/mid_padding"/>
+
+
+
+</RelativeLayout>

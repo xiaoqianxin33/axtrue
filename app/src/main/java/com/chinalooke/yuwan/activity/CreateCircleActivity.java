@@ -130,6 +130,7 @@ public class CreateCircleActivity extends AutoLayoutActivity implements EasyPerm
         initEvent();
     }
 
+    //是否是编辑圈子
     private void initDoneView() {
         mTvSkip.setVisibility(View.GONE);
         mBtnCreate.setText("确定修改");

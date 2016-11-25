@@ -23,7 +23,6 @@ import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.Circle;
 import com.chinalooke.yuwan.model.LoginUser;
-import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
@@ -222,13 +221,13 @@ public class MyCircleActivity extends AppCompatActivity {
     }
 
     static class ViewHolder {
-        @Bind(R.id.iv_circle_image)
+        @Bind(R.id.iv_image)
         ImageView mIvCircleImage;
         @Bind(R.id.tv_circle_name)
         TextView mTvCircleName;
-        @Bind(R.id.tv_circle_details)
+        @Bind(R.id.tv_slogen)
         TextView mTvCircleDetails;
-        @Bind(R.id.tv_discount_circle)
+        @Bind(R.id.tv_distance)
         TextView mTvDiscountCircle;
 
         ViewHolder(View view) {

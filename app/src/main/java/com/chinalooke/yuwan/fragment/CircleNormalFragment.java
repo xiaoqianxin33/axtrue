@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,19 +38,28 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.CircleDynamicActivity;
+import com.chinalooke.yuwan.activity.CreateCircleActivity;
+import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MoreCircleActivity;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.model.Advertisement;
 import com.chinalooke.yuwan.model.Circle;
 import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
+import com.chinalooke.yuwan.utils.ViewHelper;
 import com.chinalooke.yuwan.view.NoSlidingListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.hyphenate.util.ImageUtils;
 import com.squareup.picasso.Picasso;
+import com.zhy.autolayout.utils.AutoUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -58,6 +69,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bingoogolapple.bgabanner.BGABanner;
 
 import static com.chinalooke.yuwan.constant.Constant.MIN_CLICK_DELAY_TIME;
 import static com.chinalooke.yuwan.constant.Constant.lastClickTime;
@@ -69,8 +81,6 @@ import static com.chinalooke.yuwan.constant.Constant.lastClickTime;
 
 public class CircleNormalFragment extends Fragment implements AMapLocationListener {
 
-    @Bind(R.id.iv_image)
-    ImageView mIvImage;
     @Bind(R.id.tv_address)
     TextView mTvAddress;
     @Bind(R.id.mapview)
@@ -83,10 +93,14 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     GridView mGdInterest;
     @Bind(R.id.gd_hot)
     GridView mGdHot;
-    @Bind(R.id.pb_load)
-    ProgressBar mPbLoad;
     @Bind(R.id.ll_interest)
     LinearLayout mLlInterest;
+    @Bind(R.id.pb_load)
+    ProgressBar mPbLoad;
+    @Bind(R.id.rl_create_circle)
+    RelativeLayout mRlCreateCircle;
+    @Bind(R.id.bgabanner)
+    BGABanner mBanner;
     private Circle mCircle;
     private RequestQueue mQueue;
     private Toast mToast;
@@ -96,6 +110,8 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     private List<Circle.ResultBean> mNearbyCircles = new ArrayList<>();
     private List<Circle.ResultBean> mInterestCircles = new ArrayList<>();
     private List<Circle.ResultBean> mHotCircles = new ArrayList<>();
+    private List<Advertisement.ResultBean> mShowAd = new ArrayList<>();
+    private List<View> mAdList = new ArrayList<>();
     private MyAdapt mMyAdapt;
     private LoginUser.ResultBean mUserInfo;
     private GridAdapt mInterestGridAdapt;
@@ -131,7 +147,22 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                 Intent intent = new Intent(getActivity(), CircleDynamicActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("circle", resultBean);
+                //设置圈子类型为附近圈子
                 intent.putExtra("circle_type", 0);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
+        //兴趣圈子 item点击事件
+        mGdInterest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Circle.ResultBean resultBean = mInterestCircles.get(position);
+                Intent intent = new Intent(getActivity(), CircleDynamicActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("circle", resultBean);
+                //设置圈子类型为兴趣圈子
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -155,6 +186,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             String address = aMapLocation.getDistrict() + aMapLocation.getStreet() + aMapLocation.getStreetNum();
             mTvAddress.setText(address);
             initAMap();
+            getADListForSpace(aMapLocation);
             getNearbyCircle();
         } else {
             mAMapLocationClient = LocationUtils.location(getActivity(), this);
@@ -168,6 +200,59 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
 
     }
 
+    //获取顶部广告图片
+    private void getADListForSpace(AMapLocation aMapLocation) {
+        String city = aMapLocation.getCity();
+        Log.e("TAG", city);
+        // TODO: 2016/11/25 替换接口 暂使用网吧接口
+        String uri = Constant.HOST + "getADListWithGPS&lng=" + mLatitude + "&lat=" + mLongitude;
+        StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (AnalysisJSON.analysisJson(response)) {
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<Advertisement>() {
+                    }.getType();
+                    Advertisement advertisement = gson.fromJson(response, type);
+                    setBanner(advertisement);
+                } else {
+                    MyUtils.showMsg(mToast, response);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mToast.setText("网络不给力啊，换个地方试试");
+                mToast.show();
+            }
+        });
+
+        mQueue.add(request);
+    }
+
+    private void setBanner(Advertisement advertisement) {
+        mAdList.clear();
+        List<Advertisement.ResultBean> result = advertisement.getResult();
+        for (Advertisement.ResultBean resultBean : result) {
+            List<Advertisement.ResultBean.ImagesBean> images = resultBean.getImages();
+            if (images.size() != 0) {
+                Advertisement.ResultBean.ImagesBean imagesBean = images.get(0);
+                String img = imagesBean.getImg();
+                ImageView imageView = new ImageView(getActivity());
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                Picasso.with(getActivity()).load(img).resize(MyUtils.Dp2Px(getActivity(), ViewHelper.getDisplayMetrics(getActivity()).widthPixels), 340)
+                        .centerCrop().into(imageView);
+                mShowAd.add(resultBean);
+                mAdList.add(imageView);
+            }
+        }
+
+        if (mBanner != null) {
+            mBanner.setData(mAdList);
+        }
+    }
+
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -180,7 +265,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             mMapview.onDestroy();
     }
 
-    @OnClick({R.id.iv_refresh, R.id.tv_more})
+    @OnClick({R.id.iv_refresh, R.id.tv_more, R.id.rl_create_circle})
     public void onClick(View view) {
         long currentTime = Calendar.getInstance().getTimeInMillis();
         if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
@@ -198,6 +283,12 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                         startActivity(intent);
                     }
                     break;
+                case R.id.rl_create_circle:
+                    if (mUserInfo != null)
+                        startActivity(new Intent(getActivity(), CreateCircleActivity.class));
+                    else
+                        startActivity(new Intent(getActivity(), LoginActivity.class));
+                    break;
             }
         }
     }
@@ -209,6 +300,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                mPbLoad.setVisibility(View.GONE);
                 if (AnalysisJSON.analysisJson(response)) {
                     Gson gson = new Gson();
                     Type type = new TypeToken<Circle>() {
@@ -221,7 +313,16 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                         setAMap();
                     }
                 } else {
-                    MyUtils.showMsg(mToast, response);
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        String msg = jsonObject.getString("Msg");
+                        mRlCreateCircle.setVisibility(View.VISIBLE);
+                        mTvMore.setVisibility(View.VISIBLE);
+                        mTvMore.setText(msg);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                 }
 
             }
@@ -248,6 +349,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                 mTvAddress.setText(address);
                 initAMap();
                 getNearbyCircle();
+                getADListForSpace(aMapLocation);
             }
         }
     }
@@ -276,6 +378,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                 convertView = View.inflate(getActivity(), R.layout.item_circle_listview, null);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
+                AutoUtils.autoSize(convertView);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
@@ -375,6 +478,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                 convertView = View.inflate(getActivity(), R.layout.item_circle_gridview, null);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
+                AutoUtils.autoSize(convertView);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
@@ -417,7 +521,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                         }
                     }, 100, 100, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, null);
                 }
-
             }
         }
     }

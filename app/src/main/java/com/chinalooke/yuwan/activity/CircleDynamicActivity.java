@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -15,7 +16,6 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,7 +32,6 @@ import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.Circle;
 import com.chinalooke.yuwan.model.Dynamic;
 import com.chinalooke.yuwan.model.LoginUser;
-import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.ViewHelper;
@@ -42,6 +41,7 @@ import com.google.gson.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
+import com.zhy.autolayout.utils.AutoUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,24 +56,16 @@ import butterknife.OnClick;
 
 public class CircleDynamicActivity extends AutoLayoutActivity {
 
-    @Bind(R.id.iv_back)
-    ImageView mIvBack;
-    @Bind(R.id.iv_camera)
-    ImageView mIvCamera;
     @Bind(R.id.roundedImageView)
     RoundedImageView mRoundedImageView;
     @Bind(R.id.tv_name)
     TextView mTvName;
     @Bind(R.id.tv_slogen)
     TextView mTvSlogen;
-    @Bind(R.id.tv_join)
-    TextView mTvJoin;
     @Bind(R.id.list_view)
     NoSlidingListView mListView;
     @Bind(R.id.sr)
     SwipeRefreshLayout mScrollview;
-    @Bind(R.id.activity_circle_dynamic)
-    LinearLayout mActivityCircleDynamic;
     @Bind(R.id.rl_top)
     RelativeLayout mRlTop;
     @Bind(R.id.pb_load)
@@ -121,10 +113,11 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         mScrollview.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                PAGE_NO = 0;
+                PAGE_NO = 1;
                 isRefresh = true;
                 getActiveList();
                 mScrollview.setRefreshing(false);
+                Log.e("TAG", "setOnRefreshListener");
             }
         });
 
@@ -154,6 +147,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         PAGE_NO++;
         isLoading = true;
         getActiveList();
+        Log.e("TAG", "loadMore");
     }
 
     private void initView() {
@@ -199,37 +193,59 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                     + "&pageNo=" + PAGE_NO + "&pageSize=5";
             if (mUserInfo != null)
                 uri = uri + "&userId=" + mUserInfo.getUserId();
-
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     mPbLoad.setVisibility(View.GONE);
-                    if (AnalysisJSON.analysisJson(response)) {
-                        Gson gson = new Gson();
-                        Type type = new TypeToken<Dynamic>() {
-                        }.getType();
-                        Dynamic dynamic = gson.fromJson(response, type);
-                        if (dynamic.getResult() != null) {
-                            if (isRefresh)
-                                mDynamics.clear();
-                            mDynamics.addAll(dynamic.getResult().getList());
-                            mMyAdapter.notifyDataSetChanged();
-                            isRefresh = false;
-                            isLoading = false;
-                        }
-                        isFirst = false;
-                    } else {
-                        if (isFirst) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                mTvNone.setVisibility(View.VISIBLE);
-                                String msg = jsonObject.getString("Msg");
-                                mTvNone.setText(msg);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("Success");
+                        if (success) {
+                            Object result = jsonObject.get("Result");
+                            String s = result.toString();
+                            if (s.substring(0, 1).equals("{")) {
+                                Gson gson = new Gson();
+                                Type type = new TypeToken<Dynamic>() {
+                                }.getType();
+                                Dynamic dynamic = gson.fromJson(response, type);
+                                if (dynamic.getResult() != null) {
+                                    if (isRefresh)
+                                        mDynamics.clear();
+                                    mDynamics.addAll(dynamic.getResult().getList());
+                                    mTvNone.setVisibility(View.GONE);
+                                    Log.e("TAG", mDynamics.size() + "");
+                                    mMyAdapter.notifyDataSetChanged();
+                                    isRefresh = false;
+                                    isLoading = false;
+                                }
+                                isFirst = false;
+                            } else {
+                                if (isFirst) {
+                                    try {
+                                        mTvNone.setVisibility(View.VISIBLE);
+                                        String msg = jsonObject.getString("Msg");
+                                        mTvNone.setText(msg);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                isFirst = false;
                             }
+
+                        } else {
+                            if (isFirst) {
+                                try {
+                                    mTvNone.setVisibility(View.VISIBLE);
+                                    String msg = jsonObject.getString("Msg");
+                                    mTvNone.setText(msg);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            isFirst = false;
                         }
-                        isFirst = false;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
             }, new Response.ErrorListener() {
@@ -289,8 +305,18 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
             if (convertView == null) {
-                convertView = View.inflate(getApplicationContext(), R.layout.item_circle_dynamic_listview, null);
-                viewHolder = new ViewHolder(convertView);
+                viewHolder = new ViewHolder();
+                convertView = View.inflate(CircleDynamicActivity.this, R.layout.item_circle_dynamic_listview, null);
+                AutoUtils.autoSize(convertView);
+                viewHolder.mTvTime = (TextView) convertView.findViewById(R.id.tv_time);
+                viewHolder.mTvAddress = (TextView) convertView.findViewById(R.id.tv_address);
+                viewHolder.mTvPinglun = (TextView) convertView.findViewById(R.id.tv_pinglun);
+                viewHolder.mTvDianzan = (TextView) convertView.findViewById(R.id.tv_dianzan);
+                viewHolder.mTvName = (TextView) convertView.findViewById(R.id.tv_name);
+                viewHolder.mTvContent = (TextView) convertView.findViewById(R.id.tv_content);
+                viewHolder.mGridView = (GridView) convertView.findViewById(R.id.gridView);
+                viewHolder.mIvDianzan = (ImageView) convertView.findViewById(R.id.iv_dianzan);
+                viewHolder.mRoundedImageView = (RoundedImageView) convertView.findViewById(R.id.roundedImageView);
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
@@ -326,7 +352,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
             else
                 viewHolder.mTvPinglun.setText("0");
 
-            boolean isLoginUserLike = resultBean.isIsLoginUserLike();
+            boolean isLoginUserLike = resultBean.isLoginUserLike();
             if (isLoginUserLike)
                 viewHolder.mIvDianzan.setImageResource(R.mipmap.dianzanhou);
             else
@@ -346,32 +372,15 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
     }
 
     static class ViewHolder {
-        @Bind(R.id.roundedImageView)
         RoundedImageView mRoundedImageView;
-        @Bind(R.id.tv_name)
         TextView mTvName;
-        @Bind(R.id.tv_time)
         TextView mTvTime;
-        @Bind(R.id.tv_content)
         TextView mTvContent;
-        @Bind(R.id.gridView)
         GridView mGridView;
-        @Bind(R.id.iv1)
-        ImageView mIv1;
-        @Bind(R.id.tv_address)
         TextView mTvAddress;
-        @Bind(R.id.iv_pinglun)
-        ImageView mIvPinglun;
-        @Bind(R.id.tv_pinglun)
         TextView mTvPinglun;
-        @Bind(R.id.tv_dianzan)
         TextView mTvDianzan;
-        @Bind(R.id.iv_dianzan)
         ImageView mIvDianzan;
-
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
-        }
     }
 
 
@@ -401,11 +410,12 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView imageview;
             if (convertView == null) {
-                imageview = new ImageView(getApplicationContext());
+                imageview = new ImageView(CircleDynamicActivity.this);
                 imageview.setImageResource(R.mipmap.placeholder);
                 imageview.setLayoutParams(new GridView.LayoutParams(235, 235));
                 imageview.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageview.setPadding(6, 6, 6, 6);
+                AutoUtils.autoSize(imageview);
             } else {
                 imageview = (ImageView) convertView;
             }

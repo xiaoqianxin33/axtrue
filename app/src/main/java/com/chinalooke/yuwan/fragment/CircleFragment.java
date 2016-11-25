@@ -1,6 +1,7 @@
 package com.chinalooke.yuwan.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,18 +9,16 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.amap.api.location.AMapLocationClient;
-import com.amap.api.maps2d.AMap;
-import com.android.volley.RequestQueue;
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.activity.MainActivity;
+import com.chinalooke.yuwan.activity.CircleRankingActivity;
 import com.chinalooke.yuwan.adapter.MainPagerAdapter;
-import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.model.Circle;
 import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
+import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.view.PagerSlidingTabStrip;
 
 import java.util.ArrayList;
@@ -27,6 +26,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,33 +34,18 @@ import butterknife.ButterKnife;
  * create an instance of this fragment.
  */
 public class CircleFragment extends Fragment {
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    //    @Bind(R.id.mapview)
-//    MapView mMapview;
-//    @Bind(R.id.lv_circle)
-//    NoSlidingListView mLvCircle;
-//    @Bind(R.id.tv_more)
-//    TextView mTvMore;
-//    @Bind(R.id.progressBar)
-//    ProgressBar mProgressBar;
-//    @Bind(R.id.gv_circle)
-//    GrapeGridview mGvCircle;
     @Bind(R.id.tabs)
     PagerSlidingTabStrip mTabs;
     @Bind(R.id.viewpage)
     ViewPager mViewpage;
+    @Bind(R.id.tv_scoreboard)
+    TextView mTvScoreBoard;
 
     private String mParam1;
     private String mParam2;
-    private double mLongitude;
-    private double mLatitude;
     private AMapLocationClient mLocationClient;
-    private RequestQueue mQueue;
-    private Toast mToast;
-    private Circle mCircle;
-    private AMap mMap;
     //    private MyAdapt mMyAdapt;
     List<Circle.ResultBean> mCircles = new ArrayList<>();
     private int mPage = 1;
@@ -113,10 +98,33 @@ public class CircleFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
-        mQueue = ((MainActivity) getActivity()).getQueue();
-        mToast = YuwanApplication.getToast();
-        mLatitude = (((MainActivity) getActivity()).getLatitude());
-        mLongitude = ((MainActivity) getActivity()).getLongitude();
+        initEvent();
+    }
+
+    private void initEvent() {
+        mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        mTvScoreBoard.setVisibility(View.VISIBLE);
+                        break;
+                    case 1:
+                        mTvScoreBoard.setVisibility(View.GONE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
 
@@ -130,12 +138,20 @@ public class CircleFragment extends Fragment {
         mTabs.setIndicatorHeight(5);
         mTabs.setSelectedTextColor(getResources().getColor(R.color.indicator_color));
         mTabs.setTextColor(getResources().getColor(R.color.white));
-
+        mTabs.setTextSize(MyUtils.Dp2Px(getActivity(), 16));
+        mTabs.setSelectedTabTextSize(MyUtils.Dp2Px(getActivity(), 16));
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @OnClick(R.id.tv_scoreboard)
+    public void onClick() {
+        Intent intent = new Intent(getActivity(), CircleRankingActivity.class);
+        intent.putExtra("ranking_type", 0);
+        startActivity(intent);
     }
 }

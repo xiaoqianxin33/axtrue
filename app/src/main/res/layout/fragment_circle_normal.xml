@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -10,12 +11,17 @@
         android:orientation="vertical"
         android:paddingBottom="@dimen/mid_padding">
 
-        <ImageView
-            android:id="@+id/iv_image"
+        <cn.bingoogolapple.bgabanner.BGABanner
+            android:id="@+id/bgabanner"
             android:layout_width="match_parent"
             android:layout_height="200px"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/placeholder"/>
+            app:banner_pageChangeDuration="1000"
+            app:banner_pointAutoPlayAble="true"
+            app:banner_pointAutoPlayInterval="2000"
+            app:banner_pointContainerBackground="@android:color/transparent"
+            app:banner_pointDrawable="@drawable/bga_banner_selector_point_hollow"
+            app:banner_pointTopBottomMargin="5dp"
+            app:banner_transitionEffect="alpha"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -73,7 +79,8 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp">
+            android:layout_marginTop="5dp"
+            android:background="@android:color/white">
 
             <com.chinalooke.yuwan.view.NoSlidingListView
                 android:id="@+id/lv_circle"
@@ -85,6 +92,36 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"/>
+
+            <RelativeLayout
+                android:id="@+id/rl_create_circle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/iv_create_circle"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="101dp"
+                    android:src="@drawable/create_circle_selector"/>
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_toEndOf="@+id/iv_create_circle"
+                    android:text="@string/create_circle"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"/>
+
+
+            </RelativeLayout>
         </FrameLayout>
 
         <TextView
@@ -96,6 +133,7 @@
             android:text="加载更多"
             android:textColor="@color/shallow_word"
             android:textSize="24px"/>
+
 
         <LinearLayout
             android:id="@+id/ll_interest"
@@ -132,7 +170,11 @@
                 android:id="@+id/gd_interest"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:numColumns="3"/>
+                android:layout_gravity="center_horizontal"
+                android:background="@android:color/white"
+                android:gravity="center_horizontal"
+                android:numColumns="3"
+                android:paddingLeft="@dimen/mid_padding"/>
         </LinearLayout>
 
         <RelativeLayout

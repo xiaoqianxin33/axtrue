@@ -102,6 +102,14 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
     private Locale locale;
 
+    public int getSelectedTabTextSize() {
+        return selectedTabTextSize;
+    }
+
+    public void setSelectedTabTextSize(int selectedTabTextSize) {
+        this.selectedTabTextSize = selectedTabTextSize;
+    }
+
     public PagerSlidingTabStrip(Context context) {
         this(context, null);
     }

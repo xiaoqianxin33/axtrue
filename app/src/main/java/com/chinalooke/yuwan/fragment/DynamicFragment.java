@@ -287,7 +287,7 @@ public class DynamicFragment extends Fragment {
 
 
             if (mUserInfo != null) {
-                loginUserLike = resultBean.isIsLoginUserLike();
+                loginUserLike = resultBean.isLoginUserLike();
                 if (loginUserLike) {
                     viewHolder.mIvDianzan.setImageResource(R.mipmap.dianzanhou);
                 } else {

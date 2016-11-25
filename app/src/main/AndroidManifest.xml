@@ -199,6 +199,8 @@
         </activity>
         <activity android:name=".activity.SendDynamicActivity">
         </activity>
+        <activity android:name=".activity.CircleRankingActivity">
+        </activity>
     </application>
 
 </manifest>

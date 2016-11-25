@@ -398,4 +398,12 @@
         <item name="android:textSize">25px</item>
     </style>
 
+    <style name="ranking_textview">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:textColor">#4f4f4f</item>
+        <item name="android:textSize">@dimen/mid_padding</item>
+    </style>
+
 </resources>
