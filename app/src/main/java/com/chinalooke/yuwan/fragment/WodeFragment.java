@@ -72,7 +72,6 @@ public class WodeFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_wode, container, false);
         ButterKnife.bind(this, view);
         mQueue = Volley.newRequestQueue(getActivity());
-        user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         return view;
     }
 
@@ -149,7 +148,7 @@ public class WodeFragment extends Fragment {
             imageLoader.get(user.getHeadImg(), listener);
             mNameView.setText(user.getNickName());
             mShuoMingView.setText(user.getSlogan());
-
+            mBtnCancel.setText("注销");
         } else {
             mCircleImageView.setBackgroundResource(R.mipmap.yw80_orange);
             mNameView.setText("登录/注册");
@@ -229,6 +228,7 @@ public class WodeFragment extends Fragment {
         dialog.show();
     }
 
+
     private void setCancelDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         //设置对话框图标，可以使用自己的图片，Android本身也提供了一些图标供我们使用
@@ -243,6 +243,7 @@ public class WodeFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 // 执行点击确定按钮的业务逻辑
                 dialog.dismiss();
+                startActivity(new Intent(getActivity(), LoginActivity.class));
             }
         });
         //使用builder创建出对话框对象

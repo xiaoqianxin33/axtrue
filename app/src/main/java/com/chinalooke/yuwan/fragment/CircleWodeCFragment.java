@@ -29,6 +29,7 @@ import com.chinalooke.yuwan.utils.NetUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
+import com.zhy.autolayout.utils.AutoUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,8 +69,14 @@ public class CircleWodeCFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getActivity(), LoginUserInfoUtils.KEY);
         mQueue = YuwanApplication.getQueue();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getActivity(), LoginUserInfoUtils.KEY);
         initView();
         initData();
     }
@@ -156,6 +163,7 @@ public class CircleWodeCFragment extends Fragment {
                 convertView = View.inflate(getActivity(), R.layout.item_circle_listview, null);
                 viewHolder = new CircleNormalFragment.ViewHolder(convertView);
                 convertView.setTag(viewHolder);
+                AutoUtils.autoSize(convertView);
             } else {
                 viewHolder = (CircleNormalFragment.ViewHolder) convertView.getTag();
             }

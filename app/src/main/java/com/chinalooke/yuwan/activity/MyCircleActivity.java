@@ -2,7 +2,6 @@ package com.chinalooke.yuwan.activity;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -29,6 +28,8 @@ import com.chinalooke.yuwan.utils.NetUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
+import com.zhy.autolayout.AutoLayoutActivity;
+import com.zhy.autolayout.utils.AutoUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +42,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MyCircleActivity extends AppCompatActivity {
+public class MyCircleActivity extends AutoLayoutActivity {
 
     @Bind(R.id.lv_mycircle)
     ListView mLvMycircle;
@@ -203,9 +204,10 @@ public class MyCircleActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
             if (convertView == null) {
-                convertView = View.inflate(getApplicationContext(), R.layout.item_circle_listview, null);
+                convertView = View.inflate(MyCircleActivity.this, R.layout.item_circle_listview, null);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
+                AutoUtils.autoSize(convertView);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }

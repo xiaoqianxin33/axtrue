@@ -131,16 +131,15 @@ public class BattleFieldFragment extends Fragment {
         WindowManager wm = (WindowManager) getContext()
                 .getSystemService(Context.WINDOW_SERVICE);
         mWidth = wm.getDefaultDisplay().getWidth();
-        user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
-        initView();
-        initData();
-        initEvent();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
+        initView();
+        initData();
+        initEvent();
     }
 
 

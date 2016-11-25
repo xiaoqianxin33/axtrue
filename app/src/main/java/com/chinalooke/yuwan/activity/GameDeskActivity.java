@@ -54,6 +54,7 @@ import com.hyphenate.exceptions.HyphenateException;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
+import com.zhy.autolayout.utils.AutoUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -606,6 +607,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 convertView = View.inflate(GameDeskActivity.this, R.layout.item_gridview_person, null);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
+                AutoUtils.autoSize(convertView);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
@@ -652,6 +654,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 convertView = View.inflate(GameDeskActivity.this, R.layout.item_gridview_person, null);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
+                AutoUtils.autoSize(convertView);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }

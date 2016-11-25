@@ -124,7 +124,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         ButterKnife.bind(this, view);
         mQueue = YuwanApplication.getQueue();
         mToast = YuwanApplication.getToast();
-        mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getActivity(), LoginUserInfoUtils.KEY);
         return view;
     }
 
@@ -132,6 +131,15 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mMapview.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mMapview != null)
+            mMapview.onResume();
+        mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getActivity(), LoginUserInfoUtils.KEY);
         mMap = mMapview.getMap();
         initView();
         initData();
@@ -392,6 +400,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         }
     }
 
+
     static class ViewHolder {
         @Bind(R.id.iv_image)
         ImageView mIvCircleImage;
@@ -542,12 +551,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mMapview != null)
-            mMapview.onResume();
-    }
 
     @Override
     public void onPause() {

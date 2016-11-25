@@ -124,7 +124,7 @@
             <TextView
                 android:id="@+id/tv_wd"
                 style="@style/main_bottom_word"
-                android:text="动态"/>
+                android:text="我的"/>
 
 
         </RelativeLayout>

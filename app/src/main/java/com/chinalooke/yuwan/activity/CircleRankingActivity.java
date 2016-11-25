@@ -28,6 +28,7 @@ import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.CircleRanking;
 import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.CityPicker;
 import com.chinalooke.yuwan.utils.FastBlur;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -35,6 +36,7 @@ import com.chinalooke.yuwan.utils.ViewHelper;
 import com.chinalooke.yuwan.view.NoSlidingListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.lljjcoder.citypickerview.widget.CityPickerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
@@ -98,6 +100,11 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
         mListView.setAdapter(mMyAdapter);
         initData();
         initView();
+        initEvent();
+    }
+
+    private void initEvent() {
+
     }
 
     private void initView() {
@@ -115,9 +122,15 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
 
         AMapLocation aMapLocation = LocationUtils.getAMapLocation();
         if (aMapLocation != null) {
-            getScoreList(aMapLocation);
+            mRankings.clear();
+            getScoreList(aMapLocation.getCity());
         } else {
             LocationUtils.location(this, this);
+        }
+
+        if (mUserInfo == null) {
+            mTvName.setText("尚未登录");
+            mTvRanking.setVisibility(View.GONE);
         }
     }
 
@@ -150,8 +163,7 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
     }
 
     //获得积分排行
-    private void getScoreList(AMapLocation aMapLocation) {
-        String city = aMapLocation.getCity();
+    private void getScoreList(String city) {
         String uri = null;
         switch (RANKING_TYPE) {
             case 0:
@@ -179,11 +191,15 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
                         List<CircleRanking.ResultBean> result = circleRanking.getResult();
                         if (result != null) {
                             mRankings.addAll(result);
+                            String loginUserRanking = mRankings.get(0).getLoginUserRanking();
+                            if (!TextUtils.isEmpty(loginUserRanking)) {
+                                mTvRanking.setText(loginUserRanking);
+                            }
                             Collections.sort(mRankings, new Comparator<CircleRanking.ResultBean>() {
                                 @Override
                                 public int compare(CircleRanking.ResultBean lhs, CircleRanking.ResultBean rhs) {
-                                    int l = Integer.parseInt(lhs.getRanking());
-                                    int r = Integer.parseInt(rhs.getRanking());
+                                    int l = Integer.parseInt(lhs.getScore());
+                                    int r = Integer.parseInt(rhs.getScore());
                                     if (l >= r)
                                         return 1;
                                     else
@@ -222,17 +238,35 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
                 finish();
                 break;
             case R.id.iv_arrow:
+                showCitySelector();
                 break;
             case R.id.tv_city:
+                showCitySelector();
                 break;
         }
+    }
+
+    //弹出城市选择器
+    private void showCitySelector() {
+        CityPickerView cityPicker = new CityPickerView(this);
+        cityPicker.setIsCyclic(false);
+        cityPicker.setOnCityItemClickListener(new CityPickerView.OnCityItemClickListener() {
+            @Override
+            public void onSelected(String... citySelected) {
+                String city = citySelected[1] + citySelected[2];
+                mRankings.clear();
+                getScoreList(city);
+                mTvCity.setText(city);
+            }
+        });
     }
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null) {
             if (aMapLocation.getErrorCode() == 0) {
-                getScoreList(aMapLocation);
+                mRankings.clear();
+                getScoreList(aMapLocation.getCity());
             }
         }
     }
@@ -298,7 +332,6 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
                     viewHolder.mTvNameGame.setText(nickName);
                 }
             }
-
             return convertView;
         }
     }
