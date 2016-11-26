@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
@@ -27,6 +28,8 @@ public class CircleWodeFragment extends Fragment {
     TextView mTvWode;
     @Bind(R.id.tv_create)
     TextView mTvCreate;
+    @Bind(R.id.ll_title)
+    LinearLayout mLlTitle;
     private Fragment mContent;
     private FragmentManager mFragmentManager;
     private CircleWodeWFragment mCircleWodeWFragment;
@@ -74,6 +77,14 @@ public class CircleWodeFragment extends Fragment {
     private void setSelect(int i) {
         mTvWode.setSelected(i == 0);
         mTvCreate.setSelected(i == 1);
+        switch (i) {
+            case 0:
+                mLlTitle.setBackgroundResource(R.mipmap.wode_circle_left);
+                break;
+            case 1:
+                mLlTitle.setBackgroundResource(R.mipmap.wode_circle_right);
+                break;
+        }
     }
 
 

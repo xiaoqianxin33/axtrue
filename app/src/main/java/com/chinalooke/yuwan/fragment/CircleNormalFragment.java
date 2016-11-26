@@ -50,6 +50,7 @@ import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
+import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.ViewHelper;
 import com.chinalooke.yuwan.view.NoSlidingListView;
 import com.google.gson.Gson;
@@ -114,6 +115,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     private LoginUser.ResultBean mUserInfo;
     private GridAdapt mInterestGridAdapt;
     private AMap mMap;
+    private GridAdapt mHotGridAdapt;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -179,8 +181,8 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         mLvCircle.setAdapter(mMyAdapt);
         mInterestGridAdapt = new GridAdapt(mInterestCircles);
         mGdInterest.setAdapter(mInterestGridAdapt);
-        GridAdapt hotGridAdapt = new GridAdapt(mHotCircles);
-        mGdHot.setAdapter(hotGridAdapt);
+        mHotGridAdapt = new GridAdapt(mHotCircles);
+        mGdHot.setAdapter(mHotGridAdapt);
     }
 
     private void initData() {
@@ -193,6 +195,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             initAMap();
             getADListForSpace(aMapLocation);
             getNearbyCircle();
+
         } else {
             mAMapLocationClient = LocationUtils.location(getActivity(), this);
         }
@@ -203,6 +206,38 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             getInterestCircle();
         }
 
+        getHotCircle();
+
+    }
+
+    //获取热门圈子数据
+    private void getHotCircle() {
+        if (NetUtil.is_Network_Available(getActivity())) {
+            String uri = Constant.HOST + "getGroupListWithType&groupType=hot&pageNo=1&pageSize=6";
+            StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    if (AnalysisJSON.analysisJson(response)) {
+                        Gson gson = new Gson();
+                        Type type = new TypeToken<Circle>() {
+                        }.getType();
+                        Circle mCircle = gson.fromJson(response, type);
+                        if (mCircle != null) {
+                            List<Circle.ResultBean> circles = mCircle.getResult();
+                            mHotCircles.addAll(circles);
+                            mHotGridAdapt.notifyDataSetChanged();
+                        }
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+
+            mQueue.add(request);
+        }
     }
 
     //获取顶部广告图片
@@ -250,7 +285,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                 mAdList.add(imageView);
             }
         }
-
         if (mBanner != null) {
             mBanner.setData(mAdList);
         }

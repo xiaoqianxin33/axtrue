@@ -4,7 +4,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="153px"
                 android:background="@android:color/white"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/mid_padding">
 
 
     <FrameLayout
@@ -25,7 +26,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="4"
             android:textColor="#4f4f4f"
             android:textSize="24px"/>
 
@@ -50,7 +50,6 @@
         android:layout_marginLeft="@dimen/small_padding"
         android:layout_marginTop="42px"
         android:layout_toRightOf="@id/roundedImageView"
-        android:text="哈哈 | 穿越火线"
         android:textColor="#4f4f4f"
         android:textSize="@dimen/mid_padding"/>
 
@@ -62,7 +61,6 @@
         android:layout_marginLeft="@dimen/small_padding"
         android:layout_marginTop="@dimen/small_padding"
         android:layout_toRightOf="@id/roundedImageView"
-        android:text="今天天气不错"
         android:textColor="@color/shallow_word"
         android:textSize="24px"/>
 
@@ -74,10 +72,8 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/mid_padding"
         android:layout_marginTop="42px"
-        android:text="23046"
         android:textColor="@color/orange"
         android:textSize="@dimen/mid_padding"/>
-
 
 
 </RelativeLayout>

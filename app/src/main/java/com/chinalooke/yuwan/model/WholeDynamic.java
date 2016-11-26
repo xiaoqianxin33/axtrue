@@ -1,5 +1,6 @@
 package com.chinalooke.yuwan.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -56,7 +57,7 @@ public class WholeDynamic {
         this.Result = Result;
     }
 
-    public static class ResultBean {
+    public static class ResultBean implements Serializable {
         private String activeId;
         private String comments;
         private String content;
@@ -68,6 +69,15 @@ public class WholeDynamic {
         private String nickName;
         private String userId;
         private String address;
+        private List<LastCommentBean> lastComment;
+
+        public List<LastCommentBean> getLastComment() {
+            return lastComment;
+        }
+
+        public void setLastComment(List<LastCommentBean> lastComment) {
+            this.lastComment = lastComment;
+        }
 
         public String getAddress() {
             return address;
@@ -163,6 +173,54 @@ public class WholeDynamic {
 
         public void setUserId(String userId) {
             this.userId = userId;
+        }
+
+        public static class LastCommentBean {
+            private String addTime;
+            private String commentId;
+            private String content;
+            private String headImg;
+            private String nickName;
+
+            public String getAddTime() {
+                return addTime;
+            }
+
+            public void setAddTime(String addTime) {
+                this.addTime = addTime;
+            }
+
+            public String getCommentId() {
+                return commentId;
+            }
+
+            public void setCommentId(String commentId) {
+                this.commentId = commentId;
+            }
+
+            public String getContent() {
+                return content;
+            }
+
+            public void setContent(String content) {
+                this.content = content;
+            }
+
+            public String getHeadImg() {
+                return headImg;
+            }
+
+            public void setHeadImg(String headImg) {
+                this.headImg = headImg;
+            }
+
+            public String getNickName() {
+                return nickName;
+            }
+
+            public void setNickName(String nickName) {
+                this.nickName = nickName;
+            }
         }
     }
 }

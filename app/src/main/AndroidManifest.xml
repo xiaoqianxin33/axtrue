@@ -201,6 +201,10 @@
         </activity>
         <activity android:name=".activity.CircleRankingActivity">
         </activity>
+        <activity android:name=".activity.NetbarADActivity">
+        </activity>
+        <activity android:name=".activity.DynamicDetailActivity">
+        </activity>
     </application>
 
 </manifest>

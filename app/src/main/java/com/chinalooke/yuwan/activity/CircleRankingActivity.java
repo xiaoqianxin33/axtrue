@@ -241,12 +241,17 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
                             Collections.sort(mRankings, new Comparator<CircleRanking.ResultBean>() {
                                 @Override
                                 public int compare(CircleRanking.ResultBean lhs, CircleRanking.ResultBean rhs) {
-                                    int l = Integer.parseInt(lhs.getScore());
-                                    int r = Integer.parseInt(rhs.getScore());
-                                    if (l >= r)
-                                        return 1;
-                                    else
-                                        return -1;
+                                    if (lhs.getScore() != null && rhs.getScore() != null) {
+                                        int l = Integer.parseInt(lhs.getScore());
+                                        int r = Integer.parseInt(rhs.getScore());
+                                        if (l >= r)
+                                            return -1;
+                                        else
+                                            return 1;
+                                    } else {
+                                        return 0;
+                                    }
+
                                 }
                             });
                             mMyAdapter.notifyDataSetChanged();
@@ -302,6 +307,7 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
                 mTvCity.setText(city);
             }
         });
+        cityPicker.show();
     }
 
     @Override
@@ -309,7 +315,7 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
         if (aMapLocation != null) {
             if (aMapLocation.getErrorCode() == 0) {
                 mRankings.clear();
-                mTvCity.setText(aMapLocation.getCity()+aMapLocation.getDistrict());
+                mTvCity.setText(aMapLocation.getCity() + aMapLocation.getDistrict());
             }
         }
     }
@@ -346,7 +352,7 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
                 viewHolder.mIvRanking.setVisibility(View.VISIBLE);
             } else {
                 viewHolder.mTvRanking.setVisibility(View.VISIBLE);
-                viewHolder.mTvRanking.setText(resultBean.getRanking());
+                viewHolder.mTvRanking.setText(position + 1 + "");
                 viewHolder.mIvRanking.setVisibility(View.GONE);
             }
             String headImg = resultBean.getHeadImg();

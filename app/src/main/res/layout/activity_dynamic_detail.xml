@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_dynamic_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.chinalooke.yuwan.activity.DynamicDetailActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100px"
+        android:background="@color/actionbar_color">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="36px"
+            android:layout_height="36px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30px"
+            android:src="@mipmap/left_arrow"/>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="动态"
+            android:textColor="@android:color/white"
+            android:textSize="34px"/>
+
+        <ImageView
+            android:id="@+id/iv_camera"
+            android:layout_width="46px"
+            android:layout_height="38px"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="32px"
+            android:gravity="center_vertical"
+            android:src="@mipmap/camera"/>
+
+    </RelativeLayout>
+
+    <!--<include layout="@layout/item_circle_dynamic_listview"/>-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/mid_padding"
+        android:paddingLeft="24px"
+        android:paddingRight="24px">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40px">
+
+            <ImageView
+                android:id="@+id/iv1"
+                android:layout_width="36px"
+                android:layout_height="36px"
+                android:src="@mipmap/dianzanren"/>
+
+            <TextView
+                android:id="@+id/tv_dianzan_people"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8px"
+                android:layout_toRightOf="@id/iv1"
+                android:text="两只小蜜蜂，烟尘"
+                android:textColor="#326499"
+                android:textSize="26px"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@null"/>
+
+</LinearLayout>
