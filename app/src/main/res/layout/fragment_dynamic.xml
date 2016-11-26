@@ -3,8 +3,9 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/backgroud"
+              android:background="@color/background"
               android:orientation="vertical"
+              android:paddingBottom="120px"
               tools:context="com.chinalooke.yuwan.fragment.DynamicFragment">
 
     <RelativeLayout
@@ -34,106 +35,104 @@
 
     </RelativeLayout>
 
-    <ScrollView
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+
+        <cn.bingoogolapple.bgabanner.BGABanner
+            android:id="@+id/bgabanner"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="300px"
+            app:banner_pageChangeDuration="1000"
+            app:banner_pointAutoPlayAble="true"
+            app:banner_pointAutoPlayInterval="2000"
+            app:banner_pointContainerBackground="@android:color/transparent"
+            app:banner_pointDrawable="@drawable/bga_banner_selector_point_hollow"
+            app:banner_pointTopBottomMargin="5dp"
+            app:banner_transitionEffect="alpha"/>
 
+        <RelativeLayout
+            android:id="@+id/rl_new_message"
+            android:layout_width="match_parent"
+            android:layout_height="160px"
+            android:background="@android:color/white">
 
-            <cn.bingoogolapple.bgabanner.BGABanner
-                android:id="@+id/bgabanner"
-                android:layout_width="match_parent"
-                android:layout_height="300px"
-                app:banner_pageChangeDuration="1000"
-                app:banner_pointAutoPlayAble="true"
-                app:banner_pointAutoPlayInterval="2000"
-                app:banner_pointContainerBackground="@android:color/transparent"
-                app:banner_pointDrawable="@drawable/bga_banner_selector_point_hollow"
-                app:banner_pointTopBottomMargin="5dp"
-                app:banner_transitionEffect="alpha"/>
 
             <RelativeLayout
-                android:id="@+id/rl_new_message"
-                android:layout_width="match_parent"
-                android:layout_height="160px"
-                android:background="@android:color/white">
+                android:layout_width="360px"
+                android:layout_height="80px"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@mipmap/disclosure_arrow">
 
-
-                <RelativeLayout
-                    android:layout_width="360px"
-                    android:layout_height="80px"
-                    android:layout_centerHorizontal="true"
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/iv1"
+                    android:layout_width="60px"
+                    android:layout_height="60px"
                     android:layout_centerVertical="true"
-                    android:background="@mipmap/disclosure_arrow">
+                    android:layout_marginLeft="12px"
+                    android:background="#e3e6e8"
+                    app:riv_corner_radius="8dp"/>
 
-                    <com.makeramen.roundedimageview.RoundedImageView
-                        android:id="@+id/iv1"
-                        android:layout_width="60px"
-                        android:layout_height="60px"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="12px"
-                        android:background="#e3e6e8"
-                        app:riv_corner_radius="8dp"/>
-
-                    <TextView
-                        android:id="@+id/tv_new_message"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="63px"
-                        android:layout_toRightOf="@id/iv1"
-                        android:text="一条新消息"
-                        android:textColor="@android:color/white"
-                        android:textSize="30px"/>
-
-                </RelativeLayout>
-
+                <TextView
+                    android:id="@+id/tv_new_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="63px"
+                    android:layout_toRightOf="@id/iv1"
+                    android:text="一条新消息"
+                    android:textColor="@android:color/white"
+                    android:textSize="30px"/>
 
             </RelativeLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/line_color"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_color"/>
 
 
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/sr"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/sr"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <FrameLayout
+                <ListView
+                    android:id="@+id/lv_dynamic"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:divider="@color/backgroud"
+                    android:dividerHeight="16dp"/>
 
-                    <com.chinalooke.yuwan.view.NoSlidingListView
-                        android:id="@+id/lv_dynamic"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:divider="@color/backgroud"
-                        android:dividerHeight="16dp"/>
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"/>
 
-                    <ProgressBar
-                        android:id="@+id/progressBar"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"/>
+                <TextView
+                    android:id="@+id/tv_no"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:visibility="gone"/>
 
-                    <TextView
-                        android:id="@+id/tv_no"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:textSize="16sp"
-                        android:visibility="gone"/>
+            </FrameLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
 
-                </FrameLayout>
+    </LinearLayout>
 
-            </android.support.v4.widget.SwipeRefreshLayout>
-        </LinearLayout>
-    </ScrollView>
 </LinearLayout>

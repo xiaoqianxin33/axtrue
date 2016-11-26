@@ -218,10 +218,10 @@ public class LoopView extends View {
         as = new String[r];
         w = (int) ((float) totalScrollY / (l * (float) h));
         p = positon + w % arrayList.size();
-        Log.i("test", (new StringBuilder("scrollY1=")).append(totalScrollY).toString());
-        Log.i("test", (new StringBuilder("change=")).append(w).toString());
-        Log.i("test", (new StringBuilder("lineSpacingMultiplier * maxTextHeight=")).append(l * (float) h).toString());
-        Log.i("test", (new StringBuilder("preCurrentIndex=")).append(p).toString());
+        Log.i("WholeDynamic", (new StringBuilder("scrollY1=")).append(totalScrollY).toString());
+        Log.i("WholeDynamic", (new StringBuilder("change=")).append(w).toString());
+        Log.i("WholeDynamic", (new StringBuilder("lineSpacingMultiplier * maxTextHeight=")).append(l * (float) h).toString());
+        Log.i("WholeDynamic", (new StringBuilder("preCurrentIndex=")).append(p).toString());
         int i1;
         if (!isLoop) {
             if (p < 0) {

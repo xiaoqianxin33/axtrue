@@ -4,40 +4,49 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompatBase;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationListener;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.MainActivity;
+import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.model.Dynamic;
 import com.chinalooke.yuwan.model.LoginUser;
-import com.chinalooke.yuwan.model.UserInfo;
+import com.chinalooke.yuwan.model.NetbarAdvertisement;
+import com.chinalooke.yuwan.model.WholeDynamic;
+import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
-import com.chinalooke.yuwan.view.CircleImageView;
+import com.chinalooke.yuwan.utils.ViewHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.utils.AutoUtils;
 
@@ -51,8 +60,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bingoogolapple.bgabanner.BGABanner;
 
-public class DynamicFragment extends Fragment {
+public class DynamicFragment extends Fragment implements AMapLocationListener {
 
 
     @Bind(R.id.lv_dynamic)
@@ -63,17 +73,23 @@ public class DynamicFragment extends Fragment {
     ProgressBar mProgressBar;
     @Bind(R.id.tv_no)
     TextView mTvNo;
+    @Bind(R.id.bgabanner)
+    BGABanner mBanner;
 
-
-    private int mPage = 1;
+    private List<View> mAdList = new ArrayList<>();
+    private int mPage;
     private boolean isLoading = false;
     private RequestQueue mQueue;
     private LoginUser.ResultBean mUserInfo;
     private boolean isFirst = true;
-    private List<Dynamic.ResultBean.ListBean> mDynamics = new ArrayList<>();
+    private List<WholeDynamic.ResultBean> mDynamics = new ArrayList<>();
+    private MyDynamicAdapter mMyListAdapater;
+    private AMapLocationClient mAMapLocationClient;
+    private boolean isRefresh = false;
+    private View mFoot;
+    private boolean isFoot = false;
     private Toast mToast;
-    private MyListAdapater mMyListAdapater;
-    private float mWidth;
+    private boolean isSuccess = false;
 
 
     @Override
@@ -89,9 +105,7 @@ public class DynamicFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mQueue = ((MainActivity) getActivity()).getQueue();
         mToast = YuwanApplication.getToast();
-        WindowManager wm = (WindowManager) getContext()
-                .getSystemService(Context.WINDOW_SERVICE);
-        mWidth = wm.getDefaultDisplay().getWidth();
+        mFoot = View.inflate(getActivity(), R.layout.foot, null);
     }
 
     @Override
@@ -99,17 +113,72 @@ public class DynamicFragment extends Fragment {
         super.onResume();
         mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         initHead();
-        mMyListAdapater = new MyListAdapater();
+        mMyListAdapater = new MyDynamicAdapter(mDynamics, getActivity());
         mLvDynamic.setAdapter(mMyListAdapater);
         initEvent();
-
     }
 
+    //初始化头部广告
     private void initHead() {
-        ImageView imageView = new ImageView(getActivity());
-        imageView.setLayoutParams(new AbsListView.LayoutParams((MyUtils.Dp2Px(getActivity(), mWidth)), MyUtils.Dp2Px(getActivity(), 160)));
-        Picasso.with(getActivity()).load(R.mipmap.dynamicbackgroud).resize((MyUtils.Dp2Px(getActivity(), mWidth)), MyUtils.Dp2Px(getActivity(), 160)).centerCrop().into(imageView);
-        mLvDynamic.addHeaderView(imageView);
+        if (NetUtil.is_Network_Available(getActivity())) {
+            AMapLocation aMapLocation = LocationUtils.getAMapLocation();
+            if (aMapLocation != null) {
+                initBanner(aMapLocation);
+            } else {
+                mAMapLocationClient = LocationUtils.location(getActivity(), this);
+            }
+        }
+    }
+
+    private void initBanner(AMapLocation aMapLocation) {
+        String city = aMapLocation.getCity();
+        double latitude = aMapLocation.getLatitude();
+        double longitude = aMapLocation.getLongitude();
+        String uri = Constant.HOST + "getADList&&pageNo=1&pageSize=5&city=" + city
+                + "&lng=" + longitude + "&lat=" + latitude;
+        StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (AnalysisJSON.analysisJson(response)) {
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<NetbarAdvertisement>() {
+                    }.getType();
+                    NetbarAdvertisement netbarAdvertisement = gson.fromJson(response, type);
+                    if (netbarAdvertisement != null) {
+                        setBanner(netbarAdvertisement);
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        mQueue.add(request);
+    }
+
+    //填充banner数据
+    private void setBanner(NetbarAdvertisement netbarAdvertisement) {
+        mAdList.clear();
+        List<NetbarAdvertisement.ResultBean> result = netbarAdvertisement.getResult();
+        if (result == null & result.size() == 0)
+            return;
+        for (NetbarAdvertisement.ResultBean resultBean : result) {
+            List<String> adImg = resultBean.getADImg();
+            if (adImg != null && adImg.size() != 0) {
+                for (String uri : adImg) {
+                    ImageView imageView = new ImageView(getActivity());
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    Picasso.with(getActivity()).load(uri).resize(MyUtils.Dp2Px(getActivity(), ViewHelper.getDisplayMetrics(getActivity()).widthPixels), 300)
+                            .centerCrop().into(imageView);
+                    mAdList.add(imageView);
+                }
+            }
+        }
+        if (mBanner != null) {
+            mBanner.setData(mAdList);
+        }
     }
 
     private void initEvent() {
@@ -122,9 +191,11 @@ public class DynamicFragment extends Fragment {
             @Override
             public void onRefresh() {
                 mPage = 1;
-                mDynamics.clear();
+                isRefresh = true;
+                isFoot = false;
                 initData();
                 mSr.setRefreshing(false);
+                mLvDynamic.removeFooterView(mFoot);
             }
         });
 
@@ -146,11 +217,23 @@ public class DynamicFragment extends Fragment {
                 }
             }
         });
+
+        mLvDynamic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                WholeDynamic.ResultBean resultBean = mDynamics.get(position);
+
+            }
+        });
     }
 
     private void loadMore() {
         isLoading = true;
-        initData();
+        if (!isFoot) {
+            mLvDynamic.removeFooterView(mFoot);
+            mPage++;
+            initData();
+        }
     }
 
 
@@ -158,52 +241,44 @@ public class DynamicFragment extends Fragment {
         if (NetUtil.is_Network_Available(getActivity())) {
             String uri;
             if (mUserInfo != null) {
-                uri = Constant.HOST + "getActiveList&pageNo=" + mPage + "&pageSize=4&userId"
+                uri = Constant.HOST + "getActiveList&pageNo=" + mPage + "&pageSize=5&userId"
                         + mUserInfo.getUserId();
             } else {
-                uri = Constant.HOST + "getActiveList&pageNo=" + mPage + "&pageSize=4";
+                uri = Constant.HOST + "getActiveList&pageNo=" + mPage + "&pageSize=5";
             }
 
             StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     mProgressBar.setVisibility(View.GONE);
-                    String substring = response.substring(11, 15);
-                    if ("true".equals(substring)) {
-                        Gson gson = new Gson();
-                        Type type = new TypeToken<Dynamic>() {
-                        }.getType();
-                        Dynamic dynamic = gson.fromJson(response, type);
-                        if (dynamic != null) {
-                            mTvNo.setVisibility(View.GONE);
-                            mDynamics.addAll(dynamic.getResult().getList());
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("Success");
+                        if (success) {
+                            Gson gson = new Gson();
+                            Type type = new TypeToken<WholeDynamic>() {
+                            }.getType();
+                            WholeDynamic dynamic = gson.fromJson(response, type);
+                            List<WholeDynamic.ResultBean> result1 = dynamic.getResult();
+                            if (isRefresh)
+                                mDynamics.clear();
+                            mDynamics.addAll(result1);
                             mMyListAdapater.notifyDataSetChanged();
-                            mPage++;
+                            isRefresh = false;
                         } else {
                             if (isFirst) {
-                                mTvNo.setText("没有动态");
                                 mTvNo.setVisibility(View.VISIBLE);
+                                mTvNo.setText("暂无动态");
                             } else {
+                                isFoot = true;
+                                mLvDynamic.addFooterView(mFoot);
                                 mTvNo.setVisibility(View.GONE);
-                                mToast.setText("没有更多了");
-                                mToast.show();
                             }
                         }
-                    } else {
-                        if (isFirst) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                String msg = jsonObject.getString("Msg");
-                                mToast.setText(msg);
-                                mToast.show();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            mToast.setText("没有更多了");
-                            mToast.show();
-                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+                    isRefresh = false;
                     isLoading = false;
                     isFirst = false;
                 }
@@ -221,94 +296,23 @@ public class DynamicFragment extends Fragment {
             mQueue.add(stringRequest);
         } else {
             mProgressBar.setVisibility(View.GONE);
-            mTvNo.setText("网络不可用");
+            mTvNo.setText("服务器抽风了，稍后再试");
             mTvNo.setVisibility(View.VISIBLE);
         }
-
     }
 
-    class MyListAdapater extends BaseAdapter {
-        private boolean loginUserLike = false;
-
-        @Override
-        public int getCount() {
-            return mDynamics.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final ViewHolder viewHolder;
-            if (convertView == null) {
-                convertView = View.inflate(getActivity(), R.layout.item_dynamic_listview, null);
-                viewHolder = new ViewHolder(convertView);
-                convertView.setTag(viewHolder);
-                AutoUtils.autoSize(convertView);
-            } else {
-                viewHolder = (ViewHolder) convertView.getTag();
+    @Override
+    public void onLocationChanged(AMapLocation aMapLocation) {
+        if (aMapLocation != null) {
+            if (aMapLocation.getErrorCode() == 0) {
+                LocationUtils.setAMapLocation(aMapLocation);
+                initBanner(aMapLocation);
             }
-            final Dynamic.ResultBean.ListBean resultBean = mDynamics.get(position);
-            Picasso.with(getActivity()).load(resultBean.getHeadImg()).resize(MyUtils.Dp2Px(getActivity(), 32)
-                    , MyUtils.Dp2Px(getActivity(), 32)).centerCrop().into(viewHolder.mCircleImageView);
-            viewHolder.mTvContent.setText(resultBean.getContent());
-            viewHolder.mTvNameUp.setText(resultBean.getNickName());
-            viewHolder.mTvName.setText(resultBean.getNickName());
-            viewHolder.mTvTime.setText(resultBean.getAddTime().substring(0, 10));
-            viewHolder.mTvDianzan.setText(resultBean.getLikes());
-            viewHolder.mTextView6.setText(resultBean.getComments());
-            viewHolder.mTvLocation.setText(resultBean.getAddress());
-            String images = resultBean.getImages();
-            if (!TextUtils.isEmpty(images)) {
-                String[] split = images.split(",");
-                viewHolder.mGdDynamic.setAdapter(new GridAdapter(split));
-            }
-
-
-            if (mUserInfo != null) {
-                loginUserLike = resultBean.isLoginUserLike();
-                if (loginUserLike) {
-                    viewHolder.mIvDianzan.setImageResource(R.mipmap.dianzanhou);
-                } else {
-                    viewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
-                }
-
-                viewHolder.mIvDianzan.setOnClickListener(new View.OnClickListener() {
-                    private boolean isLike = loginUserLike;
-
-                    @Override
-                    public void onClick(View v) {
-                        if (isLike) {
-                            viewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
-                            isLike = false;
-                            addFavour("delFavour", resultBean.getActiveId(), viewHolder, isLike);
-                        } else {
-                            viewHolder.mIvDianzan.setImageResource(R.mipmap.dianzanhou);
-                            isLike = true;
-                            addFavour("addFavour", resultBean.getActiveId(), viewHolder, isLike);
-                        }
-                    }
-                });
-            } else {
-                viewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
-            }
-            return convertView;
         }
-
     }
 
 
-    private boolean isSuccess = false;
-
-    private void addFavour(String s, String avtiveId, final ViewHolder viewHolder, boolean isLike) {
+    private void addFavour(String s, String avtiveId, final DynamicViewHolder viewHolder, boolean isLike) {
 
         String uri = Constant.HOST + "addFavour&" + s + "=" + avtiveId + " & userId = " + mUserInfo.getUserId();
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
@@ -354,6 +358,128 @@ public class DynamicFragment extends Fragment {
         mQueue.add(request);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+        if (mAMapLocationClient != null) {
+            mAMapLocationClient.stopLocation();
+            mAMapLocationClient.onDestroy();
+        }
+
+    }
+
+    static class DynamicViewHolder {
+        RoundedImageView mRoundedImageView;
+        TextView mTvName;
+        TextView mTvTime;
+        TextView mTvContent;
+        GridView mGridView;
+        TextView mTvAddress;
+        TextView mTvPinglun;
+        TextView mTvDianzan;
+        ImageView mIvDianzan;
+    }
+
+
+    class MyDynamicAdapter extends MyBaseAdapter {
+        private Context mContext;
+
+        MyDynamicAdapter(List dataSource, Context context) {
+            super(dataSource);
+            mContext = context;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final DynamicViewHolder dynamicViewHolder;
+            if (convertView == null) {
+                dynamicViewHolder = new DynamicViewHolder();
+                convertView = View.inflate(mContext, R.layout.item_circle_dynamic_listview, null);
+                dynamicViewHolder.mTvTime = (TextView) convertView.findViewById(R.id.tv_time);
+                dynamicViewHolder.mTvAddress = (TextView) convertView.findViewById(R.id.tv_address);
+                dynamicViewHolder.mTvPinglun = (TextView) convertView.findViewById(R.id.tv_pinglun);
+                dynamicViewHolder.mTvDianzan = (TextView) convertView.findViewById(R.id.tv_dianzan);
+                dynamicViewHolder.mTvName = (TextView) convertView.findViewById(R.id.tv_name);
+                dynamicViewHolder.mTvContent = (TextView) convertView.findViewById(R.id.tv_content);
+                dynamicViewHolder.mGridView = (GridView) convertView.findViewById(R.id.gridView);
+                dynamicViewHolder.mIvDianzan = (ImageView) convertView.findViewById(R.id.iv_dianzan);
+                dynamicViewHolder.mRoundedImageView = (RoundedImageView) convertView.findViewById(R.id.roundedImageView);
+                convertView.setTag(dynamicViewHolder);
+                AutoUtils.autoSize(convertView);
+            } else {
+                dynamicViewHolder = (DynamicViewHolder) convertView.getTag();
+            }
+
+            final WholeDynamic.ResultBean resultBean = (WholeDynamic.ResultBean) mDataSource.get(position);
+            String headImg = resultBean.getHeadImg();
+            if (!TextUtils.isEmpty(headImg))
+                Picasso.with(mContext).load(headImg).resize(72, 72).centerCrop().into(dynamicViewHolder.mRoundedImageView);
+            String content = resultBean.getContent();
+            if (!TextUtils.isEmpty(content))
+                dynamicViewHolder.mTvContent.setText(content);
+            String nickName = resultBean.getNickName();
+            if (!TextUtils.isEmpty(nickName))
+                dynamicViewHolder.mTvName.setText(nickName);
+
+            String images = resultBean.getImages();
+            if (!TextUtils.isEmpty(images)) {
+                String[] split = images.split(",");
+                dynamicViewHolder.mGridView.setAdapter(new GridAdapter(split));
+            }
+
+            String likes = resultBean.getLikes();
+            if (!TextUtils.isEmpty(likes)) {
+                dynamicViewHolder.mTvDianzan.setText(likes);
+            } else {
+                dynamicViewHolder.mTvDianzan.setText("0");
+            }
+
+            String comments = resultBean.getComments();
+            if (!TextUtils.isEmpty(comments))
+                dynamicViewHolder.mTvPinglun.setText(comments);
+            else
+                dynamicViewHolder.mTvPinglun.setText("0");
+
+
+            String address = resultBean.getAddress();
+            if (!TextUtils.isEmpty(address))
+                dynamicViewHolder.mTvAddress.setText(address);
+
+            String addTime = resultBean.getCreateTime();
+            if (!TextUtils.isEmpty(addTime))
+                dynamicViewHolder.mTvTime.setText(addTime.substring(0, 10));
+
+            if (mUserInfo != null) {
+                final boolean isLoginUserLike = resultBean.isIsLoginUserLike();
+                if (isLoginUserLike)
+                    dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzanhou);
+                else
+                    dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
+                dynamicViewHolder.mIvDianzan.setOnClickListener(new View.OnClickListener() {
+                    private boolean isLike = isLoginUserLike;
+
+                    @Override
+                    public void onClick(View v) {
+                        if (isLike) {
+                            dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
+                            isLike = false;
+                            addFavour("delFavour", resultBean.getActiveId(), dynamicViewHolder, isLike);
+                        } else {
+                            dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzanhou);
+                            isLike = true;
+                            addFavour("addFavour", resultBean.getActiveId(), dynamicViewHolder, isLike);
+                        }
+                    }
+                });
+            }
+
+
+            return convertView;
+        }
+
+    }
+
     class GridAdapter extends BaseAdapter {
         private String[] mStrings;
 
@@ -382,8 +508,7 @@ public class DynamicFragment extends Fragment {
             if (convertView == null) {
                 imageview = new ImageView(getActivity());
                 imageview.setImageResource(R.mipmap.placeholder);
-                imageview.setLayoutParams(new GridView.LayoutParams(MyUtils.Dp2Px(getActivity()
-                        , 80), MyUtils.Dp2Px(getActivity(), 80)));
+                imageview.setLayoutParams(new GridView.LayoutParams(235, 235));
                 imageview.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageview.setPadding(6, 6, 6, 6);
                 AutoUtils.autoSize(imageview);
@@ -393,46 +518,5 @@ public class DynamicFragment extends Fragment {
             Picasso.with(getActivity()).load(mStrings[position]).into(imageview);
             return imageview;
         }
-    }
-
-    static class ViewHolder {
-        @Bind(R.id.circleImageView)
-        CircleImageView mCircleImageView;
-        @Bind(R.id.tv_name_up)
-        TextView mTvNameUp;
-        @Bind(R.id.tv_time)
-        TextView mTvTime;
-        @Bind(R.id.tv_name)
-        TextView mTvName;
-        @Bind(R.id.tv_content)
-        TextView mTvContent;
-        @Bind(R.id.gd_dynamic)
-        GridView mGdDynamic;
-        @Bind(R.id.imageView3)
-        ImageView mImageView3;
-        @Bind(R.id.tv_location)
-        TextView mTvLocation;
-        @Bind(R.id.iv_pinglun)
-        ImageView mIvPinglun;
-        @Bind(R.id.textView6)
-        TextView mTextView6;
-        @Bind(R.id.iv_dianzan)
-        ImageView mIvDianzan;
-        @Bind(R.id.tv_dianzan)
-        TextView mTvDianzan;
-
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
-
-    @OnClick(R.id.back_personal_info)
-    public void onClick() {
     }
 }

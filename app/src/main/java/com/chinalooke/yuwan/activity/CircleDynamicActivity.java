@@ -1,5 +1,6 @@
 package com.chinalooke.yuwan.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -79,7 +80,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
     private int PAGE_NO;
     private LoginUser.ResultBean mUserInfo;
     private List<Dynamic.ResultBean.ListBean> mDynamics = new ArrayList<>();
-    private MyAdapter mMyAdapter;
+    private MyDynamicAdapter mMyDynamicAdapter;
     private boolean isLoading = false;
     private boolean isRefresh = false;
     private boolean isFirst = true;
@@ -94,8 +95,8 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         mQueue = YuwanApplication.getQueue();
         mDisplayMetrics = ViewHelper.getDisplayMetrics(CircleDynamicActivity.this);
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
-        mMyAdapter = new MyAdapter(mDynamics);
-        mListView.setAdapter(mMyAdapter);
+        mMyDynamicAdapter = new MyDynamicAdapter(mDynamics, CircleDynamicActivity.this);
+        mListView.setAdapter(mMyDynamicAdapter);
         initData();
         initView();
         initEvent();
@@ -214,7 +215,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                                     mDynamics.addAll(dynamic.getResult().getList());
                                     mTvNone.setVisibility(View.GONE);
                                     Log.e("TAG", mDynamics.size() + "");
-                                    mMyAdapter.notifyDataSetChanged();
+                                    mMyDynamicAdapter.notifyDataSetChanged();
                                     isRefresh = false;
                                     isLoading = false;
                                 }
@@ -295,94 +296,84 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         startActivity(intent);
     }
 
-    class MyAdapter extends MyBaseAdapter {
+    class MyDynamicAdapter extends MyBaseAdapter {
+        private Context mContext;
 
-        MyAdapter(List dataSource) {
+        MyDynamicAdapter(List dataSource, Context context) {
             super(dataSource);
+            mContext = context;
         }
+
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder viewHolder;
+            DynamicViewHolder dynamicViewHolder;
             if (convertView == null) {
-                viewHolder = new ViewHolder();
-                convertView = View.inflate(CircleDynamicActivity.this, R.layout.item_circle_dynamic_listview, null);
+                dynamicViewHolder = new DynamicViewHolder();
+                convertView = View.inflate(mContext, R.layout.item_circle_dynamic_listview, null);
+                dynamicViewHolder.mTvTime = (TextView) convertView.findViewById(R.id.tv_time);
+                dynamicViewHolder.mTvAddress = (TextView) convertView.findViewById(R.id.tv_address);
+                dynamicViewHolder.mTvPinglun = (TextView) convertView.findViewById(R.id.tv_pinglun);
+                dynamicViewHolder.mTvDianzan = (TextView) convertView.findViewById(R.id.tv_dianzan);
+                dynamicViewHolder.mTvName = (TextView) convertView.findViewById(R.id.tv_name);
+                dynamicViewHolder.mTvContent = (TextView) convertView.findViewById(R.id.tv_content);
+                dynamicViewHolder.mGridView = (GridView) convertView.findViewById(R.id.gridView);
+                dynamicViewHolder.mIvDianzan = (ImageView) convertView.findViewById(R.id.iv_dianzan);
+                dynamicViewHolder.mRoundedImageView = (RoundedImageView) convertView.findViewById(R.id.roundedImageView);
+                convertView.setTag(dynamicViewHolder);
                 AutoUtils.autoSize(convertView);
-                viewHolder.mTvTime = (TextView) convertView.findViewById(R.id.tv_time);
-                viewHolder.mTvAddress = (TextView) convertView.findViewById(R.id.tv_address);
-                viewHolder.mTvPinglun = (TextView) convertView.findViewById(R.id.tv_pinglun);
-                viewHolder.mTvDianzan = (TextView) convertView.findViewById(R.id.tv_dianzan);
-                viewHolder.mTvName = (TextView) convertView.findViewById(R.id.tv_name);
-                viewHolder.mTvContent = (TextView) convertView.findViewById(R.id.tv_content);
-                viewHolder.mGridView = (GridView) convertView.findViewById(R.id.gridView);
-                viewHolder.mIvDianzan = (ImageView) convertView.findViewById(R.id.iv_dianzan);
-                viewHolder.mRoundedImageView = (RoundedImageView) convertView.findViewById(R.id.roundedImageView);
-                convertView.setTag(viewHolder);
             } else {
-                viewHolder = (ViewHolder) convertView.getTag();
+                dynamicViewHolder = (DynamicViewHolder) convertView.getTag();
             }
 
-            Dynamic.ResultBean.ListBean resultBean = mDynamics.get(position);
+            Dynamic.ResultBean.ListBean resultBean = (Dynamic.ResultBean.ListBean) mDataSource.get(position);
             String headImg = resultBean.getHeadImg();
             if (!TextUtils.isEmpty(headImg))
-                Picasso.with(getApplicationContext()).load(headImg).resize(72, 72).centerCrop().into(viewHolder.mRoundedImageView);
+                Picasso.with(mContext).load(headImg).resize(72, 72).centerCrop().into(dynamicViewHolder.mRoundedImageView);
             String content = resultBean.getContent();
             if (!TextUtils.isEmpty(content))
-                viewHolder.mTvContent.setText(content);
+                dynamicViewHolder.mTvContent.setText(content);
             String nickName = resultBean.getNickName();
             if (!TextUtils.isEmpty(nickName))
-                viewHolder.mTvName.setText(nickName);
+                dynamicViewHolder.mTvName.setText(nickName);
 
             String images = resultBean.getImages();
             if (!TextUtils.isEmpty(images)) {
                 String[] split = images.split(",");
-                viewHolder.mGridView.setAdapter(new GridAdapter(split));
+                dynamicViewHolder.mGridView.setAdapter(new GridAdapter(split));
             }
 
             String likes = resultBean.getLikes();
             if (!TextUtils.isEmpty(likes)) {
-                viewHolder.mTvDianzan.setText(likes);
+                dynamicViewHolder.mTvDianzan.setText(likes);
             } else {
-                viewHolder.mTvDianzan.setText("0");
+                dynamicViewHolder.mTvDianzan.setText("0");
             }
 
             String comments = resultBean.getComments();
             if (!TextUtils.isEmpty(comments))
-                viewHolder.mTvPinglun.setText(comments);
+                dynamicViewHolder.mTvPinglun.setText(comments);
             else
-                viewHolder.mTvPinglun.setText("0");
+                dynamicViewHolder.mTvPinglun.setText("0");
 
             boolean isLoginUserLike = resultBean.isLoginUserLike();
             if (isLoginUserLike)
-                viewHolder.mIvDianzan.setImageResource(R.mipmap.dianzanhou);
+                dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzanhou);
             else
-                viewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
+                dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
 
             String address = resultBean.getAddress();
             if (!TextUtils.isEmpty(address))
-                viewHolder.mTvAddress.setText(address);
+                dynamicViewHolder.mTvAddress.setText(address);
 
             String addTime = resultBean.getAddTime();
             if (!TextUtils.isEmpty(addTime))
-                viewHolder.mTvTime.setText(addTime.substring(0, 10));
+                dynamicViewHolder.mTvTime.setText(addTime.substring(0, 10));
 
             return convertView;
         }
 
     }
-
-    static class ViewHolder {
-        RoundedImageView mRoundedImageView;
-        TextView mTvName;
-        TextView mTvTime;
-        TextView mTvContent;
-        GridView mGridView;
-        TextView mTvAddress;
-        TextView mTvPinglun;
-        TextView mTvDianzan;
-        ImageView mIvDianzan;
-    }
-
 
     class GridAdapter extends BaseAdapter {
         private String[] mStrings;
@@ -419,8 +410,22 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
             } else {
                 imageview = (ImageView) convertView;
             }
-            Picasso.with(getApplicationContext()).load(mStrings[position]).into(imageview);
+            Picasso.with(CircleDynamicActivity.this).load(mStrings[position]).into(imageview);
             return imageview;
         }
     }
+
+    static class DynamicViewHolder {
+        RoundedImageView mRoundedImageView;
+        TextView mTvName;
+        TextView mTvTime;
+        TextView mTvContent;
+        GridView mGridView;
+        TextView mTvAddress;
+        TextView mTvPinglun;
+        TextView mTvDianzan;
+        ImageView mIvDianzan;
+    }
+
+
 }
