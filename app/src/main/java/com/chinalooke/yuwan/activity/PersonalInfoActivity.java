@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -35,7 +34,6 @@ import com.chinalooke.yuwan.interf.UpdateGetCity;
 import com.chinalooke.yuwan.model.GameMessage;
 import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.model.ResultDatas;
-import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.CityPicker;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -173,7 +171,6 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
             case R.id.rl_sex:
                 setSex();
                 MyUtils.hiddenKeyboard(this, view);
-                pvOptions.show();
                 break;
             //点击玩龄
             case R.id.rl_play_age:
@@ -203,7 +200,6 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
             case R.id.rl_age:
                 setAge();
                 MyUtils.hiddenKeyboard(this, view);
-                pvOptions.show();
                 break;
         }
     }
@@ -233,6 +229,7 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
 
             }
         });
+        pvOptions.show();
     }
 
     private void showEditDialog() {
@@ -388,7 +385,7 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
 
             }
         });
-
+        pvOptions.show();
     }
 
     /**

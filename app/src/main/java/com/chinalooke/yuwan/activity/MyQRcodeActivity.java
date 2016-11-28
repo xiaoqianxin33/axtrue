@@ -3,12 +3,9 @@ package com.chinalooke.yuwan.activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -19,14 +16,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MyQRcodeActivity extends AutoLayoutActivity {
+public class MyQRCodeActivity extends AutoLayoutActivity {
 
-    @Bind(R.id.iv_back)
-    ImageView mIvBack;
     @Bind(R.id.tv_title)
     TextView mTvTitle;
-    @Bind(R.id.tv_skip)
-    TextView mTvSkip;
     @Bind(R.id.roundedImageView)
     RoundedImageView mRoundedImageView;
     @Bind(R.id.tv_name)
@@ -35,17 +28,13 @@ public class MyQRcodeActivity extends AutoLayoutActivity {
     TextView mTvSlogen;
     @Bind(R.id.iv_qrcode)
     ImageView mIvQrcode;
-    @Bind(R.id.activity_my_qrcode)
-    LinearLayout mActivityMyQrcode;
     private LoginUser.ResultBean mUserInfo;
-    private RequestQueue mQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_qrcode);
         ButterKnife.bind(this);
-        mQueue = YuwanApplication.getQueue();
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         initView();
         initData();

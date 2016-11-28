@@ -14,13 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.activity.FriendsActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.UserInfoActivity;
 import com.chinalooke.yuwan.model.LoginUser;
@@ -40,30 +40,12 @@ public class WodeFragment extends Fragment {
 
 
     LoginUser.ResultBean user;
-    @Bind(R.id.tv_sign_up)
-    TextView mTvSignUp;
     @Bind(R.id.roundedImageView)
     RoundedImageView mRoundedImageView;
     @Bind(R.id.tv_name)
     TextView mTvName;
     @Bind(R.id.tv_slogen)
     TextView mTvSlogen;
-    @Bind(R.id.rl_message)
-    RelativeLayout mRlMessage;
-    @Bind(R.id.rl_chat)
-    RelativeLayout mRlChat;
-    @Bind(R.id.rl_info)
-    RelativeLayout mRlInfo;
-    @Bind(R.id.rl_shop)
-    RelativeLayout mRlShop;
-    @Bind(R.id.rl_record)
-    RelativeLayout mRlRecord;
-    @Bind(R.id.rl_friend)
-    RelativeLayout mRlFriend;
-    @Bind(R.id.rl_balance)
-    RelativeLayout mRlBalance;
-    @Bind(R.id.rl_setting)
-    RelativeLayout mRlSetting;
     @Bind(R.id.tv_login)
     TextView mTvLogin;
     private RequestQueue mQueue;
@@ -83,9 +65,15 @@ public class WodeFragment extends Fragment {
         mQueue = Volley.newRequestQueue(getActivity());
     }
 
-    @OnClick({R.id.tv_name, R.id.roundedImageView, R.id.tv_login, R.id.rl_info})
+    @OnClick({R.id.tv_name, R.id.roundedImageView, R.id.tv_login, R.id.rl_info, R.id.rl_friend})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.rl_friend:
+                if (user != null)
+                    startActivity(new Intent(getActivity(), FriendsActivity.class));
+                else
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                break;
             case R.id.rl_info:
                 if (user != null)
                     startActivity(new Intent(getActivity(), UserInfoActivity.class));

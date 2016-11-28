@@ -309,6 +309,7 @@ public class CreateCircleActivity extends AutoLayoutActivity implements EasyPerm
     }
 
     private void update() {
+        mPath = Constant.QINIU_DOMAIN + mPath;
         String longitude = PreferenceUtils.getPrefString(getApplicationContext(), "longitude", "");
         String latitude = PreferenceUtils.getPrefString(getApplicationContext(), "latitude", "");
         String uri = Constant.HOST + "updateGroup&groupId=" + mCircle.getGroupId() + "&userId=" + mUserInfo.getUserId() + "&lng=" + longitude + "&lat="

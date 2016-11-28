@@ -209,7 +209,7 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
         final int[] count = {0};
         for (String path : mPhotos) {
             String fileName = "dynamic" + new Date().getTime();
-            paths.add(fileName);
+            paths.add(Constant.QINIU_DOMAIN + "/" + fileName);
             mUploadManager.put(path, fileName, token, new UpCompletionHandler() {
                 @Override
                 public void complete(String key, ResponseInfo info, JSONObject response) {
