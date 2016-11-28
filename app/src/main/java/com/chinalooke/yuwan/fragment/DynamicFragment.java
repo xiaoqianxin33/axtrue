@@ -226,6 +226,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                 Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("dynamic", resultBean);
+                intent.putExtra("dynamic_type", 0);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

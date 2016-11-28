@@ -43,8 +43,10 @@
 
     </RelativeLayout>
 
-    <!--<include layout="@layout/item_circle_dynamic_listview"/>-->
+    <include layout="@layout/item_circle_dynamic_listview"/>
+
     <LinearLayout
+        android:id="@+id/ll_like"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
@@ -76,7 +78,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="8px"
                 android:layout_toRightOf="@id/iv1"
-                android:text="两只小蜜蜂，烟尘"
+                android:maxLines="1"
                 android:textColor="#326499"
                 android:textSize="26px"/>
 
@@ -89,5 +91,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@null"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_comment"
+        android:layout_width="match_parent"
+        android:layout_height="120px"
+        android:background="#eaeded"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/et_comment"
+            android:layout_width="match_parent"
+            android:layout_height="66px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16px"
+            android:layout_marginRight="16px"
+            android:background="@drawable/comment_shape"
+            android:hint="评论"
+            android:paddingLeft="12px"
+            android:textSize="30px"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

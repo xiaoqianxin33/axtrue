@@ -21,17 +21,6 @@
         app:riv_oval="true"/>
 
     <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="28px"
-        android:layout_marginTop="42px"
-        android:layout_toRightOf="@id/roundedImageView"
-        android:text="栀子花白花瓣"
-        android:textColor="@color/black_word"
-        android:textSize="26px"/>
-
-    <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,19 +28,9 @@
         android:layout_marginLeft="28px"
         android:layout_marginTop="10px"
         android:layout_toRightOf="@id/roundedImageView"
-        android:text="刚刚"
         android:textColor="@color/shallow_word"
         android:textSize="22px"/>
 
-
-    <TextView
-        android:id="@+id/tv_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="145px"
-        android:text="今天在3VS3中取得胜利，获得奖金100元，快来"
-        android:textColor="@color/black_word"
-        android:textSize="30px"/>
 
     <GridView
         android:id="@+id/gridView"
@@ -81,7 +60,6 @@
         android:layout_marginLeft="@dimen/small_padding"
         android:layout_marginTop="26px"
         android:layout_toRightOf="@id/iv1"
-        android:text="来自河南洛阳"
         android:textColor="@color/orange"
         android:textSize="27px"/>
 
@@ -108,7 +86,6 @@
         android:layout_marginLeft="@dimen/small_padding"
         android:layout_marginTop="26px"
         android:layout_toRightOf="@id/iv_pinglun"
-        android:text="20"
         android:textColor="@color/shallow_word"
         android:textSize="20px"/>
 
@@ -122,7 +99,6 @@
         android:layout_below="@id/gridView"
         android:layout_marginBottom="36px"
         android:layout_marginTop="26px"
-        android:text="296"
         android:textColor="@color/shallow_word"
         android:textSize="20px"/>
 
@@ -137,5 +113,25 @@
         android:layout_marginTop="26px"
         android:layout_toLeftOf="@id/tv_dianzan"
         android:src="@mipmap/circle_dianzan"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tv_time"
+        android:layout_alignTop="@+id/roundedImageView"
+        android:layout_marginLeft="28px"
+        android:textColor="@color/black_word"
+        android:textSize="26px"/>
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/roundedImageView"
+        android:layout_marginTop="15dp"
+        android:textColor="@color/black_word"
+        android:textSize="30px"/>
 
 </RelativeLayout>

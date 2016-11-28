@@ -191,7 +191,9 @@
 
         <activity android:name=".activity.AddFriendActivity">
         </activity>
-        <activity android:name=".activity.CircleDynamicActivity">
+        <activity
+            android:name=".activity.CircleDynamicActivity"
+            android:windowSoftInputMode="adjustPan">
         </activity>
         <activity android:name=".activity.CreateCircleActivity">
         </activity>
