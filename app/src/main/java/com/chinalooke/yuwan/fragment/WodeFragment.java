@@ -1,19 +1,19 @@
 package com.chinalooke.yuwan.fragment;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.LruCache;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,14 +22,14 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.LoginActivity;
-import com.chinalooke.yuwan.activity.WoDeZiLiaoActivity;
+import com.chinalooke.yuwan.activity.UserInfoActivity;
 import com.chinalooke.yuwan.model.LoginUser;
-import com.chinalooke.yuwan.model.UserInfo;
 import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
-import com.chinalooke.yuwan.view.CircleImageView;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
+import com.makeramen.roundedimageview.RoundedImageView;
+import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,56 +38,70 @@ import butterknife.OnClick;
 
 public class WodeFragment extends Fragment {
 
-    RequestQueue mQueue;
-    View view;
-    CircleImageView mCircleImageView;
-    @Bind(R.id.name__wode)
-    TextView mNameView;
-    @Bind(R.id.gerenshuoming__wode)
-    TextView mShuoMingView;
-    @Bind(R.id.btn_cancel_wode)
-    Button mBtnCancel;
-
-    @Bind(R.id.xiaoxi_wode)
-    RelativeLayout mXiaoxiRela;
-    @Bind(R.id.ziliao_wode)
-    RelativeLayout mZiliaoRela;
-    @Bind(R.id.liaotian_wode)
-    RelativeLayout mLiaotianRela;
-    @Bind(R.id.zhanji_wode)
-    RelativeLayout mZhanjiRela;
-    @Bind(R.id.yue_wode)
-    RelativeLayout mYuERela;
-    @Bind(R.id.zhanyou_wode)
-    RelativeLayout mZhanyouRela;
-    @Bind(R.id.setting_wode)
-    RelativeLayout mSetRela;
-
 
     LoginUser.ResultBean user;
+    @Bind(R.id.tv_sign_up)
+    TextView mTvSignUp;
+    @Bind(R.id.roundedImageView)
+    RoundedImageView mRoundedImageView;
+    @Bind(R.id.tv_name)
+    TextView mTvName;
+    @Bind(R.id.tv_slogen)
+    TextView mTvSlogen;
+    @Bind(R.id.rl_message)
+    RelativeLayout mRlMessage;
+    @Bind(R.id.rl_chat)
+    RelativeLayout mRlChat;
+    @Bind(R.id.rl_info)
+    RelativeLayout mRlInfo;
+    @Bind(R.id.rl_shop)
+    RelativeLayout mRlShop;
+    @Bind(R.id.rl_record)
+    RelativeLayout mRlRecord;
+    @Bind(R.id.rl_friend)
+    RelativeLayout mRlFriend;
+    @Bind(R.id.rl_balance)
+    RelativeLayout mRlBalance;
+    @Bind(R.id.rl_setting)
+    RelativeLayout mRlSetting;
+    @Bind(R.id.tv_login)
+    TextView mTvLogin;
+    private RequestQueue mQueue;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_wode, container, false);
+        View view = inflater.inflate(R.layout.fragment_wode, container, false);
+        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getActivity().requestWindowFeature(Window.FEATURE_NO_TITLE);
         ButterKnife.bind(this, view);
-        mQueue = Volley.newRequestQueue(getActivity());
         return view;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mQueue = Volley.newRequestQueue(getActivity());
+    }
 
-    @OnClick({R.id.name__wode, R.id.xiaoxi_wode, R.id.ziliao_wode, R.id.btn_cancel_wode, R.id.liaotian_wode, R.id.setting_wode, R.id.zhanji_wode, R.id.yue_wode, R.id.zhanyou_wode})
+    @OnClick({R.id.tv_name, R.id.roundedImageView, R.id.tv_login, R.id.rl_info})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.name__wode:
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+            case R.id.rl_info:
+                if (user != null)
+                    startActivity(new Intent(getActivity(), UserInfoActivity.class));
+                else
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                break;
+            case R.id.tv_name:
+                if (user == null)
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                break;
+            case R.id.roundedImageView:
+                if (user == null)
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
                 break;
 
-            case R.id.ziliao_wode:
-                //设置资料信息
-                setZiLiaoClick();
-                break;
-            case R.id.btn_cancel_wode:
+            case R.id.tv_login:
                 //退出登录时清除资料
                 if (user != null) {
                     DialogUtil.showSingerDialog(getActivity(), "提示", "确定注销吗？", new DialogInterface.OnClickListener() {
@@ -114,7 +128,7 @@ public class WodeFragment extends Fragment {
                             LoginUserInfoUtils.getLoginUserInfoUtils().clearData(getActivity());//清除资料
                             LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(null);
                             setCancelDialog();
-                            initDatas();
+                            onResume();
                         }
                     }, new DialogInterface.OnClickListener() {
                         @Override
@@ -133,39 +147,56 @@ public class WodeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
-        initDatas();
+        user = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getActivity(), LoginUserInfoUtils.KEY);
+        initView();
+    }
+
+    private void initView() {
+        if (user != null) {
+            mTvLogin.setText("退出登录");
+            mTvSlogen.setVisibility(View.VISIBLE);
+            String nickName = user.getNickName();
+            if (!TextUtils.isEmpty(nickName))
+                mTvName.setText(nickName);
+            String headImg = user.getHeadImg();
+            if (!TextUtils.isEmpty(headImg))
+                Picasso.with(getActivity()).load(headImg).resize(160, 160).centerCrop().into(mRoundedImageView);
+            String slogan = user.getSlogan();
+            if (!TextUtils.isEmpty(slogan))
+                mTvSlogen.setText("简介：  " + slogan);
+        } else {
+            mTvLogin.setText("登录/注册");
+            mTvSlogen.setVisibility(View.GONE);
+            mTvName.setText("登录/注册");
+        }
     }
 
     //初始化数据
-    private void initDatas() {
-        mCircleImageView = (CircleImageView) view.findViewById(R.id.icon_face_wode);
-        //获取用户登录信息
-        if (user != null) {
-            //获取网络图片
-            ImageLoader imageLoader = new ImageLoader(mQueue, new BitmapCache());
-            ImageLoader.ImageListener listener = ImageLoader.getImageListener(mCircleImageView, R.mipmap.yw80_orange, R.mipmap.yw80_orange);
-            imageLoader.get(user.getHeadImg(), listener);
-            mNameView.setText(user.getNickName());
-            mShuoMingView.setText(user.getSlogan());
-            mBtnCancel.setText("注销");
-        } else {
-            mCircleImageView.setBackgroundResource(R.mipmap.yw80_orange);
-            mNameView.setText("登录/注册");
-            mBtnCancel.setText("登录");
-            mShuoMingView.setText("");
-        }
+//    private void initDatas() {
+//        mCircleImageView = (CircleImageView) view.findViewById(R.id.icon_face_wode);
+//        //获取用户登录信息
+//        if (user != null) {
+//            //获取网络图片
+//            ImageLoader imageLoader = new ImageLoader(mQueue, new BitmapCache());
+//            ImageLoader.ImageListener listener = ImageLoader.getImageListener(mCircleImageView, R.mipmap.yw80_orange, R.mipmap.yw80_orange);
+//            imageLoader.get(user.getHeadImg(), listener);
+//            mNameView.setText(user.getNickName());
+//            mShuoMingView.setText(user.getSlogan());
+//            mBtnCancel.setText("注销");
+//        } else {
+//            mCircleImageView.setBackgroundResource(R.mipmap.yw80_orange);
+//            mNameView.setText("登录/注册");
+//            mBtnCancel.setText("登录");
+//            mShuoMingView.setText("");
+//        }
+//
+//    }
 
-    }
 
-    //资料点击事件
-    private void setZiLiaoClick() {
-        if (user != null) {
-            Intent intent = new Intent(getActivity(), WoDeZiLiaoActivity.class);
-            startActivity(intent);
-        } else {
-            setDialog();
-        }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     /**

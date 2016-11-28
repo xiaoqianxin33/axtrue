@@ -45,4 +45,5 @@
     <dimen name="mid_padding">32px</dimen>
     <dimen name="small_padding">20px</dimen>
     <dimen name="register_text_size">32px</dimen>
+    <dimen name="historyscore_tb">50px</dimen>
 </resources>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_my_qrcode"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2a2a2a"
+    android:orientation="vertical"
+    tools:context="com.chinalooke.yuwan.activity.MyQRcodeActivity">
+
+    <include layout="@layout/include_head"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="900px"
+        android:layout_marginLeft="@dimen/mid_padding"
+        android:layout_marginRight="@dimen/mid_padding"
+        android:layout_marginTop="150px"
+        android:background="@drawable/shape">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/roundedImageView"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_marginLeft="40px"
+            android:layout_marginTop="40px"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/placeholder"
+            app:riv_oval="true"/>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/small_padding"
+            android:layout_marginTop="50px"
+            android:layout_toRightOf="@id/roundedImageView"
+            android:textColor="@color/black_word"
+            android:textSize="@dimen/mid_padding"/>
+
+        <TextView
+            android:id="@+id/tv_slogen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_name"
+            android:layout_marginLeft="@dimen/small_padding"
+            android:layout_marginTop="@dimen/small_padding"
+            android:layout_toRightOf="@id/roundedImageView"
+            android:textColor="@color/shallow_word"
+            android:textSize="25px"/>
+
+        <ImageView
+            android:id="@+id/iv_qrcode"
+            android:layout_width="530px"
+            android:layout_height="530px"
+            android:layout_below="@id/roundedImageView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="70px"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/placeholder"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_qrcode"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="90px"
+            android:text="用雷熊扫二维码，加我好友"
+            android:textColor="@color/shallow_word"
+            android:textSize="@dimen/mid_padding"/>
+    </RelativeLayout>
+
+
+</LinearLayout>
