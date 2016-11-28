@@ -5,8 +5,6 @@ package com.chinalooke.yuwan.adapter;
  * Created by xiao on 2016/11/21.
  */
 
-import java.util.List;
-
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -19,16 +17,22 @@ import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.model.FriendInfo;
+import com.chinalooke.yuwan.model.FriendsList;
 import com.chinalooke.yuwan.model.SortModel;
 import com.squareup.picasso.Picasso;
+import com.zhy.autolayout.utils.AutoUtils;
+
+import java.util.List;
 
 public class SortAdapter extends BaseAdapter implements SectionIndexer {
     private List<SortModel> list = null;
     private Context mContext;
+    private int type;
 
-    public SortAdapter(Context mContext, List<SortModel> list) {
+    public SortAdapter(Context mContext, List<SortModel> list, int type) {
         this.mContext = mContext;
         this.list = list;
+        this.type = type;
     }
 
     /**
@@ -65,23 +69,38 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer {
             viewHolder.ivCheck = (ImageView) view.findViewById(R.id.iv_check);
             viewHolder.tvLetter = (TextView) view.findViewById(R.id.tv_letter);
             view.setTag(viewHolder);
+            AutoUtils.autoSize(view);
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
 
         //根据position获取分类的首字母的char ascii值
         int section = getSectionForPosition(position);
-        FriendInfo.ResultBean friend = mContent.getFriend();
-        String nickName = friend.getNickName();
-        if (!TextUtils.isEmpty(nickName))
-            viewHolder.tvName.setText(nickName);
+        if(type==0){
+            FriendInfo.ResultBean friend = mContent.getFriend();
+            String nickName = friend.getNickName();
+            if (!TextUtils.isEmpty(nickName))
+                viewHolder.tvName.setText(nickName);
 
-        String headImg = friend.getHeadImg();
-        if (!TextUtils.isEmpty(headImg))
-            Picasso.with(mContext).load(headImg).resize(100, 100).into(viewHolder.ivHead);
-        String slogan = friend.getSlogan();
-        if (!TextUtils.isEmpty(slogan))
-            viewHolder.tvSlogen.setText(slogan);
+            String headImg = friend.getHeadImg();
+            if (!TextUtils.isEmpty(headImg))
+                Picasso.with(mContext).load(headImg).resize(100, 100).into(viewHolder.ivHead);
+            String slogan = friend.getSlogan();
+            if (!TextUtils.isEmpty(slogan))
+                viewHolder.tvSlogen.setText(slogan);
+        }else if(type==1){
+            FriendsList.ResultBean friends = mContent.getFriends();
+            String nickName = friends.getNickName();
+            if (!TextUtils.isEmpty(nickName))
+                viewHolder.tvName.setText(nickName);
+
+            String headImg = friends.getHeadImg();
+            if (!TextUtils.isEmpty(headImg))
+                Picasso.with(mContext).load(headImg).resize(100, 100).into(viewHolder.ivHead);
+            String slogan = friends.getSlogan();
+            if (!TextUtils.isEmpty(slogan))
+                viewHolder.tvSlogen.setText(slogan);
+        }
 
         //如果当前位置等于该分类首字母的Char的位置 ，则认为是第一次出现
         if (position == getPositionForSection(section)) {
