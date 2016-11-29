@@ -36,10 +36,11 @@
     </RelativeLayout>
 
 
-    <FrameLayout
-        android:id="@+id/fl_circle"
+    <com.chinalooke.yuwan.view.WodeCircleViewPage
+        android:id="@+id/wode_viewPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="1dp"/>
+
 
 </LinearLayout>

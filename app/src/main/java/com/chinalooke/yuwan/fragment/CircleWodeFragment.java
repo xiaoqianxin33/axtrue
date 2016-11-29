@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.adapter.MainPagerAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,10 +34,9 @@ public class CircleWodeFragment extends Fragment {
     TextView mTvCreate;
     @Bind(R.id.ll_title)
     LinearLayout mLlTitle;
-    private Fragment mContent;
+    @Bind(R.id.wode_viewPage)
+    ViewPager mViewPager;
     private FragmentManager mFragmentManager;
-    private CircleWodeWFragment mCircleWodeWFragment;
-    private CircleWodeCFragment mCircleWodeCFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,10 +50,34 @@ public class CircleWodeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mCircleWodeWFragment = new CircleWodeWFragment();
-        mCircleWodeCFragment = new CircleWodeCFragment();
-        switchContent(new BlackFragment(), mCircleWodeWFragment);
+        CircleWodeWFragment circleWodeWFragment = new CircleWodeWFragment();
+        CircleWodeCFragment circleWodeCFragment = new CircleWodeCFragment();
+        List<Fragment> list = new ArrayList<>();
+        list.add(circleWodeCFragment);
+        list.add(circleWodeWFragment);
+        MainPagerAdapter mainPagerAdapter = new MainPagerAdapter(mFragmentManager, list);
+        mViewPager.setAdapter(mainPagerAdapter);
         setSelect(0);
+        initEvent();
+    }
+
+    private void initEvent() {
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setSelect(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
 
@@ -65,11 +92,11 @@ public class CircleWodeFragment extends Fragment {
         switch (view.getId()) {
             case R.id.tv_wode:
                 setSelect(0);
-                switchContent(mCircleWodeCFragment, mCircleWodeWFragment);
+                mViewPager.setCurrentItem(0);
                 break;
             case R.id.tv_create:
                 setSelect(1);
-                switchContent(mCircleWodeWFragment, mCircleWodeCFragment);
+                mViewPager.setCurrentItem(1);
                 break;
         }
     }
@@ -87,16 +114,4 @@ public class CircleWodeFragment extends Fragment {
         }
     }
 
-
-    public void switchContent(Fragment from, Fragment to) {
-        if (mContent != to) {
-            mContent = to;
-            FragmentTransaction transaction = mFragmentManager.beginTransaction();
-            if (!to.isAdded()) {    // 先判断是否被add过
-                transaction.hide(from).add(R.id.fl_circle, to).commit(); // 隐藏当前的fragment，add下一个到Activity中
-            } else {
-                transaction.hide(from).show(to).commit(); // 隐藏当前的fragment，显示下一个
-            }
-        }
-    }
 }

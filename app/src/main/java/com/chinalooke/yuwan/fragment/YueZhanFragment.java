@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,16 +59,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@linkYueZhanFragmentOnFragmentInteractionListener} interface
- * to handle interaction events.
- * create an instance of this fragment.
- */
 public class YueZhanFragment extends Fragment {
     @Bind(R.id.iv_back)
-    ImageView mIvBack;
+    FrameLayout mIvBack;
+    @Bind(R.id.iv_arrow_head)
+    ImageView mIvArrowHead;
     @Bind(R.id.tv_title)
     TextView mTvTitle;
     @Bind(R.id.tv_skip)
@@ -181,6 +177,7 @@ public class YueZhanFragment extends Fragment {
 
     private void initView() {
         mIvBack.setVisibility(View.GONE);
+        mIvArrowHead.setVisibility(View.GONE);
         mTvTitle.setText("约战");
         mTvSkip.setText("发布");
         mTvSkip.setTextColor(getResources().getColor(R.color.grey));
