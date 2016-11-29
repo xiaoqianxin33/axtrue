@@ -207,8 +207,6 @@ public class AddFriendActivity extends AutoLayoutActivity {
                     setResult(3, intent);
                     break;
             }
-
-
         }
     }
 }

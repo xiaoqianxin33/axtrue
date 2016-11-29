@@ -109,6 +109,8 @@
     <string name="quanzi">圈子</string>
     <string name="yuezhan2">约战</string>
     <string name="game_rule">1.同意参战后不得违约，否则认为自动认输。</string>
+    <string name="action_go">发送</string>
+    <string name="exchange_URL"><![CDATA[http://g.00tera.com/s/1/683/38093.html?uid=518068&]]></string>
 
 
 </resources>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@android:color/white"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="95px"
+        android:background="@android:color/white">
+
+        <TextView
+            android:id="@+id/tv_total_fight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="32px"
+            android:textColor="#838688"
+            android:textSize="24px"/>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/tv_total_fight"
+            android:layout_marginLeft="32px"
+            android:layout_marginStart="16dp"
+            android:text="总参战次数"
+            android:textColor="@color/black_word"
+            android:textSize="32px"/>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="32px"
+        android:background="@color/line_color"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="344px"
+        android:background="@android:color/white">
+
+        <com.chinalooke.yuwan.view.PieChartView
+            android:id="@+id/pieChart"
+            android:layout_width="260px"
+            android:layout_height="260px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="75px"
+            app:circleRadius="130px"/>
+
+
+        <ImageView
+            android:layout_width="20px"
+            android:layout_height="20px"
+            android:layout_marginLeft="440px"
+            android:layout_marginTop="38px"
+            android:src="@mipmap/orange_point"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="480px"
+            android:layout_marginTop="34px"
+            android:text="胜利次数"
+            android:textColor="#838688"
+            android:textSize="25px"/>
+
+        <TextView
+            android:id="@+id/tv_win"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="675px"
+            android:layout_marginTop="36px"
+            android:textColor="@color/black_word"
+            android:textSize="20px"/>
+
+        <ImageView
+            android:layout_width="20px"
+            android:layout_height="20px"
+            android:layout_marginLeft="440px"
+            android:layout_marginTop="86px"
+            android:src="@mipmap/green_point"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="480px"
+            android:layout_marginTop="86px"
+            android:text="失败次数"
+            android:textColor="#838688"
+            android:textSize="25px"/>
+
+        <TextView
+            android:id="@+id/tv_lose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="675px"
+            android:layout_marginTop="86px"
+            android:textColor="@color/black_word"
+            android:textSize="20px"/>
+
+        <ImageView
+            android:layout_width="20px"
+            android:layout_height="20px"
+            android:layout_marginLeft="440px"
+            android:layout_marginTop="134px"
+            android:src="@mipmap/blue_point"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="480px"
+            android:layout_marginTop="134px"
+            android:text="违约次数"
+            android:textColor="#838688"
+            android:textSize="25px"/>
+
+        <TextView
+            android:id="@+id/tv_run"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="675px"
+            android:layout_marginTop="134px"
+            android:textColor="@color/black_word"
+            android:textSize="20px"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+</LinearLayout>

@@ -118,6 +118,26 @@ public class MyUtils {
         builder.show();
     }
 
+    public static void showWodeDialog(final Activity context, String title, String message, DialogInterface.OnClickListener noClickListener
+            , DialogInterface.OnClickListener yesClickListener, String no, String yes) {
+
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setNegativeButton(no, noClickListener);
+        builder.setPositiveButton(yes, yesClickListener);
+        builder.show();
+    }
+
+    public static void showDialog(final Activity context, String title, String message, DialogInterface.OnClickListener yesClickListener) {
+
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton("确认", yesClickListener);
+        builder.show();
+    }
+
     public static void showCustomDialog(final Activity context, String title, String message, String leftMessage, String rightMessage, DialogInterface.OnClickListener noClickListener
             , DialogInterface.OnClickListener yesClickListener) {
 

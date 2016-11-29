@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,12 +14,13 @@ import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.fragment.BattleFieldFragment;
 import com.chinalooke.yuwan.fragment.BlackFragment;
 import com.chinalooke.yuwan.fragment.CircleFragment;
@@ -28,9 +28,9 @@ import com.chinalooke.yuwan.fragment.DynamicFragment;
 import com.chinalooke.yuwan.fragment.WodeFragment;
 import com.chinalooke.yuwan.fragment.YueZhanFragment;
 import com.chinalooke.yuwan.model.LoginUser;
+import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
-import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.zhy.autolayout.AutoLayoutActivity;
 
@@ -131,14 +131,6 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
 
     }
 
-    public double getLatitude() {
-        return mLatitude;
-    }
-
-    public double getLongitude() {
-        return mLongitude;
-    }
-
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null) {
@@ -149,8 +141,18 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
                 mLatitude = aMapLocation.getLatitude();
                 PreferenceUtils.setPrefString(getApplicationContext(), "latitude", mLatitude + "");
                 mBattleFieldFragment.getADListWithGPS();
+                if (mUserInfo != null)
+                    updateUserGPS();
             }
         }
+    }
+
+    //向服务端更新用户位置
+    private void updateUserGPS() {
+        String uri = Constant.HOST + "updateUserGPS&lng=" + mLongitude + "&lat=" + mLatitude + "&userId="
+                + mUserInfo.getUserId() + "&updateTime=" + DateUtils.getCurrentDateTime();
+        StringRequest request = new StringRequest(uri, null, null);
+        mQueue.add(request);
     }
 
     @Override
@@ -267,7 +269,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
 
     //请求定位权限
     private void requestLocationPermission() {
-        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE};
         if (EasyPermissions.hasPermissions(this, perms)) {
             mLocationClient = LocationUtils.location(this, this);
         } else {

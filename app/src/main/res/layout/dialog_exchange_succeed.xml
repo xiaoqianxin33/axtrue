@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="540px"
+              android:layout_height="wrap_content"
+              android:background="@android:color/white"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="540px"
+        android:layout_height="110px"
+        android:background="@color/orange"
+        android:gravity="center"
+        android:text="请复制兑换码到兑换网站进行兑换"
+        android:textColor="@android:color/white"
+        android:textSize="28px"/>
+
+    <RelativeLayout
+        android:layout_width="540px"
+        android:layout_height="395px">
+
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="83px"
+            android:text="CDKey:"
+            android:textColor="@color/black_word"
+            android:textSize="@dimen/small_padding"/>
+
+        <TextView
+            android:id="@+id/tv_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="42px"
+            android:textColor="@color/orange"
+            android:textSize="@dimen/small_padding"/>
+
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_code"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="42px"
+            android:text="兑换网址"
+            android:textColor="@color/black_word"
+            android:textSize="@dimen/small_padding"/>
+
+        <TextView
+            android:id="@+id/tv_url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="37px"
+            android:gravity="center"
+            android:paddingLeft="@dimen/mid_padding"
+            android:paddingRight="@dimen/small_padding"
+            android:text="@string/exchange_URL"
+            android:textColor="@color/orange"
+            android:textSize="@dimen/small_padding"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44px">
+
+
+        <TextView
+            android:layout_width="22px"
+            android:layout_height="44px"
+            android:background="@drawable/half_round"/>
+
+        <TextView
+            android:layout_width="22px"
+            android:layout_height="44px"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/half_round_right"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_copy"
+        android:layout_width="match_parent"
+        android:layout_height="116px"
+        android:gravity="center"
+        android:text="复制兑换码"
+        android:textColor="@color/orange"
+        android:textSize="@dimen/mid_padding"/>
+
+</LinearLayout>

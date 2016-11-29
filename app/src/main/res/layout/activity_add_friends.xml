@@ -5,7 +5,174 @@
     android:id="@+id/activity_add_friends"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     android:orientation="vertical"
     tools:context="com.chinalooke.yuwan.activity.AddFriendsActivity">
+
+    <include layout="@layout/include_head"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/mid_padding"
+        android:background="@color/line_color"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="96px"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/iv1"
+            android:layout_width="@dimen/mid_padding"
+            android:layout_height="@dimen/mid_padding"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="50px"
+            android:src="@mipmap/search_wode"/>
+
+        <EditText
+            android:id="@+id/et_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="44px"
+            android:layout_toRightOf="@id/iv1"
+            android:background="@null"
+            android:hint="手机号"
+            android:imeOptions="actionSearch"
+            android:inputType="phone"
+            android:textSize="@dimen/mid_padding"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+
+    <TextView
+        android:id="@+id/tv_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/small_padding"
+        android:text="我的手机号： 13603098692"
+        android:textSize="26px"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="77px"
+        android:background="@color/line_color"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_near"
+        android:layout_width="match_parent"
+        android:layout_height="120px"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/iv2"
+            android:layout_width="72px"
+            android:layout_height="72px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:src="@mipmap/wode_near"/>
+
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:layout_marginTop="25px"
+            android:layout_toRightOf="@id/iv2"
+            android:text="附近的战友"
+            android:textColor="@color/black_word"
+            android:textSize="30px"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv1"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:layout_marginTop="16px"
+            android:layout_toRightOf="@id/iv2"
+            android:text="筛选附近的战友"
+            android:textColor="@color/shallow_word"
+            android:textSize="25px"/>
+
+        <ImageView
+            android:layout_width="26px"
+            android:layout_height="16px"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/mid_padding"
+            android:src="@mipmap/arrow_right"/>
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/mid_padding"
+        android:background="@color/line_color"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_phone"
+        android:layout_width="match_parent"
+        android:layout_height="120px"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/iv3"
+            android:layout_width="72px"
+            android:layout_height="72px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:src="@mipmap/wode_add_friends_phone"/>
+
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:layout_marginTop="25px"
+            android:layout_toRightOf="@id/iv3"
+            android:text="手机联系人"
+            android:textColor="@color/black_word"
+            android:textSize="30px"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv2"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:layout_marginTop="16px"
+            android:layout_toRightOf="@id/iv3"
+            android:text="添加通讯录的战友"
+            android:textColor="@color/shallow_word"
+            android:textSize="25px"/>
+
+        <ImageView
+            android:layout_width="26px"
+            android:layout_height="16px"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/mid_padding"
+            android:src="@mipmap/arrow_right"/>
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
 
 </LinearLayout>

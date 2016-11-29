@@ -9,9 +9,18 @@ import java.io.Serializable;
 
 public class SortModel implements Serializable {
 
+    private NearbyPeople.ResultBean mNearbyPeople;
     private FriendsList.ResultBean mFriends;
     private FriendInfo.ResultBean friend;   //显示的数据
     private String sortLetters;  //显示数据拼音的首字母
+
+    public NearbyPeople.ResultBean getNearbyPeople() {
+        return mNearbyPeople;
+    }
+
+    public void setNearbyPeople(NearbyPeople.ResultBean nearbyPeople) {
+        mNearbyPeople = nearbyPeople;
+    }
 
     public FriendsList.ResultBean getFriends() {
         return mFriends;

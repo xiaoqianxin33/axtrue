@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_record"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.chinalooke.yuwan.activity.RecordActivity">
+
+    <include layout="@layout/include_head"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="90px"
+        android:background="@android:color/white">
+
+        <LinearLayout
+            android:id="@+id/ll_title"
+            android:layout_width="match_parent"
+            android:layout_height="58px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:layout_marginRight="@dimen/mid_padding"
+            android:background="@mipmap/wode_circle_left"
+            android:orientation="horizontal"
+            android:padding="2dp">
+
+            <TextView
+                android:id="@+id/tv_wode"
+                style="@style/circle_top_textview"
+                android:text="对战明细"/>
+
+
+            <TextView
+                android:id="@+id/tv_create"
+                style="@style/circle_top_textview"
+                android:text="对战战绩"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/small_padding"/>
+
+</LinearLayout>

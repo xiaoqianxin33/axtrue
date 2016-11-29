@@ -381,7 +381,7 @@ public class BattleFieldFragment extends Fragment {
         if (!TextUtils.isEmpty(longitude) && !TextUtils.isEmpty(latitude)) {
             double lng = Double.parseDouble(longitude);
             double lat = Double.parseDouble(latitude);
-            String uri = Constant.HOST + "getADListWithGPS&lng=" + lat + "&lat=" + lng;
+            String uri = Constant.HOST + "getADListWithGPS&lng=" + lng + "&lat=" + lat;
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {

@@ -12,8 +12,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -22,6 +20,8 @@ import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.FriendsActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
+import com.chinalooke.yuwan.activity.RecordActivity;
+import com.chinalooke.yuwan.activity.ShopActivity;
 import com.chinalooke.yuwan.activity.UserInfoActivity;
 import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.utils.DialogUtil;
@@ -50,11 +50,10 @@ public class WodeFragment extends Fragment {
     TextView mTvLogin;
     private RequestQueue mQueue;
 
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wode, container, false);
-        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getActivity().requestWindowFeature(Window.FEATURE_NO_TITLE);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -65,9 +64,19 @@ public class WodeFragment extends Fragment {
         mQueue = Volley.newRequestQueue(getActivity());
     }
 
-    @OnClick({R.id.tv_name, R.id.roundedImageView, R.id.tv_login, R.id.rl_info, R.id.rl_friend})
+    @OnClick({R.id.tv_name, R.id.roundedImageView, R.id.tv_login, R.id.rl_info, R.id.rl_friend
+            , R.id.rl_shop, R.id.rl_record})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.rl_record:
+                if (user != null)
+                    startActivity(new Intent(getActivity(), RecordActivity.class));
+                else
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                break;
+            case R.id.rl_shop:
+                startActivity(new Intent(getActivity(), ShopActivity.class));
+                break;
             case R.id.rl_friend:
                 if (user != null)
                     startActivity(new Intent(getActivity(), FriendsActivity.class));
