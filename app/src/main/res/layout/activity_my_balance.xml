@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_my_balance"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.chinalooke.yuwan.activity.MyBalanceActivity">
+
+    <include layout="@layout/include_head"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="270px"
+        android:background="@color/actionbar_color">
+
+        <TextView
+            android:id="@+id/iv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:layout_marginTop="64px"
+            android:text="账户余额（鱼丸）"
+            android:textColor="@android:color/white"
+            android:textSize="25px"/>
+
+        <TextView
+            android:id="@+id/tv_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv1"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:layout_marginTop="@dimen/mid_padding"
+            android:textColor="@android:color/white"
+            android:textSize="70px"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_recharge"
+        android:layout_width="match_parent"
+        android:layout_height="96px"
+        android:layout_marginTop="@dimen/small_padding"
+        android:background="@android:color/white"
+        android:paddingLeft="@dimen/mid_padding"
+        android:paddingRight="@dimen/mid_padding">
+
+        <ImageView
+            android:id="@+id/iv2"
+            android:layout_width="48px"
+            android:layout_height="48px"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/yue"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/small_padding"
+            android:layout_toRightOf="@id/iv2"
+            android:text="充值"
+            android:textColor="@color/black_word"
+            android:textSize="@dimen/mid_padding"/>
+
+        <ImageView
+            android:layout_width="26px"
+            android:layout_height="16px"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/arrow_right"/>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

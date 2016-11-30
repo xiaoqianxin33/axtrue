@@ -20,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.FriendsActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
+import com.chinalooke.yuwan.activity.MyBalanceActivity;
 import com.chinalooke.yuwan.activity.RecordActivity;
 import com.chinalooke.yuwan.activity.ShopActivity;
 import com.chinalooke.yuwan.activity.UserInfoActivity;
@@ -65,9 +66,15 @@ public class WodeFragment extends Fragment {
     }
 
     @OnClick({R.id.tv_name, R.id.roundedImageView, R.id.tv_login, R.id.rl_info, R.id.rl_friend
-            , R.id.rl_shop, R.id.rl_record})
+            , R.id.rl_shop, R.id.rl_record,R.id.rl_balance})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.rl_balance:
+                if (user != null)
+                    startActivity(new Intent(getActivity(), MyBalanceActivity.class));
+                else
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                break;
             case R.id.rl_record:
                 if (user != null)
                     startActivity(new Intent(getActivity(), RecordActivity.class));

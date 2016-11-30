@@ -226,6 +226,12 @@
         </activity>
         <activity android:name=".activity.RecordActivity">
         </activity>
+        <activity android:name=".activity.MyBalanceActivity">
+        </activity>
+        <activity android:name=".activity.RechargeActivity">
+        </activity>
+        <activity android:name=".activity.ChosePayActivity">
+        </activity>
     </application>
 
 </manifest>

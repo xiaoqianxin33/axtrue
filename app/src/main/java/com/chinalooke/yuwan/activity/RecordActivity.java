@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,12 +23,8 @@ import butterknife.OnClick;
 //我的战绩界面
 public class RecordActivity extends AutoLayoutActivity {
 
-    @Bind(R.id.iv_back)
-    FrameLayout mIvBack;
     @Bind(R.id.tv_title)
     TextView mTvTitle;
-    @Bind(R.id.tv_skip)
-    TextView mTvSkip;
     @Bind(R.id.tv_wode)
     TextView mTvWode;
     @Bind(R.id.tv_create)

@@ -68,16 +68,16 @@
     <ImageView
         android:layout_width="25px"
         android:layout_height="25px"
-        android:layout_marginLeft="416px"
-        android:layout_marginTop="135px"
+        android:layout_marginLeft="275px"
+        android:layout_marginTop="91px"
         android:src="@mipmap/people_zc"/>
 
     <TextView
         android:id="@+id/tv_people"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="459px"
-        android:layout_marginTop="135px"
+        android:layout_marginLeft="318px"
+        android:layout_marginTop="91px"
         android:textColor="#fee387"
         android:textSize="24px"/>
 

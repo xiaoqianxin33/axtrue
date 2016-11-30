@@ -1,13 +1,12 @@
 package com.chinalooke.yuwan.utils;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.chinalooke.yuwan.model.ResultDatas;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
 
 /**
  * json工具类
@@ -66,7 +65,7 @@ public class AnalysisJSON {
 
 
     public static boolean analysisJson(String response) {
-        if (response != null) {
+        if (!TextUtils.isEmpty(response)) {
             String substring = response.substring(11, 15);
             return "true".equals(substring);
         } else {
