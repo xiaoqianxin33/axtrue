@@ -107,14 +107,10 @@ public class BattleFieldFragment extends Fragment {
     private QuickAdapter mJxAdapter;
     private QuickAdapter mJsAdapter;
     private boolean isFirst = true;
-    private int PAGE_SIZE = 5;
     private boolean isFresh = false;
-    private View mFootView;
     private LoginUser.ResultBean user;
     private long refreshLastClickTime = 0;
     private long itemLastClickTime = 0;
-    private View mFootView1;
-    private View mFootView2;
 
 
     @Override
@@ -291,11 +287,7 @@ public class BattleFieldFragment extends Fragment {
         int totalItemCount = layoutManager.getItemCount();
         //RecyclerView的滑动状态
         int state = recyclerView.getScrollState();
-        if (visibleItemCount > 0 && lastVisibleItemPosition == totalItemCount - 1 && state == RecyclerView.SCROLL_STATE_IDLE) {
-            return true;
-        } else {
-            return false;
-        }
+        return visibleItemCount > 0 && lastVisibleItemPosition == totalItemCount - 1 && state == RecyclerView.SCROLL_STATE_IDLE;
     }
 
     private void initData() {
@@ -307,6 +299,7 @@ public class BattleFieldFragment extends Fragment {
 
     //按状态取游戏桌列表
     private void getGameDeskListWithStatus(final int status, final int page) {
+        int PAGE_SIZE = 5;
         final String uri = Constant.HOST + "getGameDeskListWithStatus&gameStatus=" + status + "&pageNo=" + page + "&pageSize=" + PAGE_SIZE;
         if (NetUtil.is_Network_Available(getActivity())) {
             StringRequest stringRequest = new StringRequest(uri,
@@ -344,13 +337,13 @@ public class BattleFieldFragment extends Fragment {
                                     }
                                 } else {
                                     if (isFirst) {
-                                        mTvNone.setVisibility(View.VISIBLE);
+//                                        mTvNone.setVisibility(View.VISIBLE);
                                         MyUtils.showMsg(mToast, response);
                                     }
                                 }
                             } else {
                                 if (isFirst) {
-                                    mTvNone.setVisibility(View.VISIBLE);
+//                                    mTvNone.setVisibility(View.VISIBLE);
                                     MyUtils.showMsg(mToast, response);
                                 }
                             }
@@ -462,9 +455,6 @@ public class BattleFieldFragment extends Fragment {
         mRecyclerView2.setAdapter(mJsAdapter);
         setIconWordColor(0);
         setRecyclerView(0);
-        mFootView = View.inflate(getActivity(), R.layout.foot, null);
-        mFootView1 = View.inflate(getActivity(), R.layout.foot, null);
-        mFootView2 = View.inflate(getActivity(), R.layout.foot, null);
     }
 
 
@@ -596,8 +586,6 @@ public class BattleFieldFragment extends Fragment {
                             helper.setText(R.id.tv_time, "00:00:00");
                         }
                     }
-
-                    ;
                     break;
                 case 2:
                     helper.setText(R.id.tv_status, "已结束")
@@ -607,7 +595,7 @@ public class BattleFieldFragment extends Fragment {
             }
 
             String gameImage = item.getGameImage();
-            if (gameImage != null)
+            if (!TextUtils.isEmpty(gameImage))
                 Picasso.with(mContext).load(item.getGameImage()).into((ImageView) helper.getView(R.id.image));
         }
 
@@ -626,16 +614,6 @@ public class BattleFieldFragment extends Fragment {
                             }.getType();
                             GameDeskDetails gameDesk = gson.fromJson(response, type);
                             if (gameDesk != null) {
-                                int current = 0;
-                                GameDeskDetails.ResultBean result = gameDesk.getResult();
-                                List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> left = result.getPlayers().getLeft();
-                                if (left != null) {
-                                    current += left.size();
-                                }
-                                List<GameDeskDetails.ResultBean.PlayersBean.RightBean> right = result.getPlayers().getRight();
-                                if (right != null) {
-                                    current += right.size();
-                                }
                                 Intent intent = new Intent(getActivity(), GameDeskActivity.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putSerializable("gameDeskDetails", gameDesk);

@@ -47,6 +47,7 @@ import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
+import com.chinalooke.yuwan.view.HorizontalListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hyphenate.chat.EMClient;
@@ -93,7 +94,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     @Bind(R.id.rl_image)
     RelativeLayout mRlImage;
     @Bind(R.id.gd_yuezhan)
-    GridView mGdYuezhan;
+    HorizontalListView mGdYuezhan;
     @Bind(R.id.gd_yingzhan)
     GridView mGdYingzhan;
     @Bind(R.id.rl_people)
