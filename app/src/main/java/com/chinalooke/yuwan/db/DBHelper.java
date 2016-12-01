@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by xiao on 2016/11/9.
  */
 
-public class DBHelper extends SQLiteOpenHelper {
+class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "game.db";
     private static final int DATABASE_VERSION = 1;
 

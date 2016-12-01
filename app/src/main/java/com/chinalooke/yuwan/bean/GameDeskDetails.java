@@ -2,6 +2,9 @@ package com.chinalooke.yuwan.bean;
 
 import android.os.Parcel;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -66,18 +69,31 @@ public class GameDeskDetails implements Serializable {
         this.Success = Success;
     }
 
+    @DatabaseTable(tableName = "tb_game_desk")
     public static class ResultBean implements Serializable {
+        @DatabaseField(columnName = "details")
         private String details;
+        @DatabaseField(columnName = "gameName")
         private String gameName;
+        @DatabaseField(columnName = "gamePay")
         private String gamePay;
+        @DatabaseField(columnName = "netBarAddress")
         private String netBarAddress;
+        @DatabaseField(columnName = "netBarName")
         private String netBarName;
+        @DatabaseField(columnName = "peopleNumber")
         private String peopleNumber;
+        @DatabaseField(columnName = "players")
         private PlayersBean players;
+        @DatabaseField(columnName = "startTime")
         private String startTime;
+        @DatabaseField(columnName = "status")
         private String status;
+        @DatabaseField(columnName = "winer")
         private String winer;
+        @DatabaseField(columnName = "bgImage")
         private String bgImage;
+        @DatabaseField(generatedId = true)
         private String roomId;
 
         public String getRoomId() {

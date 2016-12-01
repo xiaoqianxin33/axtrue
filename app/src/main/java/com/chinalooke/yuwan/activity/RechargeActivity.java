@@ -23,6 +23,7 @@ import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.j256.ormlite.dao.Dao;
 import com.zhy.autolayout.AutoLayoutActivity;
 import com.zhy.autolayout.utils.AutoUtils;
 
@@ -108,11 +109,13 @@ public class RechargeActivity extends AutoLayoutActivity {
     private void fromDB() {
         ExchangeHelper exchangeHelper = ExchangeHelper.getHelper(getApplicationContext());
         try {
-            List<ExchangeLevels.ResultBean> resultBeen = exchangeHelper.getUserDao().queryForAll();
+            Dao<ExchangeLevels.ResultBean, Integer> userDao = exchangeHelper.getUserDao();
+            List<ExchangeLevels.ResultBean> resultBeen = userDao.queryForAll();
             if (resultBeen != null) {
                 mList.addAll(resultBeen);
                 mMyAdapter.notifyDataSetChanged();
             }
+            exchangeHelper.close();
         } catch (SQLException e) {
             e.printStackTrace();
             Log.e("TAG", e.getMessage());

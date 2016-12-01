@@ -511,12 +511,10 @@ public class GameDeskActivity extends AutoLayoutActivity {
         AVPush push = new AVPush();
         JSONObject jsonObject = new JSONObject();
         Gson gson = new Gson();
-        String gameDesk = gson.toJson(mGameDesk);
         String gameDeskDetails = gson.toJson(mGameDeskDetails);
         try {
             jsonObject.put("title", "雷熊");
             jsonObject.put("alert", "您有战场结果出炉了，请确认输赢");
-            jsonObject.put("gameDesk", gameDesk);
             jsonObject.put("gameDeskDetails", gameDeskDetails);
             push.setData(jsonObject);
             push.setQuery(pushQuery);
