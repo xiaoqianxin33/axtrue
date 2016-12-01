@@ -279,8 +279,6 @@ public class BattleFieldFragment extends Fragment {
         bundle.putSerializable("gameDesk", resultBean);
         intent.putExtras(bundle);
         startActivity(intent);
-
-//        getGameDeskWithId(gameDeskId, resultBean);
     }
 
     //判断recycleView是否已经滑到底部
@@ -344,13 +342,11 @@ public class BattleFieldFragment extends Fragment {
                                     }
                                 } else {
                                     if (isFirst) {
-//                                        mTvNone.setVisibility(View.VISIBLE);
                                         MyUtils.showMsg(mToast, response);
                                     }
                                 }
                             } else {
                                 if (isFirst) {
-//                                    mTvNone.setVisibility(View.VISIBLE);
                                     MyUtils.showMsg(mToast, response);
                                 }
                             }
@@ -363,8 +359,6 @@ public class BattleFieldFragment extends Fragment {
                     mPbLoad.setVisibility(View.GONE);
                     if (isFirst)
                         mTvNone.setVisibility(View.VISIBLE);
-                    mToast.setText("网络不给力，换个地方试试");
-                    mToast.show();
                     isFresh = false;
                 }
             });
@@ -393,17 +387,9 @@ public class BattleFieldFragment extends Fragment {
                         }.getType();
                         Advertisement advertisement = gson.fromJson(response, type);
                         setBanner(advertisement);
-                    } else {
-                        MyUtils.showMsg(mToast, response);
                     }
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    mToast.setText("网络不给力啊，换个地方试试");
-                    mToast.show();
-                }
-            });
+            }, null);
 
             mQueue.add(request);
         }
@@ -525,10 +511,6 @@ public class BattleFieldFragment extends Fragment {
 
     public class QuickAdapter extends BaseQuickAdapter<GameDesk.ResultBean> {
         private int mPage;
-
-        QuickAdapter(int layoutResId, List<GameDesk.ResultBean> data) {
-            super(layoutResId, data);
-        }
 
         QuickAdapter(int layoutResId, List<GameDesk.ResultBean> data, int page) {
             super(layoutResId, data);

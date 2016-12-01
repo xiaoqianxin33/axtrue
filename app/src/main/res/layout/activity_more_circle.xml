@@ -10,26 +10,7 @@
     tools:context="com.chinalooke.yuwan.activity.MoreCircleActivity">
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/EditText_vertical_height"
-        android:background="@color/black"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/back_personal_info"
-            style="@style/back_style"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/EditText_height"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="@string/more_circle"
-            android:textColor="@color/white"
-            android:textSize="@dimen/TextSize_18"
-            />
-    </RelativeLayout>
+    <include layout="@layout/include_head"/>
 
 
     <RelativeLayout

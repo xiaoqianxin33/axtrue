@@ -107,7 +107,7 @@ public class SearchView extends LinearLayout implements View.OnClickListener {
         lvTips.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //set edit text
+                //set edit Text
                 String text = lvTips.getAdapter().getItem(i).toString();
                 etInput.setText(text);
                 etInput.setSelection(text.length());
@@ -236,7 +236,7 @@ public class SearchView extends LinearLayout implements View.OnClickListener {
 //        /**
 //         * 提示列表项点击时回调方法 (提示/自动补全)
 //         */
-//        void onTipsItemClick(String text);
+//        void onTipsItemClick(String Text);
     }
 
 }

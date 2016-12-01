@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="match_parent"
+        android:layout_height="47px"
+        android:gravity="center"
+        android:textColor="#a4a4a4"
+        android:textSize="@dimen/small_padding"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="170px"
+        android:background="@android:color/white">
+
+        <TextView
+            android:id="@+id/tv_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="88px"
+            android:layout_marginRight="88px"
+            android:layout_marginTop="40px"
+            android:textColor="@color/black_word"
+            android:textSize="28px"/>
+
+
+        <Button
+            android:id="@+id/btn_ok"
+            android:layout_width="140px"
+            android:layout_height="60px"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="16px"
+            android:layout_marginRight="23px"
+            android:background="@drawable/my_message_btn_selector"
+            android:textColor="@drawable/my_message_btn_text_selector"
+            android:textSize="27px"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

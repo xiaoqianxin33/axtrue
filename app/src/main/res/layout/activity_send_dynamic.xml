@@ -22,11 +22,13 @@
             android:layout_height="190px"
             android:layout_marginLeft="@dimen/mid_padding"
             android:layout_marginRight="@dimen/mid_padding"
+            android:background="@null"
             android:gravity="top"
             android:hint="这一刻的想法"
             android:inputType="textMultiLine"
             android:maxLength="300"
             android:maxLines="3"
+            android:paddingTop="10px"
             android:textSize="30px"/>
 
         <cn.bingoogolapple.photopicker.widget.BGASortableNinePhotoLayout

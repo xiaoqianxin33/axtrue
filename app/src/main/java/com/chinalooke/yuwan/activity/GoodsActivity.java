@@ -282,7 +282,7 @@ public class GoodsActivity extends AutoLayoutActivity {
             @Override
             public void onClick(View v) {
                 ClipboardManager systemService = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                ClipData clipData = ClipData.newPlainText("text", code);
+                ClipData clipData = ClipData.newPlainText("Text", code);
                 systemService.setPrimaryClip(clipData);
                 mToast.setText("兑换码已复制到剪切板");
                 mToast.show();

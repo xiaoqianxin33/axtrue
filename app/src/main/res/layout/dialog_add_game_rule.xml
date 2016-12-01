@@ -19,6 +19,7 @@
         android:id="@+id/et_rule"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:background="@null"
         android:gravity="top"
         android:hint="请填写游戏规则"
         android:inputType="textMultiLine"
@@ -29,7 +30,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="96px"
         android:orientation="horizontal">
 
         <TextView

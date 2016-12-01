@@ -169,20 +169,11 @@
 
         <service android:name="com.avos.avoscloud.PushService"/>
 
-        <!-- <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.BOOT_COMPLETED"/> -->
-        <!-- <action android:name="android.intent.action.USER_PRESENT"/> -->
-        <!-- <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
-
-        <receiver android:name=".receiver.MyCustomReceiver">
+        <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.USER_PRESENT"/>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-                <action android:name="com.chinalooke.yuwan"/>
             </intent-filter>
         </receiver>
 
@@ -234,6 +225,18 @@
         </activity>
         <activity android:name=".activity.AccountDetailActivity">
         </activity>
+        <activity android:name=".activity.MyMessageActivity">
+        </activity>
+
+        <!--<receiver-->
+        <!--android:name="com.chinalooke.yuwan.receiver.MyCustomReceiver">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.BOOT_COMPLETED"/>-->
+        <!--<action android:name="android.intent.action.USER_PRESENT"/>-->
+        <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>-->
+        <!--<action android:name="com.chinalooke.yuwan"/>-->
+        <!--</intent-filter>-->
+        <!--</receiver>-->
     </application>
 
 </manifest>

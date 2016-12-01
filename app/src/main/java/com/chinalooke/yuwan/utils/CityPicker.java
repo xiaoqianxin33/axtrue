@@ -182,7 +182,7 @@ public class CityPicker extends LinearLayout {
 			@Override
 			public void endSelect(int id, String text) {
 				// TODO Auto-generated method stub
-				System.out.println("id-->" + id + "text----->" + text);
+				System.out.println("id-->" + id + "Text----->" + text);
 				if (text.equals("") || text == null)
 					return;
 				if (tempProvinceIndex != id) {
@@ -226,7 +226,7 @@ public class CityPicker extends LinearLayout {
 
 			@Override
 			public void endSelect(int id, String text) {
-				System.out.println("id-->" + id + "text----->" + text);
+				System.out.println("id-->" + id + "Text----->" + text);
 				// TODO Auto-generated method stub
 				if (text.equals("") || text == null)
 					return;
@@ -259,7 +259,7 @@ public class CityPicker extends LinearLayout {
 			@Override
 			public void selecting(int id, String text) {
 				// TODO Auto-generated method stub
-				System.out.println("id====>" + id + "text======>" + text);
+				System.out.println("id====>" + id + "Text======>" + text);
 			}
 		});
 		counyPicker.setOnSelectListener(new ScrollerNumberPicker.OnSelectListener() {
@@ -267,7 +267,7 @@ public class CityPicker extends LinearLayout {
 			@Override
 			public void endSelect(int id, String text) {
 				// TODO Auto-generated method stub
-				System.out.println("id-->" + id + "text----->" + text);
+				System.out.println("id-->" + id + "Text----->" + text);
 				if (text.equals("") || text == null)
 					return;
 				if (tempCounyIndex != id) {
@@ -289,7 +289,7 @@ public class CityPicker extends LinearLayout {
 				Message message = new Message();
 				message.what = REFRESH_VIEW;
 				handler.sendMessage(message);
-				Log.d("TAG","text---"+text);
+				Log.d("TAG","Text---"+text);
 				if(updateGetCity!=null){
 					updateGetCity.updateCityInfo(text, UpdateGetCity.COUNY_ID);
 				}
@@ -298,7 +298,7 @@ public class CityPicker extends LinearLayout {
 			@Override
 			public void selecting(int id, String text) {
 				// TODO Auto-generated method stub
-				System.out.println("id===>" + id + "text=====>" + text);
+				System.out.println("id===>" + id + "Text=====>" + text);
 			}
 		});
 	}

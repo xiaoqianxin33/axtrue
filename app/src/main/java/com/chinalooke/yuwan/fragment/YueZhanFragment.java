@@ -42,12 +42,14 @@ import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DateUtils;
+import com.chinalooke.yuwan.utils.KeyboardUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.UIUtil;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
+import com.zhy.autolayout.utils.AutoUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,7 +105,6 @@ public class YueZhanFragment extends Fragment {
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            super.handleMessage(msg);
             if (msg.what == 1) {
                 if (isPeopleChose && isGameChose && isMoneyChose && isTimeChose) {
                     mTvSkip.setEnabled(true);
@@ -113,6 +114,7 @@ public class YueZhanFragment extends Fragment {
                     mTvSkip.setTextColor(getResources().getColor(R.color.grey));
                 }
             }
+            super.handleMessage(msg);
         }
     };
     private String mGameId;
@@ -140,17 +142,17 @@ public class YueZhanFragment extends Fragment {
     }
 
     private void initEvent() {
-        mTvPeople.addTextChangedListener(new CustomerTextWatcher(isPeopleChose));
-        mTvTime.addTextChangedListener(new CustomerTextWatcher(isTimeChose));
-        mTvGameName.addTextChangedListener(new CustomerTextWatcher(isGameChose));
-        mTvMoney.addTextChangedListener(new CustomerTextWatcher(isMoneyChose));
+        mTvPeople.addTextChangedListener(new CustomerTextWatcher(0));
+        mTvTime.addTextChangedListener(new CustomerTextWatcher(1));
+        mTvGameName.addTextChangedListener(new CustomerTextWatcher(2));
+        mTvMoney.addTextChangedListener(new CustomerTextWatcher(3));
     }
 
 
     class CustomerTextWatcher implements TextWatcher {
-        private boolean isChose;
+        private int isChose;
 
-        CustomerTextWatcher(boolean isChose) {
+        CustomerTextWatcher(int isChose) {
             this.isChose = isChose;
         }
 
@@ -166,7 +168,21 @@ public class YueZhanFragment extends Fragment {
 
         @Override
         public void afterTextChanged(Editable s) {
-            isChose = !TextUtils.isEmpty(s.toString());
+            switch (isChose) {
+                case 0:
+                    isPeopleChose = !TextUtils.isEmpty(s);
+                    break;
+                case 1:
+                    isTimeChose = !TextUtils.isEmpty(s);
+                    break;
+                case 2:
+                    isGameChose = !TextUtils.isEmpty(s);
+                    break;
+                case 3:
+                    isMoneyChose = !TextUtils.isEmpty(s);
+                    break;
+            }
+
             mHandler.sendEmptyMessage(1);
         }
     }
@@ -351,6 +367,7 @@ public class YueZhanFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                KeyboardUtils.hideSoftInput(getActivity());
             }
         });
 
@@ -359,10 +376,13 @@ public class YueZhanFragment extends Fragment {
             public void onClick(View v) {
                 dialog.dismiss();
                 mRule = etRule.getText().toString();
+                KeyboardUtils.hideSoftInput(getActivity());
             }
         });
-
+        AutoUtils.autoSize(inflate);
+        dialog.setContentView(inflate);
         dialog.show();
+        etRule.requestFocus();
         WindowManager windowManager = getActivity().getWindowManager();
         Display display = windowManager.getDefaultDisplay();
         WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();

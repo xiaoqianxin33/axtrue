@@ -331,7 +331,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         }
     }
 
-
+    //获取附近圈子
     private void getNearbyCircle() {
         String uri = Constant.HOST + "getGroupWithGPS&lng=" + mLongitude + "&lat=" + mLatitude + "&pageNo=" + 0 + "&pageSize=2";
 
@@ -349,6 +349,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                         mNearbyCircles.addAll(circles);
                         mMyAdapt.notifyDataSetChanged();
                         setAMap();
+                        mTvMore.setEnabled(true);
                     }
                 } else {
                     try {
@@ -357,6 +358,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                         mRlCreateCircle.setVisibility(View.VISIBLE);
                         mTvMore.setVisibility(View.VISIBLE);
                         mTvMore.setText(msg);
+                        mTvMore.setEnabled(false);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

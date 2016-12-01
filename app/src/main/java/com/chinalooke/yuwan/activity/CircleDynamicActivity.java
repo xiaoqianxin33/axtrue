@@ -28,11 +28,11 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.Circle;
 import com.chinalooke.yuwan.bean.Dynamic;
 import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.ViewHelper;
@@ -148,7 +148,6 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         PAGE_NO++;
         isLoading = true;
         getActiveList();
-        Log.e("TAG", "loadMore");
     }
 
     private void initView() {
@@ -190,11 +189,12 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
     //获取圈子动态信息
     private void getActiveList() {
         if (NetUtil.is_Network_Available(getApplicationContext())) {
-            String uri = Constant.HOST + "getActiveListWithGroup&groupId=" + mCircle.getGroupId()
+            String url = Constant.HOST + "getActiveListWithGroup&groupId=" + mCircle.getGroupId()
                     + "&pageNo=" + PAGE_NO + "&pageSize=5";
             if (mUserInfo != null)
-                uri = uri + "&userId=" + mUserInfo.getUserId();
-            StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+                url = url + "&userId=" + mUserInfo.getUserId();
+
+            StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     mPbLoad.setVisibility(View.GONE);
@@ -214,7 +214,6 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                                         mDynamics.clear();
                                     mDynamics.addAll(dynamic.getResult().getList());
                                     mTvNone.setVisibility(View.GONE);
-                                    Log.e("TAG", mDynamics.size() + "");
                                     mMyDynamicAdapter.notifyDataSetChanged();
                                     isRefresh = false;
                                     isLoading = false;
@@ -222,26 +221,16 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                                 isFirst = false;
                             } else {
                                 if (isFirst) {
-                                    try {
-                                        mTvNone.setVisibility(View.VISIBLE);
-                                        String msg = jsonObject.getString("Msg");
-                                        mTvNone.setText(msg);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
+                                    mTvNone.setVisibility(View.VISIBLE);
+                                    mTvNone.setText("暂无动态");
                                 }
                                 isFirst = false;
                             }
 
                         } else {
                             if (isFirst) {
-                                try {
-                                    mTvNone.setVisibility(View.VISIBLE);
-                                    String msg = jsonObject.getString("Msg");
-                                    mTvNone.setText(msg);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                mTvNone.setVisibility(View.VISIBLE);
+                                mTvNone.setText("暂无动态");
                             }
                             isFirst = false;
                         }
@@ -274,11 +263,16 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                 finish();
                 break;
             case R.id.iv_camera:
-                Intent intent = new Intent(this, SendDynamicActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("circle", mCircle);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (mUserInfo == null) {
+                    startActivity(new Intent(this, LoginActivity.class));
+                    return;
+                } else {
+                    Intent intent = new Intent(this, SendDynamicActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("circle", mCircle);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
                 break;
             case R.id.roundedImageView:
                 skipToInfo();
@@ -426,6 +420,4 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         TextView mTvDianzan;
         ImageView mIvDianzan;
     }
-
-
 }

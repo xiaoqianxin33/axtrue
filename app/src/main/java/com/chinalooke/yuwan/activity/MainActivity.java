@@ -19,6 +19,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.fragment.BattleFieldFragment;
@@ -27,7 +28,6 @@ import com.chinalooke.yuwan.fragment.CircleFragment;
 import com.chinalooke.yuwan.fragment.DynamicFragment;
 import com.chinalooke.yuwan.fragment.WodeFragment;
 import com.chinalooke.yuwan.fragment.YueZhanFragment;
-import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -191,6 +191,31 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         }
     }
 
+//    private void pushText() {
+//        Text text = new Text();
+//        text.setId("1");
+//        text.setName("我的测试代码");
+//        AVQuery<AVInstallation> pushQuery = AVInstallation.getQuery();
+//        pushQuery.whereEqualTo("channels", "22");
+//        AVPush push = new AVPush();
+//        JSONObject jsonObject = new JSONObject();
+//        Gson gson = new Gson();
+//        String gameDesk = gson.toJson(text);
+//        try {
+////            jsonObject.put("action", "com.chinalooke.yuwan");
+//            jsonObject.put("title", "雷熊");
+//            jsonObject.put("alert", "您有战场结果出炉了，请确认输赢");
+//            jsonObject.put("text", gameDesk);
+//            push.setData(jsonObject);
+//            push.setQuery(pushQuery);
+//            push.setPushToAndroid(true);
+//            push.sendInBackground();
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+
     private void setSelected(int i) {
         mIvZc.setSelected(i == 1);
         mTvZc.setSelected(i == 1);
@@ -277,6 +302,5 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
                     RC_ACCESS_FINE_LOCATION, perms);
         }
     }
-
 
 }

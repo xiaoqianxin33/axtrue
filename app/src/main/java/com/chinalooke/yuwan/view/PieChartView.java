@@ -93,7 +93,7 @@ public class PieChartView extends View {
         mTextPaint.setTextAlign(Paint.Align.LEFT);
 
 
-        // Update TextPaint and text measurements from attributes
+        // Update TextPaint and Text measurements from attributes
 //        invalidateTextPaintAndMeasurements();
     }
 
@@ -171,10 +171,10 @@ public class PieChartView extends View {
     }
 
     /**
-     * Sets the view's text dimension attribute value. In the PieChartView view, this dimension
+     * Sets the view's Text dimension attribute value. In the PieChartView view, this dimension
      * is the font size.
      *
-     * @param textSize The text dimension attribute value to use.(sp)
+     * @param textSize The Text dimension attribute value to use.(sp)
      */
     public void setTextSize(float textSize) {
         mTextSize = textSize;

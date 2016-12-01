@@ -150,7 +150,7 @@
         <item name="android:background">@color/grey</item>
     </style>
 
-    <!--我的fragment 页面icon  text more-->
+    <!--我的fragment 页面icon  Text more-->
 
 
     <style name="relativeLayout_wode">

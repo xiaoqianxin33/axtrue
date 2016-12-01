@@ -189,6 +189,11 @@ public class GameDeskActivity extends AutoLayoutActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+    }
 
     private void initView() {
         isJoin = false;
@@ -240,6 +245,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 break;
             }
         }
+
+
 
         String mOwnerName = mGameDesk.getOwnerName();
         int DESK_TYPE_PERSONAL = 1;
@@ -507,7 +514,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
         String gameDesk = gson.toJson(mGameDesk);
         String gameDeskDetails = gson.toJson(mGameDeskDetails);
         try {
-            jsonObject.put("action", "com.chinalooke.yuwan");
             jsonObject.put("title", "雷熊");
             jsonObject.put("alert", "您有战场结果出炉了，请确认输赢");
             jsonObject.put("gameDesk", gameDesk);

@@ -226,7 +226,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     //网络获取  验证手机号是否注册
     private void getHTTPIsPhoneExists() {
         String URLPhone = Constant.IS_PHONE_EXISTS + "&" + Constant.PHONE + phone;
-        Log.d("TAG", "电话网址----------" + URLPhone);
         StringRequest stringRequest = new StringRequest(URLPhone,
                 new Response.Listener<String>() {
                     @Override
@@ -322,7 +321,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                 LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo.getResult());//设置userInfo
                 LoginUserInfoUtils.saveObject(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo.getResult());
                 registerHx(userInfo.getResult());
-                PushService.subscribe(this, userInfo.getResult().getUserId() + "game_result", MainActivity.class);
+                PushService.subscribe(this, userInfo.getResult().getUserId() + "game_result", MyMessageActivity.class);
             }
             mProgressDialog.dismiss();
             loginSuccess();//调用登录成功方法

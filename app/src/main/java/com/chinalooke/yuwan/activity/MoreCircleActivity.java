@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,10 +21,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.Circle;
 import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
@@ -52,6 +53,10 @@ public class MoreCircleActivity extends AppCompatActivity {
     ProgressBar mProgressBar;
     @Bind(R.id.tv_no)
     TextView mTvNo;
+    @Bind(R.id.tv_title)
+    TextView mTvTitle;
+    @Bind(R.id.activity_more_circle)
+    LinearLayout mActivityMoreCircle;
     private RequestQueue mQueue;
     private Toast mToast;
     private MyAdapt mMyAdapt;
@@ -76,8 +81,8 @@ public class MoreCircleActivity extends AppCompatActivity {
         mLongitude = getIntent().getDoubleExtra("longitude", 0);
         mLatitude = getIntent().getDoubleExtra("latitude", 0);
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
+        mTvTitle.setText("更多圈子");
         initEvent();
-
     }
 
     private void initEvent() {
@@ -197,10 +202,10 @@ public class MoreCircleActivity extends AppCompatActivity {
         mQueue.add(stringRequest);
     }
 
-    @OnClick({R.id.back_personal_info, R.id.iv_create_circle})
+    @OnClick({R.id.iv_create_circle, R.id.iv_back})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.back_personal_info:
+            case R.id.iv_back:
                 finish();
                 break;
             case R.id.iv_create_circle:
