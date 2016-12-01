@@ -31,7 +31,8 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS person" +
-                "(gameId INTEGER PRIMARY KEY, name VARCHAR, url TEXT )");
+                "(gameId INTEGER PRIMARY KEY, name VARCHAR, url TEXT,maxPeopleNumber VARCHAR,times VARCHAR" +
+                ",wagerMax VARCHAR,wagerMin VARCHAR)");
     }
 
     @Override

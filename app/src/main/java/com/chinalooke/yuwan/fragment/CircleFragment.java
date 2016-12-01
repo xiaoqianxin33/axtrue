@@ -11,13 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.amap.api.location.AMapLocationClient;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.CircleRankingActivity;
 import com.chinalooke.yuwan.adapter.MainPagerAdapter;
-import com.chinalooke.yuwan.model.Circle;
-import com.chinalooke.yuwan.model.LoginUser;
-import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.view.PagerSlidingTabStrip;
 
@@ -35,13 +31,6 @@ public class CircleFragment extends Fragment {
     ViewPager mViewpage;
     @Bind(R.id.tv_scoreboard)
     TextView mTvScoreBoard;
-    private AMapLocationClient mLocationClient;
-    List<Circle.ResultBean> mCircles = new ArrayList<>();
-    private int mPage = 1;
-    private LoginUser.ResultBean mUserInfo;
-    private Circle mMyCircle;
-    private List<Circle.ResultBean> mMyCircleResult = new ArrayList<>();
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,7 +44,6 @@ public class CircleFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         initEvent();
     }
 
@@ -90,7 +78,8 @@ public class CircleFragment extends Fragment {
         List<Fragment> list = new ArrayList<>();
         list.add(new CircleNormalFragment());
         list.add(new CircleWodeFragment());
-        mViewpage.setAdapter(new MainPagerAdapter(getChildFragmentManager(), list));
+        String[] titles = {"圈子", "我的"};
+        mViewpage.setAdapter(new MainPagerAdapter(getChildFragmentManager(), list, titles));
         mTabs.setViewPager(mViewpage);
         mTabs.setIndicatorColor(getResources().getColor(R.color.indicator_color));
         mTabs.setIndicatorHeight(5);

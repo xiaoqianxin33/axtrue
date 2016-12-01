@@ -5,7 +5,7 @@ package com.chinalooke.yuwan.utils;
  * Created by xiao on 2016/11/21.
  */
 
-import com.chinalooke.yuwan.model.SortModel;
+import com.chinalooke.yuwan.bean.SortModel;
 
 import java.util.Comparator;
 

@@ -3,8 +3,8 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical"
               android:background="@color/background"
+              android:orientation="vertical"
               tools:context="com.chinalooke.yuwan.fragment.YueZhanFragment">
 
     <include layout="@layout/include_head"/>
@@ -83,38 +83,37 @@
         android:layout_height="1dp"
         android:background="@color/line_color"/>
 
-    <!--<TextView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="1dp"-->
-    <!--android:layout_marginTop="20px"-->
-    <!--android:background="@color/line_color"/>-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20px"
+        android:background="@color/line_color"/>
 
-    <!--<RelativeLayout-->
-    <!--android:id="@+id/rl_address"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="95px"-->
-    <!--android:background="@android:color/white">-->
+    <RelativeLayout
+        android:id="@+id/rl_times"
+        android:layout_width="match_parent"
+        android:layout_height="95px"
+        android:background="@android:color/white">
 
-    <!--<TextView-->
-    <!--style="@style/yuezhan_title"-->
-    <!--android:text="地址"/>-->
+        <TextView
+            style="@style/yuezhan_title"
+            android:text="场数"/>
 
 
-    <!--<ImageView-->
-    <!--style="@style/yuezhan_arrow"-->
-    <!--android:src="@mipmap/arrow_right"/>-->
+        <ImageView
+            style="@style/yuezhan_arrow"
+            android:src="@mipmap/arrow_right"/>
 
-    <!--<TextView-->
-    <!--android:id="@+id/tv_address"-->
-    <!--style="@style/yuezhan_content"-->
-    <!--android:text="新世纪网吧"/>-->
+        <TextView
+            android:id="@+id/tv_times"
+            style="@style/yuezhan_content"/>
 
-    <!--</RelativeLayout>-->
+    </RelativeLayout>
 
-    <!--<TextView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="1dp"-->
-    <!--android:background="@color/line_color"/>-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -206,6 +205,11 @@
             style="@style/yuezhan_content"/>
 
     </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
 
     <TextView
         android:layout_width="match_parent"

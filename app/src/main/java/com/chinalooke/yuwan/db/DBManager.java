@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.chinalooke.yuwan.model.GameMessage;
+import com.chinalooke.yuwan.bean.GameMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,8 @@ public class DBManager {
         db.beginTransaction();  //开始事务
         try {
             for (GameMessage.ResultBean person : games) {
-                db.execSQL("INSERT OR REPLACE INTO person VALUES(?,?,?)", new Object[]{person.getGameId(), person.getName(), person.getThumb()});
+                db.execSQL("INSERT OR REPLACE INTO person VALUES(?,?,?,?,?,?,?)", new Object[]{person.getGameId(), person.getName(), person.getThumb()
+                        , person.getMaxPeopleNumber(), person.getTimes(), person.getWagerMax(), person.getWagerMin()});
             }
             db.setTransactionSuccessful();  //设置事务成功完成
         } finally {
@@ -49,6 +50,10 @@ public class DBManager {
             person.setName(c.getString(c.getColumnIndex("name")));
             person.setGameId(c.getString(c.getColumnIndex("gameId")));
             person.setThumb(c.getString(c.getColumnIndex("url")));
+            person.setMaxPeopleNumber(c.getString(c.getColumnIndex("maxPeopleNumber")));
+            person.setTimes(c.getString(c.getColumnIndex("times")));
+            person.setWagerMax(c.getString(c.getColumnIndex("wagerMax")));
+            person.setWagerMin(c.getString(c.getColumnIndex("wagerMin")));
             persons.add(person);
         }
         c.close();
@@ -66,6 +71,10 @@ public class DBManager {
             resultBean.setName(c.getString(c.getColumnIndex("name")));
             resultBean.setGameId(c.getString(c.getColumnIndex("gameId")));
             resultBean.setThumb(c.getString(c.getColumnIndex("url")));
+            resultBean.setMaxPeopleNumber(c.getString(c.getColumnIndex("maxPeopleNumber")));
+            resultBean.setTimes(c.getString(c.getColumnIndex("times")));
+            resultBean.setWagerMax(c.getString(c.getColumnIndex("wagerMax")));
+            resultBean.setWagerMin(c.getString(c.getColumnIndex("wagerMin")));
         }
         c.close();
         return resultBean;

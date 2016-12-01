@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,12 +34,12 @@ import com.chinalooke.yuwan.activity.AddFriendActivity;
 import com.chinalooke.yuwan.activity.FrequentlyGameActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.PersonalInfoActivity;
+import com.chinalooke.yuwan.bean.FriendInfo;
+import com.chinalooke.yuwan.bean.GameMessage;
+import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.bean.SortModel;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.model.FriendInfo;
-import com.chinalooke.yuwan.model.GameMessage;
-import com.chinalooke.yuwan.model.LoginUser;
-import com.chinalooke.yuwan.model.SortModel;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -80,6 +81,8 @@ public class YueZhanFragment extends Fragment {
     TextView mTvMoney;
     @Bind(R.id.tv_friends)
     TextView mTvFriends;
+    @Bind(R.id.tv_times)
+    TextView mTvTimes;
 
     private Toast mToast;
     private LoginUser.ResultBean mUsrInfo;
@@ -87,6 +90,7 @@ public class YueZhanFragment extends Fragment {
     private Date mBeginDate;
     private ArrayList<String> mPeopleNumberList = new ArrayList<>();
     private ArrayList<String> mMoneyList = new ArrayList<>();
+    private ArrayList<String> mTimesList = new ArrayList<>();
     private GameMessage.ResultBean mChoseGame;
     private int ADD_FRIENDS = 2;
     private String mRule;
@@ -201,12 +205,15 @@ public class YueZhanFragment extends Fragment {
 
 
     @OnClick({R.id.rl_game_name, R.id.rl_time, R.id.rl_people, R.id.rl_money,
-            R.id.tv_skip, R.id.rl_friend, R.id.rl_rule})
+            R.id.tv_skip, R.id.rl_friend, R.id.rl_rule, R.id.rl_times})
     public void onClick(View view) {
         if (mUsrInfo == null) {
             startActivity(new Intent(getActivity(), LoginActivity.class));
         } else {
             switch (view.getId()) {
+                case R.id.rl_times:
+                    alertPicker(mTimesList, "选择游戏参与人数", 3);
+                    break;
                 case R.id.tv_skip:
                     createDesk();
                     break;
@@ -268,6 +275,7 @@ public class YueZhanFragment extends Fragment {
         }
 
     }
+
 
     private void createDesk() {
         if (NetUtil.is_Network_Available(getActivity())) {
@@ -376,9 +384,12 @@ public class YueZhanFragment extends Fragment {
                     case 1:
                         mTvMoney.setText(mMoneyList.get(options1));
                         break;
+                    case 3:
+                        mTvTimes.setText(mTimesList.get(options1));
                 }
             }
         });
+        optionsPickerView.setCyclic(false);
         optionsPickerView.show();
     }
 
@@ -432,7 +443,7 @@ public class YueZhanFragment extends Fragment {
                     hour = "0" + hour;
                 String minute = options3Items.get(0).get(0).get(options3);
                 if (minute.length() == 1)
-                    minute = "0" + hour;
+                    minute = "0" + minute;
                 mTvTime.setText(DateUtils.getFormatShortTime(mBeginDate) + "     " + hour + ":" + minute);
             }
         });
@@ -457,12 +468,25 @@ public class YueZhanFragment extends Fragment {
                     mTvGameName.setText(name);
                 setPeopleCount(mChoseGame);
                 setMoneyCount();
+                setTimesCount();
             }
         } else if (requestCode == ADD_FRIENDS) {
             if (data != null) {
                 mChoseFriends = (List<SortModel>) data.getSerializableExtra("mChose");
                 setFriends(mChoseFriends);
             }
+        }
+    }
+
+    private void setTimesCount() {
+        String times = mChoseGame.getTimes();
+        if (!TextUtils.isEmpty(times)) {
+            int parseInt = Integer.parseInt(times);
+            for (int i = 1; i <= parseInt; i++) {
+                mTimesList.add(i + "");
+            }
+        } else {
+            mTimesList.add("1");
         }
     }
 
@@ -482,11 +506,14 @@ public class YueZhanFragment extends Fragment {
         String wagerMin = mChoseGame.getWagerMin();
         String wagerMax = mChoseGame.getWagerMax();
         if (!TextUtils.isEmpty(wagerMin) && !TextUtils.isEmpty(wagerMax)) {
-            int min = Integer.parseInt(wagerMin);
-            int max = Integer.parseInt(wagerMax);
-            for (int i = min; i <= max; i++) {
+            double min = Double.parseDouble(wagerMin);
+            double max = Double.parseDouble(wagerMax);
+            mMoneyList.add(min + "");
+            int imin = (int) min;
+            for (int i = imin + 10; i < max; i = i + 10) {
                 mMoneyList.add(i + "");
             }
+            mMoneyList.add(max + "");
         }
     }
 
@@ -495,6 +522,7 @@ public class YueZhanFragment extends Fragment {
         String maxPeopleNumber = choseGame.getMaxPeopleNumber();
         if (!TextUtils.isEmpty(maxPeopleNumber)) {
             int maxPeople = Integer.parseInt(maxPeopleNumber);
+            Log.e("TAG", maxPeopleNumber);
             for (int i = 1; i < maxPeople + 1; i++) {
                 mPeopleNumberList.add(i + "");
             }

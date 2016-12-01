@@ -31,13 +31,12 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.GameDeskActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.SearchActivity;
+import com.chinalooke.yuwan.bean.Advertisement;
+import com.chinalooke.yuwan.bean.GameDesk;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.constant.MyLinearLayoutManager;
-import com.chinalooke.yuwan.model.Advertisement;
-import com.chinalooke.yuwan.model.GameDesk;
-import com.chinalooke.yuwan.model.GameDeskDetails;
-import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -48,9 +47,6 @@ import com.chinalooke.yuwan.view.RecycleViewDivider;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -129,15 +125,16 @@ public class BattleFieldFragment extends Fragment {
         WindowManager wm = (WindowManager) getContext()
                 .getSystemService(Context.WINDOW_SERVICE);
         mWidth = wm.getDefaultDisplay().getWidth();
+        user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
+        initView();
+        initData();
+        initEvent();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
-        initView();
-        initData();
-        initEvent();
     }
 
 
@@ -162,17 +159,14 @@ public class BattleFieldFragment extends Fragment {
                         case 0:
                             YZPAGE = 0;
                             getGameDeskListWithStatus(0, YZPAGE);
-//                            mYzAdapter.removeAllFooterView();
                             break;
                         case 1:
                             JXPAGE = 0;
                             getGameDeskListWithStatus(0, JXPAGE);
-//                            mJxAdapter.removeAllFooterView();
                             break;
                         case 2:
                             JSPAGE = 0;
                             getGameDeskListWithStatus(0, JSPAGE);
-//                            mJsAdapter.removeAllFooterView();
                             break;
                     }
                     mSr.setRefreshing(false);
@@ -196,38 +190,46 @@ public class BattleFieldFragment extends Fragment {
 
 
         //recycleView item 点击事件
-        BaseQuickAdapter.OnRecyclerViewItemClickListener onRecyclerViewItemClickListener = new BaseQuickAdapter.OnRecyclerViewItemClickListener() {
-            @Override
-            public void onItemClick(View view, int i) {
-                long currentTime = Calendar.getInstance().getTimeInMillis();
-                if (currentTime - itemLastClickTime > 2000) {
-                    itemLastClickTime = currentTime;
-                    if (user == null) {
-                        startActivity(new Intent(getActivity(), LoginActivity.class));
-                    } else {
-                        switch (mCurrentPage) {
-                            case 0:
-                                interItem(i, mYzList);
-                                break;
-                            case 1:
-                                interItem(i, mJxList);
-                                break;
-                            case 2:
-                                interItem(i, mJsList);
-                                break;
-                        }
-                    }
-                }
-            }
-        };
-        mYzAdapter.setOnRecyclerViewItemClickListener(onRecyclerViewItemClickListener);
-        mJxAdapter.setOnRecyclerViewItemClickListener(onRecyclerViewItemClickListener);
-        mJsAdapter.setOnRecyclerViewItemClickListener(onRecyclerViewItemClickListener);
+        mYzAdapter.setOnRecyclerViewItemClickListener(new MyOnRecyclerViewItemClickListener(0));
+        mJxAdapter.setOnRecyclerViewItemClickListener(new MyOnRecyclerViewItemClickListener(1));
+        mJsAdapter.setOnRecyclerViewItemClickListener(new MyOnRecyclerViewItemClickListener(2));
+
+        //recycleView滚动监听
         mRecyclerView.addOnScrollListener(new MyOnScrollListener(0));
         mRecyclerView1.addOnScrollListener(new MyOnScrollListener(1));
         mRecyclerView2.addOnScrollListener(new MyOnScrollListener(2));
     }
 
+    class MyOnRecyclerViewItemClickListener implements BaseQuickAdapter.OnRecyclerViewItemClickListener {
+        private int mInt;
+
+        MyOnRecyclerViewItemClickListener(int position) {
+            this.mInt = position;
+        }
+
+        @Override
+        public void onItemClick(View view, int i) {
+            long currentTime = Calendar.getInstance().getTimeInMillis();
+            if (currentTime - itemLastClickTime > 2000) {
+                itemLastClickTime = currentTime;
+                if (user == null) {
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                } else {
+                    switch (mInt) {
+                        case 0:
+                            interItem(i, mYzList);
+                            break;
+                        case 1:
+                            interItem(i, mJxList);
+                            break;
+                        case 2:
+                            interItem(i, mJsList);
+                            break;
+                    }
+                }
+            }
+        }
+    }
 
     class MyOnScrollListener extends RecyclerView.OnScrollListener {
 
@@ -272,8 +274,13 @@ public class BattleFieldFragment extends Fragment {
 
     private void interItem(int i, List<GameDesk.ResultBean> list) {
         GameDesk.ResultBean resultBean = list.get(i);
-        String gameDeskId = resultBean.getGameDeskId();
-        getGameDeskWithId(gameDeskId, resultBean);
+        Intent intent = new Intent(getActivity(), GameDeskActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("gameDesk", resultBean);
+        intent.putExtras(bundle);
+        startActivity(intent);
+
+//        getGameDeskWithId(gameDeskId, resultBean);
     }
 
     //判断recycleView是否已经滑到底部
@@ -434,9 +441,9 @@ public class BattleFieldFragment extends Fragment {
         MyLinearLayoutManager myLinearLayoutManager = new MyLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
         MyLinearLayoutManager myLinearLayoutManager1 = new MyLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
         MyLinearLayoutManager myLinearLayoutManager2 = new MyLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
-        mYzAdapter = new QuickAdapter(R.layout.item_zc_listview, mYzList);
-        mJxAdapter = new QuickAdapter(R.layout.item_zc_listview, mJxList);
-        mJsAdapter = new QuickAdapter(R.layout.item_zc_listview, mJsList);
+        mYzAdapter = new QuickAdapter(R.layout.item_zc_listview, mYzList, 0);
+        mJxAdapter = new QuickAdapter(R.layout.item_zc_listview, mJxList, 1);
+        mJsAdapter = new QuickAdapter(R.layout.item_zc_listview, mJsList, 2);
         RecycleViewDivider recycleViewDivider = new RecycleViewDivider(getActivity(), LinearLayoutManager.HORIZONTAL, 1, getResources().getColor(R.color.line_color));
         myLinearLayoutManager.setReverseLayout(false);
         myLinearLayoutManager.setAutoMeasureEnabled(true);
@@ -517,9 +524,15 @@ public class BattleFieldFragment extends Fragment {
     }
 
     public class QuickAdapter extends BaseQuickAdapter<GameDesk.ResultBean> {
+        private int mPage;
 
         QuickAdapter(int layoutResId, List<GameDesk.ResultBean> data) {
             super(layoutResId, data);
+        }
+
+        QuickAdapter(int layoutResId, List<GameDesk.ResultBean> data, int page) {
+            super(layoutResId, data);
+            this.mPage = page;
         }
 
         @Override
@@ -552,7 +565,7 @@ public class BattleFieldFragment extends Fragment {
             Date currentDate = new Date();
             assert date != null;
 
-            switch (mCurrentPage) {
+            switch (mPage) {
                 case 0:
                     helper.setText(R.id.tv_status, "约战中")
                             .setBackgroundRes(R.id.tv_status, R.mipmap.yzz);
@@ -588,6 +601,12 @@ public class BattleFieldFragment extends Fragment {
                     }
                     break;
                 case 2:
+                    String winnerTeam = item.getWinnerTeam();
+                    if ("A".equals(winnerTeam)) {
+                        helper.setText(R.id.tv_time, "约战方");
+                    } else if ("B".equals(winnerTeam)) {
+                        helper.setText(R.id.tv_time, "应战方");
+                    }
                     helper.setText(R.id.tv_status, "已结束")
                             .setText(R.id.tv_apply, "获胜方")
                             .setBackgroundRes(R.id.tv_status, R.mipmap.yjs);
@@ -597,49 +616,13 @@ public class BattleFieldFragment extends Fragment {
             String gameImage = item.getGameImage();
             if (!TextUtils.isEmpty(gameImage))
                 Picasso.with(mContext).load(item.getGameImage()).into((ImageView) helper.getView(R.id.image));
+
+            String curPlayNum = item.getCurPlayNum();
+            String playerNum = item.getPlayerNum();
+            if (!TextUtils.isEmpty(curPlayNum) && !TextUtils.isEmpty(playerNum))
+                helper.setText(R.id.tv_people, curPlayNum + "/" + playerNum);
         }
 
-    }
-
-    //按照游戏桌id取得游戏桌详情
-    private void getGameDeskWithId(final String gameDeskId, final GameDesk.ResultBean resultBean) {
-
-        StringRequest stringRequest = new StringRequest(Constant.HOST + "getGameDeskWithId&gameDeskId=" + gameDeskId,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        if (AnalysisJSON.analysisJson(response)) {
-                            Gson gson = new Gson();
-                            Type type = new TypeToken<GameDeskDetails>() {
-                            }.getType();
-                            GameDeskDetails gameDesk = gson.fromJson(response, type);
-                            if (gameDesk != null) {
-                                Intent intent = new Intent(getActivity(), GameDeskActivity.class);
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("gameDeskDetails", gameDesk);
-                                bundle.putSerializable("gameDesk", resultBean);
-                                intent.putExtra("gameDeskId", gameDeskId);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
-                            }
-                        } else {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                mToast.setText(jsonObject.getString("Msg"));
-                                mToast.show();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                mToast.setText("获取数据失败!");
-                mToast.show();
-            }
-        });
-        mQueue.add(stringRequest);
     }
 }
 

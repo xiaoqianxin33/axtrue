@@ -232,6 +232,8 @@
         </activity>
         <activity android:name=".activity.ChosePayActivity">
         </activity>
+        <activity android:name=".activity.AccountDetailActivity">
+        </activity>
     </application>
 
 </manifest>

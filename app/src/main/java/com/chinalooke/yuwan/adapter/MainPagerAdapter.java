@@ -12,12 +12,20 @@ import java.util.List;
  * Created by xiao on 2016/8/23.
  */
 public class MainPagerAdapter extends FragmentPagerAdapter {
-    private final String[] TITLES = {"圈子", "我的"};
+
+    private String[] TITLES;
 
     private List<Fragment> fragments = new ArrayList<Fragment>();
 
     public MainPagerAdapter(FragmentManager fm) {
         super(fm);
+    }
+
+    public MainPagerAdapter(FragmentManager fragmentManager,
+                            List<Fragment> fragments, String[] titles) {
+        super(fragmentManager);
+        this.fragments = fragments;
+        this.TITLES = titles;
     }
 
     public MainPagerAdapter(FragmentManager fragmentManager,

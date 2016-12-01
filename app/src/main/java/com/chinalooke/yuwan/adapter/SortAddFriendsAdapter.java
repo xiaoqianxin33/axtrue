@@ -17,8 +17,8 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.model.NearbyPeople;
-import com.chinalooke.yuwan.model.SortModel;
+import com.chinalooke.yuwan.bean.NearbyPeople;
+import com.chinalooke.yuwan.bean.SortModel;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.utils.AutoUtils;
 

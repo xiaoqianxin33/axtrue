@@ -15,7 +15,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.model.DeskUserInfo;
+import com.chinalooke.yuwan.bean.DeskUserInfo;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.view.PieChartView;
 import com.google.gson.Gson;

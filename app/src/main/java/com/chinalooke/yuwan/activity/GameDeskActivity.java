@@ -19,7 +19,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,11 +36,11 @@ import com.avos.avoscloud.AVPush;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.SendCallback;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.bean.GameDesk;
+import com.chinalooke.yuwan.bean.GameDeskDetails;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.model.GameDesk;
-import com.chinalooke.yuwan.model.GameDeskDetails;
-import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -96,13 +95,19 @@ public class GameDeskActivity extends AutoLayoutActivity {
     @Bind(R.id.gd_yuezhan)
     HorizontalListView mGdYuezhan;
     @Bind(R.id.gd_yingzhan)
-    GridView mGdYingzhan;
+    HorizontalListView mGdYingzhan;
     @Bind(R.id.rl_people)
     RelativeLayout mRlPeople;
     @Bind(R.id.rl_rule)
     RelativeLayout mRlRule;
     @Bind(R.id.tv_fight_number)
     TextView mTvFightNumber;
+    @Bind(R.id.tv_pay)
+    TextView mTvPay;
+    @Bind(R.id.tv_score)
+    TextView mTvScore;
+    @Bind(R.id.tv_rule)
+    TextView mTvRule;
 
     private List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> mLeftBeen = new ArrayList<>();
     private List<GameDeskDetails.ResultBean.PlayersBean.RightBean> mRight = new ArrayList<>();
@@ -129,6 +134,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private ProgressDialog mSubmitDialog;
     private int mGroup;
     private boolean isJudge = false;
+    private boolean isFirst = true;
 
 
     @Override
@@ -143,9 +149,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
         mWidthPixels = displayMetrics.widthPixels;
         mToast = YuwanApplication.getToast();
         user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
-        mGameDeskDetails = (GameDeskDetails) getIntent().getSerializableExtra("gameDeskDetails");
         initData();
-        initView();
         initEvent();
     }
 
@@ -225,6 +229,10 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 break;
             }
         }
+
+        String details = result.getDetails();
+        if (!TextUtils.isEmpty(details))
+            mTvRule.setText(details);
         for (GameDeskDetails.ResultBean.PlayersBean.RightBean rightBean : mRight) {
             if (userId.equals(rightBean.getUserId())) {
                 isJoin = true;
@@ -239,9 +247,17 @@ public class GameDeskActivity extends AutoLayoutActivity {
             if ("官方".equals(mOwnerName)) {
                 DESK_TYPE = 0;
                 mOwnerType.setText(mOwnerName);
+                mTvPay.setText("奖金");
+                String cup = mGameDesk.getCup();
+                if (!TextUtils.isEmpty(cup))
+                    mTvScore.setText(cup);
             } else {
                 DESK_TYPE = DESK_TYPE_PERSONAL;
                 mOwnerType.setText("个人");
+                mTvPay.setText("参赛费");
+                String gamePay = mGameDesk.getGamePay();
+                if (!TextUtils.isEmpty(gamePay))
+                    mTvScore.setText(gamePay + "雷熊币");
             }
         }
 
@@ -318,6 +334,10 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private void initData() {
         mGameDesk = (GameDesk.ResultBean) getIntent().getSerializableExtra("gameDesk");
         mGameDeskId = mGameDesk.getGameDeskId();
+
+        if (!TextUtils.isEmpty(mGameDeskId)) {
+            getGameDeskWithId(mGameDeskId);
+        }
     }
 
     private void setResult() {
@@ -373,12 +393,15 @@ public class GameDeskActivity extends AutoLayoutActivity {
         mQueue.add(request);
     }
 
-    @OnClick({R.id.tv_chat, R.id.tv_ok})
+    @OnClick({R.id.tv_chat, R.id.tv_ok, R.id.iv_back})
     public void onClick(View view) {
         long currentTime = Calendar.getInstance().getTimeInMillis();
         if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
             lastClickTime = currentTime;
             switch (view.getId()) {
+                case R.id.iv_back:
+                    finish();
+                    break;
                 case R.id.tv_chat:
                     Intent intent = new Intent(GameDeskActivity.this, EaseGroupChatActivity.class);
                     intent.putExtra("groupId", mRoomId);
@@ -673,7 +696,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             viewHolder.mIvCrown.setVisibility(View.GONE);
         }
         if (position == mLeftBeen.size()) {
-            viewHolder.mView.setImageResource(R.mipmap.vacant);
+            viewHolder.mView.setImageResource(R.mipmap.vacant_left);
             viewHolder.mTvName.setText("");
         } else {
             GameDeskDetails.ResultBean.PlayersBean.LeftBean leftBean = mLeftBeen.get(position);
@@ -694,7 +717,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             viewHolder.mIvCrown.setVisibility(View.GONE);
         }
         if (position == mRight.size()) {
-            viewHolder.mView.setImageResource(R.mipmap.vacant);
+            viewHolder.mView.setImageResource(R.mipmap.vacant_right);
             viewHolder.mTvName.setText("");
         } else {
             GameDeskDetails.ResultBean.PlayersBean.RightBean leftBean = mRight.get(position);
@@ -863,21 +886,22 @@ public class GameDeskActivity extends AutoLayoutActivity {
     }
 
     private void showJoinSucceedDialog() {
-        final Dialog dialog = new Dialog(GameDeskActivity.this, R.style.Dialog);
-        View inflate = LayoutInflater.from(this).inflate(R.layout.dialog_desk_succeed, null);
-        TextView tvOk = (TextView) inflate.findViewById(R.id.tv_ok);
-        tvOk.setOnClickListener(new View.OnClickListener() {
+        MyUtils.showCustomDialog(this, "提示", "您已发起挑战\r系统将自动扣除相应金额", null, "确定", null, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
-        dialog.setContentView(inflate);
-        dialog.show();
     }
 
     private void refreshUI() {
-        StringRequest stringRequest = new StringRequest(getGameDeskWithId + mGameDeskId,
+        getGameDeskWithId(mGameDeskId);
+    }
+
+    //按照游戏桌id取得游戏桌详情
+    private void getGameDeskWithId(final String gameDeskId) {
+
+        StringRequest stringRequest = new StringRequest(Constant.HOST + "getGameDeskWithId&gameDeskId=" + gameDeskId,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -885,15 +909,29 @@ public class GameDeskActivity extends AutoLayoutActivity {
                             Gson gson = new Gson();
                             Type type = new TypeToken<GameDeskDetails>() {
                             }.getType();
-                            GameDeskDetails o = gson.fromJson(response, type);
-                            if (o != null)
-                                mGameDeskDetails = o;
-                            initView();
+                            GameDeskDetails gameDesk = gson.fromJson(response, type);
+                            if (gameDesk != null) {
+                                mGameDeskDetails = gameDesk;
+                                initView();
+                                isFirst = false;
+                            }
+                        } else {
+                            if (isFirst) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    mToast.setText(jsonObject.getString("Msg"));
+                                    mToast.show();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mToast.setText("获取数据失败!");
+                mToast.show();
             }
         });
         mQueue.add(stringRequest);

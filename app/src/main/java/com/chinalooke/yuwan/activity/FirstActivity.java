@@ -11,8 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.model.LoginUser;
-import com.chinalooke.yuwan.model.UserInfo;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 
 import java.io.IOException;

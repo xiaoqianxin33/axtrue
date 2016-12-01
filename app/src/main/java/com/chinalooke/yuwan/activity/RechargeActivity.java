@@ -18,7 +18,7 @@ import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.ExchangeHelper;
-import com.chinalooke.yuwan.model.ExchangeLevels;
+import com.chinalooke.yuwan.bean.ExchangeLevels;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.google.gson.Gson;

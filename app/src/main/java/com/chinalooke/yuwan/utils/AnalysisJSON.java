@@ -3,7 +3,7 @@ package com.chinalooke.yuwan.utils;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.chinalooke.yuwan.model.ResultDatas;
+import com.chinalooke.yuwan.bean.ResultDatas;
 
 import org.json.JSONException;
 import org.json.JSONObject;

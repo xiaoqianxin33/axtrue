@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -14,17 +13,16 @@ import com.android.volley.toolbox.StringRequest;
 import com.avos.avoscloud.AVInstallation;
 import com.avos.avoscloud.PushService;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.bean.GameMessage;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.DBManager;
-import com.chinalooke.yuwan.model.GameMessage;
-import com.chinalooke.yuwan.model.LoginUser;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hyphenate.chat.EMClient;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 

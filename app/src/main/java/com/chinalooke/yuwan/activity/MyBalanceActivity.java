@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,8 +15,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.model.LoginUser;
-import com.chinalooke.yuwan.model.UserBalance;
+import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.bean.UserBalance;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -47,8 +46,6 @@ public class MyBalanceActivity extends AutoLayoutActivity {
     TextView mIv1;
     @Bind(R.id.tv_score)
     TextView mTvScore;
-    @Bind(R.id.rl_recharge)
-    RelativeLayout mRlRecharge;
     private RequestQueue mQueue;
     private LoginUser.ResultBean mUser;
     private Toast mToast;
@@ -117,6 +114,7 @@ public class MyBalanceActivity extends AutoLayoutActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_skip:
+                startActivity(new Intent(this, AccountDetailActivity.class));
                 break;
             case R.id.iv_back:
                 finish();

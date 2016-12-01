@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.model.LoginUser;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.zhy.autolayout.AutoLayoutActivity;
 

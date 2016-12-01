@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.db.DBManager;
-import com.chinalooke.yuwan.model.Circle;
-import com.chinalooke.yuwan.model.GameMessage;
-import com.chinalooke.yuwan.model.LoginUser;
+import com.chinalooke.yuwan.bean.Circle;
+import com.chinalooke.yuwan.bean.GameMessage;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;

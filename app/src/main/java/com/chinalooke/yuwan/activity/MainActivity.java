@@ -27,7 +27,7 @@ import com.chinalooke.yuwan.fragment.CircleFragment;
 import com.chinalooke.yuwan.fragment.DynamicFragment;
 import com.chinalooke.yuwan.fragment.WodeFragment;
 import com.chinalooke.yuwan.fragment.YueZhanFragment;
-import com.chinalooke.yuwan.model.LoginUser;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;

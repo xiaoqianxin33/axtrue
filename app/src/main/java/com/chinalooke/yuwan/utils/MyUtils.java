@@ -144,7 +144,8 @@ public class MyUtils {
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
         builder.setTitle(title);
         builder.setMessage(message);
-        builder.setNegativeButton(leftMessage, noClickListener);
+        if (leftMessage != null && noClickListener != null)
+            builder.setNegativeButton(leftMessage, noClickListener);
         builder.setPositiveButton(rightMessage, yesClickListener);
         builder.show();
     }

@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.chinalooke.yuwan.model.LoginUser;
+import com.chinalooke.yuwan.bean.LoginUser;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

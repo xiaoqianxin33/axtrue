@@ -1,14 +1,12 @@
 package com.chinalooke.yuwan.utils;
 
-import android.os.Handler;
-import android.provider.Settings;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.chinalooke.yuwan.model.ResultDatas;
+import com.chinalooke.yuwan.bean.ResultDatas;
 
 /**
  * Created by Administrator on 2016/8/25.

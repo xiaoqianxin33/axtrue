@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.chinalooke.yuwan.activity.GameDeskActivity;
-import com.chinalooke.yuwan.model.GameDesk;
-import com.chinalooke.yuwan.model.GameDeskDetails;
-import com.chinalooke.yuwan.model.LoginUser;
+import com.chinalooke.yuwan.bean.GameDesk;
+import com.chinalooke.yuwan.bean.GameDeskDetails;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

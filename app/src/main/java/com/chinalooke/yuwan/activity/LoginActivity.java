@@ -24,16 +24,13 @@ import com.avos.avoscloud.PushService;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.model.LoginUser;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.Validator;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.hyphenate.EMCallBack;
-import com.hyphenate.chat.EMClient;
-import com.hyphenate.exceptions.HyphenateException;
 import com.zhy.autolayout.AutoLayoutActivity;
 
 import org.json.JSONException;
@@ -55,7 +52,6 @@ import cn.sharesdk.wechat.friends.Wechat;
 
 import static com.chinalooke.yuwan.constant.Constant.MIN_CLICK_DELAY_TIME;
 import static com.chinalooke.yuwan.constant.Constant.lastClickTime;
-import static com.chinalooke.yuwan.utils.NetUtil.loginHx;
 import static com.chinalooke.yuwan.utils.NetUtil.registerHx;
 
 
@@ -115,7 +111,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
         mEtPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_GO) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     InputMethodManager imm = (InputMethodManager) v
                             .getContext().getSystemService(
                                     Context.INPUT_METHOD_SERVICE);
@@ -350,8 +346,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
      */
     private void weixinLogin() {
         disanfangLogin(Wechat.NAME);
-        Log.d("TAG", "微信登录");
-
     }
 
     /**
