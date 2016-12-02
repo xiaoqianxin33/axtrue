@@ -108,6 +108,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
     TextView mTvScore;
     @Bind(R.id.tv_rule)
     TextView mTvRule;
+    @Bind(R.id.iv_arrow)
+    TextView mIvArrow;
 
     private List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> mLeftBeen = new ArrayList<>();
     private List<GameDeskDetails.ResultBean.PlayersBean.RightBean> mRight = new ArrayList<>();
@@ -247,7 +249,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
         }
 
 
-
         String mOwnerName = mGameDesk.getOwnerName();
         int DESK_TYPE_PERSONAL = 1;
         if (!TextUtils.isEmpty(mOwnerName)) {
@@ -302,6 +303,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     mRlPeople.setVisibility(View.GONE);
                     mRlRule.setVisibility(View.GONE);
                     mTvChat.setEnabled(false);
+                    mIvArrow.setVisibility(View.GONE);
                     break;
             }
         }
@@ -511,6 +513,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
         AVPush push = new AVPush();
         JSONObject jsonObject = new JSONObject();
         Gson gson = new Gson();
+        mGameDeskDetails.getResult().setAgree(false);
+        mGameDeskDetails.getResult().setDeskId(mGameDeskId);
         String gameDeskDetails = gson.toJson(mGameDeskDetails);
         try {
             jsonObject.put("title", "雷熊");

@@ -95,6 +95,26 @@ public class GameDeskDetails implements Serializable {
         private String bgImage;
         @DatabaseField(generatedId = true)
         private String roomId;
+        @DatabaseField(columnName = "deskId")
+        private String deskId;
+        @DatabaseField(columnName = "isAgree")
+        private boolean isAgree;
+
+        public String getDeskId() {
+            return deskId;
+        }
+
+        public void setDeskId(String deskId) {
+            this.deskId = deskId;
+        }
+
+        public boolean isAgree() {
+            return isAgree;
+        }
+
+        public void setAgree(boolean agree) {
+            isAgree = agree;
+        }
 
         public String getRoomId() {
             return roomId;

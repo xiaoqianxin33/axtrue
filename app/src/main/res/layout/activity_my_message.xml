@@ -10,11 +10,26 @@
 
     <include layout="@layout/include_head"/>
 
-    <ListView
-        android:id="@+id/list_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@null"/>
+        android:layout_height="wrap_content">
+
+        <ListView
+            android:id="@+id/list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:scrollbars="none"/>
+
+        <TextView
+            android:id="@+id/tv_none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="暂无消息"
+            android:textSize="16sp"
+            android:visibility="gone"/>
 
 
+    </FrameLayout>
 </LinearLayout>

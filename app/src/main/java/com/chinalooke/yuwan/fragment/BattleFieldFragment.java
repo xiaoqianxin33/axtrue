@@ -11,7 +11,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -255,7 +254,6 @@ public class BattleFieldFragment extends Fragment {
     }
 
     private void loadMore(int anInt) {
-        Log.e("TAG", "loadMore");
         switch (anInt) {
             case 0:
                 YZPAGE++;
@@ -524,10 +522,11 @@ public class BattleFieldFragment extends Fragment {
                 helper.setText(R.id.name, ownerName);
                 if ("官方".equals(ownerName)) {
                     helper.setText(R.id.tv_owner, "官方");
-                    helper.setBackgroundRes(R.id.tv_owner, R.mipmap.gf_zc);
+                    helper.setBackgroundRes(R.id.tv_owner, R.mipmap.gf_zc)
+                            .setVisible(R.id.tv_location, true);
                 } else {
                     helper.setText(R.id.tv_owner, "个人");
-                    helper.setBackgroundRes(R.id.tv_owner, R.mipmap.gr_zc);
+                    helper.setBackgroundRes(R.id.tv_owner, R.mipmap.gr_zc).setVisible(R.id.tv_location, false);
                 }
             }
 

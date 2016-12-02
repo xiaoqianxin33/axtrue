@@ -86,7 +86,8 @@
             <com.chinalooke.yuwan.view.NoSlidingListView
                 android:id="@+id/lv_circle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:divider="@null"/>
 
             <ProgressBar
                 android:id="@+id/pb_load"
@@ -125,6 +126,7 @@
             </RelativeLayout>
         </FrameLayout>
 
+
         <TextView
             android:id="@+id/tv_more"
             android:layout_width="match_parent"
@@ -135,6 +137,10 @@
             android:textColor="@color/shallow_word"
             android:textSize="24px"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_color"/>
 
         <LinearLayout
             android:id="@+id/ll_interest"

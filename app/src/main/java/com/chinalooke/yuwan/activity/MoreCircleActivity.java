@@ -3,13 +3,12 @@ package com.chinalooke.yuwan.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,6 +30,8 @@ import com.chinalooke.yuwan.utils.NetUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
+import com.zhy.autolayout.AutoLayoutActivity;
+import com.zhy.autolayout.utils.AutoUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +44,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MoreCircleActivity extends AppCompatActivity {
+public class MoreCircleActivity extends AutoLayoutActivity {
 
     @Bind(R.id.lv_morecircle)
     ListView mLvMorecircle;
@@ -55,12 +56,10 @@ public class MoreCircleActivity extends AppCompatActivity {
     TextView mTvNo;
     @Bind(R.id.tv_title)
     TextView mTvTitle;
-    @Bind(R.id.activity_more_circle)
-    LinearLayout mActivityMoreCircle;
     private RequestQueue mQueue;
     private Toast mToast;
     private MyAdapt mMyAdapt;
-    private int mPage = 1;
+    private int mPage;
     private boolean isLoading = false;
     private double mLongitude;
     private double mLatitude;
@@ -68,6 +67,8 @@ public class MoreCircleActivity extends AppCompatActivity {
     private List<Circle.ResultBean> mMyCircleResult = new ArrayList<>();
     private boolean isFirst = true;
     private LoginUser.ResultBean mUserInfo;
+    private View mFoot;
+    private boolean isFoot = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,7 @@ public class MoreCircleActivity extends AppCompatActivity {
         mLatitude = getIntent().getDoubleExtra("latitude", 0);
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         mTvTitle.setText("更多圈子");
+        mFoot = View.inflate(MoreCircleActivity.this, R.layout.foot, null);
         initEvent();
     }
 
@@ -96,7 +98,9 @@ public class MoreCircleActivity extends AppCompatActivity {
             public void onRefresh() {
                 mPage = 1;
                 mMyCircleResult.clear();
+                mLvMorecircle.removeFooterView(mFoot);
                 initData();
+                isFoot = false;
                 mSr.setRefreshing(false);
             }
         });
@@ -119,11 +123,30 @@ public class MoreCircleActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //listView点击监听
+
+        mLvMorecircle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Circle.ResultBean resultBean = mMyCircleResult.get(position);
+                Intent intent = new Intent(MoreCircleActivity.this, CircleDynamicActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("circle", resultBean);
+                //设置圈子类型为附近圈子
+                intent.putExtra("circle_type", 0);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
     }
 
     private void loadMore() {
-        isLoading = true;
-        initData();
+        if (!isFoot) {
+            mPage++;
+            isLoading = true;
+            initData();
+        }
     }
 
     private void initData() {
@@ -159,7 +182,6 @@ public class MoreCircleActivity extends AppCompatActivity {
                         mTvNo.setVisibility(View.GONE);
                         mMyCircleResult.addAll(mMyCircle.getResult());
                         mMyAdapt.notifyDataSetChanged();
-                        mPage++;
                     } else {
                         if (isFirst) {
                             mTvNo.setText("没有加入的圈子");
@@ -183,8 +205,8 @@ public class MoreCircleActivity extends AppCompatActivity {
                         }
                     } else {
                         mTvNo.setVisibility(View.GONE);
-                        mToast.setText("没有更多了");
-                        mToast.show();
+                        mLvMorecircle.addFooterView(mFoot);
+                        isFoot = true;
                     }
                 }
                 isLoading = false;
@@ -238,14 +260,15 @@ public class MoreCircleActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
             if (convertView == null) {
-                convertView = View.inflate(getApplicationContext(), R.layout.item_circle_listview, null);
+                convertView = View.inflate(MoreCircleActivity.this, R.layout.item_circle_listview, null);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
+                AutoUtils.autoSize(convertView);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             Circle.ResultBean resultBean = mMyCircleResult.get(position);
-            Picasso.with(getApplicationContext()).load(resultBean.getHeadImg()).resize(MyUtils.Dp2Px(getApplicationContext()
+            Picasso.with(MoreCircleActivity.this).load(resultBean.getHeadImg()).resize(MyUtils.Dp2Px(getApplicationContext()
                     , 80), MyUtils.Dp2Px(getApplicationContext(), 80)).centerCrop().into(viewHolder.mIvCircleImage);
             viewHolder.mTvCircleName.setText(resultBean.getGroupName());
             viewHolder.mTvCircleDetails.setText(resultBean.getDetails());

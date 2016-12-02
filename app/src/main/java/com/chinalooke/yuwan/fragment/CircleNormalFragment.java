@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -30,6 +29,7 @@ import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.CameraPosition;
 import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -40,12 +40,13 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.CircleDynamicActivity;
 import com.chinalooke.yuwan.activity.CreateCircleActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
+import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.MoreCircleActivity;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.Advertisement;
 import com.chinalooke.yuwan.bean.Circle;
 import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -64,6 +65,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -103,7 +105,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     BGABanner mBanner;
     private Circle mCircle;
     private RequestQueue mQueue;
-    private Toast mToast;
     private double mLatitude;
     private double mLongitude;
     private AMapLocationClient mAMapLocationClient;
@@ -116,13 +117,14 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     private GridAdapt mInterestGridAdapt;
     private AMap mMap;
     private GridAdapt mHotGridAdapt;
+    private MainActivity mActivity;
+    private HashMap<Marker, Circle.ResultBean> mMarkerResultBeanHashMap = new HashMap<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_circle_normal, container, false);
         ButterKnife.bind(this, view);
         mQueue = YuwanApplication.getQueue();
-        mToast = YuwanApplication.getToast();
         return view;
     }
 
@@ -130,16 +132,18 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mMapview.onCreate(savedInstanceState);
-
+        mActivity = (MainActivity) getActivity();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mMapview != null)
+        if (mMapview != null) {
             mMapview.onResume();
+        }
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getActivity(), LoginUserInfoUtils.KEY);
         mMap = mMapview.getMap();
+        mMap.clear();
         initView();
         initData();
         initEvent();
@@ -172,6 +176,23 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                 //设置圈子类型为兴趣圈子
                 intent.putExtras(bundle);
                 startActivity(intent);
+            }
+        });
+
+        mMap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Circle.ResultBean resultBean = mMarkerResultBeanHashMap.get(marker);
+                if (resultBean != null) {
+                    Intent intent = new Intent(getActivity(), CircleDynamicActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("circle", resultBean);
+                    //设置圈子类型为附近圈子
+                    intent.putExtra("circle_type", 0);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+                return true;
             }
         });
     }
@@ -229,13 +250,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                         }
                     }
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            });
-
+            }, null);
             mQueue.add(request);
         }
     }
@@ -255,17 +270,9 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                     }.getType();
                     Advertisement advertisement = gson.fromJson(response, type);
                     setBanner(advertisement);
-                } else {
-                    MyUtils.showMsg(mToast, response);
                 }
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                mToast.setText("网络不给力啊，换个地方试试");
-                mToast.show();
-            }
-        });
+        }, null);
 
         mQueue.add(request);
     }
@@ -310,6 +317,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             lastClickTime = currentTime;
             switch (view.getId()) {
                 case R.id.iv_refresh:
+                    mMap.clear();
                     mAMapLocationClient = LocationUtils.location(getActivity(), this);
                     break;
                 case R.id.tv_more:
@@ -371,8 +379,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             public void onErrorResponse(VolleyError error) {
                 mPbLoad.setVisibility(View.GONE);
                 mTvMore.setVisibility(View.VISIBLE);
-                mToast.setText("网络不给力啊，换个地方试试");
-                mToast.show();
             }
         });
         mQueue.add(stringRequest);
@@ -415,7 +421,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
             if (convertView == null) {
-                convertView = View.inflate(getActivity(), R.layout.item_circle_listview, null);
+                convertView = View.inflate(mActivity, R.layout.item_circle_listview, null);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
                 AutoUtils.autoSize(convertView);
@@ -423,8 +429,8 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             Circle.ResultBean resultBean = mNearbyCircles.get(position);
-            Picasso.with(getActivity()).load(resultBean.getHeadImg()).resize(MyUtils.Dp2Px(getActivity()
-                    , 80), MyUtils.Dp2Px(getActivity(), 80)).centerCrop().into(viewHolder.mIvCircleImage);
+            Picasso.with(mActivity).load(resultBean.getHeadImg()).resize(MyUtils.Dp2Px(mActivity
+                    , 80), MyUtils.Dp2Px(mActivity, 80)).centerCrop().into(viewHolder.mIvCircleImage);
             viewHolder.mTvCircleName.setText(resultBean.getGroupName());
             viewHolder.mTvCircleDetails.setText(resultBean.getDetails());
             viewHolder.mTvDiscountCircle.setText(resultBean.getDistance() + "m");
@@ -449,6 +455,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     }
 
 
+    //得到兴趣圈子
     private void getInterestCircle() {
         String[] strings = mUserInfo.getGameId();
         StringBuilder stringBuffer = new StringBuilder();
@@ -475,16 +482,9 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                         mInterestCircles.addAll(interestCircles);
                         mInterestGridAdapt.notifyDataSetChanged();
                     }
-                } else {
-                    MyUtils.showMsg(mToast, response);
                 }
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
+        }, null);
         mQueue.add(stringRequest);
     }
 
@@ -516,7 +516,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
             if (convertView == null) {
-                convertView = View.inflate(getActivity(), R.layout.item_circle_gridview, null);
+                convertView = View.inflate(mActivity, R.layout.item_circle_gridview, null);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
                 AutoUtils.autoSize(convertView);
@@ -526,7 +526,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             Circle.ResultBean resultBean = mList.get(position);
             viewHolder.mTvGameName.setText(resultBean.getGroupName());
             viewHolder.mTvView.setText("人气  " + resultBean.getViews());
-            Picasso.with(getActivity()).load(resultBean.getHeadImg()).resize(120, 120).centerCrop()
+            Picasso.with(mActivity).load(resultBean.getHeadImg()).resize(120, 120).centerCrop()
                     .into(viewHolder.mIvGameimage);
             return convertView;
         }
@@ -548,7 +548,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     private void setAMap() {
         if (mNearbyCircles.size() != 0) {
             for (final Circle.ResultBean resultBean : mNearbyCircles) {
-                String bgImage = resultBean.getBgImage();
+                String bgImage = resultBean.getHeadImg();
                 if (!TextUtils.isEmpty(bgImage)) {
                     ImageRequest request = new ImageRequest(bgImage, new Response.Listener<Bitmap>() {
                         @Override
@@ -557,10 +557,12 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                             MarkerOptions markerOptions = new MarkerOptions();
                             markerOptions.position(latLng2);
                             markerOptions.draggable(false);
+                            markerOptions.title(resultBean.getGroupName());
                             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(response));
-                            mMap.addMarker(new MarkerOptions().position(latLng2).title(resultBean.getGroupName()).snippet("DefaultMarker"));
+                            Marker marker = mMap.addMarker(markerOptions);
+                            mMarkerResultBeanHashMap.put(marker, resultBean);
                         }
-                    }, 100, 100, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, null);
+                    }, 100, 100, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.ARGB_8888, null);
                     mQueue.add(request);
                 }
             }
