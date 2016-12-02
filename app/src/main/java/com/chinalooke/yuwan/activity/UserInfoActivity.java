@@ -16,6 +16,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,7 +33,6 @@ import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.Auth;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
-import com.chinalooke.yuwan.view.EditNameDialog;
 import com.lljjcoder.citypickerview.widget.CityPickerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.qiniu.android.http.ResponseInfo;
@@ -43,6 +43,7 @@ import com.yuyh.library.imgsel.ImageLoader;
 import com.yuyh.library.imgsel.ImgSelActivity;
 import com.yuyh.library.imgsel.ImgSelConfig;
 import com.zhy.autolayout.AutoLayoutActivity;
+import com.zhy.autolayout.utils.AutoUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -351,24 +352,32 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     }
 
     private void showEditDialog() {
-        final EditNameDialog editNameDialog = new EditNameDialog(this);
-        editNameDialog.setNoOnclickListener(new EditNameDialog.onNoOnclickListener() {
+        final Dialog dialog = new Dialog(this, R.style.Dialog);
+        View inflate = LayoutInflater.from(this).inflate(R.layout.dialog_edit_name, null);
+        final EditText editText = (EditText) inflate.findViewById(R.id.et_input);
+        Button noButton = (Button) inflate.findViewById(R.id.btn_cancel);
+        Button yesButton = (Button) inflate.findViewById(R.id.btn_ok);
+        noButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNoClick() {
-                editNameDialog.dismiss();
+            public void onClick(View v) {
+                dialog.dismiss();
             }
         });
-        editNameDialog.setYesOnclickListener(new EditNameDialog.onYesOnclickListener() {
+
+        yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onYesClick(String input) {
-                editNameDialog.dismiss();
-                if (!TextUtils.isEmpty(input)) {
-                    mTvName.setText(input);
-                    mName = input;
+            public void onClick(View v) {
+                dialog.dismiss();
+                Editable text = editText.getText();
+                if (!TextUtils.isEmpty(text)) {
+                    mTvName.setText(text.toString());
+                    mName = text.toString();
                 }
             }
         });
-        editNameDialog.show();
+        AutoUtils.autoSize(inflate);
+        dialog.setContentView(inflate);
+        dialog.show();
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)

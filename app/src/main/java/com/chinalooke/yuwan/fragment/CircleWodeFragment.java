@@ -53,8 +53,8 @@ public class CircleWodeFragment extends Fragment {
         CircleWodeWFragment circleWodeWFragment = new CircleWodeWFragment();
         CircleWodeCFragment circleWodeCFragment = new CircleWodeCFragment();
         List<Fragment> list = new ArrayList<>();
-        list.add(circleWodeCFragment);
         list.add(circleWodeWFragment);
+        list.add(circleWodeCFragment);
         MainPagerAdapter mainPagerAdapter = new MainPagerAdapter(mFragmentManager, list);
         mViewPager.setAdapter(mainPagerAdapter);
         setSelect(0);

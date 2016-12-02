@@ -81,21 +81,35 @@
                 android:textColor="@android:color/white"
                 android:textSize="26px"/>
 
-            <TextView
-                android:id="@+id/tv_join"
+
+            <FrameLayout
                 android:layout_width="123px"
                 android:layout_height="57px"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="22px"
-                android:layout_marginTop="38px"
-                android:background="@mipmap/join_circle"
-                android:gravity="center_vertical"
-                android:paddingLeft="51px"
-                android:text="加入"
-                android:textColor="@android:color/white"
-                android:textSize="25px"/>
+                android:layout_marginTop="38px">
 
+                <TextView
+                    android:id="@+id/tv_join"
+                    android:layout_width="123px"
+                    android:layout_height="57px"
+                    android:background="@mipmap/join_circle"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="51px"
+                    android:text="加入"
+                    android:textColor="@android:color/white"
+                    android:textSize="25px"/>
 
+                <TextView
+                    android:id="@+id/tv_paihang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="排行榜"
+                    android:textColor="@android:color/white"
+                    android:textSize="30px"/>
+
+            </FrameLayout>
         </RelativeLayout>
 
     </RelativeLayout>

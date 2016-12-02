@@ -107,6 +107,7 @@
             android:layout_height="match_parent"
             android:layout_marginRight="@dimen/small_padding"
             android:layout_toLeftOf="@id/iv2"
+            android:gravity="center_vertical"
             android:orientation="horizontal"/>
     </RelativeLayout>
 

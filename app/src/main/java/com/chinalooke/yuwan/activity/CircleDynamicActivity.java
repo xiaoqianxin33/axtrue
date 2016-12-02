@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -30,10 +31,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.bean.Circle;
+import com.chinalooke.yuwan.bean.CircleDetail;
 import com.chinalooke.yuwan.bean.Dynamic;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
@@ -77,6 +80,8 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
     TextView mTvNone;
     @Bind(R.id.tv_join)
     TextView mTvJoin;
+    @Bind(R.id.tv_paihang)
+    TextView mTvPaihang;
     private Circle.ResultBean mCircle;
     private RequestQueue mQueue;
     private DisplayMetrics mDisplayMetrics;
@@ -91,6 +96,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
     private Toast mToast;
     private boolean mUserJoin;
     private ProgressDialog mProgressDialog;
+    private CircleDetail mCircleDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,8 +179,6 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         });
 
         mQueue.add(request);
-        mUserJoin = mCircle.isUserJoin();
-        setIsJoin();
         String groupName = mCircle.getGroupName();
         if (!TextUtils.isEmpty(groupName))
             mTvName.setText(groupName);
@@ -190,17 +194,46 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
 
     private void setIsJoin() {
         if (mUserJoin) {
-            mTvJoin.setBackground(null);
-            mTvJoin.setText("排行榜");
+            mTvJoin.setVisibility(View.GONE);
+            mTvPaihang.setVisibility(View.VISIBLE);
         } else {
-            mTvJoin.setBackground(getResources().getDrawable(R.mipmap.join_circle));
-            mTvJoin.setText("加入");
+            mTvJoin.setVisibility(View.VISIBLE);
+            mTvPaihang.setVisibility(View.GONE);
         }
     }
 
     private void initData() {
         mCircle = (Circle.ResultBean) getIntent().getSerializableExtra("circle");
         mCircle_type = getIntent().getIntExtra("circle_type", 0);
+        getGroupWIthId();
+    }
+
+    //获得圈子详细信息
+    private void getGroupWIthId() {
+        if (NetUtil.is_Network_Available(getApplicationContext())) {
+            String url = Constant.HOST + "getGroupWIthId&groupId=" + mCircle.getGroupId();
+            if (mUserInfo != null)
+                url = url + "&userId=" + mUserInfo.getUserId();
+
+            StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    if (AnalysisJSON.analysisJson(response)) {
+                        Gson gson = new Gson();
+                        Type type = new TypeToken<CircleDetail>() {
+                        }.getType();
+                        mCircleDetail = gson.fromJson(response, type);
+                        CircleDetail.ResultBean result = mCircleDetail.getResult();
+                        boolean isUserJoin = result.isIsUserJoin();
+                        Log.e("TAG", isUserJoin + "");
+                        Log.e("TAG", response);
+                        setIsJoin();
+                    }
+                }
+            }, null);
+
+            mQueue.add(request);
+        }
     }
 
     //获取圈子动态信息
@@ -322,22 +355,20 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         if (NetUtil.is_Network_Available(getApplicationContext())) {
             mProgressDialog = MyUtils.initDialog("", CircleDynamicActivity.this);
             mProgressDialog.show();
-            String url = Constant.HOST + "joinGroup&groupId=" + mCircle.getGroupId() + "&userId=" + mUserInfo.getUserId();
+            final String url = Constant.HOST + "joinGroup&groupId=" + mCircle.getGroupId() + "&userId=" + mUserInfo.getUserId();
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
+                    Log.e("TAG", url);
                     mProgressDialog.dismiss();
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         boolean success = jsonObject.getBoolean("Success");
                         if (success) {
-                            boolean result = jsonObject.getBoolean("Result");
-                            if (result) {
-                                mToast.setText("加入成功！");
-                                mToast.show();
-                                mUserJoin = true;
-                                setIsJoin();
-                            }
+                            mToast.setText("加入成功！");
+                            mToast.show();
+                            mUserJoin = true;
+                            setIsJoin();
                         } else {
                             String msg = jsonObject.getString("Msg");
                             mToast.setText(msg);
@@ -367,6 +398,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         Intent intent = new Intent(this, CircleInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("circle", mCircle);
+        bundle.putSerializable("circleDetail", mCircleDetail);
         intent.putExtras(bundle);
         startActivity(intent);
     }

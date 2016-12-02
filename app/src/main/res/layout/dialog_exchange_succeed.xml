@@ -37,6 +37,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="42px"
             android:textColor="@color/orange"
+            android:textIsSelectable="true"
             android:textSize="@dimen/small_padding"/>
 
         <TextView
@@ -62,6 +63,7 @@
             android:paddingRight="@dimen/small_padding"
             android:text="@string/exchange_URL"
             android:textColor="@color/orange"
+            android:textIsSelectable="true"
             android:textSize="@dimen/small_padding"/>
 
         <TextView

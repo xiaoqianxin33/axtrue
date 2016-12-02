@@ -5,20 +5,25 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.db.DBManager;
 import com.chinalooke.yuwan.bean.Circle;
-import com.chinalooke.yuwan.bean.GameMessage;
+import com.chinalooke.yuwan.bean.CircleDetail;
 import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
+import com.zhy.autolayout.utils.AutoUtils;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,7 +32,7 @@ import butterknife.OnClick;
 public class CircleInfoActivity extends AutoLayoutActivity {
 
     @Bind(R.id.iv_back)
-    ImageView mIvBack;
+    FrameLayout mIvBack;
     @Bind(R.id.tv_title)
     TextView mTvTitle;
     @Bind(R.id.tv_skip)
@@ -66,12 +71,15 @@ public class CircleInfoActivity extends AutoLayoutActivity {
     RoundedImageView mRoundedImageView;
     private LoginUser.ResultBean mUserInfo;
     private Circle.ResultBean mCircle;
+    private RequestQueue mQueue;
+    private CircleDetail mCircleDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_info);
         ButterKnife.bind(this);
+        mQueue = YuwanApplication.getQueue();
         initData();
         initView();
     }
@@ -79,13 +87,16 @@ public class CircleInfoActivity extends AutoLayoutActivity {
     private void initData() {
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         mCircle = (Circle.ResultBean) getIntent().getSerializableExtra("circle");
+        mCircleDetail = (CircleDetail) getIntent().getSerializableExtra("circleDetail");
+        setGame();
     }
+
 
     private void initView() {
         mTvSkip.setText("编辑");
         mTvTitle.setText("圈子资料");
         if (mUserInfo != null) {
-            if (mCircle.getUserId().equals(mUserInfo.getUserId())) {
+            if (mUserInfo.getUserId().equals(mCircle.getUserId())) {
                 mTvSkip.setVisibility(View.VISIBLE);
             } else {
                 mTvSkip.setVisibility(View.GONE);
@@ -115,19 +126,19 @@ public class CircleInfoActivity extends AutoLayoutActivity {
 
     //设置游戏
     private void setGame() {
-        String games = mCircle.getGames();
-        if (!TextUtils.isEmpty(games)) {
-            String[] game = games.split(",");
-            DBManager dbManager = new DBManager(getApplicationContext());
-            for (String s : game) {
-                GameMessage.ResultBean gameInfo = dbManager.queryById(s);
-                String thumb = gameInfo.getThumb();
-                RoundedImageView imageView = new RoundedImageView(getApplicationContext());
-                imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(60, 60));
-                imageView.setPaddingRelative(5, 0, 5, 0);
-                Picasso.with(getApplicationContext()).load(thumb).resize(60, 60).centerCrop().into(imageView);
-                imageView.setOval(true);
-                mLlGame.addView(imageView);
+        List<CircleDetail.ResultBean.GamesBean> games = mCircleDetail.getResult().getGames();
+        if (games != null && games.size() != 0) {
+            for (CircleDetail.ResultBean.GamesBean gamesBean : games) {
+                String thumb = gamesBean.getThumb();
+                if (!TextUtils.isEmpty(thumb)) {
+                    RoundedImageView imageView = new RoundedImageView(getApplicationContext());
+                    imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(60, 60));
+                    imageView.setPaddingRelative(5, 0, 5, 0);
+                    Picasso.with(this).load(thumb).resize(60, 60).centerCrop().into(imageView);
+                    imageView.setOval(true);
+                    AutoUtils.autoSize(imageView);
+                    mLlGame.addView(imageView);
+                }
             }
         }
     }

@@ -28,12 +28,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.db.DBManager;
 import com.chinalooke.yuwan.bean.Circle;
 import com.chinalooke.yuwan.bean.GameMessage;
 import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.Auth;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -153,29 +152,29 @@ public class CreateCircleActivity extends AutoLayoutActivity implements EasyPerm
             mRule = details;
             mTvCircleExpalin.setText(details);
         }
-        setGame();
+//        setGame();
     }
 
 
     //设置游戏
-    private void setGame() {
-        String games = mCircle.getGames();
-        if (!TextUtils.isEmpty(games)) {
-            String[] game = games.split(",");
-            DBManager dbManager = new DBManager(getApplicationContext());
-            for (String s : game) {
-                GameMessage.ResultBean gameInfo = dbManager.queryById(s);
-                mChose.add(gameInfo);
-                String thumb = gameInfo.getThumb();
-                RoundedImageView imageView = new RoundedImageView(getApplicationContext());
-                imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(60, 60));
-                imageView.setPaddingRelative(5, 0, 5, 0);
-                Picasso.with(getApplicationContext()).load(thumb).resize(60, 60).centerCrop().into(imageView);
-                imageView.setOval(true);
-                mLlGame.addView(imageView);
-            }
-        }
-    }
+//    private void setGame() {
+//        String games = mCircle.getGames();
+//        if (!TextUtils.isEmpty(games)) {
+//            String[] game = games.split(",");
+//            DBManager dbManager = new DBManager(getApplicationContext());
+//            for (String s : game) {
+//                GameMessage.ResultBean gameInfo = dbManager.queryById(s);
+//                mChose.add(gameInfo);
+//                String thumb = gameInfo.getThumb();
+//                RoundedImageView imageView = new RoundedImageView(getApplicationContext());
+//                imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(60, 60));
+//                imageView.setPaddingRelative(5, 0, 5, 0);
+//                Picasso.with(getApplicationContext()).load(thumb).resize(60, 60).centerCrop().into(imageView);
+//                imageView.setOval(true);
+//                mLlGame.addView(imageView);
+//            }
+//        }
+//    }
 
     //设置头像
     private void setHeadImg(String headImg) {

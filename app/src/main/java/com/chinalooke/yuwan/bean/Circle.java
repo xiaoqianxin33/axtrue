@@ -65,7 +65,6 @@ public class Circle {
         private String lat;
         private String createTime;
         private String userId;
-        private String games;
         private boolean isUserJoin;
 
         public boolean isUserJoin() {
@@ -76,13 +75,6 @@ public class Circle {
             isUserJoin = userJoin;
         }
 
-        public String getGames() {
-            return games;
-        }
-
-        public void setGames(String games) {
-            this.games = games;
-        }
 
         public String getUserId() {
             return userId;
