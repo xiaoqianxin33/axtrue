@@ -32,6 +32,7 @@
                 android:textSize="@dimen/register_text_size"/>
 
             <EditText
+                android:background="@null"
                 android:id="@+id/phone_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -64,6 +65,7 @@
                 android:textSize="32px"/>
 
             <EditText
+                android:background="@null"
                 android:id="@+id/input_verification_code_register"
                 android:layout_width="300px"
                 android:layout_height="wrap_content"
@@ -102,6 +104,12 @@
                 android:textSize="20px"/>
         </RelativeLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="96px">
@@ -116,6 +124,7 @@
                 android:textSize="32px"/>
 
             <EditText
+                android:background="@null"
                 android:id="@+id/password_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,6 +136,12 @@
                 android:textSize="28px"/>
 
         </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -142,6 +157,7 @@
                 android:textSize="32px"/>
 
             <EditText
+                android:background="@null"
                 android:id="@+id/repassword_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -153,6 +169,12 @@
                 android:textSize="28px"/>
 
         </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -168,6 +190,7 @@
                 android:textSize="32px"/>
 
             <EditText
+                android:background="@null"
                 android:id="@+id/introduce_sponsor_phone_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -179,6 +202,11 @@
                 android:textSize="28px"/>
         </RelativeLayout>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/line_color"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

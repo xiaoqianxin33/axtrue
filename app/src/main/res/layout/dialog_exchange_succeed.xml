@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="540px"
               android:layout_height="wrap_content"
-              android:background="@android:color/white"
+              android:background="#00000000"
               android:orientation="vertical">
 
     <TextView
@@ -16,7 +16,8 @@
 
     <RelativeLayout
         android:layout_width="540px"
-        android:layout_height="395px">
+        android:layout_height="550px"
+        android:background="@mipmap/goods_background">
 
         <TextView
             android:id="@+id/tv1"
@@ -63,32 +64,17 @@
             android:textColor="@color/orange"
             android:textSize="@dimen/small_padding"/>
 
+        <TextView
+            android:id="@+id/tv_copy"
+            android:layout_width="match_parent"
+            android:layout_height="116px"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:text="复制兑换码"
+            android:textColor="@color/orange"
+            android:textSize="@dimen/mid_padding"/>
+
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="44px">
-
-
-        <TextView
-            android:layout_width="22px"
-            android:layout_height="44px"
-            android:background="@drawable/half_round"/>
-
-        <TextView
-            android:layout_width="22px"
-            android:layout_height="44px"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/half_round_right"/>
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tv_copy"
-        android:layout_width="match_parent"
-        android:layout_height="116px"
-        android:gravity="center"
-        android:text="复制兑换码"
-        android:textColor="@color/orange"
-        android:textSize="@dimen/mid_padding"/>
 
 </LinearLayout>

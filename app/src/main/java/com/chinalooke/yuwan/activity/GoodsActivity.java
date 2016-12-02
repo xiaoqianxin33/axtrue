@@ -20,11 +20,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.GoodsDetail;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.UserBalance;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
+import com.zhy.autolayout.utils.AutoUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -288,6 +289,7 @@ public class GoodsActivity extends AutoLayoutActivity {
                 mToast.show();
             }
         });
+        AutoUtils.autoSize(inflate);
         dialog.setContentView(inflate);
         dialog.show();
     }

@@ -51,7 +51,7 @@
             android:layout_below="@id/roundedImageView"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="25px"
-            android:text="z74469777"
+            android:text="未设置昵称"
             android:textColor="@android:color/white"
             android:textSize="26px"/>
 

@@ -316,6 +316,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
             Gson gson = new Gson();
             Type type = new TypeToken<LoginUser>() {
             }.getType();
+            Log.e("TAG", response);
             LoginUser userInfo = gson.fromJson(response, type);
             if (userInfo != null) {
                 LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo.getResult());//设置userInfo

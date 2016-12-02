@@ -368,7 +368,6 @@
                         android:layout_marginRight="56px"
                         android:layout_marginTop="40px"
                         android:lineSpacingExtra="3dp"
-                        android:text="@string/game_rule"
                         android:textColor="#848789"
                         android:textSize="30px"/>
                 </RelativeLayout>

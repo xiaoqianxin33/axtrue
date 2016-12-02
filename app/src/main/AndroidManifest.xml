@@ -88,7 +88,9 @@
             android:name=".activity.LoginActivity"
             android:windowSoftInputMode="stateAlwaysVisible"/>
         <!-- 注册 -->
-        <activity android:name=".activity.RegisterActivity"/>
+        <activity
+            android:name=".activity.RegisterActivity"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
         <!-- 忘记密码 -->
         <activity android:name=".activity.ForgetPasswordActivity"/>
         <!-- 重置密码 -->

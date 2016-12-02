@@ -12,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.FriendsActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
@@ -46,7 +44,6 @@ public class WodeFragment extends Fragment {
     TextView mTvSlogen;
     @Bind(R.id.tv_login)
     TextView mTvLogin;
-    private RequestQueue mQueue;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,7 +56,6 @@ public class WodeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mQueue = Volley.newRequestQueue(getActivity());
     }
 
     @OnClick({R.id.tv_name, R.id.roundedImageView, R.id.tv_login, R.id.rl_info, R.id.rl_friend

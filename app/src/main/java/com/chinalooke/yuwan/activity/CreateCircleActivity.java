@@ -601,7 +601,7 @@ public class CreateCircleActivity extends AutoLayoutActivity implements EasyPerm
         if (EasyPermissions.hasPermissions(this, perms)) {
             ImgSelActivity.startActivity(this, mConfig, REQUEST_CODE);
         } else {
-            EasyPermissions.requestPermissions(this, "需要定位权限",
+            EasyPermissions.requestPermissions(this, "需要拍照权限",
                     RC_ACCESS_FINE_LOCATION, perms);
         }
     }

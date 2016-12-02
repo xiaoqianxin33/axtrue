@@ -46,7 +46,6 @@ import com.chinalooke.yuwan.utils.KeyboardUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
-import com.chinalooke.yuwan.utils.UIUtil;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.utils.AutoUtils;
@@ -228,7 +227,7 @@ public class YueZhanFragment extends Fragment {
         } else {
             switch (view.getId()) {
                 case R.id.rl_times:
-                    alertPicker(mTimesList, "选择游戏参与人数", 3);
+                    alertPicker(mTimesList, "选择游戏场数", 3);
                     break;
                 case R.id.tv_skip:
                     createDesk();
@@ -292,7 +291,7 @@ public class YueZhanFragment extends Fragment {
 
     }
 
-
+    //提交发布战场
     private void createDesk() {
         if (NetUtil.is_Network_Available(getActivity())) {
             mProgressDialog = MyUtils.initDialog("正在提交", getActivity());
@@ -300,9 +299,11 @@ public class YueZhanFragment extends Fragment {
             String time = mTvTime.getText().toString();
             String people = mTvPeople.getText().toString();
             String money = mTvMoney.getText().toString();
-            String uri = Constant.HOST + "addGameDesk&gameId=" + mGameId + "&startTime=" + time +
-                    "&playerNum=" + Integer.parseInt(people) * 2 + "&gamePay=" + money
+            String times = mTvTimes.getText().toString();
+            String uri = Constant.HOST + "addGameDesk&gameId=" + mGameId +
+                    "&playerNum=" + Integer.parseInt(people) + "&gamePay=" + money + "&gameCount=" + times
                     + "&ownerId=" + mUsrInfo.getUserId() + "&roomId=" + mUsrInfo.getUserId();
+
             if (mRule != null) {
                 uri = uri + "&gameRule=" + mRule;
             }
@@ -318,17 +319,25 @@ public class YueZhanFragment extends Fragment {
                 uri = uri + "&userId=" + stringBuffer.toString();
             }
 
+            uri = uri + "&startTime=" + time;
+            Log.e("TAG", uri);
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     mProgressDialog.dismiss();
                     if (AnalysisJSON.analysisJson(response)) {
-                        UIUtil.showJoinSucceedDialog(getActivity(), "您已发起了约战", "系统将自动扣除相应金额");
+                        MyUtils.showDialog(getActivity(), "提示", "您已发起了约战\r系统将自动扣除相应金额", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
                         mTvGameName.setText("");
                         mTvPeople.setText("");
                         mTvMoney.setText("");
                         mTvFriends.setText("");
                         mTvTime.setText("");
+                        mRule = "";
                     } else {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
@@ -542,8 +551,7 @@ public class YueZhanFragment extends Fragment {
         String maxPeopleNumber = choseGame.getMaxPeopleNumber();
         if (!TextUtils.isEmpty(maxPeopleNumber)) {
             int maxPeople = Integer.parseInt(maxPeopleNumber);
-            Log.e("TAG", maxPeopleNumber);
-            for (int i = 1; i < maxPeople + 1; i++) {
+            for (int i = 2; i < maxPeople + 1; i = i + 2) {
                 mPeopleNumberList.add(i + "");
             }
         }

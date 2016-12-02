@@ -22,23 +22,25 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVMobilePhoneVerifyCallback;
 import com.avos.avoscloud.RequestMobileCodeCallback;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.bean.Register;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.bean.LoginUser;
-import com.chinalooke.yuwan.bean.ResultDatas;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
-import com.chinalooke.yuwan.utils.GetHTTPDatas;
 import com.chinalooke.yuwan.utils.LeanCloudUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.Validator;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zhy.autolayout.AutoLayoutActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -83,7 +85,6 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
     private CountTimer mcountTimer;
     //介绍人的电话号码
     private String mIntroducePhone;
-    private GetHTTPDatas getHTTPDatas;
     //短信严重的回调
     EventHandler eh;
     String userId;
@@ -102,8 +103,6 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         //初始化smssdk
         SMSSDK.initSDK(this, Constant.APPKEY, Constant.APPSECRET);
         mQueue = Volley.newRequestQueue(this);
-        getHTTPDatas = new GetHTTPDatas();
-        getHTTPDatas.setmQueue(mQueue);
         mToast = YuwanApplication.getToast();
         //设置密码类型
         mcountTimer = new CountTimer(60000, 1000);
@@ -149,7 +148,6 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
                 finish();
                 break;
         }
-
     }
 
     /**
@@ -267,54 +265,73 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
     //网络获取  验证手机号是否注册
     private void getHTTPIsPhoneExists() {
         String URLPhone = Constant.IS_PHONE_EXISTS + "&" + Constant.PHONE + phone;
-        getHTTPDatas.getHTTPIsPhoneExists(URLPhone);
-        ResultDatas result = getHTTPDatas.getResult();
-        if (result != null) {
-            if ("true".equals(result.getSuccess()) && "false".equals(result.getResult())) {
-                Log.d("TAG", "该号码未注册");
-                mphoneRegister.setEnabled(false);
-                //启动倒计时
-                mcountTimer.start();
-                //获取验证码 开始获取验证码
-                LeanCloudUtil.sendSMSRandom(phone, "注册账号", new RequestMobileCodeCallback() {
-                    @Override
-                    public void done(AVException e) {
-                        if (e == null) {
-                            mETVerification.requestFocus();
+        StringRequest request = new StringRequest(URLPhone, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (response != null) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("Success");
+                        if (success) {
+                            boolean result = jsonObject.getBoolean("Result");
+                            if (result) {
+                                mphoneRegister.setError("该号码已注册");
+                                mphoneRegister.requestFocus();
+                            } else {
+                                mphoneRegister.setEnabled(false);
+                                //启动倒计时
+                                mcountTimer.start();
+                                //获取验证码 开始获取验证码
+                                LeanCloudUtil.sendSMSRandom(phone, "注册账号", new RequestMobileCodeCallback() {
+                                    @Override
+                                    public void done(AVException e) {
+                                        if (e == null) {
+                                            mETVerification.requestFocus();
+                                        } else {
+                                            Log.e("Home.OperationVerify", e.getMessage());
+                                        }
+                                    }
+                                });
+                            }
                         } else {
-                            Log.e("Home.OperationVerify", e.getMessage());
+                            String msg = jsonObject.getString("Msg");
+                            mToast.setText(msg);
+                            mToast.show();
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                });
+                }
             }
-            if ("true".equals(result.getSuccess()) && "true".equals(result.getResult())) {
-                Log.d("TAG", "验证密码");
-                mphoneRegister.setError("该号码已注册");
-                mphoneRegister.requestFocus();
-            }
-        }
+        }, null);
+        mQueue.add(request);
     }
 
     private void getHTTPRegister() {
         String URLRegister = Constant.REGISTER + "&" + Constant.PHONE + phone + "&" + Constant.PWD + passWord + "&" + Constant.INTRODUCE_PHONE + mIntroducePhone;
-        Log.d("TAG", "电话网址----------" + URLRegister);
         StringRequest stringRequest = new StringRequest(URLRegister,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("TAG", response);
                         //解析数据
+                        mProgressDialog.dismiss();
                         if (response != null) {
-                            ResultDatas result = AnalysisJSON.getAnalysisJSON().AnalysisJSONResult(response);
-                            if (result != null) {
-                                if ("true".equals(result.getSuccess())) {
-                                    Log.d("TAG", "注册成功");
-                                    if (mProgressDialog != null)
-                                        mProgressDialog.dismiss();
-                                    //获取用户id；  解析result.getResult();
-                                    analyzeJson(result.getResult());
-                                    //注册成功开始跳转
-                                    registerSuccess();
+                            if (AnalysisJSON.analysisJson(response)) {
+                                Gson gson = new Gson();
+                                Type type = new TypeToken<Register>() {
+                                }.getType();
+                                Register register = gson.fromJson(response, type);
+                                analyzeJson(register.getResult());
+                                //注册成功开始跳转
+                                registerSuccess();
+                            } else {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    String msg = jsonObject.getString("Msg");
+                                    mToast.setText(msg);
+                                    mToast.show();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
                             }
                         }
@@ -332,14 +349,16 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         mQueue.add(stringRequest);
     }
 
-    private void analyzeJson(String result) {
+    private void analyzeJson(Register.ResultBean result) {
+        userId = result.getId();
+        headImg = result.getAvatar();
+        LoginUser.ResultBean resultBean = new LoginUser.ResultBean();
+        resultBean.setUserId(userId);
+        resultBean.setHeadImg(headImg);
         try {
-            JSONObject jsonObject = new JSONObject(result);
-            userId = jsonObject.getString("userId");
-            headImg = jsonObject.getString("headImg");
-        } catch (JSONException e) {
+            LoginUserInfoUtils.saveLoginUserInfo(getApplicationContext(), LoginUserInfoUtils.KEY, resultBean);
+        } catch (IOException e) {
             e.printStackTrace();
-            Log.d("TAG", "解析失败");
         }
     }
 }

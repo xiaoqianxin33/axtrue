@@ -116,7 +116,7 @@ public class AddFriendActivity extends AutoLayoutActivity {
         mTvTitle.setText("添加战友");
         mTvSkip.setTextColor(getResources().getColor(R.color.white));
         mTvSkip.setText("已选");
-        mSortAdapter = new SortAdapter(getApplicationContext(), mSortModels,0);
+        mSortAdapter = new SortAdapter(getApplicationContext(), mSortModels, 0);
         mListView.setAdapter(mSortAdapter);
     }
 

@@ -20,14 +20,14 @@
 
             <TextView
                 style="@style/register_row_title"
-                android:text="姓名"/>
+                android:text="昵称"/>
 
             <TextView
                 android:id="@+id/tv_name"
                 style="@style/regist_right_row"
                 android:background="@null"
                 android:inputType="text"
-                android:text="请输入真实姓名"/>
+                android:text="请输入昵称"/>
 
             <ImageView
                 style="@style/person_info_arrow"

@@ -103,6 +103,7 @@
                     android:layout_height="wrap_content"
                     android:divider="@color/background"
                     android:dividerHeight="@dimen/small_padding"
+                    android:paddingBottom="100px"
                     app:frv_layoutManager="linear"/>
 
                 <android.support.v7.widget.RecyclerView
@@ -111,6 +112,7 @@
                     android:layout_height="wrap_content"
                     android:divider="@color/background"
                     android:dividerHeight="@dimen/small_padding"
+                    android:paddingBottom="100px"
                     app:frv_layoutManager="linear"/>
 
                 <android.support.v7.widget.RecyclerView
@@ -119,6 +121,7 @@
                     android:layout_height="wrap_content"
                     android:divider="@color/background"
                     android:dividerHeight="@dimen/small_padding"
+                    android:paddingBottom="100px"
                     app:frv_layoutManager="linear"/>
 
 

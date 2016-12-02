@@ -1,5 +1,6 @@
 package com.chinalooke.yuwan.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -34,6 +35,7 @@ import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
+import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.ViewHelper;
 import com.chinalooke.yuwan.view.NoSlidingListView;
@@ -73,6 +75,8 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
     ProgressBar mPbLoad;
     @Bind(R.id.tv_none)
     TextView mTvNone;
+    @Bind(R.id.tv_join)
+    TextView mTvJoin;
     private Circle.ResultBean mCircle;
     private RequestQueue mQueue;
     private DisplayMetrics mDisplayMetrics;
@@ -84,6 +88,9 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
     private boolean isLoading = false;
     private boolean isRefresh = false;
     private boolean isFirst = true;
+    private Toast mToast;
+    private boolean mUserJoin;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +100,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         setContentView(R.layout.activity_circle_dynamic);
         ButterKnife.bind(this);
         mQueue = YuwanApplication.getQueue();
+        mToast = YuwanApplication.getToast();
         mDisplayMetrics = ViewHelper.getDisplayMetrics(CircleDynamicActivity.this);
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         mMyDynamicAdapter = new MyDynamicAdapter(mDynamics, CircleDynamicActivity.this);
@@ -100,7 +108,6 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         initData();
         initView();
         initEvent();
-
     }
 
     private void initEvent() {
@@ -118,7 +125,6 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                 isRefresh = true;
                 getActiveList();
                 mScrollview.setRefreshing(false);
-                Log.e("TAG", "setOnRefreshListener");
             }
         });
 
@@ -167,7 +173,8 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         });
 
         mQueue.add(request);
-
+        mUserJoin = mCircle.isUserJoin();
+        setIsJoin();
         String groupName = mCircle.getGroupName();
         if (!TextUtils.isEmpty(groupName))
             mTvName.setText(groupName);
@@ -179,6 +186,16 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         String headImg = mCircle.getHeadImg();
         if (!TextUtils.isEmpty(headImg))
             Picasso.with(getApplicationContext()).load(headImg).resize(130, 130).centerCrop().into(mRoundedImageView);
+    }
+
+    private void setIsJoin() {
+        if (mUserJoin) {
+            mTvJoin.setBackground(null);
+            mTvJoin.setText("排行榜");
+        } else {
+            mTvJoin.setBackground(getResources().getDrawable(R.mipmap.join_circle));
+            mTvJoin.setText("加入");
+        }
     }
 
     private void initData() {
@@ -256,7 +273,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
 
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_camera, R.id.roundedImageView, R.id.tv_name})
+    @OnClick({R.id.iv_back, R.id.iv_camera, R.id.roundedImageView, R.id.tv_name, R.id.tv_join})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
@@ -267,18 +284,82 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                     startActivity(new Intent(this, LoginActivity.class));
                     return;
                 } else {
-                    Intent intent = new Intent(this, SendDynamicActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("circle", mCircle);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    boolean userJoin = mCircle.isUserJoin();
+                    if (userJoin) {
+                        Intent intent = new Intent(this, SendDynamicActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("circle", mCircle);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    } else {
+                        mToast.setText("该圈子玩家才能发表动态");
+                        mToast.show();
+                    }
                 }
                 break;
             case R.id.roundedImageView:
                 skipToInfo();
                 break;
             case R.id.tv_name:
+                skipToInfo();
                 break;
+            case R.id.tv_join:
+                if (mUserJoin) {
+
+                } else {
+                    if (mUserInfo != null) {
+                        joinCircle();
+                    } else {
+                        startActivity(new Intent(this, LoginActivity.class));
+                    }
+                }
+                break;
+        }
+    }
+
+    //加入圈子
+    private void joinCircle() {
+        if (NetUtil.is_Network_Available(getApplicationContext())) {
+            mProgressDialog = MyUtils.initDialog("", CircleDynamicActivity.this);
+            mProgressDialog.show();
+            String url = Constant.HOST + "joinGroup&groupId=" + mCircle.getGroupId() + "&userId=" + mUserInfo.getUserId();
+            StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    mProgressDialog.dismiss();
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("Success");
+                        if (success) {
+                            boolean result = jsonObject.getBoolean("Result");
+                            if (result) {
+                                mToast.setText("加入成功！");
+                                mToast.show();
+                                mUserJoin = true;
+                                setIsJoin();
+                            }
+                        } else {
+                            String msg = jsonObject.getString("Msg");
+                            mToast.setText(msg);
+                            mToast.show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    mProgressDialog.dismiss();
+                    mToast.setText("服务器抽风了，请稍后再试");
+                    mToast.show();
+                }
+            });
+
+            mQueue.add(request);
+        } else {
+            mToast.setText("网络不可用，请检查网络连接");
+            mToast.show();
         }
     }
 
@@ -388,7 +469,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
 
         @Override
         public long getItemId(int position) {
-            return 0;
+            return position;
         }
 
         @Override

@@ -11,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,9 +95,9 @@ public class BattleFieldFragment extends Fragment {
     private List<GameDesk.ResultBean> mYzList = new ArrayList<>();
     private List<GameDesk.ResultBean> mJxList = new ArrayList<>();
     private List<GameDesk.ResultBean> mJsList = new ArrayList<>();
-    private int YZPAGE = 1;
-    private int JXPAGE = 1;
-    private int JSPAGE = 1;
+    private int YZPAGE;
+    private int JXPAGE;
+    private int JSPAGE;
     private int mCurrentPage;
     private QuickAdapter mYzAdapter;
     private QuickAdapter mJxAdapter;
@@ -156,15 +157,15 @@ public class BattleFieldFragment extends Fragment {
                     isFresh = true;
                     switch (mCurrentPage) {
                         case 0:
-                            YZPAGE = 0;
+                            YZPAGE = 1;
                             getGameDeskListWithStatus(0, YZPAGE);
                             break;
                         case 1:
-                            JXPAGE = 0;
+                            JXPAGE = 1;
                             getGameDeskListWithStatus(0, JXPAGE);
                             break;
                         case 2:
-                            JSPAGE = 0;
+                            JSPAGE = 1;
                             getGameDeskListWithStatus(0, JSPAGE);
                             break;
                     }
@@ -302,8 +303,7 @@ public class BattleFieldFragment extends Fragment {
 
     //按状态取游戏桌列表
     private void getGameDeskListWithStatus(final int status, final int page) {
-        int PAGE_SIZE = 5;
-        final String uri = Constant.HOST + "getGameDeskListWithStatus&gameStatus=" + status + "&pageNo=" + page + "&pageSize=" + PAGE_SIZE;
+        final String uri = Constant.HOST + "getGameDeskListWithStatus&gameStatus=" + status + "&pageNo=" + page + "&pageSize=5";
         if (NetUtil.is_Network_Available(getActivity())) {
             StringRequest stringRequest = new StringRequest(uri,
                     new Response.Listener<String>() {
@@ -320,9 +320,13 @@ public class BattleFieldFragment extends Fragment {
                                 if (result != null && result.size() != 0) {
                                     switch (status) {
                                         case 0:
-                                            if (isFresh)
+                                            if (isFresh) {
+                                                Log.e("TAG", "isFresh");
                                                 mYzList.clear();
+                                                Log.e("TBG", mYzList.size() + "");
+                                            }
                                             mYzList.addAll(result);
+                                            Log.e("TAG", mYzList.size() + "");
                                             mYzAdapter.notifyDataSetChanged();
                                             break;
                                         case 1:
@@ -595,8 +599,10 @@ public class BattleFieldFragment extends Fragment {
             }
 
             String gameImage = item.getGameImage();
-            if (!TextUtils.isEmpty(gameImage))
-                Picasso.with(mContext).load(item.getGameImage()).into((ImageView) helper.getView(R.id.image));
+            if (!TextUtils.isEmpty(gameImage)) {
+                String url = gameImage + "?imageView2/1/w/225/h/172";
+                Picasso.with(mContext).load(url).into((ImageView) helper.getView(R.id.image));
+            }
 
             String curPlayNum = item.getCurPlayNum();
             String playerNum = item.getPlayerNum();

@@ -1,5 +1,6 @@
 package com.chinalooke.yuwan.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -51,7 +52,7 @@ public class FriendInfo {
         this.Result = Result;
     }
 
-    public static class ResultBean {
+    public static class ResultBean implements Serializable{
         private String headImg;
         private String nickName;
         private String score;

@@ -109,7 +109,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     @Bind(R.id.tv_rule)
     TextView mTvRule;
     @Bind(R.id.iv_arrow)
-    TextView mIvArrow;
+    ImageView mIvArrow;
 
     private List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> mLeftBeen = new ArrayList<>();
     private List<GameDeskDetails.ResultBean.PlayersBean.RightBean> mRight = new ArrayList<>();
@@ -120,7 +120,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private Toast mToast;
     private String mGameDeskId;
     private ProgressDialog mProgressDialog;
-    private String getGameDeskWithId = Constant.mainUri + "getGameDeskWithId&gameDeskId=";
     private GameDeskDetails mGameDeskDetails;
     //记录游戏桌状态变量 0-迎战中 1-进行中 2-已结束
     private int mStatus;
@@ -135,8 +134,9 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private int DESK_TYPE;
     private ProgressDialog mSubmitDialog;
     private int mGroup;
-    private boolean isJudge = false;
+    //    private boolean isJudge = false;
     private boolean isFirst = true;
+    private Runnable mRunnable;
 
 
     @Override
@@ -156,13 +156,14 @@ public class GameDeskActivity extends AutoLayoutActivity {
     }
 
     private void initEvent() {
-        mHandler.postDelayed(new Runnable() {
+        mRunnable = new Runnable() {
             @Override
             public void run() {
                 refreshUI();
                 mHandler.postDelayed(this, 5000);
             }
-        }, 0);
+        };
+        mHandler.postDelayed(mRunnable, 0);
 
         //gridView item 点击监听
         mGdYingzhan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -193,8 +194,11 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         ButterKnife.unbind(this);
+        if (mHandler != null && mRunnable != null)
+            mHandler.removeCallbacks(mRunnable);
+        super.onDestroy();
+
     }
 
     private void initView() {
@@ -330,7 +334,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
             mTvGameName.setText(gameName);
         }
 
-
         mWiner = result.getWiner();
         //gridView 添加 adapter
         MyLeftAdapter myLeftAdapter = new MyLeftAdapter();
@@ -463,7 +466,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                             boolean result = jsonObject.getBoolean("Result");
                             if (result) {
                                 pushToLose();
-                                isJudge = true;
+//                                isJudge = true;
                                 mTvOk.setText("请等待对方确认");
                                 mTvOk.setEnabled(false);
                             }

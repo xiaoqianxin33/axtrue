@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +47,7 @@ import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.ImageUtils;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -144,6 +144,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getActivity(), LoginUserInfoUtils.KEY);
         mMap = mMapview.getMap();
         mMap.clear();
+
         initView();
         initData();
         initEvent();
@@ -258,7 +259,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     //获取顶部广告图片
     private void getADListForSpace(AMapLocation aMapLocation) {
         String city = aMapLocation.getCity();
-        Log.e("TAG", city);
         // TODO: 2016/11/25 替换接口 暂使用网吧接口
         String uri = Constant.HOST + "getADListWithGPS&lng=" + mLatitude + "&lat=" + mLongitude;
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
@@ -558,7 +558,8 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                             markerOptions.position(latLng2);
                             markerOptions.draggable(false);
                             markerOptions.title(resultBean.getGroupName());
-                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(response));
+                            Bitmap bitmap = ImageUtils.toRound(response);
+                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
                             Marker marker = mMap.addMarker(markerOptions);
                             mMarkerResultBeanHashMap.put(marker, resultBean);
                         }
@@ -574,7 +575,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             LatLng latLng = new LatLng(mLatitude, mLongitude);
             CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(
                     latLng,//新的中心点坐标
-                    15, //新的缩放级别
+                    12, //新的缩放级别
                     30, //俯仰角0°~45°（垂直与地图时为0）
                     0  ////偏航角 0~360° (正北方为0)
             ));
@@ -582,7 +583,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             mMap.addMarker(new MarkerOptions().
                     position(latLng).
                     title("我的位置").
-                    snippet("DefaultMarker"));
+                    snippet("我"));
         }
     }
 

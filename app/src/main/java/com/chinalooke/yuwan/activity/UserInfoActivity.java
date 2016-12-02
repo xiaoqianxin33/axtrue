@@ -9,7 +9,9 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,15 +19,16 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.utils.Auth;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
@@ -90,6 +93,11 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     private boolean isChangeHead = false;
     private ArrayList<String> playAgeListDatas = new ArrayList<>();
     private String mSlogan;
+    private String mName;
+    private String mSex;
+    private String mAge;
+    private String mPlayAge;
+    private String mAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,13 +131,14 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                 // 最大选择图片数量
                 .maxNum(9)
                 .build();
+        mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
+        initView();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
-        initView();
     }
 
     private void initView() {
@@ -137,25 +146,24 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         String headImg = mUserInfo.getHeadImg();
         if (!TextUtils.isEmpty(headImg))
             Picasso.with(getApplicationContext()).load(headImg).resize(120, 120).centerCrop().into(mRoundedImageView);
-        String nickName = mUserInfo.getNickName();
-        if (!TextUtils.isEmpty(nickName))
-            mTvName.setText(nickName);
-        String address = mUserInfo.getAddress();
-        if (!TextUtils.isEmpty(address))
-            mTvAddress.setText(address);
-        String playAge = mUserInfo.getPlayAge();
-        if (!TextUtils.isEmpty(playAge))
-            mTvPlayAge.setText(playAge);
-        String age = mUserInfo.getAge();
-        if (!TextUtils.isEmpty(age))
-            mTvAge.setText(age);
-        String sex = mUserInfo.getSex();
-        if (!TextUtils.isEmpty(sex))
-            mTvSex.setText(sex);
+        mName = mUserInfo.getNickName();
+        if (!TextUtils.isEmpty(mName))
+            mTvName.setText(mName);
+        mAddress = mUserInfo.getAddress();
+        if (!TextUtils.isEmpty(mAddress))
+            mTvAddress.setText(mAddress);
+        mPlayAge = mUserInfo.getPlayAge();
+        if (!TextUtils.isEmpty(mPlayAge))
+            mTvPlayAge.setText(mPlayAge);
+        mAge = mUserInfo.getAge();
+        if (!TextUtils.isEmpty(mAge))
+            mTvAge.setText(mAge);
+        mSex = mUserInfo.getSex();
+        if (!TextUtils.isEmpty(mSex))
+            mTvSex.setText(mSex);
         mSlogan = mUserInfo.getSlogan();
         if (!TextUtils.isEmpty(mSlogan))
             mTvSlogen.setText(mSlogan);
-
     }
 
     private void setAge() {
@@ -178,8 +186,11 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             @Override
             public void onOptionsSelect(int options1, int option2, int options3) {
                 //返回的分别是三个级别的选中位置
-                String tx = playAgeListDatas.get(options1);
-                mTvAge.setText(tx);
+                String s = playAgeListDatas.get(options1);
+                if (!TextUtils.isEmpty(s)) {
+                    mAge = s;
+                    mTvAge.setText(mAge);
+                }
 
             }
         });
@@ -243,7 +254,10 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                mSlogan = etRule.getText().toString();
+                Editable text = etRule.getText();
+                if (!TextUtils.isEmpty(text)) {
+                    mSlogan = etRule.getText().toString();
+                }
             }
         });
 
@@ -265,7 +279,11 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         cityPickerView.setOnCityItemClickListener(new CityPickerView.OnCityItemClickListener() {
             @Override
             public void onSelected(String... citySelected) {
-                mTvAddress.setText(citySelected[0] + citySelected[1] + citySelected[2]);
+                String s = citySelected[0] + citySelected[1] + citySelected[2];
+                if (!TextUtils.isEmpty(s)) {
+                    mAddress = s;
+                    mTvAddress.setText(s);
+                }
             }
         });
 
@@ -294,6 +312,8 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             public void onOptionsSelect(int options1, int option2, int options3) {
                 //返回的分别是三个级别的选中位置
                 String tx = playAgeListDatas.get(options1);
+                if (!TextUtils.isEmpty(tx))
+                    mPlayAge = tx;
                 mTvPlayAge.setText(tx);
 
             }
@@ -320,8 +340,11 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             @Override
             public void onOptionsSelect(int options1, int option2, int options3) {
                 //返回的分别是三个级别的选中位置
-                String tx = sexListDatas.get(options1);
-                mTvSex.setText(tx);
+                String s = sexListDatas.get(options1);
+                if (!TextUtils.isEmpty(s)) {
+                    mSex = s;
+                    mTvSex.setText(mSex);
+                }
             }
         });
 
@@ -341,6 +364,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                 editNameDialog.dismiss();
                 if (!TextUtils.isEmpty(input)) {
                     mTvName.setText(input);
+                    mName = input;
                 }
             }
         });
@@ -384,13 +408,14 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && data != null) {
             List<String> pathList = data.getStringArrayListExtra(ImgSelActivity.INTENT_RESULT);
             mPath = pathList.get(0);
+            Toast.makeText(getApplicationContext(), mPath, Toast.LENGTH_LONG);
             isChangeHead = true;
             Picasso.with(getApplicationContext()).load("file://" + mPath).into(mRoundedImageView);
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     //更新资料
@@ -416,14 +441,32 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     }
 
     private void update() {
-        final String address = mTvAddress.getText().toString();
-        final String slogen = mTvSlogen.getText().toString();
-        final String nickName = mTvName.getText().toString();
-        final String sex = mTvSex.getText().toString();
-        final String age = mTvAge.getText().toString();
-        final String palyAge = mTvPlayAge.getText().toString();
-        String uri = Constant.HOST + "updateUserInfo&userId=" + mUserInfo.getUserId() + "&headImg=" + mPath + "&nickName=" + nickName + "&sex=" + sex + "&age=" + age + "&playAge=" + palyAge + "&address=" + address + "&slogan=" + slogen;
-        StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+        String url = Constant.HOST + "updateUserInfo&userId=" + mUserInfo.getUserId() + "&headImg=" + mPath;
+        if (mAddress != null)
+            url = url + "&address=" + mAddress;
+        else
+            url = url + "&address=";
+        if (mSlogan != null)
+            url = url + "&slogan=" + mSlogan;
+        else
+            url = url + "&slogan=";
+        if (mName != null)
+            url = url + "&nickName=" + mName;
+        else
+            url = url + "&nickName=";
+        if (mSex != null)
+            url = url + "&sex=" + mSex;
+        else
+            url = url + "&sex=";
+        if (mAge != null)
+            url = url + "&age=" + mAge;
+        else
+            url = url + "&age=";
+        if (mPlayAge != null)
+            url = url + "&playAge=" + mPlayAge;
+        else
+            url = url + "&playAge=";
+        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (response != null) {
@@ -434,14 +477,23 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                             boolean result = jsonObject.getBoolean("Result");
                             if (result) {
                                 mUserInfo.setHeadImg(mPath);
-                                mUserInfo.setNickName(nickName);
-                                mUserInfo.setAge(age);
-                                mUserInfo.setAddress(address);
-                                mUserInfo.setPlayAge(palyAge);
-                                mUserInfo.setSlogan(slogen);
-                                mUserInfo.setSex(sex);
+                                if (mName != null)
+                                    mUserInfo.setNickName(mName);
+                                if (mAge != null)
+                                    mUserInfo.setAge(mAge);
+                                if (mAddress != null)
+                                    mUserInfo.setAddress(mAddress);
+                                if (!TextUtils.isEmpty(mPlayAge))
+                                    mUserInfo.setPlayAge(mPlayAge);
+                                if (!TextUtils.isEmpty(mSlogan))
+                                    mUserInfo.setSlogan(mSlogan);
+                                if (!TextUtils.isEmpty(mSex))
+                                    mUserInfo.setSex(mSex);
                                 LoginUserInfoUtils.saveLoginUserInfo(getApplicationContext(), LoginUserInfoUtils.KEY, mUserInfo);
                             }
+                        } else {
+                            String msg = jsonObject.getString("Msg");
+                            Log.e("TAG", msg);
                         }
                     } catch (JSONException | IOException e) {
                         e.printStackTrace();

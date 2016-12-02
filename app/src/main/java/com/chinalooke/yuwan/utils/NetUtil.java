@@ -49,7 +49,6 @@ public class NetUtil {
                     loginHx(result);
                 } catch (HyphenateException e) {
                     e.printStackTrace();
-                    Log.e("TAG", e.getMessage());
                     loginHx(result);
                 }
             }

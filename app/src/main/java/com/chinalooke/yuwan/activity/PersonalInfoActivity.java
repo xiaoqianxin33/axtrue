@@ -130,8 +130,8 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
      * 初始化数据
      */
     private void initData() {
-        userInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
-        mTvSkip.setVisibility(View.GONE);
+        userInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
+        mTvSkip.setVisibility(View.VISIBLE);
         String sex = userInfo.getSex();
         if (!TextUtils.isEmpty(sex))
             mTvSex.setText(sex);
@@ -142,15 +142,17 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
         if (!TextUtils.isEmpty(userInfo.getAddress()))
             mTvLocation.setText(userInfo.getAddress());
         String[] gameId = userInfo.getGameId();
-        DBManager dbManager = new DBManager(getApplicationContext());
-        for (String aGameId : gameId) {
-            GameMessage.ResultBean resultBean = dbManager.queryById(aGameId);
-            if (resultBean != null) {
-                RoundedImageView imageView = new RoundedImageView(getApplicationContext());
-                imageView.setOval(true);
-                imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(50, 50));
-                imageView.setImageURI(Uri.parse(resultBean.getThumb()));
-                mLlGame.addView(imageView);
+        if (gameId != null) {
+            DBManager dbManager = new DBManager(getApplicationContext());
+            for (String aGameId : gameId) {
+                GameMessage.ResultBean resultBean = dbManager.queryById(aGameId);
+                if (resultBean != null) {
+                    RoundedImageView imageView = new RoundedImageView(getApplicationContext());
+                    imageView.setOval(true);
+                    imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(50, 50));
+                    imageView.setImageURI(Uri.parse(resultBean.getThumb()));
+                    mLlGame.addView(imageView);
+                }
             }
         }
     }
@@ -163,7 +165,7 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
                 finish();
                 break;
             case R.id.tv_skip:
-                Intent intent = new Intent(this, LoginActivity.class);
+                Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 break;
@@ -269,9 +271,9 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
             mToast.show();
             return false;
         }
-        if (!TextUtils.isEmpty(name) && !"请输入真实姓名".equals(name)) {
-            userInfo.setRealName(name);
-            updateUserInfo = updateUserInfo + "&realName=" + userInfo.getRealName();
+        if (!TextUtils.isEmpty(name) && !"请输入昵称".equals(name)) {
+            userInfo.setNickName(name);
+            updateUserInfo = updateUserInfo + "&nickName=" + userInfo.getNickName();
         }
         if (!TextUtils.isEmpty(mAge) && !"请输入真实年龄".equals(mAge)) {
             userInfo.setAge(mAge);
@@ -296,7 +298,7 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
             userInfo.setGameId(mStrings);
         }
         try {
-            LoginUserInfoUtils.getLoginUserInfoUtils().saveLoginUserInfo(getApplicationContext(),
+            LoginUserInfoUtils.saveLoginUserInfo(getApplicationContext(),
                     LoginUserInfoUtils.KEY, userInfo);
         } catch (IOException e) {
             e.printStackTrace();

@@ -66,6 +66,15 @@ public class Circle {
         private String createTime;
         private String userId;
         private String games;
+        private boolean isUserJoin;
+
+        public boolean isUserJoin() {
+            return isUserJoin;
+        }
+
+        public void setUserJoin(boolean userJoin) {
+            isUserJoin = userJoin;
+        }
 
         public String getGames() {
             return games;

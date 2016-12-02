@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
+import com.zhy.autolayout.utils.AutoUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -56,7 +57,9 @@ public class EditNameDialog extends AlertDialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_edit_name);
+        View inflate = View.inflate(getContext(), R.layout.dialog_edit_name, null);
+        AutoUtils.autoSize(inflate);
+        setContentView(inflate);
         ButterKnife.bind(this);
         setCanceledOnTouchOutside(false);
         initEvent();
