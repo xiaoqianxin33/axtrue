@@ -49,6 +49,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -145,8 +147,10 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     private void initView() {
         mTvTitle.setText("个人资料");
         String headImg = mUserInfo.getHeadImg();
-        if (!TextUtils.isEmpty(headImg))
+        if (!TextUtils.isEmpty(headImg)) {
+            mPath = headImg;
             Picasso.with(getApplicationContext()).load(headImg).resize(120, 120).centerCrop().into(mRoundedImageView);
+        }
         mName = mUserInfo.getNickName();
         if (!TextUtils.isEmpty(mName))
             mTvName.setText(mName);
@@ -196,6 +200,13 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             }
         });
         pvOptions.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        updateInfo();
+        super.onBackPressed();
     }
 
     @OnClick({R.id.iv_back, R.id.rl_head, R.id.rl_name, R.id.rl_sex, R.id.rl_age, R.id.rl_play_age, R.id.rl_address, R.id.rl_id, R.id.rl_qcode, R.id.rl_slogen})
@@ -438,7 +449,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                     @Override
                     public void complete(String key, ResponseInfo info, JSONObject response) {
                         if (info.error == null) {
-                            mPath = Constant.QINIU_DOMAIN + "/" + fileName;
+                            mPath = "http://" + Constant.QINIU_DOMAIN + "/" + fileName;
                             update();
                         }
                     }
@@ -460,7 +471,11 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         else
             url = url + "&slogan=";
         if (mName != null)
-            url = url + "&nickName=" + mName;
+            try {
+                url = url + "&nickName=" + URLEncoder.encode(mName,"utf8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         else
             url = url + "&nickName=";
         if (mSex != null)
