@@ -1,7 +1,5 @@
 package com.chinalooke.yuwan.activity;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -82,8 +80,7 @@ public class CreateCircleActivity extends AutoLayoutActivity {
 
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
-    @OnClick({R.id.tv_location, R.id.tv_interest, R.id.iv_back, R.id.rl_game_name, R.id.rl_head, R.id.rl_game, R.id.rl_address, R.id.rl_explain, R.id.btn_create})
+    @OnClick({R.id.tv_location, R.id.tv_interest, R.id.iv_back})
     public void onClick(View view) {
         long currentTime = Calendar.getInstance().getTimeInMillis();
         if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
@@ -99,6 +96,7 @@ public class CreateCircleActivity extends AutoLayoutActivity {
                     break;
                 case R.id.iv_back:
                     finish();
+                    break;
             }
         }
     }

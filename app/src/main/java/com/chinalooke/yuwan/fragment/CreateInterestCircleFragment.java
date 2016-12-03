@@ -4,7 +4,9 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +49,7 @@ import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
 import com.squareup.picasso.Picasso;
+import com.yuyh.library.imgsel.ImageLoader;
 import com.yuyh.library.imgsel.ImgSelActivity;
 import com.yuyh.library.imgsel.ImgSelConfig;
 import com.zhy.autolayout.utils.AutoUtils;
@@ -92,6 +96,12 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
     private int RC_ACCESS_FINE_LOCATION = 0;
     private LoginUser.ResultBean mUser;
     private UploadManager mUploadManager;
+    private ImageLoader loader = new ImageLoader() {
+        @Override
+        public void displayImage(Context context, String path, ImageView imageView) {
+            Picasso.with(context).load("file://" + path).into(imageView);
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -108,7 +118,37 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
         super.onActivityCreated(savedInstanceState);
         mActivity = (CreateCircleActivity) getActivity();
         mUploadManager = YuwanApplication.getmUploadManager();
-        mUser = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(mActivity,LoginUserInfoUtils.KEY);
+        mUser = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(mActivity, LoginUserInfoUtils.KEY);
+        initPhotoPicker();
+    }
+
+    //初始化图片选择器
+    private void initPhotoPicker() {
+        mConfig = new ImgSelConfig.Builder(loader)
+                // 是否多选
+                .multiSelect(false)
+                // “确定”按钮背景色
+                .btnBgColor(Color.GRAY)
+                // “确定”按钮文字颜色
+                .btnTextColor(Color.BLUE)
+                // 使用沉浸式状态栏
+                .statusBarColor(Color.parseColor("#3F51B5"))
+                // 返回图标ResId
+                .backResId(R.drawable.ic_back)
+                // 标题
+                .title("图片")
+                // 标题文字颜色
+                .titleColor(Color.WHITE)
+                // TitleBar背景色
+                .titleBgColor(Color.parseColor("#3F51B5"))
+                // 裁剪大小。needCrop为true的时候配置
+                .cropSize(1, 1, 200, 200)
+                .needCrop(false)
+                // 第一个是否显示相机
+                .needCamera(true)
+                // 最大选择图片数量
+                .maxNum(9)
+                .build();
     }
 
     @Override
@@ -121,7 +161,7 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_head:
-
+                req();
                 break;
             case R.id.rl_game_name:
                 showEditDialog();
@@ -143,7 +183,6 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
                         mToast.setText("网络不可用，请检查网络连接");
                         mToast.show();
                     }
-
                 }
                 break;
         }
