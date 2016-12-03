@@ -34,11 +34,11 @@ import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.NetbarADActivity;
 import com.chinalooke.yuwan.activity.SendDynamicActivity;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.NetbarAdvertisement;
 import com.chinalooke.yuwan.bean.WholeDynamic;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -469,7 +469,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
 
             String addTime = resultBean.getCreateTime();
             if (!TextUtils.isEmpty(addTime))
-                dynamicViewHolder.mTvTime.setText(addTime.substring(0, 10));
+                dynamicViewHolder.mTvTime.setText(addTime);
 
             if (mUserInfo != null) {
                 final boolean isLoginUserLike = resultBean.isIsLoginUserLike();

@@ -124,7 +124,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.chinalooke.yuwan.view.NoSlidingListView
+            <ListView
                 android:id="@+id/list_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

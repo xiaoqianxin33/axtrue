@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rl_game_name"
+        android:layout_width="match_parent"
+        android:layout_height="95px"
+        android:background="@android:color/white">
+
+        <TextView
+            style="@style/yuezhan_title"
+            android:text="圈子昵称"/>
+
+
+        <ImageView
+            style="@style/yuezhan_arrow"
+            android:src="@mipmap/arrow_right"/>
+
+        <TextView
+            android:id="@+id/tv_circle_name"
+            style="@style/yuezhan_content"/>
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/mid_padding"
+        android:background="@color/line_color"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_head"
+        android:layout_width="match_parent"
+        android:layout_height="95px"
+        android:background="@android:color/white">
+
+        <TextView
+            style="@style/yuezhan_title"
+            android:text="添加头像"/>
+
+
+        <ImageView
+            android:id="@+id/iv1"
+            style="@style/yuezhan_arrow"
+            android:src="@mipmap/arrow_right"/>
+
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/iv_gameimage"
+            app:riv_oval="true"
+            android:layout_width="60px"
+            android:layout_height="60px"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/small_padding"
+            android:layout_toLeftOf="@id/iv1"
+            android:scaleType="centerCrop"/>
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/mid_padding"
+        android:background="@color/line_color"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_game"
+        android:layout_width="match_parent"
+        android:layout_height="95px"
+        android:background="@android:color/white">
+
+        <TextView
+            style="@style/yuezhan_title"
+            android:text="添加游戏"/>
+
+
+        <ImageView
+            android:id="@+id/iv2"
+            style="@style/yuezhan_arrow"
+            android:src="@mipmap/arrow_right"/>
+
+
+        <LinearLayout
+            android:id="@+id/ll_game"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/small_padding"
+            android:layout_toLeftOf="@id/iv2"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"/>
+
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20px"
+        android:background="@color/line_color"/>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_explain"
+        android:layout_width="match_parent"
+        android:layout_height="95px"
+        android:background="@android:color/white">
+
+        <TextView
+            style="@style/yuezhan_title"
+            android:text="个人说明"/>
+
+
+        <ImageView
+            android:id="@+id/iv4"
+            style="@style/yuezhan_arrow"
+            android:src="@mipmap/arrow_right"/>
+
+
+        <TextView
+            android:id="@+id/tv_circle_expalin"
+            style="@style/yuezhan_content"/>
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+    <Button
+        android:id="@+id/btn_create"
+        android:layout_width="match_parent"
+        android:layout_height="90px"
+        android:layout_marginLeft="@dimen/mid_padding"
+        android:layout_marginRight="@dimen/mid_padding"
+        android:layout_marginTop="60px"
+        android:background="@mipmap/orange_round_background"
+        android:text="开始创建"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/mid_padding"/>
+
+
+</LinearLayout>

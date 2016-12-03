@@ -151,7 +151,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getActivity(), LoginUserInfoUtils.KEY);
         mMap = mMapview.getMap();
         mMap.clear();
-
         initView();
         initData();
         initEvent();
@@ -349,7 +348,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     //获取附近圈子
     private void getNearbyCircle() {
         String uri = Constant.HOST + "getGroupWithGPS&lng=" + mLongitude + "&lat=" + mLatitude + "&pageNo=" + 0 + "&pageSize=2";
-
         StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

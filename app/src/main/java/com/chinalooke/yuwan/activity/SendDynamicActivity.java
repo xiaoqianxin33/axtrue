@@ -3,11 +3,14 @@ package com.chinalooke.yuwan.activity;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -20,12 +23,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.Circle;
 import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.Auth;
+import com.chinalooke.yuwan.utils.BitmapUtils;
 import com.chinalooke.yuwan.utils.DateUtils;
+import com.chinalooke.yuwan.utils.ImageUtils;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -39,6 +44,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,6 +81,7 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
     private ProgressDialog mProgressDialog;
     private String groupId = "0";
     private RequestQueue mQueue;
+    private int upCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +115,7 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
         mTvSkip.setTextColor(getResources().getColor(R.color.orange));
         AMapLocation aMapLocation = LocationUtils.getAMapLocation();
         if (aMapLocation != null) {
-            String address = aMapLocation.getAddress();
+            String address = aMapLocation.getProvince() + aMapLocation.getCity() + aMapLocation.getStreet();
             if (!TextUtils.isEmpty(address))
                 mTvAddress.setText(address);
         }
@@ -172,7 +180,7 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
         }
     }
 
-    @OnClick({R.id.iv_back, R.id.tv_skip, R.id.rl_address})
+    @OnClick({R.id.iv_back, R.id.tv_skip})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
@@ -187,16 +195,13 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
                         if (mPhotos != null && mPhotos.size() != 0) {
                             uploadPhotos(mPhotos);
                         } else {
-                            uploadPhotos(null);
+                            sendDynamic(null);
                         }
                     } else {
                         mToast.setText("网速不给力啊，换个地方试试");
                         mToast.show();
                     }
                 }
-                break;
-            case R.id.rl_address:
-                // TODO: 2016/11/24 位置如何选择
                 break;
         }
     }
@@ -206,16 +211,17 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
         Auth auth = Auth.create(Constant.QINIU_ACCESSKEY, Constant.QINIU_SECRETKEY);
         String token = auth.uploadToken("yuwan");
         final ArrayList<String> paths = new ArrayList<>();
-        final int[] count = {0};
-        for (String path : mPhotos) {
+        for (int i = 0; i < mPhotos.size(); i++) {
+            Bitmap bitmap = ImageUtils.getBitmap(mPhotos.get(i));
+            Bitmap bitmap1 = ImageUtils.compressByScale(bitmap, 235, 235);
             String fileName = "dynamic" + new Date().getTime();
-            paths.add(Constant.QINIU_DOMAIN + "/" + fileName);
-            mUploadManager.put(path, fileName, token, new UpCompletionHandler() {
+            paths.add("http://" + Constant.QINIU_DOMAIN + "/" + fileName);
+            mUploadManager.put(BitmapUtils.toArray(bitmap1), fileName, token, new UpCompletionHandler() {
                 @Override
                 public void complete(String key, ResponseInfo info, JSONObject response) {
                     if (info.error == null) {
-                        count[0]++;
-                        if (count[0] == mPhotos.size()) {
+                        upCount++;
+                        if (upCount == mPhotos.size()) {
                             sendDynamic(paths);
                         }
                     }
@@ -227,56 +233,71 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
     //发布动态
     private void sendDynamic(ArrayList<String> paths) {
         String uri;
-        if (paths != null) {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < paths.size(); i++) {
-                if (i == paths.size() - 1)
-                    stringBuilder.append(paths.get(i));
-                else
-                    stringBuilder.append(paths.get(i)).append(",");
+        try {
+            String content = URLEncoder.encode(mContent, "utf8");
+            String address = URLEncoder.encode(mTvAddress.getText().toString(), "utf8");
+            String time = URLEncoder.encode(DateUtils.getCurrentDateTime(), "utf8");
+            if (paths != null) {
+                StringBuilder stringBuilder = new StringBuilder();
+                for (int i = 0; i < paths.size(); i++) {
+                    if (i == paths.size() - 1)
+                        stringBuilder.append(paths.get(i));
+                    else
+                        stringBuilder.append(paths.get(i)).append(",");
+                }
+                uri = Constant.HOST + "sendActive&userId=" + mUserInfo.getUserId() + "&content=" + content + "&imgs="
+                        + stringBuilder.toString() + "&sendTime=" + time + "&groupId=" + groupId + "&address=" + address;
+            } else {
+                uri = Constant.HOST + "sendActive&userId=" + mUserInfo.getUserId() + "&content=" + content
+                        + "&sendTime=" + time + "&groupId=" + groupId + "&address=" + address;
             }
-            uri = Constant.HOST + "sendActive&userId=" + mUserInfo.getUserId() + "&content=" + mContent + "&imgs="
-                    + stringBuilder.toString() + "&sendTime=" + DateUtils.getCurrentDateTime() + "&groupId=" + groupId + "&address=" + mTvAddress.getText().toString();
-        } else {
-            uri = Constant.HOST + "sendActive&userId=" + mUserInfo.getUserId() + "&content=" + mContent
-                    + "&sendTime=" + DateUtils.getCurrentDateTime() + "&groupId=" + groupId + "&address=" + mTvAddress.getText().toString();
-        }
 
-        StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                mProgressDialog.dismiss();
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    boolean success = jsonObject.getBoolean("Success");
-                    if (success) {
-                        boolean result = jsonObject.getBoolean("Result");
-                        if (result) {
-                            showJoinSucceedDialog();
+            Log.e("TAG", uri);
+            StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    mProgressDialog.dismiss();
+                    Log.e("RESPONSE", response);
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("Success");
+                        if (success) {
+                            boolean result = jsonObject.getBoolean("Result");
+                            if (result) {
+                                MyUtils.showDialog(SendDynamicActivity.this, "提示", "动态发布成功！", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        finish();
+                                    }
+                                });
+                            } else {
+                                String msg = jsonObject.getString("Msg");
+                                mToast.setText(msg);
+                                mToast.show();
+                            }
                         } else {
                             String msg = jsonObject.getString("Msg");
                             mToast.setText(msg);
                             mToast.show();
                         }
-                    } else {
-                        String msg = jsonObject.getString("Msg");
-                        mToast.setText(msg);
-                        mToast.show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                mProgressDialog.dismiss();
-                mToast.setText("服务器抽风了，换个地方试试");
-                mToast.show();
-            }
-        });
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    mProgressDialog.dismiss();
+                    mToast.setText("服务器抽风了，换个地方试试");
+                    mToast.show();
+                }
+            });
 
-        mQueue.add(request);
+            mQueue.add(request);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     //弹出发布成功dialog
@@ -302,7 +323,7 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
     //检查输入
     private boolean checkInput() {
         mContent = mEtContent.getText().toString();
-        if (!TextUtils.isEmpty(mContent)) {
+        if (TextUtils.isEmpty(mContent)) {
             mEtContent.setError("填写点感想吧");
             mEtContent.requestFocus();
             return false;

@@ -155,6 +155,8 @@ public class WodeFragment extends Fragment {
             String nickName = user.getNickName();
             if (!TextUtils.isEmpty(nickName))
                 mTvName.setText(nickName);
+            else
+                mTvName.setText("暂未设置昵称");
             String headImg = user.getHeadImg();
             if (!TextUtils.isEmpty(headImg))
                 Picasso.with(getActivity()).load(headImg).resize(160, 160).centerCrop().into(mRoundedImageView);
@@ -174,7 +176,6 @@ public class WodeFragment extends Fragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
-
 
 
     private void setCancelDialog() {

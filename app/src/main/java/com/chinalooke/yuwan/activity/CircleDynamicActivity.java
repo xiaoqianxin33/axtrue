@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -18,6 +17,7 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,7 +41,6 @@ import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.ViewHelper;
-import com.chinalooke.yuwan.view.NoSlidingListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -69,7 +68,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
     @Bind(R.id.tv_slogen)
     TextView mTvSlogen;
     @Bind(R.id.list_view)
-    NoSlidingListView mListView;
+    ListView mListView;
     @Bind(R.id.sr)
     SwipeRefreshLayout mScrollview;
     @Bind(R.id.rl_top)
@@ -211,9 +210,12 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
     //获得圈子详细信息
     private void getGroupWIthId() {
         if (NetUtil.is_Network_Available(getApplicationContext())) {
-            String url = Constant.HOST + "getGroupWIthId&groupId=" + mCircle.getGroupId();
-            if (mUserInfo != null)
-                url = url + "&userId=" + mUserInfo.getUserId();
+            String url;
+            if (mUserInfo != null) {
+                url = Constant.HOST + "getGroupWIthId&groupId=" + mCircle.getGroupId() + "&userId=" + mUserInfo.getUserId();
+            } else {
+                url = Constant.HOST + "getGroupWIthId&groupId=" + mCircle.getGroupId() + "&userId=";
+            }
 
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
@@ -222,7 +224,9 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                         Gson gson = new Gson();
                         mCircleDetail = gson.fromJson(response, CircleDetail.class);
                         CircleDetail.ResultBean result = mCircleDetail.getResult();
-                        boolean isUserJoin = result.isIsUserJoin();
+                        mUserJoin = result.isIsUserJoin();
+                        setIsJoin();
+                    } else {
                         setIsJoin();
                     }
                 }
@@ -313,8 +317,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                     startActivity(new Intent(this, LoginActivity.class));
                     return;
                 } else {
-                    boolean userJoin = mCircle.isUserJoin();
-                    if (userJoin) {
+                    if (mUserJoin) {
                         Intent intent = new Intent(this, SendDynamicActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("circle", mCircle);
@@ -355,7 +358,6 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    Log.e("TAG", url);
                     mProgressDialog.dismiss();
                     try {
                         JSONObject jsonObject = new JSONObject(response);
@@ -471,7 +473,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
 
             String addTime = resultBean.getAddTime();
             if (!TextUtils.isEmpty(addTime))
-                dynamicViewHolder.mTvTime.setText(addTime.substring(0, 10));
+                dynamicViewHolder.mTvTime.setText(addTime);
 
             return convertView;
         }

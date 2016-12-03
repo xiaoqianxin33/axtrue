@@ -134,7 +134,7 @@ public class MyUtils {
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
         builder.setTitle(title);
         builder.setMessage(message);
-        builder.setPositiveButton("确认", yesClickListener);
+        builder.setPositiveButton("确定", yesClickListener);
         builder.show();
     }
 
