@@ -40,4 +40,7 @@
     <color name="indicator_color">#ffc000</color>
     <color name="shallow_word">#a8a8a8</color>
 
+    <drawable name="circle_top_white">#ffffff</drawable>
+    <drawable name="circle_top_orange">#F8B72E</drawable>
+
 </resources>

@@ -45,7 +45,7 @@ public class CircleDetail implements Serializable {
         this.Success = Success;
     }
 
-    public static class ResultBean {
+    public static class ResultBean implements Serializable {
         /**
          * address : 中国河南省洛阳市涧西区郑州路街道青滇路11号
          * createTime : 2016-08-26 16:15:10

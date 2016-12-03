@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -53,6 +54,7 @@ import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.ViewHelper;
+import com.chinalooke.yuwan.view.MapContainer;
 import com.chinalooke.yuwan.view.NoSlidingListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -103,6 +105,10 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     RelativeLayout mRlCreateCircle;
     @Bind(R.id.bgabanner)
     BGABanner mBanner;
+    @Bind(R.id.scrollView)
+    ScrollView mScrollView;
+    @Bind(R.id.mapContainer)
+    MapContainer mMapContainer;
     private Circle mCircle;
     private RequestQueue mQueue;
     private double mLatitude;
@@ -133,6 +139,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         super.onActivityCreated(savedInstanceState);
         mMapview.onCreate(savedInstanceState);
         mActivity = (MainActivity) getActivity();
+        mMapContainer.setScrollView(mScrollView);
     }
 
     @Override

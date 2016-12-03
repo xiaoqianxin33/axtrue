@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="130px">
@@ -69,13 +70,19 @@
                 android:textSize="25px"/>
         </RelativeLayout>
 
-        <com.amap.api.maps2d.MapView
-            android:id="@+id/mapview"
+        <com.chinalooke.yuwan.view.MapContainer
+            android:id="@+id/mapContainer"
             android:layout_width="match_parent"
-            android:layout_height="320px"
-            android:background="@android:color/white"
-            android:paddingLeft="@dimen/mid_padding"
-            android:paddingRight="@dimen/mid_padding"/>
+            android:layout_height="wrap_content">
+
+            <com.amap.api.maps2d.MapView
+                android:id="@+id/mapview"
+                android:layout_width="match_parent"
+                android:layout_height="320px"
+                android:background="@android:color/white"
+                android:paddingLeft="@dimen/mid_padding"
+                android:paddingRight="@dimen/mid_padding"/>
+        </com.chinalooke.yuwan.view.MapContainer>
 
         <FrameLayout
             android:layout_width="match_parent"

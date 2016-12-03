@@ -220,13 +220,9 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                 public void onResponse(String response) {
                     if (AnalysisJSON.analysisJson(response)) {
                         Gson gson = new Gson();
-                        Type type = new TypeToken<CircleDetail>() {
-                        }.getType();
-                        mCircleDetail = gson.fromJson(response, type);
+                        mCircleDetail = gson.fromJson(response, CircleDetail.class);
                         CircleDetail.ResultBean result = mCircleDetail.getResult();
                         boolean isUserJoin = result.isIsUserJoin();
-                        Log.e("TAG", isUserJoin + "");
-                        Log.e("TAG", response);
                         setIsJoin();
                     }
                 }
