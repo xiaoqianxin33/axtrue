@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -149,7 +148,6 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
             String uri = Constant.HOST + "getADList&&pageNo=1&pageSize=5&city=" + utf8
                     + "&lng=" + longitude + "&lat=" + latitude;
 
-            Log.e("TAG", uri);
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
