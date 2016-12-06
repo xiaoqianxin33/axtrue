@@ -55,7 +55,9 @@ import com.zhy.autolayout.utils.AutoUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +77,6 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
     ProgressBar mProgressBar;
     @Bind(R.id.tv_no)
     TextView mTvNo;
-    @Bind(R.id.bgabanner)
     BGABanner mBanner;
 
     private List<View> mAdList = new ArrayList<>();
@@ -92,6 +93,8 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
     private boolean isFoot = false;
     private Toast mToast;
     private boolean isSuccess = false;
+    private ImageView mImageView;
+    private MainActivity mActivity;
 
 
     @Override
@@ -105,9 +108,14 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mQueue = ((MainActivity) getActivity()).getQueue();
+        mActivity = (MainActivity) getActivity();
+        mQueue = mActivity.getQueue();
         mToast = YuwanApplication.getToast();
-        mFoot = View.inflate(getActivity(), R.layout.foot, null);
+        mFoot = View.inflate(mActivity, R.layout.foot, null);
+        View inflate = View.inflate(mActivity, R.layout.dynamic_head_view, null);
+        mLvDynamic.addHeaderView(inflate);
+        mBanner = (BGABanner) inflate.findViewById(R.id.banner);
+        mImageView = (ImageView) inflate.findViewById(R.id.iv_ad);
     }
 
     @Override
@@ -115,19 +123,19 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
         super.onResume();
         mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         initHead();
-        mMyListAdapater = new MyDynamicAdapter(mDynamics, getActivity());
+        mMyListAdapater = new MyDynamicAdapter(mDynamics, mActivity);
         mLvDynamic.setAdapter(mMyListAdapater);
         initEvent();
     }
 
     //初始化头部广告
     private void initHead() {
-        if (NetUtil.is_Network_Available(getActivity())) {
+        if (NetUtil.is_Network_Available(mActivity)) {
             AMapLocation aMapLocation = LocationUtils.getAMapLocation();
             if (aMapLocation != null) {
                 initBanner(aMapLocation);
             } else {
-                mAMapLocationClient = LocationUtils.location(getActivity(), this);
+                mAMapLocationClient = LocationUtils.location(mActivity, this);
             }
         }
     }
@@ -136,28 +144,35 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
         String city = aMapLocation.getCity();
         double latitude = aMapLocation.getLatitude();
         double longitude = aMapLocation.getLongitude();
-        String uri = Constant.HOST + "getADList&&pageNo=1&pageSize=5&city=" + city
-                + "&lng=" + longitude + "&lat=" + latitude;
-        StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                if (AnalysisJSON.analysisJson(response)) {
-                    Gson gson = new Gson();
-                    Type type = new TypeToken<NetbarAdvertisement>() {
-                    }.getType();
-                    NetbarAdvertisement netbarAdvertisement = gson.fromJson(response, type);
-                    if (netbarAdvertisement != null) {
-                        setBanner(netbarAdvertisement);
+        try {
+            String utf8 = URLEncoder.encode(city, "UTF-8");
+            String uri = Constant.HOST + "getADList&&pageNo=1&pageSize=5&city=" + utf8
+                    + "&lng=" + longitude + "&lat=" + latitude;
+
+            Log.e("TAG", uri);
+            StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    if (AnalysisJSON.analysisJson(response)) {
+                        Gson gson = new Gson();
+                        Type type = new TypeToken<NetbarAdvertisement>() {
+                        }.getType();
+                        NetbarAdvertisement netbarAdvertisement = gson.fromJson(response, type);
+                        if (netbarAdvertisement != null) {
+                            setBanner(netbarAdvertisement);
+                        }
                     }
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
 
-            }
-        });
-        mQueue.add(request);
+                }
+            });
+            mQueue.add(request);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     //填充banner数据
@@ -170,9 +185,9 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
             List<String> adImg = resultBean.getADImg();
             if (adImg != null && adImg.size() != 0) {
                 for (String uri : adImg) {
-                    ImageView imageView = new ImageView(getActivity());
+                    ImageView imageView = new ImageView(mActivity);
                     imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    Picasso.with(getActivity()).load(uri).resize(MyUtils.Dp2Px(getActivity(), ViewHelper.getDisplayMetrics(getActivity()).widthPixels), 300)
+                    Picasso.with(mActivity).load(uri).resize(MyUtils.Dp2Px(mActivity, ViewHelper.getDisplayMetrics(mActivity).widthPixels), 300)
                             .centerCrop().into(imageView);
                     mAdList.add(imageView);
                 }
@@ -224,12 +239,19 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 WholeDynamic.ResultBean resultBean = mDynamics.get(position);
-                Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
+                Intent intent = new Intent(mActivity, DynamicDetailActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("dynamic", resultBean);
                 intent.putExtra("dynamic_type", 0);
                 intent.putExtras(bundle);
                 startActivity(intent);
+            }
+        });
+
+        mImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mActivity, NetbarADActivity.class));
             }
         });
     }
@@ -245,7 +267,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
 
 
     private void initData() {
-        if (NetUtil.is_Network_Available(getActivity())) {
+        if (NetUtil.is_Network_Available(mActivity)) {
             String uri;
             if (mUserInfo != null) {
                 uri = Constant.HOST + "getActiveList&pageNo=" + mPage + "&pageSize=5&userId"
@@ -376,17 +398,14 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
 
     }
 
-    @OnClick({R.id.iv_camera, R.id.iv_ad})
+    @OnClick({R.id.iv_camera})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_camera:
                 if (mUserInfo != null)
-                    startActivity(new Intent(getActivity(), SendDynamicActivity.class));
+                    startActivity(new Intent(mActivity, SendDynamicActivity.class));
                 else
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
-                break;
-            case R.id.iv_ad:
-                startActivity(new Intent(getActivity(), NetbarADActivity.class));
+                    startActivity(new Intent(mActivity, LoginActivity.class));
                 break;
         }
     }
@@ -435,7 +454,6 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
 
             final WholeDynamic.ResultBean resultBean = (WholeDynamic.ResultBean) mDataSource.get(position);
             String headImg = resultBean.getHeadImg();
-            Log.e("TAG", headImg);
             if (!TextUtils.isEmpty(headImg))
                 Picasso.with(mContext).load(headImg).resize(72, 72).centerCrop().into(dynamicViewHolder.mRoundedImageView);
             String content = resultBean.getContent();
@@ -527,7 +545,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView imageview;
             if (convertView == null) {
-                imageview = new ImageView(getActivity());
+                imageview = new ImageView(mActivity);
                 imageview.setImageResource(R.mipmap.placeholder);
                 imageview.setLayoutParams(new GridView.LayoutParams(235, 235));
                 imageview.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -536,7 +554,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
             } else {
                 imageview = (ImageView) convertView;
             }
-            Picasso.with(getActivity()).load(mStrings[position]).into(imageview);
+            Picasso.with(mActivity).load(mStrings[position]).into(imageview);
             return imageview;
         }
     }

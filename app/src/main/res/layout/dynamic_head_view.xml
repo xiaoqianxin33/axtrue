@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="300px">
+
+    <cn.bingoogolapple.bgabanner.BGABanner
+        android:id="@+id/bgabanner"
+        android:layout_width="match_parent"
+        android:layout_height="300px"
+        app:banner_pageChangeDuration="1000"
+        app:banner_pointAutoPlayAble="true"
+        app:banner_pointAutoPlayInterval="2000"
+        app:banner_pointContainerBackground="@android:color/transparent"
+        app:banner_pointDrawable="@drawable/bga_banner_selector_point_hollow"
+        app:banner_pointTopBottomMargin="5dp"
+        app:banner_transitionEffect="alpha"/>
+
+    <ImageView
+        android:id="@+id/iv_ad"
+        android:layout_width="40px"
+        android:layout_height="40px"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/mid_padding"
+        android:layout_marginRight="@dimen/mid_padding"
+        android:src="@mipmap/arrow_right_dynamic"/>
+</RelativeLayout>

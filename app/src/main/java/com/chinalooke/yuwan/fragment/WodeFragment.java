@@ -3,13 +3,18 @@ package com.chinalooke.yuwan.fragment;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
@@ -22,6 +27,7 @@ import com.chinalooke.yuwan.activity.UserInfoActivity;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
+import com.chinalooke.yuwan.view.MyScrollView;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -44,6 +50,15 @@ public class WodeFragment extends Fragment {
     TextView mTvSlogen;
     @Bind(R.id.tv_login)
     TextView mTvLogin;
+    @Bind(R.id.scrollView)
+    MyScrollView mMyScrollView;
+    @Bind(R.id.rl_top)
+    RelativeLayout mRlTop;
+    @Bind(R.id.rl_scroll)
+    RelativeLayout mRlScroll;
+    private int START_ALPHA = 0;
+    private int END_ALPHA = 255;
+    private int mHeight;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,6 +71,27 @@ public class WodeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        final Drawable drawable = getResources().getDrawable(R.drawable.actionbar_color_else);
+        drawable.setAlpha(START_ALPHA);
+        mRlTop.setBackground(drawable);
+        ViewTreeObserver viewTreeObserver = mRlScroll.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mRlScroll.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                mHeight = mRlScroll.getHeight();
+                mMyScrollView.setOnScrollChangedListener(new MyScrollView.OnScrollChangedListener() {
+                    @Override
+                    public void onScrollChanged(ScrollView who, int x, int y, int oldx, int oldy) {
+                        if (y > mHeight) {
+                            y = mHeight;   //当滑动到指定位置之后设置颜色为纯色，之前的话要渐变---实现下面的公式即可
+                        }
+                        drawable.setAlpha(y * (END_ALPHA - START_ALPHA) / mHeight + START_ALPHA);
+
+                    }
+                });
+            }
+        });
     }
 
     @OnClick({R.id.tv_name, R.id.roundedImageView, R.id.tv_login, R.id.rl_info, R.id.rl_friend

@@ -321,12 +321,9 @@ public class BattleFieldFragment extends Fragment {
                                     switch (status) {
                                         case 0:
                                             if (isFresh) {
-                                                Log.e("TAG", "isFresh");
                                                 mYzList.clear();
-                                                Log.e("TBG", mYzList.size() + "");
                                             }
                                             mYzList.addAll(result);
-                                            Log.e("TAG", mYzList.size() + "");
                                             mYzAdapter.notifyDataSetChanged();
                                             break;
                                         case 1:
@@ -450,6 +447,10 @@ public class BattleFieldFragment extends Fragment {
         mRecyclerView2.setAdapter(mJsAdapter);
         setIconWordColor(0);
         setRecyclerView(0);
+
+        mRecyclerView.setNestedScrollingEnabled(false);
+        mRecyclerView1.setNestedScrollingEnabled(false);
+        mRecyclerView2.setNestedScrollingEnabled(false);
     }
 
 

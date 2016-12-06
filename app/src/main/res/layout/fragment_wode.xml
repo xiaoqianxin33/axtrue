@@ -1,74 +1,13 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/background"
-              android:orientation="vertical"
-              tools:context="com.chinalooke.yuwan.fragment.WodeFragment">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/background"
+                tools:context="com.chinalooke.yuwan.fragment.WodeFragment">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="500px"
-        android:background="@mipmap/wode_background">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="67px"
-            android:text="我的"
-            android:textColor="@android:color/white"
-            android:textSize="35px"/>
-
-        <TextView
-            android:id="@+id/tv_sign_up"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/mid_padding"
-            android:layout_marginTop="69px"
-            android:text="签到"
-            android:textColor="@android:color/white"
-            android:textSize="30px"/>
-
-
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/roundedImageView"
-            android:layout_width="160px"
-            android:layout_height="160px"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="170px"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/placeholder"
-            app:riv_oval="true"/>
-
-
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/roundedImageView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="25px"
-            android:text="未设置昵称"
-            android:textColor="@android:color/white"
-            android:textSize="26px"/>
-
-
-        <TextView
-            android:id="@+id/tv_slogen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_name"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="24px"
-            android:text="简介：暂无简介"
-            android:textColor="@android:color/white"
-            android:textSize="24px"/>
-    </RelativeLayout>
-
-    <ScrollView
+    <com.chinalooke.yuwan.view.MyScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none">
@@ -76,358 +15,408 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="160px">
+            android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/rl_message"
+                android:id="@+id/rl_scroll"
                 android:layout_width="match_parent"
-                android:layout_height="96px"
-                android:background="@android:color/white"
-                android:paddingLeft="@dimen/mid_padding"
-                android:paddingRight="@dimen/mid_padding">
+                android:layout_height="500px"
+                android:background="@mipmap/wode_background">
 
-                <ImageView
-                    android:id="@+id/iv1"
-                    android:layout_width="48px"
-                    android:layout_height="48px"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/wode_message"/>
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/roundedImageView"
+                    android:layout_width="160px"
+                    android:layout_height="160px"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="170px"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/placeholder"
+                    app:riv_oval="true"/>
+
 
                 <TextView
+                    android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/small_padding"
-                    android:layout_toRightOf="@id/iv1"
-                    android:text="我的消息"
-                    android:textColor="@color/black_word"
-                    android:textSize="@dimen/mid_padding"/>
+                    android:layout_below="@id/roundedImageView"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="25px"
+                    android:text="未设置昵称"
+                    android:textColor="@android:color/white"
+                    android:textSize="26px"/>
 
-                <ImageView
-                    android:layout_width="26px"
-                    android:layout_height="16px"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/arrow_right"/>
-
-            </RelativeLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="@dimen/mid_padding"
-                android:background="@color/line_color"/>
-
-            <RelativeLayout
-                android:id="@+id/rl_chat"
-                android:layout_width="match_parent"
-                android:layout_height="96px"
-                android:background="@android:color/white"
-                android:paddingLeft="@dimen/mid_padding"
-                android:paddingRight="@dimen/mid_padding">
-
-                <ImageView
-                    android:id="@+id/iv2"
-                    android:layout_width="48px"
-                    android:layout_height="48px"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/wode_chat"/>
 
                 <TextView
+                    android:id="@+id/tv_slogen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/small_padding"
-                    android:layout_toRightOf="@id/iv2"
-                    android:text="我的聊天"
-                    android:textColor="@color/black_word"
-                    android:textSize="@dimen/mid_padding"/>
-
-                <ImageView
-                    android:layout_width="26px"
-                    android:layout_height="16px"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/arrow_right"/>
-
+                    android:layout_below="@id/tv_name"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="24px"
+                    android:text="简介：暂无简介"
+                    android:textColor="@android:color/white"
+                    android:textSize="24px"/>
             </RelativeLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="@dimen/mid_padding"
-                android:background="@color/line_color"/>
 
-            <RelativeLayout
-                android:id="@+id/rl_info"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="96px"
-                android:background="@android:color/white"
-                android:paddingLeft="@dimen/mid_padding"
-                android:paddingRight="@dimen/mid_padding">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="160px">
 
-                <ImageView
-                    android:id="@+id/iv3"
-                    android:layout_width="48px"
-                    android:layout_height="48px"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/wode_info"/>
+                <RelativeLayout
+                    android:id="@+id/rl_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="96px"
+                    android:background="@android:color/white"
+                    android:paddingLeft="@dimen/mid_padding"
+                    android:paddingRight="@dimen/mid_padding">
+
+                    <ImageView
+                        android:id="@+id/iv1"
+                        android:layout_width="48px"
+                        android:layout_height="48px"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/wode_message"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/small_padding"
+                        android:layout_toRightOf="@id/iv1"
+                        android:text="我的消息"
+                        android:textColor="@color/black_word"
+                        android:textSize="@dimen/mid_padding"/>
+
+                    <ImageView
+                        android:layout_width="26px"
+                        android:layout_height="16px"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/arrow_right"/>
+
+                </RelativeLayout>
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/small_padding"
-                    android:layout_toRightOf="@id/iv3"
-                    android:text="我的资料"
-                    android:textColor="@color/black_word"
-                    android:textSize="@dimen/mid_padding"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="@dimen/mid_padding"
+                    android:background="@color/line_color"/>
 
-                <ImageView
-                    android:layout_width="26px"
-                    android:layout_height="16px"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/arrow_right"/>
+                <RelativeLayout
+                    android:id="@+id/rl_chat"
+                    android:layout_width="match_parent"
+                    android:layout_height="96px"
+                    android:background="@android:color/white"
+                    android:paddingLeft="@dimen/mid_padding"
+                    android:paddingRight="@dimen/mid_padding">
 
-            </RelativeLayout>
+                    <ImageView
+                        android:id="@+id/iv2"
+                        android:layout_width="48px"
+                        android:layout_height="48px"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/wode_chat"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/line_color"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/small_padding"
+                        android:layout_toRightOf="@id/iv2"
+                        android:text="我的聊天"
+                        android:textColor="@color/black_word"
+                        android:textSize="@dimen/mid_padding"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/small_padding"
-                android:background="@color/line_color"/>
+                    <ImageView
+                        android:layout_width="26px"
+                        android:layout_height="16px"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/arrow_right"/>
 
-            <RelativeLayout
-                android:id="@+id/rl_shop"
-                android:layout_width="match_parent"
-                android:layout_height="96px"
-                android:background="@android:color/white"
-                android:paddingLeft="@dimen/mid_padding"
-                android:paddingRight="@dimen/mid_padding">
-
-                <ImageView
-                    android:id="@+id/iv4"
-                    android:layout_width="48px"
-                    android:layout_height="48px"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/wode_shop"/>
+                </RelativeLayout>
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/small_padding"
-                    android:layout_toRightOf="@id/iv4"
-                    android:text="鱼丸商城"
-                    android:textColor="@color/black_word"
-                    android:textSize="@dimen/mid_padding"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="@dimen/mid_padding"
+                    android:background="@color/line_color"/>
 
-                <ImageView
-                    android:layout_width="26px"
-                    android:layout_height="16px"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/arrow_right"/>
+                <RelativeLayout
+                    android:id="@+id/rl_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="96px"
+                    android:background="@android:color/white"
+                    android:paddingLeft="@dimen/mid_padding"
+                    android:paddingRight="@dimen/mid_padding">
 
-            </RelativeLayout>
+                    <ImageView
+                        android:id="@+id/iv3"
+                        android:layout_width="48px"
+                        android:layout_height="48px"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/wode_info"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/line_color"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/small_padding"
+                        android:layout_toRightOf="@id/iv3"
+                        android:text="我的资料"
+                        android:textColor="@color/black_word"
+                        android:textSize="@dimen/mid_padding"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/small_padding"
-                android:background="@color/line_color"/>
+                    <ImageView
+                        android:layout_width="26px"
+                        android:layout_height="16px"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/arrow_right"/>
 
-            <RelativeLayout
-                android:id="@+id/rl_record"
-                android:layout_width="match_parent"
-                android:layout_height="96px"
-                android:background="@android:color/white"
-                android:paddingLeft="@dimen/mid_padding"
-                android:paddingRight="@dimen/mid_padding">
-
-                <ImageView
-                    android:id="@+id/iv5"
-                    android:layout_width="48px"
-                    android:layout_height="48px"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/wode_record"/>
+                </RelativeLayout>
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/small_padding"
-                    android:layout_toRightOf="@id/iv5"
-                    android:text="我的战绩"
-                    android:textColor="@color/black_word"
-                    android:textSize="@dimen/mid_padding"/>
-
-                <ImageView
-                    android:layout_width="26px"
-                    android:layout_height="16px"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/arrow_right"/>
-
-            </RelativeLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="@dimen/mid_padding"
-                android:background="@color/line_color"/>
-
-            <RelativeLayout
-                android:id="@+id/rl_friend"
-                android:layout_width="match_parent"
-                android:layout_height="96px"
-                android:background="@android:color/white"
-                android:paddingLeft="@dimen/mid_padding"
-                android:paddingRight="@dimen/mid_padding">
-
-                <ImageView
-                    android:id="@+id/iv6"
-                    android:layout_width="48px"
-                    android:layout_height="48px"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/wode_friends"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line_color"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/small_padding"
-                    android:layout_toRightOf="@id/iv6"
-                    android:text="我的战友"
-                    android:textColor="@color/black_word"
-                    android:textSize="@dimen/mid_padding"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/small_padding"
+                    android:background="@color/line_color"/>
 
-                <ImageView
-                    android:layout_width="26px"
-                    android:layout_height="16px"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/arrow_right"/>
+                <RelativeLayout
+                    android:id="@+id/rl_shop"
+                    android:layout_width="match_parent"
+                    android:layout_height="96px"
+                    android:background="@android:color/white"
+                    android:paddingLeft="@dimen/mid_padding"
+                    android:paddingRight="@dimen/mid_padding">
 
-            </RelativeLayout>
+                    <ImageView
+                        android:id="@+id/iv4"
+                        android:layout_width="48px"
+                        android:layout_height="48px"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/wode_shop"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="@dimen/mid_padding"
-                android:background="@color/line_color"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/small_padding"
+                        android:layout_toRightOf="@id/iv4"
+                        android:text="鱼丸商城"
+                        android:textColor="@color/black_word"
+                        android:textSize="@dimen/mid_padding"/>
 
-            <RelativeLayout
-                android:id="@+id/rl_balance"
-                android:layout_width="match_parent"
-                android:layout_height="96px"
-                android:background="@android:color/white"
-                android:paddingLeft="@dimen/mid_padding"
-                android:paddingRight="@dimen/mid_padding">
+                    <ImageView
+                        android:layout_width="26px"
+                        android:layout_height="16px"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/arrow_right"/>
 
-                <ImageView
-                    android:id="@+id/iv7"
-                    android:layout_width="48px"
-                    android:layout_height="48px"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/wode_banlance"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/small_padding"
-                    android:layout_toRightOf="@id/iv7"
-                    android:text="我的余额"
-                    android:textColor="@color/black_word"
-                    android:textSize="@dimen/mid_padding"/>
-
-                <ImageView
-                    android:layout_width="26px"
-                    android:layout_height="16px"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/arrow_right"/>
-
-            </RelativeLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="@dimen/mid_padding"
-                android:background="@color/line_color"/>
-
-            <RelativeLayout
-                android:id="@+id/rl_setting"
-                android:layout_width="match_parent"
-                android:layout_height="96px"
-                android:background="@android:color/white"
-                android:paddingLeft="@dimen/mid_padding"
-                android:paddingRight="@dimen/mid_padding">
-
-                <ImageView
-                    android:id="@+id/iv8"
-                    android:layout_width="48px"
-                    android:layout_height="48px"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/wode_setting"/>
+                </RelativeLayout>
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/small_padding"
-                    android:layout_toRightOf="@id/iv8"
-                    android:text="设置"
-                    android:textColor="@color/black_word"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line_color"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/small_padding"
+                    android:background="@color/line_color"/>
+
+                <RelativeLayout
+                    android:id="@+id/rl_record"
+                    android:layout_width="match_parent"
+                    android:layout_height="96px"
+                    android:background="@android:color/white"
+                    android:paddingLeft="@dimen/mid_padding"
+                    android:paddingRight="@dimen/mid_padding">
+
+                    <ImageView
+                        android:id="@+id/iv5"
+                        android:layout_width="48px"
+                        android:layout_height="48px"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/wode_record"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/small_padding"
+                        android:layout_toRightOf="@id/iv5"
+                        android:text="我的战绩"
+                        android:textColor="@color/black_word"
+                        android:textSize="@dimen/mid_padding"/>
+
+                    <ImageView
+                        android:layout_width="26px"
+                        android:layout_height="16px"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/arrow_right"/>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="@dimen/mid_padding"
+                    android:background="@color/line_color"/>
+
+                <RelativeLayout
+                    android:id="@+id/rl_friend"
+                    android:layout_width="match_parent"
+                    android:layout_height="96px"
+                    android:background="@android:color/white"
+                    android:paddingLeft="@dimen/mid_padding"
+                    android:paddingRight="@dimen/mid_padding">
+
+                    <ImageView
+                        android:id="@+id/iv6"
+                        android:layout_width="48px"
+                        android:layout_height="48px"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/wode_friends"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/small_padding"
+                        android:layout_toRightOf="@id/iv6"
+                        android:text="我的战友"
+                        android:textColor="@color/black_word"
+                        android:textSize="@dimen/mid_padding"/>
+
+                    <ImageView
+                        android:layout_width="26px"
+                        android:layout_height="16px"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/arrow_right"/>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="@dimen/mid_padding"
+                    android:background="@color/line_color"/>
+
+                <RelativeLayout
+                    android:id="@+id/rl_balance"
+                    android:layout_width="match_parent"
+                    android:layout_height="96px"
+                    android:background="@android:color/white"
+                    android:paddingLeft="@dimen/mid_padding"
+                    android:paddingRight="@dimen/mid_padding">
+
+                    <ImageView
+                        android:id="@+id/iv7"
+                        android:layout_width="48px"
+                        android:layout_height="48px"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/wode_banlance"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/small_padding"
+                        android:layout_toRightOf="@id/iv7"
+                        android:text="我的余额"
+                        android:textColor="@color/black_word"
+                        android:textSize="@dimen/mid_padding"/>
+
+                    <ImageView
+                        android:layout_width="26px"
+                        android:layout_height="16px"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/arrow_right"/>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="@dimen/mid_padding"
+                    android:background="@color/line_color"/>
+
+                <RelativeLayout
+                    android:id="@+id/rl_setting"
+                    android:layout_width="match_parent"
+                    android:layout_height="96px"
+                    android:background="@android:color/white"
+                    android:paddingLeft="@dimen/mid_padding"
+                    android:paddingRight="@dimen/mid_padding">
+
+                    <ImageView
+                        android:id="@+id/iv8"
+                        android:layout_width="48px"
+                        android:layout_height="48px"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/wode_setting"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/small_padding"
+                        android:layout_toRightOf="@id/iv8"
+                        android:text="设置"
+                        android:textColor="@color/black_word"
+                        android:textSize="@dimen/mid_padding"/>
+
+                    <ImageView
+                        android:layout_width="26px"
+                        android:layout_height="16px"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/arrow_right"/>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line_color"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/small_padding"
+                    android:background="@color/line_color"/>
+
+                <TextView
+                    android:id="@+id/tv_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="94px"
+                    android:background="@android:color/white"
+                    android:gravity="center"
+                    android:text="退出登录"
+                    android:textColor="@android:color/holo_red_light"
                     android:textSize="@dimen/mid_padding"/>
 
-                <ImageView
-                    android:layout_width="26px"
-                    android:layout_height="16px"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/arrow_right"/>
-
-            </RelativeLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/line_color"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/small_padding"
-                android:background="@color/line_color"/>
-
-            <TextView
-                android:id="@+id/tv_login"
-                android:layout_width="match_parent"
-                android:layout_height="94px"
-                android:background="@android:color/white"
-                android:gravity="center"
-                android:text="退出登录"
-                android:textColor="@android:color/holo_red_light"
-                android:textSize="@dimen/mid_padding"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/line_color"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line_color"/>
+            </LinearLayout>
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+    </com.chinalooke.yuwan.view.MyScrollView>
+
+    <include layout="@layout/include_head_wode"/>
+</RelativeLayout>
