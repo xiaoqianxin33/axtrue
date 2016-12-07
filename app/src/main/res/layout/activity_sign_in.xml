@@ -86,11 +86,10 @@
 
 
             <com.chinalooke.yuwan.view.SignView
+                android:background="@android:color/white"
                 android:id="@+id/signView"
                 android:layout_width="match_parent"
-                android:layout_height="420px"/>
-
-
+                android:layout_height="600px"/>
         </LinearLayout>
 
 

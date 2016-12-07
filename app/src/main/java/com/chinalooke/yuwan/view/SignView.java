@@ -30,7 +30,7 @@ public class SignView extends View {
     /**
      * 已签到背景色
      */
-    private static final int COLOR_BACKGROUND_HIGHLIGHT = 0xFFDA63;
+    private static final int COLOR_BACKGROUND_HIGHLIGHT = 0xFFFFDA63;
     /**
      * 未签到背景色
      */
@@ -52,13 +52,13 @@ public class SignView extends View {
 //     */
 //    private static final int COLOR_TEXT_DISABLED = 0xFFD4D4D4;
 
-    private static final int MARKER_TEXT_SIZE = 22;
-    private static final int CELL_TEXT_SIZE = 22;
+    private static final int MARKER_TEXT_SIZE = 40;
+    private static final int CELL_TEXT_SIZE = 40;
 
-    private static final int VERTICAL_SPACE = 50;
-    private static final int VERTICAL_MARGIN = 20;
-    private static final int HORIZONTAL_MARGIN = 50;
-    private static final int CELL_SIZE = 50;
+    private static final int VERTICAL_SPACE = 51;
+    private static final int VERTICAL_MARGIN = 62;
+    private static final int HORIZONTAL_MARGIN = 39;
+    private static final int CELL_SIZE = 80;
     private static final int WAIT_LINE_SIZE = 14;
 
     private int dayOfMonthToday;
@@ -115,6 +115,7 @@ public class SignView extends View {
         horizontalMargin = HORIZONTAL_MARGIN;
         cellSize = CELL_SIZE;
         waitLineSize = WAIT_LINE_SIZE;
+
     }
 
     private void initPaint() {
