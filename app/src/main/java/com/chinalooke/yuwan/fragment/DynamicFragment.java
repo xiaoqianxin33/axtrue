@@ -463,8 +463,11 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
 
             String images = resultBean.getImages();
             if (!TextUtils.isEmpty(images)) {
+                dynamicViewHolder.mGridView.setVisibility(View.VISIBLE);
                 String[] split = images.split(",");
                 dynamicViewHolder.mGridView.setAdapter(new GridAdapter(split));
+            } else {
+                dynamicViewHolder.mGridView.setVisibility(View.GONE);
             }
 
             String likes = resultBean.getLikes();
@@ -552,7 +555,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
             } else {
                 imageview = (ImageView) convertView;
             }
-            Picasso.with(mActivity).load(mStrings[position]).into(imageview);
+            Picasso.with(mActivity).load(mStrings[position] + "?imageView2/1/w/235/h/235").into(imageview);
             return imageview;
         }
     }

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +22,12 @@ import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MyBalanceActivity;
 import com.chinalooke.yuwan.activity.RecordActivity;
 import com.chinalooke.yuwan.activity.ShopActivity;
+import com.chinalooke.yuwan.activity.SignInActivity;
 import com.chinalooke.yuwan.activity.UserInfoActivity;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
+import com.chinalooke.yuwan.utils.ViewHelper;
 import com.chinalooke.yuwan.view.MyScrollView;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
@@ -50,6 +51,8 @@ public class WodeFragment extends Fragment {
     TextView mTvSlogen;
     @Bind(R.id.tv_login)
     TextView mTvLogin;
+    @Bind(R.id.tv_sign_up)
+    TextView mTvSignUp;
     @Bind(R.id.scrollView)
     MyScrollView mMyScrollView;
     @Bind(R.id.rl_top)
@@ -71,6 +74,7 @@ public class WodeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        final int heightPixels = ViewHelper.getDisplayMetrics(getActivity()).heightPixels;
         final Drawable drawable = getResources().getDrawable(R.drawable.actionbar_color_else);
         drawable.setAlpha(START_ALPHA);
         mRlTop.setBackground(drawable);
@@ -80,16 +84,31 @@ public class WodeFragment extends Fragment {
             public void onGlobalLayout() {
                 mRlScroll.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 mHeight = mRlScroll.getHeight();
+                final int height = Math.abs(heightPixels - mHeight);
                 mMyScrollView.setOnScrollChangedListener(new MyScrollView.OnScrollChangedListener() {
                     @Override
                     public void onScrollChanged(ScrollView who, int x, int y, int oldx, int oldy) {
-                        if (y > mHeight) {
-                            y = mHeight;   //当滑动到指定位置之后设置颜色为纯色，之前的话要渐变---实现下面的公式即可
+                        if (y > height) {
+                            y = height;   //当滑动到指定位置之后设置颜色为纯色，之前的话要渐变---实现下面的公式即可
                         }
-                        drawable.setAlpha(y * (END_ALPHA - START_ALPHA) / mHeight + START_ALPHA);
+                        drawable.setAlpha(y * (END_ALPHA - START_ALPHA) / height + START_ALPHA);
 
                     }
                 });
+            }
+        });
+
+        initEvent();
+    }
+
+    private void initEvent() {
+        mTvSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (user != null)
+                    startActivity(new Intent(getActivity(), SignInActivity.class));
+                else
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
             }
         });
     }

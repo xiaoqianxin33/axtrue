@@ -11,7 +11,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -406,8 +405,7 @@ public class BattleFieldFragment extends Fragment {
                 String img = imagesBean.getImg();
                 ImageView imageView = new ImageView(getActivity());
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                Picasso.with(getActivity()).load(img).resize(MyUtils.Dp2Px(getActivity(), mWidth), 340)
-                        .centerCrop().into(imageView);
+                Picasso.with(getActivity()).load(img+"?imageView2/1/w/"+mWidth+"/h/172").into(imageView);
                 mShowAd.add(resultBean);
                 mAdList.add(imageView);
             }

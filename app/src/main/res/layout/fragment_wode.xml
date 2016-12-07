@@ -1,10 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/rl_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/background"
                 tools:context="com.chinalooke.yuwan.fragment.WodeFragment">
+
 
     <com.chinalooke.yuwan.view.MyScrollView
         android:id="@+id/scrollView"
@@ -18,7 +20,6 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/rl_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="500px"
                 android:background="@mipmap/wode_background">
@@ -419,4 +420,6 @@
     </com.chinalooke.yuwan.view.MyScrollView>
 
     <include layout="@layout/include_head_wode"/>
+
+
 </RelativeLayout>
