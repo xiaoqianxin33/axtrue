@@ -16,6 +16,7 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:paddingBottom="@dimen/mid_padding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -42,7 +43,6 @@
                     android:layout_below="@id/roundedImageView"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/small_padding"
-                    android:text="22222222"
                     android:textColor="@android:color/white"
                     android:textSize="27px"/>
 
@@ -84,12 +84,41 @@
                 android:textColor="@color/black_word"
                 android:textSize="@dimen/mid_padding"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/mid_padding"
+                android:background="@color/line_color"/>
+
 
             <com.chinalooke.yuwan.view.SignView
-                android:background="@android:color/white"
                 android:id="@+id/signView"
                 android:layout_width="match_parent"
-                android:layout_height="600px"/>
+                android:layout_height="600px"
+                android:background="@android:color/white"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="90px"
+                android:layout_marginTop="@dimen/small_padding"
+                android:background="@android:color/white"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/mid_padding"
+                android:text="连续签到礼包"
+                android:textColor="@color/black_word"
+                android:textSize="@dimen/mid_padding"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/mid_padding"
+                android:background="@color/line_color"/>
+
+            <com.chinalooke.yuwan.view.NoSlidingListView
+                android:id="@+id/list_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@null"/>
         </LinearLayout>
 
 
