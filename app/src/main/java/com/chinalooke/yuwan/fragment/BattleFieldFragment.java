@@ -219,7 +219,10 @@ public class BattleFieldFragment extends Fragment {
         mViewMiddle.setOnLedtSelectListener(new ViewMiddle.OnLeftSelectListener() {
             @Override
             public void getValue(int position) {
-                String name = mList.get(position);
+                String name = "";
+                if (position != 0) {
+                    name = mList.get(position - 1);
+                }
                 try {
                     String encode = URLEncoder.encode(name, "UTF-8");
                     String url = Constant.HOST + "getGameList&gameType=" + encode;
@@ -235,9 +238,18 @@ public class BattleFieldFragment extends Fragment {
                                     linkedList.add(name1);
                                 }
                                 mViewMiddle.changeRightItem(linkedList);
+                            } else {
+                                LinkedList<String> linkedList = new LinkedList<>();
+                                mViewMiddle.changeRightItem(linkedList);
                             }
                         }
-                    }, null);
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            LinkedList<String> linkedList = new LinkedList<>();
+                            mViewMiddle.changeRightItem(linkedList);
+                        }
+                    });
 
                     mQueue.add(request);
                 } catch (UnsupportedEncodingException e) {
@@ -354,10 +366,6 @@ public class BattleFieldFragment extends Fragment {
         mQueue.add(request);
     }
 
-    //分类取得游戏
-    private void getGameList() {
-
-    }
 
     private void initVaule() {
         mViewArray.add(mViewLeft);
