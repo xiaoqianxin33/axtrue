@@ -29,7 +29,7 @@ public class ViewMiddle extends LinearLayout implements ViewBaseAction {
     private OnLeftSelectListener mOnLeftSelectListener;
     private int tEaraPosition = 0;
     private int tBlockPosition = 0;
-    private String showString = "不限";
+    private String showString = "全部游戏";
 
     public ViewMiddle(Context context) {
         super(context);

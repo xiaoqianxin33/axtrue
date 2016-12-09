@@ -258,6 +258,14 @@ public class BattleFieldFragment extends Fragment {
 
             }
         });
+
+        mViewMiddle.setOnSelectListener(new ViewMiddle.OnSelectListener() {
+            @Override
+            public void getValue(String showText) {
+                onRefresh(mViewMiddle, showText);
+            }
+        });
+
     }
 
     class MyOnRecyclerViewItemClickListener implements BaseQuickAdapter.OnRecyclerViewItemClickListener {
@@ -374,7 +382,7 @@ public class BattleFieldFragment extends Fragment {
         ArrayList<String> mTextArray = new ArrayList<>();
         mTextArray.add("归属");
         mTextArray.add("状态");
-        mTextArray.add("游戏");
+        mTextArray.add("全部游戏");
         expandTabView.setValue(mTextArray, mViewArray);//将三个下拉列表设置进去
         expandTabView.setTitle(mViewLeft.getShowText(), 0);
         expandTabView.setTitle(mViewRight.getShowText(), 1);

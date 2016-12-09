@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -29,7 +30,7 @@ public class ExpandTabView extends LinearLayout implements OnDismissListener {
 
     private ToggleButton selectedButton;
     private ArrayList<String> mTextArray = new ArrayList<String>();
-    private ArrayList<RelativeLayout> mViewArray = new ArrayList<RelativeLayout>();
+    private ArrayList<RelativeLayout> mViewArray = new ArrayList<>();
     private ArrayList<ToggleButton> mToggleButton = new ArrayList<ToggleButton>();
     private Context mContext;
     private final int SMALL = 0;
@@ -101,9 +102,9 @@ public class ExpandTabView extends LinearLayout implements OnDismissListener {
                 LayoutParams lp = new LayoutParams(2, LayoutParams.FILL_PARENT);
                 addView(line, lp);
             }
-            mToggleButton.add(tButton);
             tButton.setTag(i);
             tButton.setText(mTextArray.get(i));
+            mToggleButton.add(tButton);
 
             r.setOnClickListener(new OnClickListener() {
                 @Override
