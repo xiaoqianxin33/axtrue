@@ -33,6 +33,8 @@ import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.SearchActivity;
 import com.chinalooke.yuwan.bean.Advertisement;
 import com.chinalooke.yuwan.bean.GameDesk;
+import com.chinalooke.yuwan.bean.GameMessage;
+import com.chinalooke.yuwan.bean.GameType;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
@@ -52,10 +54,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -102,10 +107,11 @@ public class BattleFieldFragment extends Fragment {
     private ViewMiddle mViewMiddle;
     private ViewRight mViewRight;
     private List<GameDesk.ResultBean> mDeskList = new ArrayList<>();
-    private List<GameDesk.ResultBean> mDeskListCache = new ArrayList<>();
     private int CURRENT_STATUS;
     private int CURRENT_TYPE;
     private int PAGE = 1;
+    private Gson mGson;
+    private List<String> mList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -125,6 +131,7 @@ public class BattleFieldFragment extends Fragment {
         mWidth = wm.getDefaultDisplay().getWidth();
         user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         mActivity = (MainActivity) getActivity();
+        mGson = new Gson();
         initView();
         initMenuData();
         initEvent();
@@ -209,6 +216,36 @@ public class BattleFieldFragment extends Fragment {
             }
         });
 
+        mViewMiddle.setOnLedtSelectListener(new ViewMiddle.OnLeftSelectListener() {
+            @Override
+            public void getValue(int position) {
+                String name = mList.get(position);
+                try {
+                    String encode = URLEncoder.encode(name, "UTF-8");
+                    String url = Constant.HOST + "getGameList&gameType=" + encode;
+                    StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            if (AnalysisJSON.analysisJson(response)) {
+                                GameMessage gameMessage = mGson.fromJson(response, GameMessage.class);
+                                List<GameMessage.ResultBean> result = gameMessage.getResult();
+                                LinkedList<String> linkedList = new LinkedList<>();
+                                for (GameMessage.ResultBean resultBean : result) {
+                                    String name1 = resultBean.getName();
+                                    linkedList.add(name1);
+                                }
+                                mViewMiddle.changeRightItem(linkedList);
+                            }
+                        }
+                    }, null);
+
+                    mQueue.add(request);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 
     class MyOnRecyclerViewItemClickListener implements BaseQuickAdapter.OnRecyclerViewItemClickListener {
@@ -278,7 +315,48 @@ public class BattleFieldFragment extends Fragment {
         mViewLeft = new ViewLeft(mActivity);
         mViewMiddle = new ViewMiddle(mActivity);
         mViewRight = new ViewRight(mActivity);
+        getGameTypeList();
         initVaule();
+    }
+
+    //查询所有游戏分类
+    private void getGameTypeList() {
+
+        String url = Constant.HOST + "getGameTypeList";
+        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (AnalysisJSON.analysisJson(response)) {
+                    GameType gameType = mGson.fromJson(response, GameType.class);
+                    if (gameType != null && gameType.getResult() != null && gameType.getResult().size() != 0) {
+                        List<GameType.ResultBean> result = gameType.getResult();
+                        mList = new ArrayList<>();
+                        for (GameType.ResultBean resultBean : result) {
+                            String gameTypeName = resultBean.getGameTypeName();
+                            mList.add(gameTypeName);
+                        }
+                        mViewMiddle.changeLeftItem(mList);
+                    } else {
+
+                    }
+                } else {
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        mQueue.add(request);
+    }
+
+    //分类取得游戏
+    private void getGameList() {
+
     }
 
     private void initVaule() {
@@ -324,10 +402,9 @@ public class BattleFieldFragment extends Fragment {
                             mPbLoad.setVisibility(View.GONE);
                             if (AnalysisJSON.analysisJson(response)) {
                                 mTvNone.setVisibility(View.GONE);
-                                Gson gson = new Gson();
                                 Type type = new TypeToken<GameDesk>() {
                                 }.getType();
-                                GameDesk gameDesk = gson.fromJson(response, type);
+                                GameDesk gameDesk = mGson.fromJson(response, type);
                                 List<GameDesk.ResultBean> result = gameDesk.getResult();
                                 if (result != null && result.size() != 0) {
                                     if (isFresh)
@@ -392,10 +469,9 @@ public class BattleFieldFragment extends Fragment {
                 @Override
                 public void onResponse(String response) {
                     if (AnalysisJSON.analysisJson(response)) {
-                        Gson gson = new Gson();
                         Type type = new TypeToken<Advertisement>() {
                         }.getType();
-                        Advertisement advertisement = gson.fromJson(response, type);
+                        Advertisement advertisement = mGson.fromJson(response, type);
                         setBanner(advertisement);
                     }
                 }

@@ -13,18 +13,20 @@ import com.chinalooke.yuwan.adapter.TextAdapter;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 
 public class ViewMiddle extends LinearLayout implements ViewBaseAction {
 
     private ListView regionListView;
     private ListView plateListView;
-    private ArrayList<String> groups = new ArrayList<String>();
+    private List<String> groups = new ArrayList<>();
     private LinkedList<String> childrenItem = new LinkedList<String>();
-    private SparseArray<LinkedList<String>> children = new SparseArray<LinkedList<String>>();
+    private SparseArray<LinkedList<String>> children = new SparseArray<>();
     private TextAdapter plateListViewAdapter;
     private TextAdapter earaListViewAdapter;
     private OnSelectListener mOnSelectListener;
+    private OnLeftSelectListener mOnLeftSelectListener;
     private int tEaraPosition = 0;
     private int tBlockPosition = 0;
     private String showString = "不限";
@@ -73,16 +75,16 @@ public class ViewMiddle extends LinearLayout implements ViewBaseAction {
         setBackgroundDrawable(getResources().getDrawable(
                 R.drawable.popback));
 
-        for (int i = 0; i < 10; i++) {
-            groups.add(i + "行");
-            LinkedList<String> tItem = new LinkedList<String>();
-            for (int j = 0; j < 15; j++) {
-
-                tItem.add(i + "行" + j + "列");
-
-            }
-            children.put(i, tItem);
-        }
+//        for (int i = 0; i < 10; i++) {
+//            groups.add(i + "行");
+//            LinkedList<String> tItem = new LinkedList<String>();
+//            for (int j = 0; j < 15; j++) {
+//
+//                tItem.add(i + "行" + j + "列");
+//
+//            }
+//            children.put(i, tItem);
+//        }
 
         earaListViewAdapter = new TextAdapter(context, groups,
                 R.drawable.popback,
@@ -95,11 +97,12 @@ public class ViewMiddle extends LinearLayout implements ViewBaseAction {
 
                     @Override
                     public void onItemClick(View view, int position) {
-                        if (position < children.size()) {
-                            childrenItem.clear();
-                            childrenItem.addAll(children.get(position));
-                            plateListViewAdapter.notifyDataSetChanged();
-                        }
+                        mOnLeftSelectListener.getValue(position);
+//                        if (position < children.size()) {
+//                            childrenItem.clear();
+//                            childrenItem.addAll(children.get(position));
+//                            plateListViewAdapter.notifyDataSetChanged();
+//                        }
                     }
                 });
         if (tEaraPosition < children.size())
@@ -146,9 +149,32 @@ public class ViewMiddle extends LinearLayout implements ViewBaseAction {
         mOnSelectListener = onSelectListener;
     }
 
+    public void setOnLedtSelectListener(OnLeftSelectListener onSelectListener) {
+        mOnLeftSelectListener = onSelectListener;
+    }
+
     public interface OnSelectListener {
         public void getValue(String showText);
     }
+
+    public interface OnLeftSelectListener {
+        public void getValue(int position);
+    }
+
+    //刷新右边listView的item
+    public void changeRightItem(LinkedList<String> linkedList) {
+        childrenItem.clear();
+        childrenItem.addAll(linkedList);
+        plateListViewAdapter.notifyDataSetChanged();
+    }
+
+    //刷新左边listView的item
+    public void changeLeftItem(List<String> list) {
+        groups.clear();
+        groups.addAll(list);
+        earaListViewAdapter.notifyDataSetChanged();
+    }
+
 
     @Override
     public void hide() {
