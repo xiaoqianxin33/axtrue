@@ -42,6 +42,7 @@ import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -818,6 +819,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                         mGameDeskDetails = o;
                     initView();
                     joinEaseGroup();
+                    payForGame();
                 } else {
                     mTvOk.setText("我要参战");
                     refreshUI();
@@ -842,6 +844,35 @@ public class GameDeskActivity extends AutoLayoutActivity {
             }
         });
         mQueue.add(stringRequest);
+    }
+
+    //扣除游戏币
+    private void payForGame() {
+        String url = Constant.HOST + "payForGame&userId=" + user.getUserId() + "&gameDeskId=" + mGameDeskId
+                + "&payMoney=" + mGameDeskDetails.getResult().getGamePay() + "&payTime=" + DateUtils.getCurrentDateTime();
+        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (AnalysisJSON.analysisJson(response)) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean result = jsonObject.getBoolean("Result");
+                        if (!result)
+                            payForGame();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    payForGame();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                payForGame();
+            }
+        });
+        mQueue.add(request);
     }
 
 

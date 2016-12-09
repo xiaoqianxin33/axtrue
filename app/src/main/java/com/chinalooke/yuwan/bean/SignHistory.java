@@ -12,7 +12,7 @@ public class SignHistory {
 
     /**
      * Msg :
-     * Result : ["2016-08-12","2016-08-13"]
+     * Result : ["2016-12-08 00:00:00"]
      * Success : true
      */
 

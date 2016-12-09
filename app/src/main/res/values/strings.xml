@@ -112,6 +112,8 @@
     <string name="action_go">发送</string>
     <string name="exchange_URL"><![CDATA[http://g.00tera.com/s/1/683/38093.html?uid=518068&]]></string>
 
+    <string name="menu_settings">Settings</string>
+    <string name="no_data">没有找到符合条件的房源</string>
 
     <string-array name="month_array">
         <item>一月</item>

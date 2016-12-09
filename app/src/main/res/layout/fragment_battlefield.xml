@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout
+<com.chinalooke.yuwan.view.VerticalSwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -82,7 +82,11 @@
                     app:banner_transitionEffect="alpha"/>
             </android.support.design.widget.CollapsingToolbarLayout>
 
-            <include layout="@layout/item_zc_check_icon"/>
+            <com.chinalooke.yuwan.view.ExpandTabView
+                android:id="@+id/expandTabView"
+                android:layout_width="match_parent"
+                android:layout_height="160px"
+                android:background="@android:color/white"/>
         </android.support.design.widget.AppBarLayout>
 
         <com.chinalooke.yuwan.view.MyNestedScrollView
@@ -106,23 +110,23 @@
                     android:paddingBottom="100px"
                     app:frv_layoutManager="linear"/>
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerView1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:divider="@color/background"
-                    android:dividerHeight="@dimen/small_padding"
-                    android:paddingBottom="100px"
-                    app:frv_layoutManager="linear"/>
+                <!--<android.support.v7.widget.RecyclerView-->
+                    <!--android:id="@+id/recyclerView1"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:divider="@color/background"-->
+                    <!--android:dividerHeight="@dimen/small_padding"-->
+                    <!--android:paddingBottom="100px"-->
+                    <!--app:frv_layoutManager="linear"/>-->
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:divider="@color/background"
-                    android:dividerHeight="@dimen/small_padding"
-                    android:paddingBottom="100px"
-                    app:frv_layoutManager="linear"/>
+                <!--<android.support.v7.widget.RecyclerView-->
+                    <!--android:id="@+id/recyclerView2"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:divider="@color/background"-->
+                    <!--android:dividerHeight="@dimen/small_padding"-->
+                    <!--android:paddingBottom="100px"-->
+                    <!--app:frv_layoutManager="linear"/>-->
 
 
                 <ProgressBar
@@ -151,4 +155,4 @@
         </com.chinalooke.yuwan.view.MyNestedScrollView>
 
     </android.support.design.widget.CoordinatorLayout>
-</android.support.v4.widget.SwipeRefreshLayout>
+</com.chinalooke.yuwan.view.VerticalSwipeRefreshLayout>

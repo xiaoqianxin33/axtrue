@@ -45,4 +45,8 @@
     <drawable name="circle_top_orange">#F8B72E</drawable>
 
     <drawable name="actionbar_color_else">#2d2d2e</drawable>
+
+    <color name="popup_main_background">#b0000000</color>
+    <color name="choose_eara_item_press_color">#f4f4f4</color>
+    <color name="no_color">#00000000</color>
 </resources>
