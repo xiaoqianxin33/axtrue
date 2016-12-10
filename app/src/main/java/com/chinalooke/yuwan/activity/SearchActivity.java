@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -95,14 +96,18 @@ public class SearchActivity extends AutoLayoutActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
-                mSearch = mTvSearch.getText().toString();
-                if (!TextUtils.isEmpty(mSearch)) {
-                    PAGE_NO = 1;
-                    mDeskList.clear();
-                    getGameDeskListWithStatus(mSearch);
-                    KeyboardUtils.hideSoftInput(SearchActivity.this);
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    mSearch = mTvSearch.getText().toString();
+                    if (!TextUtils.isEmpty(mSearch)) {
+                        PAGE_NO = 1;
+                        mDeskList.clear();
+                        getGameDeskListWithStatus(mSearch);
+                        KeyboardUtils.hideSoftInput(SearchActivity.this);
+                        Log.e("TAG", "onEditorAction");
+                    }
                 }
-                return false;
+
+                return true;
             }
         });
 
