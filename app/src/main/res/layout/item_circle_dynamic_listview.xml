@@ -32,11 +32,12 @@
         android:textSize="22px"/>
 
 
-    <GridView
+    <com.chinalooke.yuwan.view.NoScrollGridView
         android:id="@+id/gridView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="240px"
+        android:layout_below="@+id/tv_content"
+        android:layout_marginTop="30px"
         android:numColumns="3"/>
 
 
@@ -44,9 +45,7 @@
         android:id="@+id/iv1"
         android:layout_width="25px"
         android:layout_height="30px"
-        android:layout_alignParentBottom="true"
         android:layout_below="@id/gridView"
-        android:layout_marginBottom="36px"
         android:layout_marginTop="26px"
         android:src="@mipmap/circle_dynamic_zuobiao"/>
 
@@ -54,9 +53,7 @@
         android:id="@+id/tv_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_below="@id/gridView"
-        android:layout_marginBottom="36px"
         android:layout_marginLeft="@dimen/small_padding"
         android:layout_marginTop="26px"
         android:layout_toRightOf="@id/iv1"
@@ -68,9 +65,7 @@
         android:id="@+id/iv_pinglun"
         android:layout_width="28px"
         android:layout_height="28px"
-        android:layout_alignParentBottom="true"
         android:layout_below="@id/gridView"
-        android:layout_marginBottom="36px"
         android:layout_marginLeft="460px"
         android:layout_marginTop="26px"
         android:src="@mipmap/circle_pinglun"/>
@@ -80,9 +75,7 @@
         android:id="@+id/tv_pinglun"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_below="@id/gridView"
-        android:layout_marginBottom="36px"
         android:layout_marginLeft="@dimen/small_padding"
         android:layout_marginTop="26px"
         android:layout_toRightOf="@id/iv_pinglun"
@@ -94,10 +87,8 @@
         android:id="@+id/tv_dianzan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/gridView"
-        android:layout_marginBottom="36px"
         android:layout_marginTop="26px"
         android:textColor="@color/shallow_word"
         android:textSize="20px"/>
@@ -106,9 +97,7 @@
         android:id="@+id/iv_dianzan"
         android:layout_width="28px"
         android:layout_height="28px"
-        android:layout_alignParentBottom="true"
         android:layout_below="@id/gridView"
-        android:layout_marginBottom="36px"
         android:layout_marginRight="@dimen/small_padding"
         android:layout_marginTop="26px"
         android:layout_toLeftOf="@id/tv_dianzan"

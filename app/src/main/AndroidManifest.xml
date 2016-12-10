@@ -241,6 +241,8 @@
         <!-- </receiver> -->
         <activity android:name=".activity.SelectCircleLocationActivity">
         </activity>
+        <activity android:name=".activity.ImagePagerActivity">
+        </activity>
     </application>
 
 </manifest>

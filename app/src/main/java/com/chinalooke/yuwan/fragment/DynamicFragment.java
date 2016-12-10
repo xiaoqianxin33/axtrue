@@ -29,6 +29,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.DynamicDetailActivity;
+import com.chinalooke.yuwan.activity.ImagePagerActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.NetbarADActivity;
@@ -115,16 +116,16 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
         mLvDynamic.addHeaderView(inflate);
         mBanner = (BGABanner) inflate.findViewById(R.id.banner);
         mImageView = (ImageView) inflate.findViewById(R.id.iv_ad);
+        initHead();
+        mMyListAdapater = new MyDynamicAdapter(mDynamics, mActivity);
+        mLvDynamic.setAdapter(mMyListAdapater);
+        initEvent();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
-        initHead();
-        mMyListAdapater = new MyDynamicAdapter(mDynamics, mActivity);
-        mLvDynamic.setAdapter(mMyListAdapater);
-        initEvent();
     }
 
     //初始化头部广告
@@ -236,13 +237,15 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
         mLvDynamic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                WholeDynamic.ResultBean resultBean = mDynamics.get(position);
-                Intent intent = new Intent(mActivity, DynamicDetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("dynamic", resultBean);
-                intent.putExtra("dynamic_type", 0);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (position != 0) {
+                    WholeDynamic.ResultBean resultBean = mDynamics.get(position - 1);
+                    Intent intent = new Intent(mActivity, DynamicDetailActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("dynamic", resultBean);
+                    intent.putExtra("dynamic_type", 0);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -464,10 +467,20 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
             String images = resultBean.getImages();
             if (!TextUtils.isEmpty(images)) {
                 dynamicViewHolder.mGridView.setVisibility(View.VISIBLE);
-                String[] split = images.split(",");
+                final String[] split = images.split(",");
                 dynamicViewHolder.mGridView.setAdapter(new GridAdapter(split));
-            } else {
-                dynamicViewHolder.mGridView.setVisibility(View.GONE);
+                //图片点击事件监听
+                dynamicViewHolder.mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent = new Intent(mActivity, ImagePagerActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putStringArray("url", split);
+                        intent.putExtras(bundle);
+                        intent.putExtra("position", position);
+                        startActivity(intent);
+                    }
+                });
             }
 
             String likes = resultBean.getLikes();
@@ -515,6 +528,8 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                     }
                 });
             }
+
+
             return convertView;
         }
 
@@ -555,7 +570,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
             } else {
                 imageview = (ImageView) convertView;
             }
-            Picasso.with(mActivity).load(mStrings[position] + "?imageView2/1/w/235/h/235").into(imageview);
+            Picasso.with(mActivity).load(mStrings[position]).into(imageview);
             return imageview;
         }
     }

@@ -18,7 +18,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -90,7 +89,6 @@ public class BattleFieldFragment extends Fragment {
 
 
     private RequestQueue mQueue;
-    private Toast mToast;
     private int mWidth;
     private List<View> mAdList = new ArrayList<>();
     private List<Advertisement.ResultBean> mShowAd = new ArrayList<>();
@@ -113,6 +111,7 @@ public class BattleFieldFragment extends Fragment {
     private Gson mGson;
     private List<String> mList;
     private String KEY_WORDS = "";
+    private View mFoot;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -120,7 +119,6 @@ public class BattleFieldFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_battlefield, container, false);
         ButterKnife.bind(this, view);
         mQueue = YuwanApplication.getQueue();
-        mToast = YuwanApplication.getToast();
         return view;
     }
 
@@ -132,6 +130,7 @@ public class BattleFieldFragment extends Fragment {
         mWidth = wm.getDefaultDisplay().getWidth();
         user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         mActivity = (MainActivity) getActivity();
+        mFoot = mActivity.getLayoutInflater().inflate(R.layout.foot, null, false);
         mGson = new Gson();
         initView();
         initMenuData();
@@ -212,8 +211,8 @@ public class BattleFieldFragment extends Fragment {
                 CURRENT_STATUS = position;
                 mDeskList.clear();
                 PAGE = 1;
-                getGameDeskListWithStatus();
                 isFirst = true;
+                getGameDeskListWithStatus();
             }
         });
 
@@ -225,7 +224,6 @@ public class BattleFieldFragment extends Fragment {
                     name = mList.get(position - 1);
                 }
                 setMidRightGameList(name);
-
             }
         });
 
@@ -239,8 +237,8 @@ public class BattleFieldFragment extends Fragment {
                     KEY_WORDS = URLEncoder.encode(showText, "UTF-8");
                     mDeskList.clear();
                     PAGE = 1;
-                    getGameDeskListWithStatus();
                     isFirst = true;
+                    getGameDeskListWithStatus();
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -460,13 +458,19 @@ public class BattleFieldFragment extends Fragment {
                                     }
                                 } else {
                                     if (isFirst) {
+                                        mAdapter.removeAllFooterView();
                                         mTvNone.setVisibility(View.VISIBLE);
+                                    } else {
+                                        mAdapter.removeAllFooterView();
+                                        mAdapter.addFooterView(mFoot);
                                     }
                                 }
                             } else {
                                 mPbLoad.setVisibility(View.GONE);
                                 if (isFirst) {
                                     mTvNone.setVisibility(View.VISIBLE);
+                                } else {
+                                    mAdapter.addFooterView(mFoot);
                                 }
                             }
                             mAdapter.notifyDataSetChanged();
@@ -608,6 +612,7 @@ public class BattleFieldFragment extends Fragment {
         QuickAdapter(int layoutResId, List<GameDesk.ResultBean> data) {
             super(layoutResId, data);
         }
+
 
         @Override
         protected void convert(BaseViewHolder helper, GameDesk.ResultBean item) {

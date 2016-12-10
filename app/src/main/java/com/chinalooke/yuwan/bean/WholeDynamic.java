@@ -8,7 +8,7 @@ import java.util.List;
  * Created by xiao on 2016/11/26.
  */
 
-public class WholeDynamic {
+public class WholeDynamic implements Serializable {
 
     /**
      * Msg :
@@ -175,7 +175,7 @@ public class WholeDynamic {
             this.userId = userId;
         }
 
-        public static class LastCommentBean {
+        public static class LastCommentBean implements Serializable {
             private String addTime;
             private String commentId;
             private String content;
