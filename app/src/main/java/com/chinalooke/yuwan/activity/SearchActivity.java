@@ -103,7 +103,6 @@ public class SearchActivity extends AutoLayoutActivity {
                         mDeskList.clear();
                         getGameDeskListWithStatus(mSearch);
                         KeyboardUtils.hideSoftInput(SearchActivity.this);
-                        Log.e("TAG", "onEditorAction");
                     }
                 }
 
