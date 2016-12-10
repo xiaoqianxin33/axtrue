@@ -1,16 +1,15 @@
 package com.chinalooke.yuwan.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -19,12 +18,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.CommentList;
 import com.chinalooke.yuwan.bean.LikeList;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.WholeDynamic;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
@@ -45,12 +44,8 @@ import butterknife.OnClick;
 
 public class DynamicDetailActivity extends AutoLayoutActivity {
 
-    @Bind(R.id.iv_back)
-    ImageView mIvBack;
     @Bind(R.id.tv_title)
     TextView mTvTitle;
-    @Bind(R.id.iv_camera)
-    ImageView mIvCamera;
     @Bind(R.id.roundedImageView)
     RoundedImageView mRoundedImageView;
     @Bind(R.id.tv_name)
@@ -61,36 +56,24 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     TextView mTvContent;
     @Bind(R.id.gridView)
     GridView mGridView;
-    @Bind(R.id.iv1)
-    ImageView mIv1;
     @Bind(R.id.tv_address)
     TextView mTvAddress;
-    @Bind(R.id.iv_pinglun)
-    ImageView mIvPinglun;
     @Bind(R.id.tv_pinglun)
     TextView mTvPinglun;
     @Bind(R.id.tv_dianzan)
     TextView mTvDianzan;
     @Bind(R.id.iv_dianzan)
     ImageView mIvDianzan;
-    @Bind(R.id.activity_dynamic_detail)
-    LinearLayout mActivityDynamicDetail;
     @Bind(R.id.tv_dianzan_people)
     TextView mTvDianzanPeople;
-    @Bind(R.id.ll_like)
-    LinearLayout mLlLike;
     @Bind(R.id.list_view)
     ListView mListView;
-    @Bind(R.id.et_comment)
-    EditText mEtComment;
-    @Bind(R.id.rl_comment)
-    RelativeLayout mRlComment;
     private WholeDynamic.ResultBean mDynamic;
     private LoginUser.ResultBean mUserInfo;
     private String activeType;
     private RequestQueue mQueue;
     private List<CommentList.ResultBean> mCommentList = new ArrayList<>();
-    private MyAdapter mMyAdapter;
+    private String[] mSplit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +82,27 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
         ButterKnife.bind(this);
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         mQueue = YuwanApplication.getQueue();
-        mMyAdapter = new MyAdapter(mCommentList);
-        mListView.setAdapter(mMyAdapter);
+        MyAdapter myAdapter = new MyAdapter(mCommentList);
+        mListView.setAdapter(myAdapter);
         initData();
         initView();
+        initEvent();
+    }
+
+    private void initEvent() {
+        //gridView点击事件
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(DynamicDetailActivity.this, ImagePagerActivity.class);
+                Bundle bundle = new Bundle();
+                if (mSplit != null)
+                    bundle.putStringArray("url", mSplit);
+                intent.putExtras(bundle);
+                intent.putExtra("position", position);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initView() {
@@ -120,8 +120,8 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
             mTvContent.setText(content);
         String images = mDynamic.getImages();
         if (!TextUtils.isEmpty(images)) {
-            String[] split = images.split(",");
-            mGridView.setAdapter(new GridAdapter(split));
+            mSplit = images.split(",");
+            mGridView.setAdapter(new GridAdapter(mSplit));
         }
 
         String likes = mDynamic.getLikes();

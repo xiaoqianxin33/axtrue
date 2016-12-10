@@ -8,7 +8,7 @@
     <cn.bingoogolapple.bgabanner.BGABanner
         android:id="@+id/bgabanner"
         android:layout_width="match_parent"
-        android:layout_height="300px"
+        android:layout_height="200dp"
         app:banner_pageChangeDuration="1000"
         app:banner_pointAutoPlayAble="true"
         app:banner_pointAutoPlayInterval="2000"

@@ -29,8 +29,6 @@ public class ImagePagerActivity extends AutoLayoutActivity {
     @Bind(R.id.indicator)
     TextView mIndicator;
 
-    private int pagerPosition;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +40,7 @@ public class ImagePagerActivity extends AutoLayoutActivity {
 
     private void initData(Bundle savedInstanceState) {
         String[] urls = getIntent().getStringArrayExtra("url");
-        pagerPosition = getIntent().getIntExtra("position", 0);
+        int pagerPosition = getIntent().getIntExtra("position", 0);
         ArrayList<String> list = new ArrayList<>();
         Collections.addAll(list, urls);
         ImagePagerAdapter mAdapter = new ImagePagerAdapter(

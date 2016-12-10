@@ -370,20 +370,11 @@ public class BattleFieldFragment extends Fragment {
                             mList.add(gameTypeName);
                         }
                         mViewMiddle.changeLeftItem(mList);
-                    } else {
-
                     }
-                } else {
-
                 }
 
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
+        }, null);
 
         mQueue.add(request);
     }

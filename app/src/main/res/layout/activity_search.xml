@@ -45,12 +45,16 @@
 
             <EditText
                 android:id="@+id/tv_search"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="60px"
                 android:background="@null"
+                android:focusable="true"
                 android:hint="Search"
+                android:imeActionLabel="搜索"
+                android:imeOptions="actionSearch"
+                android:singleLine="true"
                 android:textColor="@color/black_word"
                 android:textSize="24px"/>
 
@@ -60,9 +64,10 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
+            android:id="@+id/rl_yz"
             android:layout_width="130px"
             android:layout_height="180px"
             android:layout_marginLeft="77px"
@@ -78,13 +83,15 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
+                android:duplicateParentState="true"
                 android:text="迎战中"
-                android:textColor="#8f8f8f"
+                android:textColor="@drawable/text_search_selector"
                 android:textSize="24px"/>
 
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/rl_jx"
             android:layout_width="130px"
             android:layout_height="180px"
             android:layout_marginLeft="306px"
@@ -100,12 +107,15 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
+                android:duplicateParentState="true"
                 android:text="进行中"
+                android:textColor="@drawable/text_search_selector"
                 android:textSize="24px"/>
 
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/rl_js"
             android:layout_width="130px"
             android:layout_height="180px"
             android:layout_alignParentRight="true"
@@ -122,11 +132,23 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
+                android:duplicateParentState="true"
                 android:text="已结束"
+                android:textColor="@drawable/text_search_selector"
                 android:textSize="24px"/>
 
         </RelativeLayout>
 
     </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/mid_padding"
+        android:divider="#f8f8f8"
+        android:dividerHeight="@dimen/small_padding"
+        android:paddingBottom="@dimen/small_padding"/>
+
 
 </LinearLayout>

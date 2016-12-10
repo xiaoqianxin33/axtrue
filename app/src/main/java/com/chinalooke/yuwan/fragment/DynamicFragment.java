@@ -114,7 +114,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
         mFoot = View.inflate(mActivity, R.layout.foot, null);
         View inflate = View.inflate(mActivity, R.layout.dynamic_head_view, null);
         mLvDynamic.addHeaderView(inflate);
-        mBanner = (BGABanner) inflate.findViewById(R.id.banner);
+        mBanner = (BGABanner) inflate.findViewById(R.id.bgabanner);
         mImageView = (ImageView) inflate.findViewById(R.id.iv_ad);
         initHead();
         mMyListAdapater = new MyDynamicAdapter(mDynamics, mActivity);
@@ -146,9 +146,8 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
         double longitude = aMapLocation.getLongitude();
         try {
             String utf8 = URLEncoder.encode(city, "UTF-8");
-            String uri = Constant.HOST + "getADList&&pageNo=1&pageSize=5&city=" + utf8
-                    + "&lng=" + longitude + "&lat=" + latitude;
-
+            String uri = Constant.HOST + "getADList&&pageNo=1&pageSize=5"
+                    + "&lng=" + longitude + "&lat=" + latitude + "&city=" + utf8;
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -186,8 +185,9 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                 for (String uri : adImg) {
                     ImageView imageView = new ImageView(mActivity);
                     imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    Picasso.with(mActivity).load(uri).resize(MyUtils.Dp2Px(mActivity, ViewHelper.getDisplayMetrics(mActivity).widthPixels), 300)
-                            .centerCrop().into(imageView);
+                    Picasso.with(mActivity).load(uri + "?imageView2/1/w/" + ViewHelper.getDisplayMetrics(mActivity).widthPixels + "/h/" + MyUtils.Dp2Px(getActivity(), 200))
+                            .into(imageView);
+                    AutoUtils.autoSize(imageView);
                     mAdList.add(imageView);
                 }
             }
@@ -559,19 +559,27 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView imageview;
+            ViewHolder viewHolder;
             if (convertView == null) {
-                imageview = new ImageView(mActivity);
-                imageview.setImageResource(R.mipmap.placeholder);
-                imageview.setLayoutParams(new GridView.LayoutParams(235, 235));
-                imageview.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                imageview.setPadding(6, 6, 6, 6);
-                AutoUtils.autoSize(imageview);
+                convertView = View.inflate(mActivity, R.layout.item_dynamic_gridview, null);
+                viewHolder = new ViewHolder(convertView);
+                convertView.setTag(viewHolder);
+                AutoUtils.autoSize(convertView);
             } else {
-                imageview = (ImageView) convertView;
+                viewHolder = (ViewHolder) convertView.getTag();
             }
-            Picasso.with(mActivity).load(mStrings[position]).into(imageview);
-            return imageview;
+            Picasso.with(mActivity).load(mStrings[position] + "?imageView2/1/w/235/h/235").into(viewHolder.mImage);
+            return convertView;
+        }
+
+    }
+
+    static class ViewHolder {
+        @Bind(R.id.image)
+        ImageView mImage;
+
+        ViewHolder(View view) {
+            ButterKnife.bind(this, view);
         }
     }
 }
