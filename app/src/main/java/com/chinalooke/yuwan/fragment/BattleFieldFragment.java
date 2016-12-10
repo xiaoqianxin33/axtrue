@@ -112,6 +112,7 @@ public class BattleFieldFragment extends Fragment {
     private int PAGE = 1;
     private Gson mGson;
     private List<String> mList;
+    private String KEY_WORDS = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -223,49 +224,64 @@ public class BattleFieldFragment extends Fragment {
                 if (position != 0) {
                     name = mList.get(position - 1);
                 }
-                try {
-                    String encode = URLEncoder.encode(name, "UTF-8");
-                    String url = Constant.HOST + "getGameList&gameType=" + encode;
-                    StringRequest request = new StringRequest(url, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (AnalysisJSON.analysisJson(response)) {
-                                GameMessage gameMessage = mGson.fromJson(response, GameMessage.class);
-                                List<GameMessage.ResultBean> result = gameMessage.getResult();
-                                LinkedList<String> linkedList = new LinkedList<>();
-                                for (GameMessage.ResultBean resultBean : result) {
-                                    String name1 = resultBean.getName();
-                                    linkedList.add(name1);
-                                }
-                                mViewMiddle.changeRightItem(linkedList);
-                            } else {
-                                LinkedList<String> linkedList = new LinkedList<>();
-                                mViewMiddle.changeRightItem(linkedList);
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            LinkedList<String> linkedList = new LinkedList<>();
-                            mViewMiddle.changeRightItem(linkedList);
-                        }
-                    });
-
-                    mQueue.add(request);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                setMidRightGameList(name);
 
             }
         });
 
+
+        //选择游戏事件监听
         mViewMiddle.setOnSelectListener(new ViewMiddle.OnSelectListener() {
             @Override
             public void getValue(String showText) {
                 onRefresh(mViewMiddle, showText);
+                try {
+                    KEY_WORDS = URLEncoder.encode(showText, "UTF-8");
+                    mDeskList.clear();
+                    PAGE = 1;
+                    getGameDeskListWithStatus();
+                    isFirst = true;
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         });
+        setMidRightGameList("");
+    }
 
+    private void setMidRightGameList(String name) {
+        try {
+            String encode = URLEncoder.encode(name, "UTF-8");
+            String url = Constant.HOST + "getGameList&gameType=" + encode;
+            StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    if (AnalysisJSON.analysisJson(response)) {
+                        GameMessage gameMessage = mGson.fromJson(response, GameMessage.class);
+                        List<GameMessage.ResultBean> result = gameMessage.getResult();
+                        LinkedList<String> linkedList = new LinkedList<>();
+                        for (GameMessage.ResultBean resultBean : result) {
+                            String name1 = resultBean.getName();
+                            linkedList.add(name1);
+                        }
+                        mViewMiddle.changeRightItem(linkedList);
+                    } else {
+                        LinkedList<String> linkedList = new LinkedList<>();
+                        mViewMiddle.changeRightItem(linkedList);
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    LinkedList<String> linkedList = new LinkedList<>();
+                    mViewMiddle.changeRightItem(linkedList);
+                }
+            });
+
+            mQueue.add(request);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     class MyOnRecyclerViewItemClickListener implements BaseQuickAdapter.OnRecyclerViewItemClickListener {
@@ -409,7 +425,7 @@ public class BattleFieldFragment extends Fragment {
 
     //按状态取游戏桌列表
     private void getGameDeskListWithStatus() {
-        final String uri = Constant.HOST + "getGameDeskListWithStatus&gameStatus=" + CURRENT_STATUS + "&pageNo=" + PAGE + "&pageSize=5";
+        final String uri = Constant.HOST + "getGameDeskListWithStatus&gameStatus=" + CURRENT_STATUS + "&pageNo=" + PAGE + "&pageSize=5&keywords=" + KEY_WORDS;
         if (NetUtil.is_Network_Available(mActivity)) {
             StringRequest stringRequest = new StringRequest(uri,
                     new Response.Listener<String>() {
@@ -444,12 +460,13 @@ public class BattleFieldFragment extends Fragment {
                                     }
                                 } else {
                                     if (isFirst) {
-                                        MyUtils.showMsg(mToast, response);
+                                        mTvNone.setVisibility(View.VISIBLE);
                                     }
                                 }
                             } else {
+                                mPbLoad.setVisibility(View.GONE);
                                 if (isFirst) {
-                                    MyUtils.showMsg(mToast, response);
+                                    mTvNone.setVisibility(View.VISIBLE);
                                 }
                             }
                             mAdapter.notifyDataSetChanged();
@@ -460,8 +477,10 @@ public class BattleFieldFragment extends Fragment {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     mPbLoad.setVisibility(View.GONE);
-                    if (isFirst)
+                    if (isFirst) {
                         mTvNone.setVisibility(View.VISIBLE);
+                        mTvNone.setText("网络不给力，换个地方试试");
+                    }
                     isFresh = false;
                 }
             });

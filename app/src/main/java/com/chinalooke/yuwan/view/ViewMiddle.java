@@ -126,6 +126,10 @@ public class ViewMiddle extends LinearLayout implements ViewBaseAction {
         plateListView.setSelection(tBlockPosition);
     }
 
+    public void setCurrentSelect(int position) {
+        earaListViewAdapter.setSelectedPosition(position);
+    }
+
     public String getShowText() {
         return showString;
     }
@@ -139,11 +143,11 @@ public class ViewMiddle extends LinearLayout implements ViewBaseAction {
     }
 
     public interface OnSelectListener {
-        public void getValue(String showText);
+        void getValue(String showText);
     }
 
     public interface OnLeftSelectListener {
-        public void getValue(int position);
+        void getValue(int position);
     }
 
     //刷新右边listView的item

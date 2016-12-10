@@ -110,25 +110,6 @@
                     android:paddingBottom="100px"
                     app:frv_layoutManager="linear"/>
 
-                <!--<android.support.v7.widget.RecyclerView-->
-                    <!--android:id="@+id/recyclerView1"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:divider="@color/background"-->
-                    <!--android:dividerHeight="@dimen/small_padding"-->
-                    <!--android:paddingBottom="100px"-->
-                    <!--app:frv_layoutManager="linear"/>-->
-
-                <!--<android.support.v7.widget.RecyclerView-->
-                    <!--android:id="@+id/recyclerView2"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:divider="@color/background"-->
-                    <!--android:dividerHeight="@dimen/small_padding"-->
-                    <!--android:paddingBottom="100px"-->
-                    <!--app:frv_layoutManager="linear"/>-->
-
-
                 <ProgressBar
                     android:id="@+id/pb_load"
                     android:layout_width="50dp"
@@ -145,7 +126,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="40dp"
                     android:gravity="center"
-                    android:text="暂无战场"
+                    android:text="暂无此类战场"
                     android:visibility="gone"/>
 
 
