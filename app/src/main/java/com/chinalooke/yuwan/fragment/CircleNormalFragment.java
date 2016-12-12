@@ -66,6 +66,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -290,7 +291,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     //获取顶部广告图片
     private void getADListForSpace(AMapLocation aMapLocation) {
         String city = aMapLocation.getCity();
-        String uri = Constant.HOST + "getADListForSpace&pageNo=1&pageSize=5&city=" + city;
+        String uri = Constant.HOST + "getADListForSpace&pageNo=1&pageSize=5&city=" + URLEncoder.encode(city);
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

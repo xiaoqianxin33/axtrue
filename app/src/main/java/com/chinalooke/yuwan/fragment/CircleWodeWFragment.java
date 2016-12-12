@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +21,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.CircleDynamicActivity;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.Circle;
 import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -197,7 +196,6 @@ public class CircleWodeWFragment extends Fragment {
             }
 
             Circle.ResultBean resultBean = mCircle.get(position);
-            Log.e("TAG", resultBean.getHeadImg());
             Picasso.with(getActivity()).load(resultBean.getHeadImg()).resize(MyUtils.Dp2Px(getActivity()
                     , 80), MyUtils.Dp2Px(getActivity(), 80)).centerCrop().into(viewHolder.mIvCircleImage);
             viewHolder.mTvCircleName.setText(resultBean.getGroupName());

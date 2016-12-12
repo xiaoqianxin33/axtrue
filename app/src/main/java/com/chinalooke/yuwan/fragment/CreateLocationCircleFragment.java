@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,6 +56,7 @@ import com.zhy.autolayout.utils.AutoUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
@@ -162,7 +164,7 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
                 req();
                 break;
             case R.id.rl_address:
-                startActivityForResult(new Intent(mActivity, SelectCircleLocationActivity.class), 0);
+                startActivityForResult(new Intent(mActivity, SelectCircleLocationActivity.class), 9);
                 break;
             case R.id.rl_explain:
                 showRuleDialog();
@@ -192,18 +194,11 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("Success");
                     if (success) {
-                        boolean result = jsonObject.getBoolean("Result");
-                        if (result) {
-                            mProgressDialog.dismiss();
-                            mToast.setText("该圈子名称已存在，请重新填写");
-                            mToast.show();
-                        } else {
-                            createCircle();
-                        }
-                    } else {
                         mProgressDialog.dismiss();
-                        mToast.setText("服务器抽风了，请稍后重试");
+                        mToast.setText("该圈子名称已存在，请重新填写");
                         mToast.show();
+                    } else {
+                        createCircle();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -359,8 +354,8 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
                     String longitude = PreferenceUtils.getPrefString(mActivity, "longitude", "");
                     String latitude = PreferenceUtils.getPrefString(mActivity, "latitude", "");
                     String uri = Constant.HOST + "addGroup&userId=" + mUser.getUserId() + "&lng=" + longitude + "&lat="
-                            + latitude + "&address=" + mCircleAddress + "&groupName=" + mCircleName
-                            + "&slogan=" + mRule + "&head=" +  Constant.QINIU_DOMAIN + "/" + fileName;
+                            + latitude + "&address=" + URLEncoder.encode(mCircleAddress) + "&groupName=" + URLEncoder.encode(mCircleName)
+                            + "&slogan=" + URLEncoder.encode(mRule) + "&head=" + Constant.QINIU_DOMAIN + "/" + fileName;
                     StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -395,6 +390,7 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             mProgressDialog.dismiss();
+                            Log.e("TAG", error.getMessage());
                             mToast.setText("服务器抽风了，请稍后重试");
                             mToast.show();
                         }
@@ -414,5 +410,15 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
         mPath = path;
         RoundedImageView viewById = (RoundedImageView) mView.findViewById(R.id.iv_gameimage);
         Picasso.with(mActivity).load("file://" + mPath).into(viewById);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 9 && data != null) {
+            String address = data.getStringExtra("address");
+            if (!TextUtils.isEmpty(address))
+                mTvCircleAddress.setText(address);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

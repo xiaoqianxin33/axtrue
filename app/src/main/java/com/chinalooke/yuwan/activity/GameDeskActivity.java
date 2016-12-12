@@ -312,23 +312,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
             }
         }
 
-        String bgImage = result.getBgImage();
-        if (!TextUtils.isEmpty(bgImage)) {
-            ImageRequest request = new ImageRequest(bgImage, new Response.Listener<Bitmap>() {
-                @Override
-                public void onResponse(Bitmap response) {
-                    if (response != null) {
-                        mRlImage.setBackground(new BitmapDrawable(response));
-                    }
-                }
-            }, mWidthPixels, 390, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            });
-            mQueue.add(request);
-        }
         String gameName = result.getGameName();
         if (!TextUtils.isEmpty(gameName)) {
             mTvGameName.setText(gameName);
@@ -350,6 +333,26 @@ public class GameDeskActivity extends AutoLayoutActivity {
         if (!TextUtils.isEmpty(mGameDeskId)) {
             getGameDeskWithId(mGameDeskId);
         }
+
+        String gameImage = mGameDesk.getGameImage();
+
+        if (!TextUtils.isEmpty(gameImage)) {
+            ImageRequest request = new ImageRequest(gameImage, new Response.Listener<Bitmap>() {
+                @Override
+                public void onResponse(Bitmap response) {
+                    if (response != null) {
+                        mRlImage.setBackground(new BitmapDrawable(response));
+                    }
+                }
+            }, mWidthPixels, 390, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+            mQueue.add(request);
+        }
+
     }
 
     private void setResult() {

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,6 +135,7 @@ public class CircleWodeCFragment extends Fragment {
     //获得我创建的圈子
     private void getMyCircle() {
         String uri = Constant.HOST + "getGroupListWithType&userId=" + mUserInfo.getUserId() + "&groupType=myCreateGroup";
+        Log.e("TAG", uri);
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

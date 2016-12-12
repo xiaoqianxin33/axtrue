@@ -2,6 +2,7 @@ package com.chinalooke.yuwan.activity;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +18,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.chinalooke.yuwan.R;
@@ -29,6 +31,7 @@ import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.Auth;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
+import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.lljjcoder.citypickerview.widget.CityPickerView;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -76,6 +79,8 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     TextView mTvAddress;
     @Bind(R.id.tv_slogen)
     TextView mTvSlogen;
+    @Bind(R.id.tv_skip)
+    TextView mTvSkip;
     private LoginUser.ResultBean mUserInfo;
     private ImgSelConfig mConfig;
     private int RC_ACCESS_FINE_LOCATION = 0;
@@ -99,12 +104,15 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     private String mAge;
     private String mPlayAge;
     private String mAddress;
+    private ProgressDialog mProgressDialog;
+    private Toast mToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
         ButterKnife.bind(this);
+        mToast = YuwanApplication.getToast();
         mUploadManager = YuwanApplication.getmUploadManager();
         mQueue = YuwanApplication.getQueue();
         mConfig = new ImgSelConfig.Builder(loader)
@@ -144,6 +152,8 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
 
     private void initView() {
         mTvTitle.setText("个人资料");
+        mTvSkip.setText("保存");
+
         String headImg = mUserInfo.getHeadImg();
         if (!TextUtils.isEmpty(headImg)) {
             mPath = headImg;
@@ -201,19 +211,14 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         pvOptions.show();
     }
 
-    @Override
-    public void onBackPressed() {
-        finish();
-        updateInfo();
-        super.onBackPressed();
-    }
-
-    @OnClick({R.id.iv_back, R.id.rl_head_t, R.id.rl_name, R.id.rl_sex, R.id.rl_age, R.id.rl_play_age, R.id.rl_address, R.id.rl_id, R.id.rl_qcode, R.id.rl_slogen})
+    @OnClick({R.id.tv_skip, R.id.iv_back, R.id.rl_head_t, R.id.rl_name, R.id.rl_sex, R.id.rl_age, R.id.rl_play_age, R.id.rl_address, R.id.rl_id, R.id.rl_qcode, R.id.rl_slogen})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.tv_skip:
+                updateInfo();
+                break;
             case R.id.iv_back:
                 finish();
-                updateInfo();
                 break;
             case R.id.rl_head_t:
                 req();
@@ -440,6 +445,8 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     //更新资料
     private void updateInfo() {
         if (NetUtil.is_Network_Available(getApplicationContext())) {
+            mProgressDialog = MyUtils.initDialog("保存中", this);
+            mProgressDialog.show();
             if (isChangeHead) {
                 Auth auth = Auth.create(Constant.QINIU_ACCESSKEY, Constant.QINIU_SECRETKEY);
                 String token = auth.uploadToken("yuwan");
@@ -448,8 +455,10 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                     @Override
                     public void complete(String key, ResponseInfo info, JSONObject response) {
                         if (info.error == null) {
-                            mPath =  Constant.QINIU_DOMAIN + "/" + fileName;
+                            mPath = Constant.QINIU_DOMAIN + "/" + fileName;
                             update();
+                        } else {
+                            mProgressDialog.dismiss();
                         }
                     }
                 }, null);
@@ -492,6 +501,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                mProgressDialog.dismiss();
                 if (response != null) {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
@@ -499,6 +509,8 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                         if (success) {
                             boolean result = jsonObject.getBoolean("Result");
                             if (result) {
+                                mToast.setText("修改成功！");
+                                mToast.show();
                                 mUserInfo.setHeadImg(mPath);
                                 if (mName != null)
                                     mUserInfo.setNickName(mName);
@@ -516,14 +528,22 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                             }
                         } else {
                             String msg = jsonObject.getString("Msg");
-                            Log.e("TAG", msg);
+                            mToast.setText(msg);
+                            mToast.show();
                         }
                     } catch (JSONException | IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
-        }, null);
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                mToast.setText("服务器抽风了，请稍后再试");
+                mToast.show();
+            }
+        });
         mQueue.add(request);
     }
 }
