@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -62,8 +63,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pub.devrel.easypermissions.EasyPermissions;
 
-import static android.app.Activity.RESULT_OK;
-
 /**
  * 创建位置圈子fragment
  * Created by xiao on 2016/12/3.
@@ -77,8 +76,9 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
     RoundedImageView mIvGameimage;
     @Bind(R.id.tv_circle_address)
     TextView mTvCircleAddress;
+    @Bind(R.id.tv_circle_expalin)
+    TextView mTvCircleExpalin;
     private int RC_ACCESS_FINE_LOCATION = 0;
-    private int REQUEST_CODE = 2;
     private RequestQueue mQueue;
     private Toast mToast;
     private ImgSelConfig mConfig;
@@ -96,13 +96,14 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
     private UploadManager mUploadManager;
     private LoginUser.ResultBean mUser;
     private CreateCircleActivity mActivity;
+    private View mView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_create_circle_location, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+        mView = inflater.inflate(R.layout.fragment_create_circle_location, container, false);
+        ButterKnife.bind(this, mView);
+        return mView;
     }
 
     @Override
@@ -220,16 +221,6 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
         mQueue.add(request);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            List<String> pathList = data.getStringArrayListExtra(ImgSelActivity.INTENT_RESULT);
-            mPath = pathList.get(0);
-            Picasso.with(mActivity).load("file://" + mPath).into(mIvGameimage);
-        }
-    }
-
     //检查建圈子信息
     private boolean checkInput() {
         mCircleName = mTvCircleName.getText().toString();
@@ -277,6 +268,9 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
             public void onClick(View v) {
                 dialog.dismiss();
                 mRule = etRule.getText().toString();
+                if (!TextUtils.isEmpty(mRule))
+                    mTvCircleExpalin.setText(mRule);
+
             }
         });
 
@@ -325,7 +319,7 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         if (requestCode == RC_ACCESS_FINE_LOCATION)
-            ImgSelActivity.startActivity(mActivity, mConfig, REQUEST_CODE);
+            ImgSelActivity.startActivity(mActivity, mConfig, 4);
     }
 
     @Override
@@ -343,7 +337,7 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
     private void req() {
         String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS};
         if (EasyPermissions.hasPermissions(mActivity, perms)) {
-            ImgSelActivity.startActivity(mActivity, mConfig, REQUEST_CODE);
+            ImgSelActivity.startActivity(mActivity, mConfig, 4);
         } else {
             EasyPermissions.requestPermissions(this, "需要拍照权限",
                     RC_ACCESS_FINE_LOCATION, perms);
@@ -366,7 +360,7 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
                     String latitude = PreferenceUtils.getPrefString(mActivity, "latitude", "");
                     String uri = Constant.HOST + "addGroup&userId=" + mUser.getUserId() + "&lng=" + longitude + "&lat="
                             + latitude + "&address=" + mCircleAddress + "&groupName=" + mCircleName
-                            + "&slogan=" + mRule + "&head=" + "http://" + Constant.QINIU_DOMAIN + "/" + fileName;
+                            + "&slogan=" + mRule + "&head=" +  Constant.QINIU_DOMAIN + "/" + fileName;
                     StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -378,7 +372,14 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
                                     if (success) {
                                         boolean result = jsonObject.getBoolean("Result");
                                         if (result) {
-                                            showSucceedDialog("圈子创建成功!");
+                                            MyUtils.showDialog(mActivity, "提示", "圈子创建成功\n可以去我的圈子里面查看!", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                    startActivity(new Intent(mActivity, MainActivity.class));
+                                                    mActivity.finish();
+                                                }
+                                            });
                                         }
                                     } else {
                                         String msg = jsonObject.getString("Msg");
@@ -409,28 +410,9 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
         }, null);
     }
 
-    //弹出创建成功对话框
-    private void showSucceedDialog(String message) {
-        final Dialog dialog = new Dialog(mActivity, R.style.Dialog);
-        View inflate = LayoutInflater.from(mActivity).inflate(R.layout.dialog_ok_cancle, null);
-        TextView textViewCancel = (TextView) inflate.findViewById(R.id.tv_cancel);
-        TextView textViewOK = (TextView) inflate.findViewById(R.id.tv_ok);
-        TextView textViewTitle = (TextView) inflate.findViewById(R.id.tv_title);
-        textViewTitle.setText(message);
-        textViewCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        textViewOK.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                startActivity(new Intent(mActivity, MainActivity.class));
-                mActivity.finish();
-            }
-        });
-        dialog.show();
+    public void setHead(String path) {
+        mPath = path;
+        RoundedImageView viewById = (RoundedImageView) mView.findViewById(R.id.iv_gameimage);
+        Picasso.with(mActivity).load("file://" + mPath).into(viewById);
     }
 }

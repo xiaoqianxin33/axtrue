@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,8 +43,8 @@ import com.chinalooke.yuwan.activity.CreateCircleActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.MoreCircleActivity;
-import com.chinalooke.yuwan.bean.Advertisement;
 import com.chinalooke.yuwan.bean.Circle;
+import com.chinalooke.yuwan.bean.CircleAD;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
@@ -140,6 +141,12 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         mMapview.onCreate(savedInstanceState);
         mActivity = (MainActivity) getActivity();
         mMapContainer.setScrollView(mScrollView);
+        mMap = mMapview.getMap();
+        mMap.clear();
+        mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getActivity(), LoginUserInfoUtils.KEY);
+        initData();
+        initView();
+        initEvent();
     }
 
     @Override
@@ -148,12 +155,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         if (mMapview != null) {
             mMapview.onResume();
         }
-        mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getActivity(), LoginUserInfoUtils.KEY);
-        mMap = mMapview.getMap();
-        mMap.clear();
-        initView();
-        initData();
-        initEvent();
     }
 
     private void initEvent() {
@@ -169,6 +170,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                 intent.putExtra("circle_type", 0);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                addHits(resultBean);
             }
         });
 
@@ -183,6 +185,22 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                 //设置圈子类型为兴趣圈子
                 intent.putExtras(bundle);
                 startActivity(intent);
+                addHits(resultBean);
+            }
+        });
+
+        //热门圈子 item点击事件
+        mGdHot.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Circle.ResultBean resultBean = mHotCircles.get(position);
+                Intent intent = new Intent(getActivity(), CircleDynamicActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("circle", resultBean);
+                //设置圈子类型为兴趣圈子
+                intent.putExtras(bundle);
+                startActivity(intent);
+                addHits(resultBean);
             }
         });
 
@@ -198,10 +216,18 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                     intent.putExtra("circle_type", 0);
                     intent.putExtras(bundle);
                     startActivity(intent);
+                    addHits(resultBean);
                 }
                 return true;
             }
         });
+    }
+
+    //增加圈子点击量
+    private void addHits(Circle.ResultBean resultBean) {
+        String url = Constant.HOST + "addHits&groupId=" + resultBean.getGroupId();
+        StringRequest request = new StringRequest(url, null, null);
+        mQueue.add(request);
     }
 
     private void initView() {
@@ -232,16 +258,15 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         } else {
             mLlInterest.setVisibility(View.VISIBLE);
             getInterestCircle();
+            getHotCircle();
         }
-
-        getHotCircle();
 
     }
 
     //获取热门圈子数据
     private void getHotCircle() {
         if (NetUtil.is_Network_Available(getActivity())) {
-            String uri = Constant.HOST + "getGroupListWithType&groupType=hot&pageNo=1&pageSize=6";
+            String uri = Constant.HOST + "getGroupListWithType&groupType=hot&pageNo=1&pageSize=6&userId=" + mUserInfo.getUserId();
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -265,17 +290,16 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     //获取顶部广告图片
     private void getADListForSpace(AMapLocation aMapLocation) {
         String city = aMapLocation.getCity();
-        // TODO: 2016/11/25 替换接口 暂使用网吧接口
-        String uri = Constant.HOST + "getADListWithGPS&lng=" + mLatitude + "&lat=" + mLongitude;
+        String uri = Constant.HOST + "getADListForSpace&pageNo=1&pageSize=5&city=" + city;
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (AnalysisJSON.analysisJson(response)) {
                     Gson gson = new Gson();
-                    Type type = new TypeToken<Advertisement>() {
-                    }.getType();
-                    Advertisement advertisement = gson.fromJson(response, type);
-                    setBanner(advertisement);
+                    CircleAD circleAD = gson.fromJson(response, CircleAD.class);
+                    List<CircleAD.ResultBean> result = circleAD.getResult();
+                    if (result != null)
+                        setBanner(result);
                 }
             }
         }, null);
@@ -283,14 +307,14 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         mQueue.add(request);
     }
 
-    private void setBanner(Advertisement advertisement) {
+    //初始化轮播图数据
+    private void setBanner(List<CircleAD.ResultBean> result) {
         mAdList.clear();
-        List<Advertisement.ResultBean> result = advertisement.getResult();
-        for (Advertisement.ResultBean resultBean : result) {
-            List<Advertisement.ResultBean.ImagesBean> images = resultBean.getImages();
-            if (images.size() != 0) {
-                Advertisement.ResultBean.ImagesBean imagesBean = images.get(0);
-                String img = imagesBean.getImg();
+
+        for (CircleAD.ResultBean resultBean : result) {
+            List<String> adImg = resultBean.getADImg();
+            if (adImg.size() != 0) {
+                String img = adImg.get(0);
                 ImageView imageView = new ImageView(getActivity());
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 Picasso.with(getActivity()).load(img).resize(MyUtils.Dp2Px(getActivity(), ViewHelper.getDisplayMetrics(getActivity()).widthPixels), 340)
@@ -462,17 +486,9 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
 
     //得到兴趣圈子
     private void getInterestCircle() {
-        String[] strings = mUserInfo.getGameId();
-        StringBuilder stringBuffer = new StringBuilder();
-        for (int i = 0; i < strings.length; i++) {
-            if (i == strings.length - 1) {
-                stringBuffer.append(strings[i]);
-            } else {
-                stringBuffer.append(strings[i]).append(",");
-            }
-        }
         String uri = Constant.HOST + "getGroupListWithType&userId=" + mUserInfo.getUserId()
-                + "&interest=" + stringBuffer.toString();
+                + "&groupType=interest ";
+        Log.e("TAG", uri);
         StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -531,7 +547,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             Circle.ResultBean resultBean = mList.get(position);
             viewHolder.mTvGameName.setText(resultBean.getGroupName());
             viewHolder.mTvView.setText("人气  " + resultBean.getViews());
-            Picasso.with(mActivity).load(resultBean.getHeadImg()).resize(120, 120).centerCrop()
+            Picasso.with(mActivity).load(resultBean.getHeadImg() + "?imageView2/1/w/200/h/200")
                     .into(viewHolder.mIvGameimage);
             return convertView;
         }

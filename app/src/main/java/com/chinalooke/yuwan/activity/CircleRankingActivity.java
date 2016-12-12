@@ -57,8 +57,6 @@ import butterknife.OnClick;
 //圈子排行
 public class CircleRankingActivity extends AutoLayoutActivity implements AMapLocationListener {
 
-    @Bind(R.id.iv_back)
-    ImageView mIvBack;
     @Bind(R.id.iv_fenxiang)
     ImageView mIvFenxiang;
     @Bind(R.id.roundedImageView)
@@ -215,7 +213,11 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
                     uri = Constant.HOST + "getScoreList&groupId=0&city=" + city + "&pageNo=" + PAGE_NO + "&pageSize=5";
                 break;
             case 1:
-
+                String groupId = getIntent().getStringExtra("groupId");
+                if (mUserInfo != null)
+                    uri = Constant.HOST + "getScoreList&groupId=" + groupId + "&city=&pageNo=" + PAGE_NO + "&pageSize=5" + "&userId=" + mUserInfo.getUserId();
+                else
+                    uri = Constant.HOST + "getScoreList&groupId=" + groupId + "&city=&pageNo=" + PAGE_NO + "&pageSize=5";
                 break;
         }
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {

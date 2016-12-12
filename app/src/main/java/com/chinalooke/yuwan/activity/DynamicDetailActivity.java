@@ -184,6 +184,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
 
                 }
             });
+            mQueue.add(request);
         }
     }
 

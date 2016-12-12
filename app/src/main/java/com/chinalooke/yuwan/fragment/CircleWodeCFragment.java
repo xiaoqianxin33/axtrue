@@ -1,12 +1,14 @@
 package com.chinalooke.yuwan.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -17,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.activity.CircleDynamicActivity;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
@@ -70,6 +73,9 @@ public class CircleWodeCFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mQueue = YuwanApplication.getQueue();
+        mMyAdapter = new MyAdapter(mCircle);
+        mListView.setAdapter(mMyAdapter);
+        initEvent();
 
     }
 
@@ -87,8 +93,6 @@ public class CircleWodeCFragment extends Fragment {
             mTvNone.setVisibility(View.VISIBLE);
             mTvNone.setText("请登录查看");
         }
-        mMyAdapter = new MyAdapter(mCircle);
-        mListView.setAdapter(mMyAdapter);
     }
 
     private void initData() {
@@ -101,6 +105,30 @@ public class CircleWodeCFragment extends Fragment {
                 mTvNone.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    private void initEvent() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Circle.ResultBean resultBean = mCircle.get(position);
+                Intent intent = new Intent(getActivity(), CircleDynamicActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("circle", resultBean);
+                intent.putExtra("circle_type", 0);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                addHits(resultBean);
+            }
+        });
+    }
+
+
+    //增加圈子点击量
+    private void addHits(Circle.ResultBean resultBean) {
+        String url = Constant.HOST + "addHits&groupId=" + resultBean.getGroupId();
+        StringRequest request = new StringRequest(url, null, null);
+        mQueue.add(request);
     }
 
     //获得我创建的圈子
@@ -117,6 +145,7 @@ public class CircleWodeCFragment extends Fragment {
                     }.getType();
                     Circle circle = gson.fromJson(response, type);
                     if (circle.getResult() != null) {
+                        mCircle.clear();
                         mCircle.addAll(circle.getResult());
                         mMyAdapter.notifyDataSetChanged();
                     }

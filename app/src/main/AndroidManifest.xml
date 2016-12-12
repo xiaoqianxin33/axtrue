@@ -143,7 +143,9 @@
 
         <service android:name="com.amap.api.location.APSService"/>
 
-        <activity android:name=".activity.FrequentlyGameActivity">
+        <activity
+            android:name=".activity.FrequentlyGameActivity"
+            android:windowSoftInputMode="adjustNothing">
         </activity>
         <activity android:name=".activity.MyCircleActivity">
         </activity>

@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -15,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +59,7 @@ import com.zhy.autolayout.utils.AutoUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -65,8 +68,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pub.devrel.easypermissions.EasyPermissions;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * 创建兴趣圈子fragment
@@ -82,6 +83,8 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
     RoundedImageView mIvGameimage;
     @Bind(R.id.ll_game)
     LinearLayout mLlGame;
+    @Bind(R.id.tv_circle_expalin)
+    TextView mTvCircleExpalin;
     private RequestQueue mQueue;
     private Toast mToast;
     private CreateCircleActivity mActivity;
@@ -90,7 +93,6 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
     private String mRule;
     private String mCircleName;
     private String mPath;
-    private int REQUEST_CODE = 2;
     private ProgressDialog mProgressDialog;
     private ImgSelConfig mConfig;
     private int RC_ACCESS_FINE_LOCATION = 0;
@@ -102,15 +104,16 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
             Picasso.with(context).load("file://" + path).into(imageView);
         }
     };
+    private View mView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_create_circle_interest, container, false);
-        ButterKnife.bind(this, view);
+        mView = inflater.inflate(R.layout.fragment_create_circle_interest, container, false);
+        ButterKnife.bind(this, mView);
         mQueue = YuwanApplication.getQueue();
         mToast = YuwanApplication.getToast();
-        return view;
+        return mView;
     }
 
     @Override
@@ -194,22 +197,17 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Log.e("checkIsExistGroup", response);
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("Success");
                     if (success) {
-                        boolean result = jsonObject.getBoolean("Result");
-                        if (result) {
-                            mProgressDialog.dismiss();
-                            mToast.setText("该圈子名称已存在，请重新填写");
-                            mToast.show();
-                        } else {
-                            createCircle();
-                        }
-                    } else {
                         mProgressDialog.dismiss();
-                        mToast.setText("服务器抽风了，请稍后重试");
+                        mToast.setText("该圈子名称已存在，请重新填写");
                         mToast.show();
+                    } else {
+                        createCircle();
+                        mProgressDialog.dismiss();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -242,7 +240,7 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
                     String longitude = PreferenceUtils.getPrefString(mActivity, "longitude", "");
                     String latitude = PreferenceUtils.getPrefString(mActivity, "latitude", "");
                     String uri = Constant.HOST + "addGroup&userId=" + mUser.getUserId() + "&lng=" + longitude + "&lat="
-                            + latitude + "&gameIds=" + mStrings + "&groupName=" + mCircleName
+                            + latitude + "&gameIds=" + mStrings + "&groupName=" + URLEncoder.encode(mCircleName)
                             + "&slogan=" + mRule + "&head=" + Constant.QINIU_DOMAIN + "/" + fileName;
                     StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                         @Override
@@ -255,7 +253,14 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
                                     if (success) {
                                         boolean result = jsonObject.getBoolean("Result");
                                         if (result) {
-                                            showSucceedDialog("圈子创建成功!");
+                                            MyUtils.showDialog(mActivity, "提示", "圈子创建成功！\n 可以去我的圈子里面查看!", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                    startActivity(new Intent(mActivity, MainActivity.class));
+                                                    mActivity.finish();
+                                                }
+                                            });
                                         }
 
                                     } else {
@@ -273,6 +278,7 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            Log.e("TAG", error.getMessage());
                             mProgressDialog.dismiss();
                             mToast.setText("服务器抽风了，请稍后重试");
                             mToast.show();
@@ -288,32 +294,6 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
             }
         }, null);
     }
-
-    //弹出创建成功对话框
-    private void showSucceedDialog(String message) {
-        final Dialog dialog = new Dialog(mActivity, R.style.Dialog);
-        View inflate = LayoutInflater.from(mActivity).inflate(R.layout.dialog_ok_cancle, null);
-        TextView textViewCancel = (TextView) inflate.findViewById(R.id.tv_cancel);
-        TextView textViewOK = (TextView) inflate.findViewById(R.id.tv_ok);
-        TextView textViewTitle = (TextView) inflate.findViewById(R.id.tv_title);
-        textViewTitle.setText(message);
-        textViewCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        textViewOK.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                startActivity(new Intent(mActivity, MainActivity.class));
-                mActivity.finish();
-            }
-        });
-        dialog.show();
-    }
-
 
     //检查建圈子信息
     private boolean checkInput() {
@@ -341,7 +321,7 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         if (requestCode == RC_ACCESS_FINE_LOCATION)
-            ImgSelActivity.startActivity(mActivity, mConfig, REQUEST_CODE);
+            ImgSelActivity.startActivity(mActivity, mConfig, 5);
     }
 
     @Override
@@ -359,7 +339,7 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
     private void req() {
         String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS};
         if (EasyPermissions.hasPermissions(mActivity, perms)) {
-            ImgSelActivity.startActivity(mActivity, mConfig, REQUEST_CODE);
+            ImgSelActivity.startActivity(mActivity, mConfig, 5);
         } else {
             EasyPermissions.requestPermissions(this, "需要拍照权限",
                     RC_ACCESS_FINE_LOCATION, perms);
@@ -388,6 +368,8 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
             public void onClick(View v) {
                 dialog.dismiss();
                 mRule = etRule.getText().toString();
+                if (!TextUtils.isEmpty(mRule))
+                    mTvCircleExpalin.setText(mRule);
             }
         });
 
@@ -435,9 +417,10 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CHOSE_GAME) {
             mChose = (List<GameMessage.ResultBean>) data.getSerializableExtra("list");
+            if (mChose != null && mChose.size() != 0)
+                mLlGame.removeAllViews();
             for (GameMessage.ResultBean resultBean : mChose) {
                 String thumb = resultBean.getThumb();
                 RoundedImageView imageView = new RoundedImageView(mActivity);
@@ -456,11 +439,14 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
                 }
             }
             mStrings = stringBuilder.toString();
-        } else if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            List<String> pathList = data.getStringArrayListExtra(ImgSelActivity.INTENT_RESULT);
-            mPath = pathList.get(0);
-            Picasso.with(mActivity).load("file://" + mPath).into(mIvGameimage);
         }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
+    public void setHead(String path) {
+        mPath = path;
+        RoundedImageView viewById = (RoundedImageView) mView.findViewById(R.id.iv_gameimage);
+        if (viewById != null)
+            Picasso.with(mActivity).load("file://" + mPath).into(viewById);
     }
 }

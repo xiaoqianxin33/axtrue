@@ -13,7 +13,7 @@
     <include layout="@layout/include_head"/>
 
     <RelativeLayout
-        android:id="@+id/rl_head"
+        android:id="@+id/rl_head_t"
         android:layout_width="match_parent"
         android:layout_height="160px"
         android:background="@android:color/white"

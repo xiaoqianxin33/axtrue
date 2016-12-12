@@ -30,13 +30,13 @@
             <TextView
                 android:id="@+id/tv_location"
                 style="@style/circle_top_textview"
-                android:text="我的圈子"/>
+                android:text="位置圈子"/>
 
 
             <TextView
                 android:id="@+id/tv_interest"
                 style="@style/circle_top_textview"
-                android:text="我创建的圈子"/>
+                android:text="兴趣圈子"/>
 
         </LinearLayout>
 
@@ -46,9 +46,6 @@
         android:id="@+id/viewPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
-
-
 
 
 </LinearLayout>

@@ -257,6 +257,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
         });
     }
 
+
     private void loadMore() {
         isLoading = true;
         if (!isFoot) {

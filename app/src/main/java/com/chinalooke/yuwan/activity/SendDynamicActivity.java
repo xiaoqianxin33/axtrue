@@ -215,7 +215,7 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
             Bitmap bitmap = ImageUtils.getBitmap(mPhotos.get(i));
             Bitmap bitmap1 = ImageUtils.compressByScale(bitmap, 235, 235);
             String fileName = "dynamic" + new Date().getTime();
-            paths.add("http://" + Constant.QINIU_DOMAIN + "/" + fileName);
+            paths.add(Constant.QINIU_DOMAIN + "/" + fileName);
             mUploadManager.put(BitmapUtils.toArray(bitmap1), fileName, token, new UpCompletionHandler() {
                 @Override
                 public void complete(String key, ResponseInfo info, JSONObject response) {
@@ -234,9 +234,9 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
     private void sendDynamic(ArrayList<String> paths) {
         String uri;
         try {
-            String content = URLEncoder.encode(mContent, "utf8");
-            String address = URLEncoder.encode(mTvAddress.getText().toString(), "utf8");
-            String time = URLEncoder.encode(DateUtils.getCurrentDateTime(), "utf8");
+            String content = URLEncoder.encode(mContent, "UTF-8");
+            String address = URLEncoder.encode(mTvAddress.getText().toString(), "UTF-8");
+            String time = URLEncoder.encode(DateUtils.getCurrentDateTime(), "UTF-8");
             if (paths != null) {
                 StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 0; i < paths.size(); i++) {

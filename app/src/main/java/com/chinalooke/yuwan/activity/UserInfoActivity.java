@@ -1,12 +1,10 @@
 package com.chinalooke.yuwan.activity;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
@@ -20,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -59,6 +56,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pub.devrel.easypermissions.EasyPermissions;
+
 
 public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissions.PermissionCallbacks {
 
@@ -169,6 +167,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         mSlogan = mUserInfo.getSlogan();
         if (!TextUtils.isEmpty(mSlogan))
             mTvSlogen.setText(mSlogan);
+
     }
 
     private void setAge() {
@@ -209,14 +208,14 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         super.onBackPressed();
     }
 
-    @OnClick({R.id.iv_back, R.id.rl_head, R.id.rl_name, R.id.rl_sex, R.id.rl_age, R.id.rl_play_age, R.id.rl_address, R.id.rl_id, R.id.rl_qcode, R.id.rl_slogen})
+    @OnClick({R.id.iv_back, R.id.rl_head_t, R.id.rl_name, R.id.rl_sex, R.id.rl_age, R.id.rl_play_age, R.id.rl_address, R.id.rl_id, R.id.rl_qcode, R.id.rl_slogen})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
                 finish();
                 updateInfo();
                 break;
-            case R.id.rl_head:
+            case R.id.rl_head_t:
                 req();
                 break;
             case R.id.rl_name:
@@ -360,6 +359,8 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             }
         });
 
+        pvOptions.show();
+
     }
 
     private void showEditDialog() {
@@ -391,13 +392,12 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         dialog.show();
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void req() {
         String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS};
         if (EasyPermissions.hasPermissions(this, perms)) {
             ImgSelActivity.startActivity(this, mConfig, REQUEST_CODE);
         } else {
-            EasyPermissions.requestPermissions(this, "需要定位权限",
+            EasyPermissions.requestPermissions(this, "需要摄像头权限",
                     RC_ACCESS_FINE_LOCATION, perms);
         }
     }
@@ -431,7 +431,6 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && data != null) {
             List<String> pathList = data.getStringArrayListExtra(ImgSelActivity.INTENT_RESULT);
             mPath = pathList.get(0);
-            Toast.makeText(getApplicationContext(), mPath, Toast.LENGTH_LONG);
             isChangeHead = true;
             Picasso.with(getApplicationContext()).load("file://" + mPath).into(mRoundedImageView);
         }
@@ -449,7 +448,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                     @Override
                     public void complete(String key, ResponseInfo info, JSONObject response) {
                         if (info.error == null) {
-                            mPath = "http://" + Constant.QINIU_DOMAIN + "/" + fileName;
+                            mPath =  Constant.QINIU_DOMAIN + "/" + fileName;
                             update();
                         }
                     }
@@ -472,7 +471,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             url = url + "&slogan=";
         if (mName != null)
             try {
-                url = url + "&nickName=" + URLEncoder.encode(mName,"utf8");
+                url = url + "&nickName=" + URLEncoder.encode(mName, "utf8");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

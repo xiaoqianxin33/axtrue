@@ -52,6 +52,7 @@ import com.chinalooke.yuwan.view.ViewRight;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
+import com.zhy.autolayout.utils.AutoUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
@@ -607,6 +608,7 @@ public class BattleFieldFragment extends Fragment {
 
         @Override
         protected void convert(BaseViewHolder helper, GameDesk.ResultBean item) {
+            AutoUtils.autoSize(helper.getConvertView());
             String ownerName = item.getOwnerName();
             if (!TextUtils.isEmpty(ownerName)) {
                 helper.setText(R.id.name, ownerName);

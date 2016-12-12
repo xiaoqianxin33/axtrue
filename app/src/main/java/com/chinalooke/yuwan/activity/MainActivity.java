@@ -131,6 +131,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
 
     }
 
+
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null) {

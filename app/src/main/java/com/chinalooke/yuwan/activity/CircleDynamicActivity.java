@@ -306,9 +306,15 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
 
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_camera, R.id.roundedImageView, R.id.tv_name, R.id.tv_join})
+    @OnClick({R.id.iv_back, R.id.iv_camera, R.id.roundedImageView, R.id.tv_name, R.id.tv_join, R.id.tv_paihang})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.tv_paihang:
+                Intent intent1 = new Intent(this, CircleRankingActivity.class);
+                intent1.putExtra("ranking_type", 1);
+                intent1.putExtra("groupId", mCircle.getGroupId());
+                startActivity(intent1);
+                break;
             case R.id.iv_back:
                 finish();
                 break;

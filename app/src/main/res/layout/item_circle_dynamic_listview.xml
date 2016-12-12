@@ -38,6 +38,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_content"
         android:layout_marginTop="30px"
+        android:horizontalSpacing="10px"
+        android:verticalSpacing="10px"
         android:numColumns="3"/>
 
 

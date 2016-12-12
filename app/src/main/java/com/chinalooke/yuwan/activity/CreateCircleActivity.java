@@ -1,5 +1,6 @@
 package com.chinalooke.yuwan.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -11,6 +12,7 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MainPagerAdapter;
 import com.chinalooke.yuwan.fragment.CreateInterestCircleFragment;
 import com.chinalooke.yuwan.fragment.CreateLocationCircleFragment;
+import com.yuyh.library.imgsel.ImgSelActivity;
 import com.zhy.autolayout.AutoLayoutActivity;
 
 import java.util.ArrayList;
@@ -36,6 +38,8 @@ public class CreateCircleActivity extends AutoLayoutActivity {
     TextView mTvInterest;
     @Bind(R.id.ll_title)
     LinearLayout mLlTitle;
+    private CreateLocationCircleFragment mCreateLocationCircleFragment;
+    private CreateInterestCircleFragment mCreateInterestCircleFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,14 +74,14 @@ public class CreateCircleActivity extends AutoLayoutActivity {
 
     private void initView() {
         mTvTitle.setText("创建圈子");
-        CreateLocationCircleFragment createLocationCircleFragment = new CreateLocationCircleFragment();
-        CreateInterestCircleFragment createInterestCircleFragment = new CreateInterestCircleFragment();
+        mCreateLocationCircleFragment = new CreateLocationCircleFragment();
+        mCreateInterestCircleFragment = new CreateInterestCircleFragment();
         List<Fragment> list = new ArrayList<>();
-        list.add(createLocationCircleFragment);
-        list.add(createInterestCircleFragment);
+        list.add(mCreateLocationCircleFragment);
+        list.add(mCreateInterestCircleFragment);
         MainPagerAdapter mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), list);
         mViewPage.setAdapter(mainPagerAdapter);
-
+        setSelect(0);
     }
 
     @OnClick({R.id.tv_location, R.id.tv_interest, R.id.iv_back})
@@ -114,4 +118,17 @@ public class CreateCircleActivity extends AutoLayoutActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 4 && resultCode == RESULT_OK && data != null) {
+            List<String> pathList = data.getStringArrayListExtra(ImgSelActivity.INTENT_RESULT);
+            String s = pathList.get(0);
+            mCreateLocationCircleFragment.setHead(s);
+        } else if (requestCode == 5 && resultCode == RESULT_OK && data != null) {
+            List<String> pathList = data.getStringArrayListExtra(ImgSelActivity.INTENT_RESULT);
+            String s = pathList.get(0);
+            mCreateInterestCircleFragment.setHead(s);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }
