@@ -300,7 +300,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="身份证号"
+            android:text="常玩游戏"
             android:textColor="@color/black_word"
             android:textSize="35px"/>
 
@@ -312,16 +312,16 @@
             android:layout_centerVertical="true"
             android:src="@mipmap/arrow_right"/>
 
-
-        <TextView
-            android:id="@+id/tv_id"
+        <LinearLayout
+            android:id="@+id/ll_game"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/mid_padding"
-            android:layout_toLeftOf="@id/iv7"
-            android:textColor="@color/shallow_word"
-            android:textSize="28px"/>
+            android:layout_marginRight="78px"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/small_padding"
+            android:paddingTop="@dimen/small_padding"/>
 
 
     </RelativeLayout>

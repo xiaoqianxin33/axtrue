@@ -65,9 +65,9 @@ public class RechargeActivity extends AutoLayoutActivity {
                 RelativeLayout relativeLayout = (RelativeLayout) view.findViewById(R.id.rl_root);
                 relativeLayout.setBackgroundResource(R.drawable.recharge_click_shape);
                 TextView view1 = (TextView) view.findViewById(R.id.tv_pay);
-                view1.setTextColor(getResources().getColor(R.color.orange));
+                view1.setTextColor(getResources().getColor(R.color.white));
                 TextView view2 = (TextView) view.findViewById(R.id.tv_sale);
-                view2.setTextColor(getResources().getColor(R.color.orange));
+                view2.setTextColor(getResources().getColor(R.color.white));
                 Intent intent = new Intent(RechargeActivity.this, ChosePayActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("pay", resultBean);

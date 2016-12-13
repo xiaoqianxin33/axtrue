@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -15,10 +14,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.SortAddFriendsAdapter;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.NearbyPeople;
 import com.chinalooke.yuwan.bean.SortModel;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.CharacterParser;
 import com.chinalooke.yuwan.utils.ContactsEngine;
@@ -44,12 +43,8 @@ import butterknife.OnClick;
 //添加通讯录好友界面
 public class AddAddressBookFriendActivity extends AutoLayoutActivity {
 
-    @Bind(R.id.iv_back)
-    ImageView mIvBack;
     @Bind(R.id.tv_title)
     TextView mTvTitle;
-    @Bind(R.id.tv_skip)
-    TextView mTvSkip;
     @Bind(R.id.list_view)
     ListView mListView;
     @Bind(R.id.pb_load)

@@ -92,9 +92,9 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
     private View mFoot;
     private boolean isFoot = false;
     private Toast mToast;
-    private boolean isSuccess = false;
     private ImageView mImageView;
     private MainActivity mActivity;
+    private boolean isBanner = true;
 
 
     @Override
@@ -152,6 +152,8 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                 @Override
                 public void onResponse(String response) {
                     if (AnalysisJSON.analysisJson(response)) {
+                        isBanner = true;
+                        mBanner.setVisibility(View.VISIBLE);
                         Gson gson = new Gson();
                         Type type = new TypeToken<NetbarAdvertisement>() {
                         }.getType();
@@ -159,6 +161,9 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                         if (netbarAdvertisement != null) {
                             setBanner(netbarAdvertisement);
                         }
+                    } else {
+                        isBanner = false;
+                        mBanner.setVisibility(View.GONE);
                     }
                 }
             }, new Response.ErrorListener() {
@@ -237,7 +242,17 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
         mLvDynamic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position != 0) {
+                if (isBanner) {
+                    if (position != 0) {
+                        WholeDynamic.ResultBean resultBean = mDynamics.get(position - 1);
+                        Intent intent = new Intent(mActivity, DynamicDetailActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("dynamic", resultBean);
+                        intent.putExtra("dynamic_type", 0);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                } else {
                     WholeDynamic.ResultBean resultBean = mDynamics.get(position - 1);
                     Intent intent = new Intent(mActivity, DynamicDetailActivity.class);
                     Bundle bundle = new Bundle();
@@ -368,13 +383,11 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        isSuccess = false;
                     }
                 } else {
                     mToast.setText("点赞失败");
                     mToast.show();
                     viewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
-                    isSuccess = false;
                 }
             }
         }, new Response.ErrorListener() {
@@ -383,7 +396,6 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                 mToast.setText("点赞失败");
                 mToast.show();
                 viewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
-                isSuccess = false;
             }
         });
         mQueue.add(request);

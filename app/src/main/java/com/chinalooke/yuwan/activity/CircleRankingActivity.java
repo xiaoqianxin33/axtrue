@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -23,12 +24,12 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.CircleRanking;
 import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
-import com.chinalooke.yuwan.utils.FastBlur;
+import com.chinalooke.yuwan.utils.ImageUtils;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.ViewHelper;
@@ -44,7 +45,9 @@ import com.zhy.autolayout.utils.AutoUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -57,8 +60,6 @@ import butterknife.OnClick;
 //圈子排行
 public class CircleRankingActivity extends AutoLayoutActivity implements AMapLocationListener {
 
-    @Bind(R.id.iv_fenxiang)
-    ImageView mIvFenxiang;
     @Bind(R.id.roundedImageView)
     RoundedImageView mRoundedImageView;
     @Bind(R.id.tv_name)
@@ -188,7 +189,7 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
                             response.getWidth() / scaleRatio,
                             response.getHeight() / scaleRatio,
                             false);
-                    Bitmap blurBitmap = FastBlur.doBlur(scaledBitmap, blurRadius, true);
+                    Bitmap blurBitmap = ImageUtils.fastBlur(getApplicationContext(), scaledBitmap, 1f, 0.5f);
                     mRlHead.setBackground(new BitmapDrawable(blurBitmap));
                 }
             }
@@ -207,10 +208,18 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
         switch (RANKING_TYPE) {
             case 0:
                 if (mUserInfo != null)
-                    uri = Constant.HOST + "getScoreList&groupId=0&city=" + city + "&pageNo=" + PAGE_NO + "&pageSize=5"
-                            + "&userId=" + mUserInfo.getUserId();
+                    try {
+                        uri = Constant.HOST + "getScoreList&groupId=0&city=" + URLEncoder.encode(city, "UTF-8") + "&pageNo=" + PAGE_NO + "&pageSize=5"
+                                + "&userId=" + mUserInfo.getUserId();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 else
-                    uri = Constant.HOST + "getScoreList&groupId=0&city=" + city + "&pageNo=" + PAGE_NO + "&pageSize=5";
+                    try {
+                        uri = Constant.HOST + "getScoreList&groupId=0&city=" + URLEncoder.encode(city, "UTF-8") + "&pageNo=" + PAGE_NO + "&pageSize=5";
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 break;
             case 1:
                 String groupId = getIntent().getStringExtra("groupId");
@@ -220,6 +229,8 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
                     uri = Constant.HOST + "getScoreList&groupId=" + groupId + "&city=&pageNo=" + PAGE_NO + "&pageSize=5";
                 break;
         }
+
+        Log.e("TAG", uri);
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

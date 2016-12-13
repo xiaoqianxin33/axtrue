@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,9 +29,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.bean.GameMessage;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.db.DBManager;
 import com.chinalooke.yuwan.utils.Auth;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -52,6 +57,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -81,6 +87,8 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     TextView mTvSlogen;
     @Bind(R.id.tv_skip)
     TextView mTvSkip;
+    @Bind(R.id.ll_game)
+    LinearLayout mLlGame;
     private LoginUser.ResultBean mUserInfo;
     private ImgSelConfig mConfig;
     private int RC_ACCESS_FINE_LOCATION = 0;
@@ -106,6 +114,9 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     private String mAddress;
     private ProgressDialog mProgressDialog;
     private Toast mToast;
+    private int REQUEST_GAME = 3;
+    private List<GameMessage.ResultBean> mChose;
+    private String[] mStrings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,6 +189,21 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         if (!TextUtils.isEmpty(mSlogan))
             mTvSlogen.setText(mSlogan);
 
+        String[] gameId = mUserInfo.getGameId();
+        mStrings = gameId;
+        if (gameId != null) {
+            for (String s : gameId) {
+                DBManager dbManager = new DBManager(getApplicationContext());
+                GameMessage.ResultBean resultBean = dbManager.queryById(s);
+                String thumb = resultBean.getThumb();
+                RoundedImageView imageView = new RoundedImageView(getApplicationContext());
+                imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(70, 70));
+                Picasso.with(getApplicationContext()).load(thumb).resize(70, 70).centerCrop().into(imageView);
+                imageView.setOval(true);
+                mLlGame.addView(imageView);
+            }
+        }
+
     }
 
     private void setAge() {
@@ -239,6 +265,8 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                 selectLocation();
                 break;
             case R.id.rl_id:
+                Intent intent2 = new Intent(this, FrequentlyGameActivity.class);
+                startActivityForResult(intent2, REQUEST_GAME);
                 break;
             case R.id.rl_qcode:
                 startActivity(new Intent(this, MyQRCodeActivity.class));
@@ -438,6 +466,23 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             mPath = pathList.get(0);
             isChangeHead = true;
             Picasso.with(getApplicationContext()).load("file://" + mPath).into(mRoundedImageView);
+        } else if (requestCode == REQUEST_GAME) {
+            mChose = (List<GameMessage.ResultBean>) data.getSerializableExtra("list");
+            if (mChose != null && mChose.size() != 0) {
+                mLlGame.removeAllViews();
+                for (GameMessage.ResultBean resultBean : mChose) {
+                    String thumb = resultBean.getThumb();
+                    RoundedImageView imageView = new RoundedImageView(getApplicationContext());
+                    imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(70, 70));
+                    Picasso.with(getApplicationContext()).load(thumb).resize(70, 70).centerCrop().into(imageView);
+                    imageView.setOval(true);
+                    mLlGame.addView(imageView);
+                }
+                mStrings = new String[mChose.size()];
+                for (int i = 0; i < mChose.size(); i++) {
+                    mStrings[i] = mChose.get(i).getGameId();
+                }
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -487,7 +532,11 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         else
             url = url + "&nickName=";
         if (mSex != null)
-            url = url + "&sex=" + mSex;
+            try {
+                url = url + "&sex=" + URLEncoder.encode(mSex, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         else
             url = url + "&sex=";
         if (mAge != null)
@@ -498,6 +547,14 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             url = url + "&playAge=" + mPlayAge;
         else
             url = url + "&playAge=";
+        if (mStrings != null) {
+            String s = Arrays.toString(mStrings);
+            String substring = s.substring(1, s.length() - 1);
+            String replace = substring.replace(" ", "");
+            url = url + "&gameId=" + replace;
+        }
+
+        Log.e("TAG", url);
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

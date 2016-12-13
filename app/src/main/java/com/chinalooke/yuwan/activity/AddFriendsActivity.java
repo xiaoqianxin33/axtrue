@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,8 +23,6 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class AddFriendsActivity extends AutoLayoutActivity implements EasyPermissions.PermissionCallbacks {
 
-    @Bind(R.id.iv_back)
-    ImageView mIvBack;
     @Bind(R.id.tv_title)
     TextView mTvTitle;
     @Bind(R.id.et_phone)

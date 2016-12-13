@@ -43,14 +43,6 @@ public class ChosePayActivity extends AutoLayoutActivity {
     private ExchangeLevels.ResultBean mResultBean;
     private RequestQueue mQueue;
     private Toast mToast;
-    /**
-     * 微信支付渠道
-     */
-    private static final String CHANNEL_WECHAT = "wx";
-    /**
-     * 支付支付渠道
-     */
-    private static final String CHANNEL_ALIPAY = "alipay";
 
 
     @Override

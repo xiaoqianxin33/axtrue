@@ -496,11 +496,14 @@ public class BattleFieldFragment extends Fragment {
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
+                    mBanner.setVisibility(View.VISIBLE);
                     if (AnalysisJSON.analysisJson(response)) {
                         Type type = new TypeToken<Advertisement>() {
                         }.getType();
                         Advertisement advertisement = mGson.fromJson(response, type);
                         setBanner(advertisement);
+                    } else {
+                        mBanner.setVisibility(View.GONE);
                     }
                 }
             }, null);
@@ -562,27 +565,6 @@ public class BattleFieldFragment extends Fragment {
         if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
             lastClickTime = currentTime;
             switch (view.getId()) {
-//                case R.id.rl_yz:
-//                    setRecyclerView(0);
-//                    setIconWordColor(0);
-//                    mCurrentPage = 0;
-//                    PAGE = 0;
-//                    mAdapter.notifyDataSetChanged();
-//                    break;
-//                case R.id.rl_jx:
-//                    setRecyclerView(1);
-//                    setIconWordColor(1);
-//                    mCurrentPage = 1;
-//                    PAGE = 0;
-//                    mJxAdapter.notifyDataSetChanged();
-//                    break;
-//                case R.id.rl_js:
-//                    setRecyclerView(2);
-//                    setIconWordColor(2);
-//                    mCurrentPage = 2;
-//                    PAGE = 0;
-//                    mJsAdapter.notifyDataSetChanged();
-//                    break;
                 case R.id.iv_search:
                     startActivity(new Intent(mActivity, SearchActivity.class));
                     break;

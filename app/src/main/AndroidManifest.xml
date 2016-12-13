@@ -34,7 +34,6 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
-
     <application
         android:name=".config.YuwanApplication"
         android:allowBackup="true"
@@ -234,7 +233,6 @@
         </activity>
         <activity android:name=".activity.MyMessageActivity">
         </activity>
-
         <activity android:name=".activity.SelectCircleLocationActivity">
         </activity>
         <activity android:name=".activity.ImagePagerActivity">
@@ -266,8 +264,8 @@
             android:exported="false"
             android:screenOrientation="behind">
         </activity>
-
-
+        <activity android:name=".activity.SettingActivity">
+        </activity>
     </application>
 
 </manifest>

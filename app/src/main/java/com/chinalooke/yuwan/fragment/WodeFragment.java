@@ -19,8 +19,10 @@ import android.widget.TextView;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.FriendsActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
+import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.MyBalanceActivity;
 import com.chinalooke.yuwan.activity.RecordActivity;
+import com.chinalooke.yuwan.activity.SettingActivity;
 import com.chinalooke.yuwan.activity.ShopActivity;
 import com.chinalooke.yuwan.activity.SignInActivity;
 import com.chinalooke.yuwan.activity.UserInfoActivity;
@@ -62,6 +64,7 @@ public class WodeFragment extends Fragment {
     private int START_ALPHA = 0;
     private int END_ALPHA = 255;
     private int mHeight;
+    private MainActivity mActivity;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,7 +77,8 @@ public class WodeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        final int heightPixels = ViewHelper.getDisplayMetrics(getActivity()).heightPixels;
+        mActivity = (MainActivity) getActivity();
+        final int heightPixels = ViewHelper.getDisplayMetrics(mActivity).heightPixels;
         final Drawable drawable = getResources().getDrawable(R.drawable.actionbar_color_else);
         drawable.setAlpha(START_ALPHA);
         mRlTop.setBackground(drawable);
@@ -106,57 +110,66 @@ public class WodeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (user != null)
-                    startActivity(new Intent(getActivity(), SignInActivity.class));
+                    startActivity(new Intent(mActivity, SignInActivity.class));
                 else
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                    startActivity(new Intent(mActivity, LoginActivity.class));
             }
         });
     }
 
     @OnClick({R.id.tv_name, R.id.roundedImageView, R.id.tv_login, R.id.rl_info, R.id.rl_friend
-            , R.id.rl_shop, R.id.rl_record, R.id.rl_balance})
+            , R.id.rl_shop, R.id.rl_record, R.id.rl_balance, R.id.rl_setting})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.rl_setting:
+                if (user != null)
+                    startActivity(new Intent(mActivity, SettingActivity.class));
+                else
+                    startActivity(new Intent(mActivity, LoginActivity.class));
+                break;
             case R.id.rl_balance:
                 if (user != null)
-                    startActivity(new Intent(getActivity(), MyBalanceActivity.class));
+                    startActivity(new Intent(mActivity, MyBalanceActivity.class));
                 else
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                    startActivity(new Intent(mActivity, LoginActivity.class));
                 break;
             case R.id.rl_record:
                 if (user != null)
-                    startActivity(new Intent(getActivity(), RecordActivity.class));
+                    startActivity(new Intent(mActivity, RecordActivity.class));
                 else
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                    startActivity(new Intent(mActivity, LoginActivity.class));
                 break;
             case R.id.rl_shop:
-                startActivity(new Intent(getActivity(), ShopActivity.class));
+                startActivity(new Intent(mActivity, ShopActivity.class));
                 break;
             case R.id.rl_friend:
                 if (user != null)
-                    startActivity(new Intent(getActivity(), FriendsActivity.class));
+                    startActivity(new Intent(mActivity, FriendsActivity.class));
                 else
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                    startActivity(new Intent(mActivity, LoginActivity.class));
                 break;
             case R.id.rl_info:
                 if (user != null)
-                    startActivity(new Intent(getActivity(), UserInfoActivity.class));
+                    startActivity(new Intent(mActivity, UserInfoActivity.class));
                 else
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                    startActivity(new Intent(mActivity, LoginActivity.class));
                 break;
             case R.id.tv_name:
                 if (user == null)
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                    startActivity(new Intent(mActivity, LoginActivity.class));
                 break;
             case R.id.roundedImageView:
                 if (user == null)
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                    startActivity(new Intent(mActivity, LoginActivity.class));
+                else {
+                    startActivity(new Intent(mActivity, UserInfoActivity.class));
+                }
                 break;
 
             case R.id.tv_login:
                 //退出登录时清除资料
                 if (user != null) {
-                    DialogUtil.showSingerDialog(getActivity(), "提示", "确定注销吗？", new DialogInterface.OnClickListener() {
+                    DialogUtil.showSingerDialog(mActivity, "提示", "确定注销吗？", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             //退出环信
@@ -177,7 +190,7 @@ public class WodeFragment extends Fragment {
 
                                 }
                             });
-                            LoginUserInfoUtils.getLoginUserInfoUtils().clearData(getActivity());//清除资料
+                            LoginUserInfoUtils.getLoginUserInfoUtils().clearData(mActivity);//清除资料
                             LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(null);
                             setCancelDialog();
                             onResume();
@@ -190,7 +203,7 @@ public class WodeFragment extends Fragment {
                     });
 
                 } else {
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                    startActivity(new Intent(mActivity, LoginActivity.class));
                 }
                 break;
         }
@@ -199,7 +212,7 @@ public class WodeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        user = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getActivity(), LoginUserInfoUtils.KEY);
+        user = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(mActivity, LoginUserInfoUtils.KEY);
         initView();
     }
 
@@ -214,7 +227,7 @@ public class WodeFragment extends Fragment {
                 mTvName.setText("暂未设置昵称");
             String headImg = user.getHeadImg();
             if (!TextUtils.isEmpty(headImg))
-                Picasso.with(getActivity()).load(headImg).resize(160, 160).centerCrop().into(mRoundedImageView);
+                Picasso.with(mActivity).load(headImg).resize(160, 160).centerCrop().into(mRoundedImageView);
             String slogan = user.getSlogan();
             if (!TextUtils.isEmpty(slogan))
                 mTvSlogen.setText("简介：  " + slogan);
@@ -234,7 +247,7 @@ public class WodeFragment extends Fragment {
 
 
     private void setCancelDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         //设置对话框图标，可以使用自己的图片，Android本身也提供了一些图标供我们使用
         builder.setIcon(android.R.drawable.ic_dialog_info);
         //设置对话框标题
@@ -247,7 +260,7 @@ public class WodeFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 // 执行点击确定按钮的业务逻辑
                 dialog.dismiss();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+                startActivity(new Intent(mActivity, LoginActivity.class));
             }
         });
         //使用builder创建出对话框对象

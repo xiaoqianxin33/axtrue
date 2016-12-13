@@ -47,88 +47,6 @@
     </RelativeLayout>
 
 
-    <RelativeLayout
-        android:id="@+id/rl_head"
-        android:layout_width="match_parent"
-        android:layout_height="280px"
-        android:background="@mipmap/placeholder">
-
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/roundedImageView"
-            android:layout_width="100px"
-            android:layout_height="100px"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="34px"
-            android:background="@drawable/ranking_roundimageview_shape"
-            android:scaleType="centerCrop"
-            app:riv_oval="true"/>
-
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/roundedImageView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="26px"
-            android:text="z74469777"
-            android:textColor="@android:color/white"
-            android:textSize="27px"/>
-
-        <TextView
-            android:id="@+id/tv_ranking"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_name"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="21px"
-            android:text="第二名·23044积分"
-            android:textColor="@android:color/white"
-            android:textSize="27px"/>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="100px"
-        android:background="@android:color/white"
-        android:paddingLeft="@dimen/mid_padding"
-        android:paddingRight="@dimen/mid_padding">
-
-        <ImageView
-            android:id="@+id/iv1"
-            android:layout_width="33px"
-            android:layout_height="27px"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ranking"/>
-
-        <TextView
-            style="@style/ranking_textview"
-            android:layout_marginLeft="@dimen/small_padding"
-            android:layout_toRightOf="@id/iv1"
-            android:text="排行榜"/>
-
-        <ImageView
-            android:id="@+id/iv_arrow"
-            android:layout_width="17px"
-            android:layout_height="10px"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/arrow_down"/>
-
-        <TextView
-            android:id="@+id/tv_city"
-            style="@style/ranking_textview"
-            android:layout_marginRight="@dimen/small_padding"
-            android:layout_toLeftOf="@id/iv_arrow"
-            android:text="洛阳"/>
-
-    </RelativeLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/line_color"/>
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/sr"
         android:layout_width="match_parent"
@@ -136,35 +54,123 @@
         android:background="@android:color/white"
         android:paddingBottom="76px">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <com.chinalooke.yuwan.view.NoSlidingListView
-                android:id="@+id/list_view"
+            <RelativeLayout
+                android:id="@+id/rl_head"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:divider="@color/line_color"
-                android:dividerHeight="1dp"
-                android:paddingLeft="@dimen/mid_padding"/>
+                android:layout_height="280px"
+                android:background="@mipmap/placeholder">
 
-            <ProgressBar
-                android:id="@+id/pb_load"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"/>
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/roundedImageView"
+                    android:layout_width="100px"
+                    android:layout_height="100px"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="34px"
+                    android:background="@drawable/ranking_roundimageview_shape"
+                    android:scaleType="centerCrop"
+                    app:riv_oval="true"/>
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/roundedImageView"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="26px"
+                    android:text="z74469777"
+                    android:textColor="@android:color/white"
+                    android:textSize="27px"/>
+
+                <TextView
+                    android:id="@+id/tv_ranking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_name"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="21px"
+                    android:text="第二名·23044积分"
+                    android:textColor="@android:color/white"
+                    android:textSize="27px"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="100px"
+                android:background="@android:color/white"
+                android:paddingLeft="@dimen/mid_padding"
+                android:paddingRight="@dimen/mid_padding">
+
+                <ImageView
+                    android:id="@+id/iv1"
+                    android:layout_width="33px"
+                    android:layout_height="27px"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/ranking"/>
+
+                <TextView
+                    style="@style/ranking_textview"
+                    android:layout_marginLeft="@dimen/small_padding"
+                    android:layout_toRightOf="@id/iv1"
+                    android:text="排行榜"/>
+
+                <ImageView
+                    android:id="@+id/iv_arrow"
+                    android:layout_width="17px"
+                    android:layout_height="10px"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/arrow_down"/>
+
+                <TextView
+                    android:id="@+id/tv_city"
+                    style="@style/ranking_textview"
+                    android:layout_marginRight="@dimen/small_padding"
+                    android:layout_toLeftOf="@id/iv_arrow"
+                    android:text="洛阳"/>
+
+            </RelativeLayout>
 
             <TextView
-                android:id="@+id/tv_none"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="暂无排行"
-                android:textSize="16sp"
-                android:visibility="gone"/>
-
-        </FrameLayout>
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/line_color"/>
 
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.chinalooke.yuwan.view.NoSlidingListView
+                    android:id="@+id/list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@color/line_color"
+                    android:dividerHeight="1dp"
+                    android:paddingLeft="@dimen/mid_padding"/>
+
+                <ProgressBar
+                    android:id="@+id/pb_load"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"/>
+
+                <TextView
+                    android:id="@+id/tv_none"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="暂无排行"
+                    android:textSize="16sp"
+                    android:visibility="gone"/>
+
+            </FrameLayout>
+
+        </LinearLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>
