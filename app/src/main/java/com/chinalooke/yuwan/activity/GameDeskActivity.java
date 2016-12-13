@@ -110,6 +110,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
     TextView mTvRule;
     @Bind(R.id.iv_arrow)
     ImageView mIvArrow;
+    @Bind(R.id.tv_exit)
+    TextView mTvExit;
 
     private List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> mLeftBeen = new ArrayList<>();
     private List<GameDeskDetails.ResultBean.PlayersBean.RightBean> mRight = new ArrayList<>();
@@ -137,6 +139,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     //    private boolean isJudge = false;
     private boolean isFirst = true;
     private Runnable mRunnable;
+    private boolean isOwner = false;
 
 
     @Override
@@ -209,6 +212,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
         mRight.clear();
         String peopleNumber = result.getPeopleNumber();
         mTotalPeople = 0;
+
+
         if (!TextUtils.isEmpty(peopleNumber)) {
             mTotalPeople = Integer.parseInt(peopleNumber) / 2;
         }
@@ -270,6 +275,12 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 String gamePay = mGameDesk.getGamePay();
                 if (!TextUtils.isEmpty(gamePay))
                     mTvScore.setText(gamePay + "雷熊币");
+                if (user.getNickName().equals(mOwnerName)) {
+                    isOwner = true;
+                    mTvExit.setVisibility(View.VISIBLE);
+                } else {
+                    mTvExit.setVisibility(View.GONE);
+                }
             }
         }
 
@@ -279,16 +290,21 @@ public class GameDeskActivity extends AutoLayoutActivity {
             switch (status) {
                 case "pedding":
                     mStatus = 0;
-                    if (isJoin) {
-                        mTvOk.setText("退出战场");
+                    if (isOwner) {
+                        mTvOk.setText("开战");
                     } else {
-                        mTvOk.setText("我要参战");
+                        if (isJoin) {
+                            mTvOk.setText("退出战场");
+                        } else {
+                            mTvOk.setText("我要参战");
+                        }
+                        mTvStatus.setText("迎战中");
                     }
-                    mTvStatus.setText("迎战中");
                     mTvStatus.setBackgroundResource(R.mipmap.red_round_background);
                     break;
                 case "doing":
                     mStatus = 1;
+                    mTvExit.setVisibility(View.GONE);
                     mTvStatus.setText("进行中");
                     mTvStatus.setBackgroundResource(R.mipmap.green_round_background);
                     if (isJoin && DESK_TYPE == DESK_TYPE_PERSONAL) {
@@ -308,6 +324,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     mRlRule.setVisibility(View.GONE);
                     mTvChat.setEnabled(false);
                     mIvArrow.setVisibility(View.GONE);
+                    mTvExit.setVisibility(View.GONE);
                     break;
             }
         }
@@ -408,12 +425,15 @@ public class GameDeskActivity extends AutoLayoutActivity {
         mQueue.add(request);
     }
 
-    @OnClick({R.id.tv_chat, R.id.tv_ok, R.id.iv_back})
+    @OnClick({R.id.tv_chat, R.id.tv_ok, R.id.iv_back, R.id.tv_exit})
     public void onClick(View view) {
         long currentTime = Calendar.getInstance().getTimeInMillis();
         if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
             lastClickTime = currentTime;
             switch (view.getId()) {
+                case R.id.tv_exit:
+                    closeGameDesk();
+                    break;
                 case R.id.iv_back:
                     finish();
                     break;
@@ -425,10 +445,14 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 case R.id.tv_ok:
                     switch (mStatus) {
                         case 0:
-                            if (isJoin) {
-                                showQuitDialog();
+                            if (isOwner) {
+                                startGame();
                             } else {
-                                showJoinDialog();
+                                if (isJoin) {
+                                    showQuitDialog();
+                                } else {
+                                    showJoinDialog();
+                                }
                             }
                             break;
                         case 1:
@@ -450,6 +474,92 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     break;
             }
         }
+    }
+
+    //房主关闭游戏桌
+    private void closeGameDesk() {
+        mProgressDialog.setMessage("提交中");
+        mProgressDialog.show();
+        String url = Constant.HOST + "closeGameDesk&gameDeskId=" + mGameDesk.getGameDeskId();
+        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                mProgressDialog.dismiss();
+                if (response != null) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("Success");
+                        if (success) {
+                            MyUtils.showDialog(GameDeskActivity.this, "提示", "关闭成功！", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            });
+                        } else {
+                            String msg = jsonObject.getString("Msg");
+                            mToast.setText(msg);
+                            mToast.show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                mToast.setText("服务器抽风了，请稍后再试");
+                mToast.show();
+            }
+        });
+
+        mQueue.add(request);
+    }
+
+    //房主开始游戏
+    private void startGame() {
+        mProgressDialog.setMessage("提交中");
+        mProgressDialog.show();
+        String url = Constant.HOST + "startGame&gameDeskId=" + mGameDesk.getGameDeskId() + "&userId=" + user.getUserId();
+        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                mProgressDialog.dismiss();
+                if (response != null) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("Success");
+                        if (success) {
+                            MyUtils.showDialog(GameDeskActivity.this, "提示", "开战成功！", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    mTvOk.setVisibility(View.GONE);
+                                }
+                            });
+                        } else {
+                            String msg = jsonObject.getString("Msg");
+                            mToast.setText(msg);
+                            mToast.show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                mToast.setText("服务器抽风了，请稍后再试");
+                mToast.show();
+            }
+        });
+
+        mQueue.add(request);
     }
 
     //用户提交自己为赢家

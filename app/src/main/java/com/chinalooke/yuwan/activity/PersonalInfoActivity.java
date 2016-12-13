@@ -273,20 +273,20 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
         }
         if (!TextUtils.isEmpty(name) && !"请输入昵称".equals(name)) {
             userInfo.setNickName(name);
-            updateUserInfo = updateUserInfo + "&nickName=" + userInfo.getNickName();
+            updateUserInfo = updateUserInfo + "&nickName=" + name;
         }
         if (!TextUtils.isEmpty(mAge) && !"请输入真实年龄".equals(mAge)) {
             userInfo.setAge(mAge);
-            updateUserInfo = updateUserInfo + "&age=" + userInfo.getAge();
+            updateUserInfo = updateUserInfo + "&age=" + mAge;
         }
         if (!TextUtils.isEmpty(playAge) && !"请输入真实玩龄".equals(playAge)) {
             userInfo.setPlayAge(playAge);
-            updateUserInfo = updateUserInfo + "&playAge=" + userInfo.getPlayAge();
+            updateUserInfo = updateUserInfo + "&playAge=" + playAge;
         }
 
         if (!TextUtils.isEmpty(sexPersonalInfo)) {
             userInfo.setSex(sexPersonalInfo);
-            updateUserInfo = updateUserInfo + "&sex=" + userInfo.getSex();
+            updateUserInfo = updateUserInfo + "&sex=" + sexPersonalInfo;
         }
 
         if (!TextUtils.isEmpty(address) && !"点击获取位置".equals(address)) {

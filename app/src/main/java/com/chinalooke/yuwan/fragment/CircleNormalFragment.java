@@ -259,15 +259,19 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         } else {
             mLlInterest.setVisibility(View.VISIBLE);
             getInterestCircle();
-            getHotCircle();
         }
 
+        getHotCircle();
     }
 
     //获取热门圈子数据
     private void getHotCircle() {
         if (NetUtil.is_Network_Available(getActivity())) {
-            String uri = Constant.HOST + "getGroupListWithType&groupType=hot&pageNo=1&pageSize=6&userId=" + mUserInfo.getUserId();
+            String uri;
+            if (mUserInfo != null)
+                uri = Constant.HOST + "getGroupListWithType&groupType=hot&pageNo=1&pageSize=6&userId=" + mUserInfo.getUserId();
+            else
+                uri = Constant.HOST + "getGroupListWithType&groupType=hot&pageNo=1&pageSize=6&userId=";
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -488,7 +492,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     //得到兴趣圈子
     private void getInterestCircle() {
         String uri = Constant.HOST + "getGroupListWithType&userId=" + mUserInfo.getUserId()
-                + "&groupType=interest ";
+                + "&groupType=interest";
         Log.e("TAG", uri);
         StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
             @Override
