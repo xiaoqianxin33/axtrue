@@ -186,7 +186,20 @@ public class BattleFieldFragment extends Fragment {
 
 
         //recycleView item 点击事件
-        mAdapter.setOnRecyclerViewItemClickListener(new MyOnRecyclerViewItemClickListener());
+        mAdapter.setOnRecyclerViewItemClickListener(new BaseQuickAdapter.OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, int i) {
+                long currentTime = Calendar.getInstance().getTimeInMillis();
+                if (currentTime - itemLastClickTime > 2000) {
+                    itemLastClickTime = currentTime;
+                    if (user == null) {
+                        startActivity(new Intent(mActivity, LoginActivity.class));
+                    } else {
+                        interItem(i);
+                    }
+                }
+            }
+        });
 
         //recycleView滚动监听
         mRecyclerView.addOnScrollListener(new MyOnScrollListener());
@@ -280,22 +293,6 @@ public class BattleFieldFragment extends Fragment {
             mQueue.add(request);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        }
-    }
-
-    class MyOnRecyclerViewItemClickListener implements BaseQuickAdapter.OnRecyclerViewItemClickListener {
-
-        @Override
-        public void onItemClick(View view, int i) {
-            long currentTime = Calendar.getInstance().getTimeInMillis();
-            if (currentTime - itemLastClickTime > 2000) {
-                itemLastClickTime = currentTime;
-                if (user == null) {
-                    startActivity(new Intent(mActivity, LoginActivity.class));
-                } else {
-                    interItem(i);
-                }
-            }
         }
     }
 

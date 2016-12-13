@@ -1,16 +1,21 @@
 package com.chinalooke.yuwan.activity;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -27,24 +32,26 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.bean.GameMessage;
+import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.bean.ResultDatas;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.DBManager;
 import com.chinalooke.yuwan.interf.UpdateGetCity;
-import com.chinalooke.yuwan.bean.GameMessage;
-import com.chinalooke.yuwan.bean.LoginUser;
-import com.chinalooke.yuwan.bean.ResultDatas;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.CityPicker;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
-import com.chinalooke.yuwan.view.EditNameDialog;
 import com.lljjcoder.citypickerview.widget.CityPickerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
+import com.zhy.autolayout.utils.AutoUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -235,24 +242,32 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
     }
 
     private void showEditDialog() {
-        final EditNameDialog editNameDialog = new EditNameDialog(PersonalInfoActivity.this);
-        editNameDialog.setNoOnclickListener(new EditNameDialog.onNoOnclickListener() {
+        final Dialog dialog = new Dialog(this, R.style.Dialog);
+        View inflate = LayoutInflater.from(this).inflate(R.layout.dialog_edit_name, null);
+        final EditText editText = (EditText) inflate.findViewById(R.id.et_input);
+        Button noButton = (Button) inflate.findViewById(R.id.btn_cancel);
+        Button yesButton = (Button) inflate.findViewById(R.id.btn_ok);
+        noButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNoClick() {
-                editNameDialog.dismiss();
-            }
-        });
-        editNameDialog.setYesOnclickListener(new EditNameDialog.onYesOnclickListener() {
-            @Override
-            public void onYesClick(String input) {
-                editNameDialog.dismiss();
-                if (!TextUtils.isEmpty(input)) {
-                    mEtName.setText(input);
-                }
+            public void onClick(View v) {
+                dialog.dismiss();
             }
         });
 
-        editNameDialog.show();
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Editable text = editText.getText();
+                if (!TextUtils.isEmpty(text)) {
+                    mEtName.setText(text.toString());
+                    userInfo.setNickName(text.toString());
+                }
+            }
+        });
+        AutoUtils.autoSize(inflate);
+        dialog.setContentView(inflate);
+        dialog.show();
     }
 
     /**
@@ -286,7 +301,11 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
 
         if (!TextUtils.isEmpty(sexPersonalInfo)) {
             userInfo.setSex(sexPersonalInfo);
-            updateUserInfo = updateUserInfo + "&sex=" + sexPersonalInfo;
+            try {
+                updateUserInfo = updateUserInfo + "&sex=" + URLEncoder.encode(sexPersonalInfo, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
 
         if (!TextUtils.isEmpty(address) && !"点击获取位置".equals(address)) {
@@ -324,6 +343,8 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
             }
         }
         updateUserInfo = updateUserInfo + "&gameId=" + stringBuffer.toString();
+
+        Log.e("TAG", updateUserInfo);
         StringRequest stringRequest = new StringRequest(updateUserInfo,
                 new Response.Listener<String>() {
                     @Override

@@ -105,7 +105,7 @@
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="7517ead7e8b35833759613eb4014e4d2"/>
+            android:value="a97e1889f1413692488576c7d4cb1d6f"/>
 
         <activity
             android:name="com.mob.tools.MobUIShell"
@@ -232,15 +232,6 @@
         <activity android:name=".activity.MyMessageActivity">
         </activity>
 
-        <!-- <receiver -->
-        <!-- android:name="com.chinalooke.yuwan.receiver.MyCustomReceiver"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.BOOT_COMPLETED"/> -->
-        <!-- <action android:name="android.intent.action.USER_PRESENT"/> -->
-        <!-- <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/> -->
-        <!-- <action android:name="com.chinalooke.yuwan"/> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
         <activity android:name=".activity.SelectCircleLocationActivity">
         </activity>
         <activity android:name=".activity.ImagePagerActivity">

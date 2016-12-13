@@ -136,7 +136,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private int DESK_TYPE;
     private ProgressDialog mSubmitDialog;
     private int mGroup;
-    //    private boolean isJudge = false;
     private boolean isFirst = true;
     private Runnable mRunnable;
     private boolean isOwner = false;
@@ -210,14 +209,15 @@ public class GameDeskActivity extends AutoLayoutActivity {
         mRoomId = result.getRoomId();
         mLeftBeen.clear();
         mRight.clear();
-        String peopleNumber = result.getPeopleNumber();
+        String peopleNumber = mGameDesk.getPlayerNum();
         mTotalPeople = 0;
 
 
         if (!TextUtils.isEmpty(peopleNumber)) {
             mTotalPeople = Integer.parseInt(peopleNumber) / 2;
         }
-        mTvFightNumber.setText(mTotalPeople + "VS" + mTotalPeople);
+        if (mTvFightNumber != null)
+            mTvFightNumber.setText(mTotalPeople + "VS" + mTotalPeople);
         GameDeskDetails.ResultBean.PlayersBean players = result.getPlayers();
         if (players != null) {
             List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> left = players.getLeft();
@@ -579,7 +579,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
                             boolean result = jsonObject.getBoolean("Result");
                             if (result) {
                                 pushToLose();
-//                                isJudge = true;
                                 mTvOk.setText("请等待对方确认");
                                 mTvOk.setEnabled(false);
                             }
