@@ -88,6 +88,10 @@ dependencies {
     compile files('libs/ormlite-android-5.0.jar')
     compile files('libs/ormlite-core-5.0.jar')
     compile files('libs/AMap2DMap_2.9.3_AMapSearch_3.6.1_AMapLocation_3.2.0_20161205.jar')
+    compile 'com.pingxx:pingpp-core:2.1.+' //必须添加
+    compile 'com.pingxx:pingpp-alipay:2.1.+' //使用支付宝时添加
+    compile 'com.pingxx:pingpp-wxpay:2.1.+' //使用微信支付时添加
+
 }
 
 

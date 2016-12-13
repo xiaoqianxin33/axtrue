@@ -209,7 +209,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
         mRoomId = result.getRoomId();
         mLeftBeen.clear();
         mRight.clear();
-        String peopleNumber = mGameDesk.getPlayerNum();
+        String peopleNumber = result.getPeopleNumber();
         mTotalPeople = 0;
 
 
@@ -275,11 +275,17 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 String gamePay = mGameDesk.getGamePay();
                 if (!TextUtils.isEmpty(gamePay))
                     mTvScore.setText(gamePay + "雷熊币");
-                if (user.getNickName().equals(mOwnerName)) {
-                    isOwner = true;
-                    mTvExit.setVisibility(View.VISIBLE);
-                } else {
-                    mTvExit.setVisibility(View.GONE);
+
+                String ownerId = mGameDesk.getOwnerId();
+                if (!TextUtils.isEmpty(ownerId)) {
+                    if (ownerId.equals(user.getUserId())) {
+                        mTvExit.setVisibility(View.VISIBLE);
+                        isOwner = true;
+                    } else {
+                        mTvExit.setVisibility(View.GONE);
+                        isOwner = false;
+                    }
+
                 }
             }
         }
@@ -439,7 +445,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     break;
                 case R.id.tv_chat:
                     Intent intent = new Intent(GameDeskActivity.this, EaseGroupChatActivity.class);
-                    intent.putExtra("groupId", mRoomId);
+                    if (mRoomId != null)
+                        intent.putExtra("groupId", mRoomId);
                     startActivity(intent);
                     break;
                 case R.id.tv_ok:
@@ -661,7 +668,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
             @Override
             public void run() {
                 try {
-                    EMClient.getInstance().groupManager().joinGroup(mRoomId);
+                    if (mRoomId != null)
+                        EMClient.getInstance().groupManager().joinGroup(mRoomId);
                 } catch (HyphenateException e) {
                     e.printStackTrace();
                 }
@@ -676,7 +684,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
             @Override
             public void run() {
                 try {
-                    EMClient.getInstance().groupManager().leaveGroup(mRoomId);
+                    if (mRoomId != null)
+                        EMClient.getInstance().groupManager().leaveGroup(mRoomId);
                 } catch (HyphenateException e) {
                     e.printStackTrace();
                 }
@@ -907,7 +916,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
      * @param s 判断约战应战方
      */
     private void sendInternet(int s) {
-        String netBarId = getIntent().getStringExtra("netBarId");
+        String netBarId = mGameDesk.getNetBarId();
         String uri;
         if (TextUtils.isEmpty(netBarId)) {
             uri = Constant.mainUri + "takePartInGameDesk&userId=" + user.getUserId()
@@ -916,6 +925,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             uri = Constant.mainUri + "takePartInGameDesk&userId=" + user.getUserId()
                     + "&gameDeskId=" + mGameDeskId + "&role=" + s + "&netBarId=" + netBarId;
         }
+
         StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

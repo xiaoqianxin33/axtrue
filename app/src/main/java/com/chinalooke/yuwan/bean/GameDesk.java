@@ -65,6 +65,15 @@ public class GameDesk implements Serializable {
         private String curPlayNum;
         private String playerNum;
         private String cup;
+        private String ownerId;
+
+        public String getOwnerId() {
+            return ownerId;
+        }
+
+        public void setOwnerId(String ownerId) {
+            this.ownerId = ownerId;
+        }
 
         public String getCup() {
             return cup;

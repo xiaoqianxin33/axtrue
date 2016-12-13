@@ -34,6 +34,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
+
     <application
         android:name=".config.YuwanApplication"
         android:allowBackup="true"
@@ -225,7 +226,9 @@
         </activity>
         <activity android:name=".activity.RechargeActivity">
         </activity>
-        <activity android:name=".activity.ChosePayActivity">
+        <activity
+            android:name=".activity.ChosePayActivity"
+            android:theme="@style/Theme.AppCompat.Translucent">
         </activity>
         <activity android:name=".activity.AccountDetailActivity">
         </activity>
@@ -236,6 +239,35 @@
         </activity>
         <activity android:name=".activity.ImagePagerActivity">
         </activity>
+
+        <!-- Ping++ SDK -->
+        <activity
+            android:name="com.pingplusplus.android.PaymentActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+        <!-- 微信支付 -->
+        <activity-alias
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:targetActivity="com.pingplusplus.android.PaymentActivity"/>
+
+        <!-- 支付宝 -->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind">
+        </activity>
+        <activity
+            android:name="com.alipay.sdk.auth.AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind">
+        </activity>
+
+
     </application>
 
 </manifest>

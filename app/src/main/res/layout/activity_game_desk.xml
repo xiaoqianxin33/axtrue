@@ -176,7 +176,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="160px"
                 android:background="@android:color/white"
-                android:paddingBottom="36px"
                 android:paddingLeft="@dimen/mid_padding"
                 android:paddingTop="@dimen/mid_padding"
                 app:dividerWidth="20px"/>
@@ -227,7 +226,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="160px"
                 android:background="@android:color/white"
-                android:paddingBottom="36px"
                 android:paddingLeft="@dimen/mid_padding"
                 android:paddingTop="@dimen/mid_padding"
                 app:dividerWidth="20px"/>

@@ -10,7 +10,7 @@ import java.util.List;
  * 现金购买鱼丸的额度梯度实体类
  * Created by xiao on 2016/11/30.
  */
-public class ExchangeLevels {
+public class ExchangeLevels implements Serializable{
 
     /**
      * Msg :
