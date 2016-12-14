@@ -13,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,22 +73,12 @@ public class GameAdFragment extends Fragment {
     EditText mEtContent;
     @Bind(R.id.snpl_moment_add_photos)
     BGASortableNinePhotoLayout mPhotosSnpl;
-    @Bind(R.id.iv7)
-    ImageView mIv7;
-    @Bind(R.id.rl_game)
-    RelativeLayout mRlGame;
     @Bind(R.id.tv_time)
     TextView mTvTime;
-    @Bind(R.id.rl_time)
-    RelativeLayout mRlTime;
     @Bind(R.id.tv_people)
     TextView mTvPeople;
-    @Bind(R.id.rl_people)
-    RelativeLayout mRlPeople;
     @Bind(R.id.tv_times)
     TextView mTvTimes;
-    @Bind(R.id.rl_times)
-    RelativeLayout mRlTimes;
     @Bind(R.id.tv_game_name)
     TextView mTvGameName;
     @Bind(R.id.iv_gameimage)
@@ -128,15 +116,16 @@ public class GameAdFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mToast = YuwanApplication.getToast();
         mUploadManager = YuwanApplication.getmUploadManager();
+        mActivity = (MainActivity) getActivity();
         mUser = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(mActivity, LoginUserInfoUtils.KEY);
         mQueue = YuwanApplication.getQueue();
-        mActivity = (MainActivity) getActivity();
         initEvent();
     }
 
     private void initEvent() {
         mPhotosSnpl.init(mActivity);
         mPhotosSnpl.setDelegate(mActivity);
+        mPhotosSnpl.setMaxItemCount(3);
         mActivity.setOnBGAListener(new MainActivity.OnBGAListener() {
             @Override
             public void onClickDeleteNinePhotoItem(BGASortableNinePhotoLayout sortableNinePhotoLayout, View view, int position, String model, ArrayList<String> models) {
@@ -371,11 +360,9 @@ public class GameAdFragment extends Fragment {
                         JSONObject jsonObject = new JSONObject(response);
                         boolean success = jsonObject.getBoolean("Success");
                         if (success) {
-                            boolean result = jsonObject.getBoolean("Result");
-                            if (result) {
-                                mToast.setText("广告发布成功！");
-                                mToast.show();
-                            }
+                            String result = jsonObject.getString("Result");
+                            mToast.setText(result);
+                            mToast.show();
                         } else {
                             MyUtils.showMsg(mToast, response);
                         }
@@ -450,7 +437,6 @@ public class GameAdFragment extends Fragment {
             mToast.show();
             return false;
         }
-
         return true;
     }
 }

@@ -75,7 +75,8 @@
         <!-- 主页 -->
         <activity
             android:name=".activity.MainActivity"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustNothing"/>
         <activity
             android:name=".activity.QRCodeActivity"
             android:screenOrientation="portrait"/>

@@ -1,7 +1,6 @@
 package com.chinalooke.yuwan.activity;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -297,26 +295,6 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-    }
-
-    //弹出发布成功dialog
-    private void showJoinSucceedDialog() {
-        final Dialog dialog = new Dialog(this, R.style.Dialog);
-        View inflate = LayoutInflater.from(this).inflate(R.layout.dialog_desk_succeed, null);
-        TextView tvOk = (TextView) inflate.findViewById(R.id.tv_ok);
-        TextView tv_message = (TextView) inflate.findViewById(R.id.tv_message);
-        TextView tv_content = (TextView) inflate.findViewById(R.id.tv_content);
-        tv_content.setText("");
-        tv_message.setText("发布动态成功！");
-        tvOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                finish();
-            }
-        });
-        dialog.setContentView(inflate);
-        dialog.show();
     }
 
     //检查输入

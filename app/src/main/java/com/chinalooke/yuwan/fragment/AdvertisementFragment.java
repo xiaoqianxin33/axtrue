@@ -122,6 +122,10 @@ public class AdvertisementFragment extends Fragment {
         }
     }
 
+    public ViewPager getViewPage() {
+        return mViewPage;
+    }
+
     @OnClick({R.id.tv_game, R.id.tv_photo, R.id.tv_skip})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -132,6 +136,7 @@ public class AdvertisementFragment extends Fragment {
                         mGameAdFragment.releaseAd();
                         break;
                     case 1:
+                        mPhotoAdFragment.releaseAd();
                         break;
                 }
                 break;

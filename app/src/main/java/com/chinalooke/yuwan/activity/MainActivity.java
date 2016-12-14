@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -90,6 +91,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     private HistoryFragment mHistoryFragment;
     private AdvertisementFragment mAdvertisementFragment;
     private OnBGAListener mOnBGAListener;
+    private OnBGAListener mPhotoOnBGAListener;
 
     public RequestQueue getQueue() {
         return mQueue;
@@ -143,6 +145,9 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
 
     }
 
+    public void setPhotoOnBGAListener(OnBGAListener photoOnBGAListener) {
+        mPhotoOnBGAListener = photoOnBGAListener;
+    }
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
@@ -265,21 +270,42 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
 
     @Override
     public void onClickAddNinePhotoItem(BGASortableNinePhotoLayout sortableNinePhotoLayout, View view, int position, ArrayList<String> models) {
-        mOnBGAListener.onClickAddNinePhotoItem(sortableNinePhotoLayout, view, position, models);
+        ViewPager viewPage = mAdvertisementFragment.getViewPage();
+        if (viewPage != null) {
+            int currentItem = viewPage.getCurrentItem();
+            if (currentItem == 0)
+                mOnBGAListener.onClickAddNinePhotoItem(sortableNinePhotoLayout, view, position, models);
+            else if (currentItem == 1)
+                mPhotoOnBGAListener.onClickAddNinePhotoItem(sortableNinePhotoLayout, view, position, models);
+        }
     }
 
     @Override
     public void onClickDeleteNinePhotoItem(BGASortableNinePhotoLayout sortableNinePhotoLayout, View view, int position, String model, ArrayList<String> models) {
-        mOnBGAListener.onClickDeleteNinePhotoItem(sortableNinePhotoLayout, view, position, model, models);
+        ViewPager viewPage = mAdvertisementFragment.getViewPage();
+        if (viewPage != null) {
+            int currentItem = viewPage.getCurrentItem();
+            if (currentItem == 0)
+                mOnBGAListener.onClickAddNinePhotoItem(sortableNinePhotoLayout, view, position, models);
+            else if (currentItem == 1)
+                mPhotoOnBGAListener.onClickAddNinePhotoItem(sortableNinePhotoLayout, view, position, models);
+        }
     }
 
     @Override
     public void onClickNinePhotoItem(BGASortableNinePhotoLayout sortableNinePhotoLayout, View view, int position, String model, ArrayList<String> models) {
-        mOnBGAListener.onClickNinePhotoItem(sortableNinePhotoLayout, view, position, model, models);
+        ViewPager viewPage = mAdvertisementFragment.getViewPage();
+        if (viewPage != null) {
+            int currentItem = viewPage.getCurrentItem();
+            if (currentItem == 0)
+                mOnBGAListener.onClickAddNinePhotoItem(sortableNinePhotoLayout, view, position, models);
+            else if (currentItem == 1)
+                mPhotoOnBGAListener.onClickAddNinePhotoItem(sortableNinePhotoLayout, view, position, models);
+        }
     }
 
     public interface IOnFocusListenable {
-        public void onWindowFocusChanged(boolean hasFocus);
+        void onWindowFocusChanged(boolean hasFocus);
     }
 
     @Override
