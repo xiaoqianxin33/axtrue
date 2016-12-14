@@ -3,10 +3,8 @@ package com.chinalooke.yuwan.activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -78,8 +76,6 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
     ProgressBar mPbLoad;
     @Bind(R.id.tv_none)
     TextView mTvNone;
-    @Bind(R.id.sr)
-    SwipeRefreshLayout mSr;
     private LoginUser.ResultBean mUserInfo;
     private int RANKING_TYPE;
     private int PAGE_NO;
@@ -103,22 +99,6 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
     }
 
     private void initEvent() {
-        mSr.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-
-        mSr.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mRankings.clear();
-                PAGE_NO = 1;
-                initData();
-                String city = mTvCity.getText().toString();
-                getScoreList(city);
-                mSr.setRefreshing(false);
-            }
-        });
 
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -128,10 +108,6 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (mListView != null && mListView.getChildCount() > 0) {
-                    boolean enable = (firstVisibleItem == 0) && (view.getChildAt(firstVisibleItem).getTop() == 0);
-                    mSr.setEnabled(enable);
-                }
 
                 String city = mTvCity.getText().toString();
                 if (firstVisibleItem + visibleItemCount == totalItemCount && !isLoading && !TextUtils.isEmpty(city)) {
@@ -172,6 +148,10 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
             mTvName.setText("尚未登录");
             mTvRanking.setVisibility(View.GONE);
         }
+
+        mRoundedImageView.setFocusable(true);
+        mRoundedImageView.setFocusableInTouchMode(true);
+        mRoundedImageView.requestFocus();
     }
 
     //设置头部虚化背景
@@ -183,13 +163,7 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
             @Override
             public void onResponse(Bitmap response) {
                 if (response != null) {
-                    int scaleRatio = 10;
-                    int blurRadius = 8;
-                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(response,
-                            response.getWidth() / scaleRatio,
-                            response.getHeight() / scaleRatio,
-                            false);
-                    Bitmap blurBitmap = ImageUtils.fastBlur(getApplicationContext(), scaledBitmap, 1f, 0.5f);
+                    Bitmap blurBitmap = ImageUtils.fastBlur(getApplicationContext(), response, 0.5f, 0.5f);
                     mRlHead.setBackground(new BitmapDrawable(blurBitmap));
                 }
             }
@@ -230,7 +204,6 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
                 break;
         }
 
-        Log.e("TAG", uri);
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -266,6 +239,7 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
                                 }
                             });
                             mMyAdapter.notifyDataSetChanged();
+                            isLoading = false;
                         }
                     }
                 } else {
@@ -348,7 +322,7 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-            CircleRanking.ResultBean resultBean = (CircleRanking.ResultBean) mDataSource.get(position);
+            CircleRanking.ResultBean resultBean = mRankings.get(position);
             if (position == 0) {
                 viewHolder.mTvRanking.setVisibility(View.GONE);
                 viewHolder.mIvRanking.setImageResource(R.mipmap.champions);

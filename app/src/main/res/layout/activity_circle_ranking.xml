@@ -47,11 +47,12 @@
     </RelativeLayout>
 
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <ScrollView
         android:id="@+id/sr"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@android:color/white"
+        android:fillViewport="true"
         android:paddingBottom="76px">
 
         <LinearLayout
@@ -172,5 +173,5 @@
             </FrameLayout>
 
         </LinearLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </ScrollView>
 </LinearLayout>
