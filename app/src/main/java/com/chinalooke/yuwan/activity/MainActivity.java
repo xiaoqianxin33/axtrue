@@ -286,9 +286,9 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         if (viewPage != null) {
             int currentItem = viewPage.getCurrentItem();
             if (currentItem == 0)
-                mOnBGAListener.onClickAddNinePhotoItem(sortableNinePhotoLayout, view, position, models);
+                mOnBGAListener.onClickDeleteNinePhotoItem(sortableNinePhotoLayout, view, position, model, models);
             else if (currentItem == 1)
-                mPhotoOnBGAListener.onClickAddNinePhotoItem(sortableNinePhotoLayout, view, position, models);
+                mPhotoOnBGAListener.onClickDeleteNinePhotoItem(sortableNinePhotoLayout, view, position, model, models);
         }
     }
 
@@ -298,9 +298,9 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         if (viewPage != null) {
             int currentItem = viewPage.getCurrentItem();
             if (currentItem == 0)
-                mOnBGAListener.onClickAddNinePhotoItem(sortableNinePhotoLayout, view, position, models);
+                mOnBGAListener.onClickNinePhotoItem(sortableNinePhotoLayout, view, position, model, models);
             else if (currentItem == 1)
-                mPhotoOnBGAListener.onClickAddNinePhotoItem(sortableNinePhotoLayout, view, position, models);
+                mPhotoOnBGAListener.onClickNinePhotoItem(sortableNinePhotoLayout, view, position, model, models);
         }
     }
 

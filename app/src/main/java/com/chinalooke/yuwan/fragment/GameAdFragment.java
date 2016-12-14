@@ -8,7 +8,6 @@ import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -345,7 +344,7 @@ public class GameAdFragment extends Fragment {
 
     private void sendAd(ArrayList<String> paths) {
         try {
-            String[] arrString = paths.toArray(new String[paths.size()]);
+            final String[] arrString = paths.toArray(new String[paths.size()]);
             String s = Arrays.toString(arrString);
             String substring = s.substring(1, s.length() - 1);
             final String replace = substring.replace(" ", "");
@@ -363,6 +362,15 @@ public class GameAdFragment extends Fragment {
                             String result = jsonObject.getString("Result");
                             mToast.setText(result);
                             mToast.show();
+                            mEtContent.setText("");
+                            mEtTitle.setText("");
+                            mTvTimes.setText("");
+                            mTvPeople.setText("");
+                            mGameId = "";
+                            for (int i = 1; i <= mPhotos.size(); i++) {
+                                mPhotosSnpl.removeItem(i);
+                            }
+                            mTvTime.setText("");
                         } else {
                             MyUtils.showMsg(mToast, response);
                         }
@@ -376,7 +384,6 @@ public class GameAdFragment extends Fragment {
                     mProgressDialog.dismiss();
                     mToast.setText("服务器抽风了，请稍后再试");
                     mToast.show();
-                    Log.e("TAG", error.getMessage());
                 }
             });
             mQueue.add(request);
