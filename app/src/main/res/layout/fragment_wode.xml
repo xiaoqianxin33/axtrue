@@ -82,6 +82,7 @@
                         android:src="@mipmap/wode_message"/>
 
                     <TextView
+                        android:id="@+id/tv1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -98,13 +99,13 @@
                         android:layout_centerVertical="true"
                         android:src="@mipmap/arrow_right"/>
 
+                    <TextView
+                        android:layout_alignParentBottom="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/line_color"/>
                 </RelativeLayout>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="@dimen/mid_padding"
-                    android:background="@color/line_color"/>
 
                 <RelativeLayout
                     android:id="@+id/rl_chat"
@@ -122,6 +123,7 @@
                         android:src="@mipmap/wode_chat"/>
 
                     <TextView
+                        android:id="@+id/tv2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -138,13 +140,13 @@
                         android:layout_centerVertical="true"
                         android:src="@mipmap/arrow_right"/>
 
+                    <TextView
+                        android:layout_alignParentBottom="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/line_color"/>
                 </RelativeLayout>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="@dimen/mid_padding"
-                    android:background="@color/line_color"/>
 
                 <RelativeLayout
                     android:id="@+id/rl_info"
@@ -162,6 +164,7 @@
                         android:src="@mipmap/wode_info"/>
 
                     <TextView
+                        android:id="@+id/tv3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -61,10 +62,39 @@ public class WodeFragment extends Fragment {
     RelativeLayout mRlTop;
     @Bind(R.id.rl_scroll)
     RelativeLayout mRlScroll;
+    @Bind(R.id.rl_message)
+    RelativeLayout mRlMessage;
+    @Bind(R.id.rl_chat)
+    RelativeLayout mRlChat;
+    @Bind(R.id.rl_info)
+    RelativeLayout mRlInfo;
+    @Bind(R.id.rl_shop)
+    RelativeLayout mRlShop;
+    @Bind(R.id.rl_record)
+    RelativeLayout mRlRecord;
+    @Bind(R.id.rl_friend)
+    RelativeLayout mRlFriend;
+    @Bind(R.id.rl_balance)
+    RelativeLayout mRlBalance;
+    @Bind(R.id.rl_setting)
+    RelativeLayout mRlSetting;
+    @Bind(R.id.iv1)
+    ImageView mIv1;
+    @Bind(R.id.tv1)
+    TextView mTv1;
+    @Bind(R.id.iv2)
+    ImageView mIv2;
+    @Bind(R.id.tv2)
+    TextView mTv2;
+    @Bind(R.id.iv3)
+    ImageView mIv3;
+    @Bind(R.id.tv3)
+    TextView mTv3;
     private int START_ALPHA = 0;
     private int END_ALPHA = 255;
     private int mHeight;
     private MainActivity mActivity;
+    private boolean isNetbar = false;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -118,9 +148,30 @@ public class WodeFragment extends Fragment {
     }
 
     @OnClick({R.id.tv_name, R.id.roundedImageView, R.id.tv_login, R.id.rl_info, R.id.rl_friend
-            , R.id.rl_shop, R.id.rl_record, R.id.rl_balance, R.id.rl_setting})
+            , R.id.rl_shop, R.id.rl_record, R.id.rl_balance, R.id.rl_setting, R.id.rl_message
+            , R.id.rl_chat})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.rl_chat:
+                if (user != null) {
+                    if (isNetbar) {
+
+                    } else {
+
+                    }
+                } else
+                    startActivity(new Intent(mActivity, LoginActivity.class));
+                break;
+            case R.id.rl_message:
+                if (user != null) {
+                    if (isNetbar) {
+                        startActivity(new Intent(mActivity, UserInfoActivity.class));
+                    } else {
+
+                    }
+                } else
+                    startActivity(new Intent(mActivity, LoginActivity.class));
+                break;
             case R.id.rl_setting:
                 if (user != null)
                     startActivity(new Intent(mActivity, SettingActivity.class));
@@ -149,9 +200,12 @@ public class WodeFragment extends Fragment {
                     startActivity(new Intent(mActivity, LoginActivity.class));
                 break;
             case R.id.rl_info:
-                if (user != null)
-                    startActivity(new Intent(mActivity, UserInfoActivity.class));
-                else
+                if (user != null) {
+                    if (isNetbar) {
+                        startActivity(new Intent(mActivity, SettingActivity.class));
+                    } else
+                        startActivity(new Intent(mActivity, UserInfoActivity.class));
+                } else
                     startActivity(new Intent(mActivity, LoginActivity.class));
                 break;
             case R.id.tv_name:
@@ -231,6 +285,36 @@ public class WodeFragment extends Fragment {
             String slogan = user.getSlogan();
             if (!TextUtils.isEmpty(slogan))
                 mTvSlogen.setText("简介：  " + slogan);
+
+            if (user.getUserType().equals("netbar")) {
+                isNetbar = true;
+                mRlBalance.setVisibility(View.GONE);
+                mRlFriend.setVisibility(View.GONE);
+                mRlShop.setVisibility(View.GONE);
+                mRlRecord.setVisibility(View.GONE);
+                mRlSetting.setVisibility(View.GONE);
+                mIv1.setImageResource(R.mipmap.wode_info);
+                mTv1.setText("我的资料");
+                mIv2.setImageResource(R.mipmap.money_wode);
+                mTv2.setText("给玩家充值");
+                mIv3.setImageResource(R.mipmap.wode_setting);
+                mTv3.setText("设置");
+            } else {
+                isNetbar = false;
+                mRlBalance.setVisibility(View.VISIBLE);
+                mRlFriend.setVisibility(View.VISIBLE);
+                mRlMessage.setVisibility(View.VISIBLE);
+                mRlShop.setVisibility(View.VISIBLE);
+                mRlRecord.setVisibility(View.VISIBLE);
+                mRlSetting.setVisibility(View.VISIBLE);
+                mIv1.setImageResource(R.mipmap.wode_message);
+                mTv1.setText("我的消息");
+                mIv2.setImageResource(R.mipmap.wode_chat);
+                mTv2.setText("我的聊天");
+                mIv3.setImageResource(R.mipmap.wode_info);
+                mTv3.setText("我的资料");
+            }
+
         } else {
             mTvLogin.setText("登录/注册");
             mTvSlogen.setVisibility(View.GONE);
