@@ -50,6 +50,7 @@ public class FrequentlyGameActivity extends AutoLayoutActivity {
     private HashMap<GameMessage.ResultBean, String> mHashMap = new HashMap<>();
     private int mCount;
     private boolean isYueZhan;
+    private boolean isNetbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class FrequentlyGameActivity extends AutoLayoutActivity {
         mGdPlusgame.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (isYueZhan) {
+                if (isYueZhan || isNetbar) {
                     GameMessage.ResultBean resultBean = mResult.get(position);
                     Intent intent = new Intent();
                     intent.putExtra("choseGame", resultBean);
@@ -122,14 +123,19 @@ public class FrequentlyGameActivity extends AutoLayoutActivity {
     private void initData() {
         DBManager dbManager = new DBManager(getApplicationContext());
         isYueZhan = getIntent().getBooleanExtra("isYueZhan", false);
-        if (isYueZhan) {
+        isNetbar = getIntent().getBooleanExtra("isNetbar", false);
+        if (isYueZhan || isNetbar) {
             mSavePersonalInfo.setVisibility(View.GONE);
-            LoginUser.ResultBean userInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
-            assert userInfo != null;
-            String[] gameId = userInfo.getGameId();
-            for (String id : gameId) {
-                GameMessage.ResultBean resultBean = dbManager.queryById(id);
-                mResult.add(resultBean);
+            if (isYueZhan) {
+                LoginUser.ResultBean userInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
+                assert userInfo != null;
+                String[] gameId = userInfo.getGameId();
+                for (String id : gameId) {
+                    GameMessage.ResultBean resultBean = dbManager.queryById(id);
+                    mResult.add(resultBean);
+                }
+            } else if (isNetbar) {
+                mResult = dbManager.query();
             }
         } else {
             mResult = dbManager.query();

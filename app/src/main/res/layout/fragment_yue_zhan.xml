@@ -23,7 +23,7 @@
 
         <TextView
             style="@style/yuezhan_title"
-            android:text="游戏名"/>
+            android:text="游戏"/>
 
 
         <ImageView

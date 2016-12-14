@@ -252,7 +252,6 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
                         + "&sendTime=" + time + "&groupId=" + groupId + "&address=" + address;
             }
 
-            Log.e("TAG", uri);
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {

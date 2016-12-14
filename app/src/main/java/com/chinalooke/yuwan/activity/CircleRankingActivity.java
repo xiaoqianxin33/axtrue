@@ -66,8 +66,6 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
     TextView mTvRanking;
     @Bind(R.id.rl_head)
     RelativeLayout mRlHead;
-    @Bind(R.id.iv_arrow)
-    ImageView mIvArrow;
     @Bind(R.id.tv_city)
     TextView mTvCity;
     @Bind(R.id.list_view)

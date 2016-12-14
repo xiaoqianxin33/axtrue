@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="150px">
+
+        <EditText
+            android:id="@+id/et_title"
+            android:layout_width="match_parent"
+            android:layout_height="127px"
+            android:background="@null"
+            android:hint="标题"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/mid_padding"
+            android:textSize="@dimen/mid_padding"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+        <EditText
+            android:id="@+id/et_content"
+            android:layout_width="match_parent"
+            android:layout_height="300px"
+            android:background="@null"
+            android:gravity="top"
+            android:hint="内容"
+            android:maxLines="4"
+            android:paddingLeft="@dimen/mid_padding"
+            android:paddingRight="@dimen/mid_padding"
+            android:paddingTop="@dimen/mid_padding"
+            android:textSize="@dimen/mid_padding"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:layout_marginTop="@dimen/small_padding"
+            android:text="图片"
+            android:textColor="@color/black_word"
+            android:textSize="@dimen/mid_padding"/>
+
+        <cn.bingoogolapple.photopicker.widget.BGASortableNinePhotoLayout
+            android:id="@+id/snpl_moment_add_photos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/mid_padding"
+            android:background="@android:color/white"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/small_padding"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_game"
+            android:layout_width="match_parent"
+            android:layout_height="96px"
+            android:background="@android:color/white"
+            android:paddingLeft="@dimen/mid_padding"
+            android:paddingRight="@dimen/mid_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="选择游戏"
+                android:textColor="@color/black_word"
+                android:textSize="35px"/>
+
+            <ImageView
+                android:id="@+id/iv7"
+                android:layout_width="26px"
+                android:layout_height="16px"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/arrow_right"/>
+
+            <TextView
+                android:id="@+id/tv_game_name"
+                style="@style/yuezhan_content"/>
+
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/iv_gameimage"
+                android:layout_width="60px"
+                android:layout_height="60px"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/small_padding"
+                android:layout_toLeftOf="@id/tv_game_name"
+                android:scaleType="centerCrop"
+                app:riv_oval="true"/>
+
+
+        </RelativeLayout>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_time"
+            android:layout_width="match_parent"
+            android:layout_height="95px"
+            android:background="@android:color/white">
+
+            <TextView
+                style="@style/yuezhan_title"
+                android:text="开始时间"/>
+
+
+            <ImageView
+                style="@style/yuezhan_arrow"
+                android:src="@mipmap/arrow_right"/>
+
+            <TextView
+                android:id="@+id/tv_time"
+                style="@style/yuezhan_content"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_people"
+            android:layout_width="match_parent"
+            android:layout_height="95px"
+            android:background="@android:color/white">
+
+            <TextView
+                style="@style/yuezhan_title"
+                android:text="比赛人数"/>
+
+
+            <ImageView
+                style="@style/yuezhan_arrow"
+                android:src="@mipmap/arrow_right"/>
+
+            <TextView
+                android:id="@+id/tv_people"
+                style="@style/yuezhan_content"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_times"
+            android:layout_width="match_parent"
+            android:layout_height="95px"
+            android:background="@android:color/white">
+
+            <TextView
+                style="@style/yuezhan_title"
+                android:text="场数"/>
+
+
+            <ImageView
+                style="@style/yuezhan_arrow"
+                android:src="@mipmap/arrow_right"/>
+
+            <TextView
+                android:id="@+id/tv_times"
+                style="@style/yuezhan_content"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_color"/>
+
+
+    </LinearLayout>
+</ScrollView>

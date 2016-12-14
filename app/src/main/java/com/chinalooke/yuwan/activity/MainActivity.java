@@ -22,10 +22,12 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.fragment.AdvertisementFragment;
 import com.chinalooke.yuwan.fragment.BattleFieldFragment;
 import com.chinalooke.yuwan.fragment.BlackFragment;
 import com.chinalooke.yuwan.fragment.CircleFragment;
 import com.chinalooke.yuwan.fragment.DynamicFragment;
+import com.chinalooke.yuwan.fragment.HistoryFragment;
 import com.chinalooke.yuwan.fragment.WodeFragment;
 import com.chinalooke.yuwan.fragment.YueZhanFragment;
 import com.chinalooke.yuwan.utils.DateUtils;
@@ -34,18 +36,20 @@ import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.zhy.autolayout.AutoLayoutActivity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bingoogolapple.photopicker.widget.BGASortableNinePhotoLayout;
 import pub.devrel.easypermissions.EasyPermissions;
 
 import static com.chinalooke.yuwan.constant.Constant.MIN_CLICK_DELAY_TIME;
 import static com.chinalooke.yuwan.constant.Constant.lastClickTime;
 
-public class MainActivity extends AutoLayoutActivity implements AMapLocationListener, EasyPermissions.PermissionCallbacks {
+public class MainActivity extends AutoLayoutActivity implements AMapLocationListener, EasyPermissions.PermissionCallbacks, BGASortableNinePhotoLayout.Delegate {
 
     @Bind(R.id.iv_zc)
     ImageView mIvZc;
@@ -83,17 +87,12 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     private Toast mToast;
     private LoginUser.ResultBean mUserInfo;
     private int RC_ACCESS_FINE_LOCATION = 1;
+    private HistoryFragment mHistoryFragment;
+    private AdvertisementFragment mAdvertisementFragment;
+    private OnBGAListener mOnBGAListener;
 
     public RequestQueue getQueue() {
         return mQueue;
-    }
-
-    public LoginUser.ResultBean getUserInfo() {
-        return mUserInfo;
-    }
-
-    public void setUserInfo(LoginUser.ResultBean userInfo) {
-        mUserInfo = userInfo;
     }
 
     @Override
@@ -110,14 +109,27 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         mWodeFragment = new WodeFragment();
         mYueZhanFragment = new YueZhanFragment();
         mBlackFragment = new BlackFragment();
+        mHistoryFragment = new HistoryFragment();
+        mAdvertisementFragment = new AdvertisementFragment();
         requestLocationPermission();
         mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
-        initView();
     }
 
     private void initView() {
         switchContent(mBlackFragment, mBattleFieldFragment);
         setSelected(1);
+
+        if (mUserInfo != null && mUserInfo.getUserType().equals("netbar")) {
+            mIvQz.setBackgroundResource(R.drawable.ls_selector);
+            mTvQz.setText("历史");
+            mIvYz.setBackgroundResource(R.drawable.ad_selector);
+            mTvYz.setText("广告");
+        } else if (mUserInfo != null && mUserInfo.getUserType().equals("user")) {
+            mIvQz.setBackgroundResource(R.drawable.qz_selector);
+            mTvQz.setText("圈子");
+            mIvYz.setBackgroundResource(R.drawable.yz_selector);
+            mTvYz.setText("约战");
+        }
     }
 
     @Override
@@ -160,6 +172,18 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     protected void onResume() {
         super.onResume();
         mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
+        if (mUserInfo != null) {
+            String userType = mUserInfo.getUserType();
+            switch (userType) {
+                case "user":
+                    Constant.USER_TYPE = 0;
+                    break;
+                case "netbar":
+                    Constant.USER_TYPE = 1;
+                    break;
+            }
+        }
+        initView();
     }
 
     @OnClick({R.id.rl_zc, R.id.rl_qz, R.id.rl_yz, R.id.rl_dt, R.id.rl_wd})
@@ -175,10 +199,14 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
                 case R.id.rl_qz:
                     setSelected(2);
                     switchContent(mContent, mCircleFragment);
+                    if (Constant.USER_TYPE == 1)
+                        switchContent(mContent, mHistoryFragment);
                     break;
                 case R.id.rl_yz:
                     setSelected(3);
                     switchContent(mContent, mYueZhanFragment);
+                    if (Constant.USER_TYPE == 1)
+                        switchContent(mContent, mAdvertisementFragment);
                     break;
                 case R.id.rl_dt:
                     setSelected(4);
@@ -217,10 +245,37 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
 
     }
 
+    public void setOnBGAListener(OnBGAListener onBGAListener) {
+        mOnBGAListener = onBGAListener;
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    public interface OnBGAListener {
+        void onClickDeleteNinePhotoItem(BGASortableNinePhotoLayout sortableNinePhotoLayout, View view, int position, String model, ArrayList<String> models);
+
+        void onClickNinePhotoItem(BGASortableNinePhotoLayout sortableNinePhotoLayout, View view, int position, String model, ArrayList<String> models);
+
+        void onClickAddNinePhotoItem(BGASortableNinePhotoLayout sortableNinePhotoLayout, View view, int position, ArrayList<String> models);
+    }
+
+    @Override
+    public void onClickAddNinePhotoItem(BGASortableNinePhotoLayout sortableNinePhotoLayout, View view, int position, ArrayList<String> models) {
+        mOnBGAListener.onClickAddNinePhotoItem(sortableNinePhotoLayout, view, position, models);
+    }
+
+    @Override
+    public void onClickDeleteNinePhotoItem(BGASortableNinePhotoLayout sortableNinePhotoLayout, View view, int position, String model, ArrayList<String> models) {
+        mOnBGAListener.onClickDeleteNinePhotoItem(sortableNinePhotoLayout, view, position, model, models);
+    }
+
+    @Override
+    public void onClickNinePhotoItem(BGASortableNinePhotoLayout sortableNinePhotoLayout, View view, int position, String model, ArrayList<String> models) {
+        mOnBGAListener.onClickNinePhotoItem(sortableNinePhotoLayout, view, position, model, models);
     }
 
     public interface IOnFocusListenable {

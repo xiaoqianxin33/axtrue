@@ -37,6 +37,7 @@ public class Constant {
     public static String QINIU_ACCESSKEY = "LfnVOa0JhBu0hgJ9FdvWcjOYsVgI9TWOfr49pJsu";
     public static String QINIU_SECRETKEY = "YdlTTaqhRV8HB7tLSK7kI1-c4XD-L7g1FFrZ05_8";
     public static String QINIU_DOMAIN = "http://oaqx2e3yr.bkt.clouddn.com";
+    public static int USER_TYPE = 0;
 
 
 }

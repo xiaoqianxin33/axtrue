@@ -22,9 +22,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.avos.avoscloud.PushService;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -201,7 +201,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
         if (phone.equals("")) {
             mEtPhone.setError("请输入手机号码");
             mEtPhone.requestFocus();
-        } else if (!Validator.isMobile(phone)) {
+        } else if (!MyUtils.CheckPhoneNumber(phone)) {
             mEtPhone.setError("请输入正确的手机号码");
             mEtPhone.requestFocus();
         } else if ("".equals(passWord)) {
@@ -218,7 +218,8 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
 
     //登陆成功跳转到首界面
     private void loginSuccess() {
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        Intent intent = new Intent();
+        intent.setClass(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
     }
@@ -316,7 +317,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
             Gson gson = new Gson();
             Type type = new TypeToken<LoginUser>() {
             }.getType();
-            Log.e("TAG", response);
             LoginUser userInfo = gson.fromJson(response, type);
             if (userInfo != null) {
                 LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo.getResult());//设置userInfo

@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_create_circle"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.chinalooke.yuwan.activity.CreateCircleActivity">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <include layout="@layout/include_head"/>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -27,15 +24,15 @@
             android:padding="2dp">
 
             <TextView
-                android:id="@+id/tv_location"
+                android:id="@+id/tv_game"
                 style="@style/circle_top_textview"
-                android:text="位置圈子"/>
+                android:text="赛事广告"/>
 
 
             <TextView
-                android:id="@+id/tv_interest"
+                android:id="@+id/tv_photo"
                 style="@style/circle_top_textview"
-                android:text="兴趣圈子"/>
+                android:text="图文广告"/>
 
         </LinearLayout>
 
@@ -45,6 +42,5 @@
         android:id="@+id/viewPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
 
 </LinearLayout>

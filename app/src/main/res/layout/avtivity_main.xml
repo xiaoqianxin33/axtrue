@@ -84,9 +84,9 @@
             <ImageView
                 android:id="@+id/iv_yz"
                 style="@style/main_bottom_image"
-                android:layout_centerHorizontal="true"
+                android:background="@drawable/yz_selector"
                 android:layout_centerVertical="true"
-                android:background="@drawable/yz_selector"/>
+                android:layout_alignEnd="@+id/tv_yz"/>
 
 
         </RelativeLayout>

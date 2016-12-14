@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -278,8 +277,8 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     }
 
     private void showRuleDialog() {
-        final Dialog dialog = new Dialog(this, R.style.Dialog);
-        View inflate = LayoutInflater.from(this).inflate(R.layout.dialog_add_game_rule, null);
+        final Dialog dialog = new Dialog(UserInfoActivity.this, R.style.Dialog);
+        View inflate = LayoutInflater.from(UserInfoActivity.this).inflate(R.layout.dialog_add_game_rule, null);
         TextView tvOk = (TextView) inflate.findViewById(R.id.tv_ok);
         TextView tvCancel = (TextView) inflate.findViewById(R.id.tv_cancel);
         TextView tvTitle = (TextView) inflate.findViewById(R.id.tv_title);
@@ -304,7 +303,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                 }
             }
         });
-
+        dialog.setContentView(inflate);
         dialog.show();
         WindowManager windowManager = getWindowManager();
         Display display = windowManager.getDefaultDisplay();
@@ -554,7 +553,6 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             url = url + "&gameId=" + replace;
         }
 
-        Log.e("TAG", url);
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
