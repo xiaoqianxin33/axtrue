@@ -2,6 +2,7 @@ package com.chinalooke.yuwan.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,13 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
+import com.chinalooke.yuwan.bean.ExchangeLevels;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.ExchangeHelper;
-import com.chinalooke.yuwan.bean.ExchangeLevels;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -27,7 +30,6 @@ import com.j256.ormlite.dao.Dao;
 import com.zhy.autolayout.AutoLayoutActivity;
 import com.zhy.autolayout.utils.AutoUtils;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -46,7 +48,8 @@ public class RechargeActivity extends AutoLayoutActivity {
     private RequestQueue mQueue;
     private List<ExchangeLevels.ResultBean> mList = new ArrayList<>();
     private MyAdapter mMyAdapter;
-    private Serializable mPhone;
+    private String mUserId;
+    private LoginUser.ResultBean mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class RechargeActivity extends AutoLayoutActivity {
         setContentView(R.layout.activity_recharge);
         ButterKnife.bind(this);
         mQueue = YuwanApplication.getQueue();
+        mUser = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         initView();
         initData();
         initEvent();
@@ -72,6 +76,7 @@ public class RechargeActivity extends AutoLayoutActivity {
                 view2.setTextColor(getResources().getColor(R.color.white));
                 Intent intent = new Intent(RechargeActivity.this, ChosePayActivity.class);
                 Bundle bundle = new Bundle();
+                intent.putExtra("userId", mUserId);
                 bundle.putSerializable("pay", resultBean);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -80,7 +85,9 @@ public class RechargeActivity extends AutoLayoutActivity {
     }
 
     private void initData() {
-        mPhone = getIntent().getSerializableExtra("phone");
+        mUserId = getIntent().getStringExtra("userId");
+        if (TextUtils.isEmpty(mUserId) && mUser != null)
+            mUserId = mUser.getUserId();
         if (NetUtil.is_Network_Available(getApplicationContext())) {
             String uri = Constant.HOST + "getExchangeLevels";
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {

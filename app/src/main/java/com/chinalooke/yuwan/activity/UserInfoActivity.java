@@ -188,6 +188,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     private int REQUEST_GAME = 3;
     private List<GameMessage.ResultBean> mChose;
     private String[] mStrings;
+    private boolean isNetbar = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -241,18 +242,32 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             mPath = headImg;
             Picasso.with(getApplicationContext()).load(headImg).resize(120, 120).centerCrop().into(mRoundedImageView);
         }
+
+        String userType = mUserInfo.getUserType();
+        if (userType.equals("netbar"))
+            isNetbar = true;
+        mLl1.setVisibility(userType.equals("user") ? View.VISIBLE : View.GONE);
+        mLl2.setVisibility(userType.equals("user") ? View.VISIBLE : View.GONE);
+        mLl3.setVisibility(userType.equals("netbar") ? View.VISIBLE : View.GONE);
+
         mName = mUserInfo.getNickName();
-        if (!TextUtils.isEmpty(mName))
+        if (!TextUtils.isEmpty(mName)) {
             mTvName.setText(mName);
+            mTvNameNetbar.setText(mName);
+        }
         mAddress = mUserInfo.getAddress();
-        if (!TextUtils.isEmpty(mAddress))
+        if (!TextUtils.isEmpty(mAddress)) {
             mTvAddress.setText(mAddress);
+            mTvAddressNetbar.setText(mAddress);
+        }
         mPlayAge = mUserInfo.getPlayAge();
         if (!TextUtils.isEmpty(mPlayAge))
             mTvPlayAge.setText(mPlayAge);
         mAge = mUserInfo.getAge();
-        if (!TextUtils.isEmpty(mAge))
+        if (!TextUtils.isEmpty(mAge)) {
             mTvAge.setText(mAge);
+            mTvAgeNetbar.setText(mAge);
+        }
         mSex = mUserInfo.getSex();
         if (!TextUtils.isEmpty(mSex))
             mTvSex.setText(mSex);
@@ -301,6 +316,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                 if (!TextUtils.isEmpty(s)) {
                     mAge = s;
                     mTvAge.setText(mAge);
+                    mTvAgeNetbar.setText(mAge);
                 }
 
             }
@@ -308,9 +324,18 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         pvOptions.show();
     }
 
-    @OnClick({R.id.tv_skip, R.id.iv_back, R.id.rl_head_t, R.id.rl_name, R.id.rl_sex, R.id.rl_age, R.id.rl_play_age, R.id.rl_address, R.id.rl_id, R.id.rl_qcode, R.id.rl_slogen})
+    @OnClick({R.id.rl_netbar_address, R.id.rl_age_netbar, R.id.rl_name_netbar, R.id.tv_skip, R.id.iv_back, R.id.rl_head_t, R.id.rl_name, R.id.rl_sex, R.id.rl_age, R.id.rl_play_age, R.id.rl_address, R.id.rl_id, R.id.rl_qcode, R.id.rl_slogen})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.rl_netbar_address:
+                selectLocation();
+                break;
+            case R.id.rl_age_netbar:
+                setAge();
+                break;
+            case R.id.rl_name_netbar:
+                showEditDialog();
+                break;
             case R.id.tv_skip:
                 updateInfo();
                 break;
@@ -398,6 +423,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                 if (!TextUtils.isEmpty(s)) {
                     mAddress = s;
                     mTvAddress.setText(s);
+                    mTvAddressNetbar.setText(s);
                 }
             }
         });
@@ -487,6 +513,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                 Editable text = editText.getText();
                 if (!TextUtils.isEmpty(text)) {
                     mTvName.setText(text.toString());
+                    mTvNameNetbar.setText(text.toString());
                     mName = text.toString();
                 }
             }

@@ -47,6 +47,7 @@ public class ChosePayActivity extends AutoLayoutActivity {
     private RequestQueue mQueue;
     private Toast mToast;
     private LoginUser.ResultBean mUser;
+    private String mUserId;
 
 
     @Override
@@ -56,13 +57,14 @@ public class ChosePayActivity extends AutoLayoutActivity {
         ButterKnife.bind(this);
         mQueue = YuwanApplication.getQueue();
         mToast = YuwanApplication.getToast();
-        mUser = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(),LoginUserInfoUtils.KEY);
+        mUser = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         initData();
     }
 
 
     private void initData() {
         mResultBean = (ExchangeLevels.ResultBean) getIntent().getSerializableExtra("pay");
+        mUserId = getIntent().getStringExtra("userId");
         String money = mResultBean.getMoney();
         if (!TextUtils.isEmpty(money))
             mTvPrice.setText(money + "元");
@@ -180,11 +182,10 @@ public class ChosePayActivity extends AutoLayoutActivity {
 
     //保存账单
     private void savePayInfo() {
-        // TODO: 2016/12/15 网吧端如何传userId
         String url = Constant.HOST + "savePayInfo&payTime=" + DateUtils.getCurrentDateTime() + "&payMoney="
-                + mResultBean.getMoney() + "&payWay=";
-
-
+                + mResultBean.getMoney() + "&userId" + mUserId;
+        StringRequest request = new StringRequest(url, null, null);
+        mQueue.add(request);
     }
 
 }
