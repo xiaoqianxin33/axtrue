@@ -1,7 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="250px">
+
+        <TextView
+            android:layout_width="2px"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="62px"
+            android:background="@color/orange"/>
+
+        <ImageView
+            android:layout_width="62px"
+            android:layout_height="62px"
+            android:layout_marginLeft="34px"
+            android:layout_marginTop="37px"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/lushi"/>
+
+
+        <RelativeLayout
+            android:layout_width="607px"
+            android:layout_height="216px"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="103px"
+            android:background="@mipmap/record_detail_background">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/roundedImageView"
+                android:layout_width="60px"
+                android:layout_height="60px"
+                android:layout_marginLeft="@dimen/mid_padding"
+                android:layout_marginTop="17px"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/placeholder"
+                app:riv_oval="true"/>
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10px"
+                android:layout_marginTop="@dimen/small_padding"
+                android:layout_toRightOf="@id/roundedImageView"
+                android:textColor="@android:color/white"
+                android:textSize="26px"/>
+
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_name"
+                android:layout_marginLeft="10px"
+                android:layout_marginTop="12px"
+                android:layout_toRightOf="@id/roundedImageView"
+                android:textColor="@android:color/white"
+                android:textSize="26px"/>
+
+            <ImageView
+                android:id="@+id/iv_result"
+                android:layout_width="40px"
+                android:layout_height="40px"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="46px"
+                android:layout_marginTop="@dimen/mid_padding"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/win"/>
+
+            <ImageView
+                android:id="@+id/iv1"
+                android:layout_width="35px"
+                android:layout_height="35px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="28px"
+                android:layout_marginLeft="48px"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/price_zc"/>
+
+            <TextView
+                android:id="@+id/tv_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/mid_padding"
+                android:layout_marginLeft="@dimen/small_padding"
+                android:layout_toRightOf="@id/iv1"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/small_padding"/>
+
+            <ImageView
+                android:id="@+id/iv3"
+                android:layout_width="35px"
+                android:layout_height="35px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="28px"
+                android:layout_marginLeft="385px"
+                android:layout_marginRight="192px"
+                android:src="@mipmap/record_time"/>
+
+            <TextView
+                android:id="@+id/tv_game_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/mid_padding"
+                android:layout_marginLeft="437px"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/small_padding"/>
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

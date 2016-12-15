@@ -66,6 +66,15 @@ public class GameDesk implements Serializable {
         private String playerNum;
         private String cup;
         private String ownerId;
+        private boolean isUserWin;
+
+        public boolean isUserWin() {
+            return isUserWin;
+        }
+
+        public void setUserWin(boolean userWin) {
+            isUserWin = userWin;
+        }
 
         public String getOwnerId() {
             return ownerId;
