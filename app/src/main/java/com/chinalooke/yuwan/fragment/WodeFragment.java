@@ -65,10 +65,6 @@ public class WodeFragment extends Fragment {
     RelativeLayout mRlScroll;
     @Bind(R.id.rl_message)
     RelativeLayout mRlMessage;
-    @Bind(R.id.rl_chat)
-    RelativeLayout mRlChat;
-    @Bind(R.id.rl_info)
-    RelativeLayout mRlInfo;
     @Bind(R.id.rl_shop)
     RelativeLayout mRlShop;
     @Bind(R.id.rl_record)

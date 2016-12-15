@@ -246,8 +246,8 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         String userType = mUserInfo.getUserType();
         if (userType.equals("netbar"))
             isNetbar = true;
-        mLl1.setVisibility(userType.equals("user") ? View.VISIBLE : View.GONE);
-        mLl2.setVisibility(userType.equals("user") ? View.VISIBLE : View.GONE);
+        mLl1.setVisibility(userType.equals("netbar") ? View.GONE : View.VISIBLE);
+        mLl2.setVisibility(userType.equals("netbar") ? View.GONE : View.VISIBLE);
         mLl3.setVisibility(userType.equals("netbar") ? View.VISIBLE : View.GONE);
 
         mName = mUserInfo.getNickName();

@@ -115,12 +115,11 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         mAdvertisementFragment = new AdvertisementFragment();
         requestLocationPermission();
         mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
+        switchContent(mBlackFragment, mBattleFieldFragment);
+        setSelected(1);
     }
 
     private void initView() {
-        switchContent(mBlackFragment, mBattleFieldFragment);
-        setSelected(1);
-
         if (mUserInfo != null && mUserInfo.getUserType().equals("netbar")) {
             mIvQz.setBackgroundResource(R.drawable.ls_selector);
             mTvQz.setText("历史");
