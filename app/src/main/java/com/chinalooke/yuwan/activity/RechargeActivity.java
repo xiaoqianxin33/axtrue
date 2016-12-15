@@ -27,6 +27,7 @@ import com.j256.ormlite.dao.Dao;
 import com.zhy.autolayout.AutoLayoutActivity;
 import com.zhy.autolayout.utils.AutoUtils;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class RechargeActivity extends AutoLayoutActivity {
     private RequestQueue mQueue;
     private List<ExchangeLevels.ResultBean> mList = new ArrayList<>();
     private MyAdapter mMyAdapter;
+    private Serializable mPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,7 @@ public class RechargeActivity extends AutoLayoutActivity {
     }
 
     private void initData() {
+        mPhone = getIntent().getSerializableExtra("phone");
         if (NetUtil.is_Network_Available(getApplicationContext())) {
             String uri = Constant.HOST + "getExchangeLevels";
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {

@@ -22,6 +22,7 @@ import com.chinalooke.yuwan.activity.FriendsActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.MyBalanceActivity;
+import com.chinalooke.yuwan.activity.PayForPlayerActivity;
 import com.chinalooke.yuwan.activity.RecordActivity;
 import com.chinalooke.yuwan.activity.SettingActivity;
 import com.chinalooke.yuwan.activity.ShopActivity;
@@ -155,7 +156,7 @@ public class WodeFragment extends Fragment {
             case R.id.rl_chat:
                 if (user != null) {
                     if (isNetbar) {
-
+                        startActivity(new Intent(mActivity, PayForPlayerActivity.class));
                     } else {
 
                     }
@@ -287,6 +288,7 @@ public class WodeFragment extends Fragment {
                 mTvSlogen.setText("简介：  " + slogan);
 
             if (user.getUserType().equals("netbar")) {
+                mTvSignUp.setVisibility(View.GONE);
                 isNetbar = true;
                 mRlBalance.setVisibility(View.GONE);
                 mRlFriend.setVisibility(View.GONE);
@@ -300,6 +302,7 @@ public class WodeFragment extends Fragment {
                 mIv3.setImageResource(R.mipmap.wode_setting);
                 mTv3.setText("设置");
             } else {
+                mTvSignUp.setVisibility(View.VISIBLE);
                 isNetbar = false;
                 mRlBalance.setVisibility(View.VISIBLE);
                 mRlFriend.setVisibility(View.VISIBLE);

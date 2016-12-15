@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_pay_for_player"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.chinalooke.yuwan.activity.PayForPlayerActivity">
+
+    <include layout="@layout/include_head"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="78px"
+        android:background="@color/line_color"/>
+
+    <EditText
+        android:id="@+id/et_phone"
+        android:layout_width="match_parent"
+        android:layout_height="97px"
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:hint="请输入需要充值玩家的手机号"
+        android:inputType="phone"
+        android:paddingLeft="@dimen/mid_padding"
+        android:textSize="@dimen/mid_padding"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_width="match_parent"
+        android:layout_height="90px"
+        android:layout_marginLeft="@dimen/mid_padding"
+        android:layout_marginRight="@dimen/mid_padding"
+        android:layout_marginTop="60px"
+        android:background="@mipmap/orange_round_background"
+        android:text="下一步"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/mid_padding"/>
+
+
+</LinearLayout>

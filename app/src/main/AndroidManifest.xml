@@ -267,6 +267,8 @@
         </activity>
         <activity android:name=".activity.SettingActivity">
         </activity>
+        <activity android:name=".activity.PayForPlayerActivity">
+        </activity>
     </application>
 
 </manifest>

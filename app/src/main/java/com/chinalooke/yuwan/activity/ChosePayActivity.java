@@ -148,6 +148,7 @@ public class ChosePayActivity extends AutoLayoutActivity {
                     case "success":
                         mToast.setText("支付成功");
                         mToast.show();
+                        savePayInfo();
                         finish();
                         break;
                     case "fail":
@@ -170,6 +171,11 @@ public class ChosePayActivity extends AutoLayoutActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    //保存账单
+    private void savePayInfo() {
+
     }
 
 }
