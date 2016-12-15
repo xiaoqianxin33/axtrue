@@ -17,8 +17,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.ExchangeLevels;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.utils.DateUtils;
+import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.pingplusplus.android.Pingpp;
 import com.zhy.autolayout.AutoLayoutActivity;
 
@@ -43,6 +46,7 @@ public class ChosePayActivity extends AutoLayoutActivity {
     private ExchangeLevels.ResultBean mResultBean;
     private RequestQueue mQueue;
     private Toast mToast;
+    private LoginUser.ResultBean mUser;
 
 
     @Override
@@ -52,6 +56,7 @@ public class ChosePayActivity extends AutoLayoutActivity {
         ButterKnife.bind(this);
         mQueue = YuwanApplication.getQueue();
         mToast = YuwanApplication.getToast();
+        mUser = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(),LoginUserInfoUtils.KEY);
         initData();
     }
 
@@ -175,6 +180,10 @@ public class ChosePayActivity extends AutoLayoutActivity {
 
     //保存账单
     private void savePayInfo() {
+        // TODO: 2016/12/15 网吧端如何传userId
+        String url = Constant.HOST + "savePayInfo&payTime=" + DateUtils.getCurrentDateTime() + "&payMoney="
+                + mResultBean.getMoney() + "&payWay=";
+
 
     }
 
