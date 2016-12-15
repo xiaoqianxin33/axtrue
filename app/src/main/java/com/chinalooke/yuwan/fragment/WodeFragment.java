@@ -154,7 +154,9 @@ public class WodeFragment extends Fragment {
                     if (isNetbar) {
                         startActivity(new Intent(mActivity, PayForPlayerActivity.class));
                     } else {
-
+                        Intent intent = new Intent(mActivity, FriendsActivity.class);
+                        intent.putExtra("chat", true);
+                        startActivity(intent);
                     }
                 } else
                     startActivity(new Intent(mActivity, LoginActivity.class));

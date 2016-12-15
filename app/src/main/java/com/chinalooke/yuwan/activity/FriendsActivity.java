@@ -3,6 +3,7 @@ package com.chinalooke.yuwan.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -13,11 +14,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.SortAdapter;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.FriendsList;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.SortModel;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.CharacterParser;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -33,7 +34,6 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -55,7 +55,7 @@ public class FriendsActivity extends AutoLayoutActivity {
     private SortAdapter mSortAdapter;
     private List<SortModel> mSortModels = new ArrayList<>();
     private List<FriendsList.ResultBean> mFriends;
-    private HashMap<SortModel, String> mHashMap = new HashMap<>();
+    private boolean mChat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +66,27 @@ public class FriendsActivity extends AutoLayoutActivity {
         mQueue = YuwanApplication.getQueue();
         initView();
         initData();
+        initEvent();
+    }
+
+    private void initEvent() {
+        if (mChat) {
+            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    SortModel sortModel = mSortModels.get(position);
+                    FriendsList.ResultBean friends = sortModel.getFriends();
+                    String userId = friends.getUserId();
+                    Intent intent = new Intent(FriendsActivity.this, EaseChatActivity.class);
+                    intent.putExtra("userId", userId);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     private void initData() {
+        mChat = getIntent().getBooleanExtra("chat", false);
         getFriendsWithUserId();
     }
 
@@ -153,7 +171,6 @@ public class FriendsActivity extends AutoLayoutActivity {
                 sortModel.setSortLetters("#");
             }
             mSortModels.add(sortModel);
-            mHashMap.put(sortModel, "0");
         }
         Collections.sort(mSortModels, new PinyinComparator());
         mSortAdapter.updateListView(mSortModels);
