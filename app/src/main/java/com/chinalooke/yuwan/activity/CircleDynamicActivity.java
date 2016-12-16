@@ -321,6 +321,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
             case R.id.iv_camera:
                 if (mUserInfo == null) {
                     startActivity(new Intent(this, LoginActivity.class));
+                    finish();
                     return;
                 } else {
                     if (mUserJoin) {
@@ -349,6 +350,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                         joinCircle();
                     } else {
                         startActivity(new Intent(this, LoginActivity.class));
+                        finish();
                     }
                 }
                 break;

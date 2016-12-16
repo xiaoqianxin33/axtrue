@@ -1,16 +1,28 @@
 package com.chinalooke.yuwan.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -18,6 +30,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
+import com.chinalooke.yuwan.bean.Comment;
 import com.chinalooke.yuwan.bean.CommentList;
 import com.chinalooke.yuwan.bean.LikeList;
 import com.chinalooke.yuwan.bean.LoginUser;
@@ -25,7 +38,10 @@ import com.chinalooke.yuwan.bean.WholeDynamic;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.DateUtils;
+import com.chinalooke.yuwan.utils.KeyboardUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
+import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -34,8 +50,16 @@ import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
 import com.zhy.autolayout.utils.AutoUtils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -68,12 +92,35 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     TextView mTvDianzanPeople;
     @Bind(R.id.list_view)
     ListView mListView;
+    @Bind(R.id.iv_back)
+    ImageView mIvBack;
+    @Bind(R.id.iv_camera)
+    ImageView mIvCamera;
+    @Bind(R.id.iv_pinglun)
+    ImageView mIvPinglun;
+    @Bind(R.id.iv1)
+    ImageView mIv1;
+    @Bind(R.id.ll_like)
+    LinearLayout mLlLike;
+    @Bind(R.id.et_comment)
+    EditText mEtComment;
+    @Bind(R.id.rl_comment)
+    RelativeLayout mRlComment;
+    @Bind(R.id.activity_dynamic_detail)
+    LinearLayout mActivityDynamicDetail;
+    @Bind(R.id.scrollView)
+    ScrollView mScrollView;
     private WholeDynamic.ResultBean mDynamic;
     private LoginUser.ResultBean mUserInfo;
     private String activeType;
     private RequestQueue mQueue;
-    private List<CommentList.ResultBean> mCommentList = new ArrayList<>();
     private String[] mSplit;
+    private MyAdapter mMyAdapter;
+    private List<Comment> mList = new ArrayList<>();
+    private Handler mHandler = new Handler();
+    private ProgressDialog mProgressDialog;
+    private Toast mToast;
+    private String mUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +129,9 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
         ButterKnife.bind(this);
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         mQueue = YuwanApplication.getQueue();
-        MyAdapter myAdapter = new MyAdapter(mCommentList);
-        mListView.setAdapter(myAdapter);
+        mToast = YuwanApplication.getToast();
+        mMyAdapter = new MyAdapter(mList);
+        mListView.setAdapter(mMyAdapter);
         initData();
         initView();
         initEvent();
@@ -103,6 +151,84 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 startActivity(intent);
             }
         });
+
+        //评论框输入监听
+        mEtComment.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    String comment = mEtComment.getText().toString();
+                    KeyboardUtils.hideSoftInput(DynamicDetailActivity.this);
+                    mRlComment.setVisibility(View.GONE);
+                    if (!TextUtils.isEmpty(comment)) {
+                        if (TextUtils.isEmpty(mUserId)) {
+                            sendComment(comment);
+                        } else {
+
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        //listView item点击监听
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mUserInfo != null) {
+                    Comment comment = mList.get(position);
+                    mUserId = comment.getUserId();
+                    addComment();
+                } else {
+                    mToast.setText("需登录才可以发表评论");
+                    mToast.show();
+                }
+            }
+        });
+    }
+
+    //发表评论
+    private void sendComment(String comment) {
+        mProgressDialog = MyUtils.initDialog("提交中", this);
+        mProgressDialog.show();
+        try {
+            String url = Constant.HOST + "sendComment&activeId=" + mDynamic.getActiveId() + "&userId=" + mUserInfo.getUserId()
+                    + "&commentContent=" + URLEncoder.encode(comment, "UTF-8");
+            StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    mProgressDialog.dismiss();
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("Success");
+                        if (success) {
+                            mToast.setText("评论成功！");
+                            mToast.show();
+                            mList.clear();
+                            getCommentList();
+                        } else {
+                            String msg = jsonObject.getString("Msg");
+                            mToast.setText(msg);
+                            mToast.show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    mProgressDialog.dismiss();
+                    mToast.setText("网络不给力，请稍后再试");
+                    mToast.show();
+                }
+            });
+            mQueue.add(request);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initView() {
@@ -176,6 +302,13 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
+                    if (AnalysisJSON.analysisJson(response)) {
+                        Gson gson = new Gson();
+                        CommentList commentList = gson.fromJson(response, CommentList.class);
+                        if (commentList != null && commentList.getResult() != null) {
+                            classifyComment(commentList);
+                        }
+                    }
 
                 }
             }, new Response.ErrorListener() {
@@ -186,6 +319,72 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
             });
             mQueue.add(request);
         }
+    }
+
+    //评论分组
+    private void classifyComment(CommentList commentList) {
+        List<CommentList.ResultBean> result = commentList.getResult();
+        for (CommentList.ResultBean resultBean : result) {
+            Comment comment = new Comment();
+            String addTime = resultBean.getAddTime();
+            if (!TextUtils.isEmpty(addTime)) {
+                comment.setAddTime(addTime);
+            }
+            String nickName = resultBean.getNickName();
+            if (!TextUtils.isEmpty(nickName))
+                comment.setName(nickName);
+
+            String content = resultBean.getContent();
+            if (!TextUtils.isEmpty(content)) {
+                comment.setContent(content);
+            }
+            String commentId = resultBean.getCommentId();
+            if (!TextUtils.isEmpty(commentId))
+                comment.setUserId(commentId);
+
+            mList.add(comment);
+            List<CommentList.ResultBean.RepliesBean> replies = resultBean.getReplies();
+            if (replies != null && replies.size() != 0) {
+                for (CommentList.ResultBean.RepliesBean repliesBean : replies) {
+                    Comment comment1 = new Comment();
+                    comment1.setReplyName(nickName);
+                    String replyTime = repliesBean.getReplyTime();
+                    if (!TextUtils.isEmpty(replyTime))
+                        comment1.setAddTime(replyTime);
+
+                    String content1 = repliesBean.getContent();
+                    if (!TextUtils.isEmpty(content1)) {
+                        comment1.setContent(content1);
+                    }
+
+                    String nickName1 = repliesBean.getNickName();
+                    if (!TextUtils.isEmpty(nickName1))
+                        comment1.setName(nickName1);
+
+                    String userId = repliesBean.getUserId();
+                    if (!TextUtils.isEmpty(userId))
+                        comment1.setUserId(userId);
+                    mList.add(comment1);
+                }
+            }
+        }
+        Collections.sort(mList, new Comparator<Comment>() {
+            @Override
+            public int compare(Comment lhs, Comment rhs) {
+                String laddTime = lhs.getAddTime();
+                String raddTime = rhs.getAddTime();
+                if (!TextUtils.isEmpty(laddTime) && !TextUtils.isEmpty(raddTime)) {
+                    Date ldate = DateUtils.getDate(laddTime, "yyyy-MM-dd HH:mm:ss");
+                    Date rdate = DateUtils.getDate(raddTime, "yyyy-MM-dd HH:mm:ss");
+                    if (ldate.before(rdate))
+                        return -1;
+                    else
+                        return 1;
+                }
+                return 0;
+            }
+        });
+        mMyAdapter.notifyDataSetChanged();
     }
 
     //取得点赞用户列表
@@ -228,15 +427,36 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
         }
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_camera})
+    @OnClick({R.id.iv_back, R.id.iv_camera, R.id.rl_pinglun})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.rl_pinglun:
+                if (mUserInfo != null)
+                    addComment();
+                else {
+                    mToast.setText("需登录才可发表评论");
+                    mToast.show();
+                }
+                break;
             case R.id.iv_back:
                 finish();
                 break;
             case R.id.iv_camera:
                 break;
         }
+    }
+
+    //评论点击
+    private void addComment() {
+        mRlComment.setVisibility(View.VISIBLE);
+        KeyboardUtils.showSoftInput(this, mEtComment);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
+
     }
 
     class GridAdapter extends BaseAdapter {
@@ -289,7 +509,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
             if (convertView == null) {
-                convertView = View.inflate(DynamicDetailActivity.this, R.layout.item_commentlistview, null);
+                convertView = View.inflate(DynamicDetailActivity.this, R.layout.item_conmment_listview, null);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
                 AutoUtils.autoSize(convertView);
@@ -297,24 +517,36 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            CommentList.ResultBean resultBean = mCommentList.get(position);
-            StringBuilder stringBuilder = new StringBuilder();
-            String nickName = resultBean.getNickName();
-            List<CommentList.ResultBean.RepliesBean> replies = resultBean.getReplies();
-            if (replies != null) {
-
+            Comment comment = mList.get(position);
+            String nickName = comment.getName();
+            String content = comment.getContent();
+            String replyName = comment.getReplyName();
+            ForegroundColorSpan blueSpan = new ForegroundColorSpan(getResources().getColor(R.color.comment_text));
+            ForegroundColorSpan blueSpan1 = new ForegroundColorSpan(getResources().getColor(R.color.comment_text));
+            if (!TextUtils.isEmpty(nickName) && !TextUtils.isEmpty(content)) {
+                if (TextUtils.isEmpty(replyName)) {
+                    SpannableStringBuilder builder = new SpannableStringBuilder(nickName + ":" + content);
+                    builder.setSpan(blueSpan, 0, nickName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    viewHolder.mTvContent.setText(builder);
+                } else {
+                    SpannableStringBuilder builder = new SpannableStringBuilder(nickName + "回复" + replyName + ":" + comment);
+                    builder.setSpan(blueSpan1, 0, nickName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    builder.setSpan(blueSpan, nickName.length() + 2, nickName.length() + 2 + replyName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    viewHolder.mTvContent.setText(builder);
+                }
             }
             return convertView;
         }
 
-    }
+        class ViewHolder {
+            @Bind(R.id.tv_content)
+            TextView mTvContent;
 
-    static class ViewHolder {
-        @Bind(R.id.text)
-        TextView mText;
-
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+            ViewHolder(View view) {
+                ButterKnife.bind(this, view);
+            }
         }
     }
+
+
 }

@@ -43,54 +43,70 @@
 
     </RelativeLayout>
 
-    <include layout="@layout/item_circle_dynamic_listview"/>
-
-    <LinearLayout
-        android:id="@+id/ll_like"
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/mid_padding"
-        android:paddingLeft="24px"
-        android:paddingRight="24px">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/line_color"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40px">
+            <include layout="@layout/item_circle_dynamic_listview"/>
 
-            <ImageView
-                android:id="@+id/iv1"
-                android:layout_width="36px"
-                android:layout_height="36px"
-                android:src="@mipmap/dianzanren"/>
-
-            <TextView
-                android:id="@+id/tv_dianzan_people"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/ll_like"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="8px"
-                android:layout_toRightOf="@id/iv1"
-                android:maxLines="1"
-                android:textColor="#326499"
-                android:textSize="26px"/>
+                android:background="@android:color/white"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/mid_padding"
+                android:paddingLeft="24px"
+                android:paddingRight="24px">
 
-        </RelativeLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line_color"/>
 
-    </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40px">
 
-    <ListView
-        android:id="@+id/list_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@null"/>
+                    <ImageView
+                        android:id="@+id/iv1"
+                        android:layout_width="36px"
+                        android:layout_height="36px"
+                        android:src="@mipmap/dianzanren"/>
+
+                    <TextView
+                        android:id="@+id/tv_dianzan_people"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="8px"
+                        android:layout_toRightOf="@id/iv1"
+                        android:maxLines="1"
+                        android:textColor="#326499"
+                        android:textSize="26px"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <com.chinalooke.yuwan.view.NoSlidingListView
+                android:id="@+id/list_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@android:color/white"
+                android:dividerHeight="6px"
+                android:paddingBottom="@dimen/mid_padding"/>
+        </LinearLayout>
+    </ScrollView>
 
     <RelativeLayout
         android:id="@+id/rl_comment"
@@ -108,9 +124,11 @@
             android:layout_marginRight="16px"
             android:background="@drawable/comment_shape"
             android:hint="评论"
+            android:imeActionLabel="发送"
+            android:imeOptions="actionSend"
+            android:inputType="text"
             android:paddingLeft="12px"
             android:textSize="30px"/>
 
     </RelativeLayout>
-
 </LinearLayout>

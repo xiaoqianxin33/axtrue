@@ -4,7 +4,7 @@
                 android:layout_width="215px"
                 android:layout_height="138px"
                 android:layout_marginBottom="20px"
-                android:background="@drawable/recharge_shape"
+                android:background="@drawable/recharge_selector"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/mid_padding">
 
@@ -15,8 +15,9 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="36px"
+        android:duplicateParentState="true"
         android:text="10元"
-        android:textColor="@color/orange"
+        android:textColor="@drawable/text_recharge_selector"
         android:textSize="30px"/>
 
 
@@ -27,8 +28,9 @@
         android:layout_below="@id/tv_pay"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10px"
+        android:duplicateParentState="true"
         android:text="售价：100鱼丸"
-        android:textColor="@color/orange"
+        android:textColor="@drawable/text_recharge_selector"
         android:textSize="25px"/>
 
 </RelativeLayout>

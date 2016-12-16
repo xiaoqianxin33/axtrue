@@ -106,7 +106,7 @@ public class ChosePayActivity extends AutoLayoutActivity {
     private void payment(String orderId) {
         try {
             String url = Constant.HOST + "payment&orderNo=" + orderId + "&amount=0.1"
-                    + "&subject=" + URLEncoder.encode("雷熊币充值", "UTF-8") + "&body=" + URLEncoder.encode("雷熊币充值", "UTF-8");
+                    + "&subject=" + URLEncoder.encode("雷熊币充值", "UTF-8") + "&body=" + URLEncoder.encode("雷熊币充值", "UTF-8") + "&userId" + mUserId;
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(final String response) {
@@ -155,7 +155,7 @@ public class ChosePayActivity extends AutoLayoutActivity {
                     case "success":
                         mToast.setText("支付成功");
                         mToast.show();
-                        savePayInfo();
+//                        savePayInfo();
                         finish();
                         break;
                     case "fail":

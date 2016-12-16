@@ -68,12 +68,14 @@ public class RechargeActivity extends AutoLayoutActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ExchangeLevels.ResultBean resultBean = mList.get(position);
+                int count = mGridView.getCount();
+                for (int i = 0; i < count; i++) {
+                    View view1 = mGridView.getChildAt(i);
+                    RelativeLayout relativeLayout = (RelativeLayout) view1.findViewById(R.id.rl_root);
+                    relativeLayout.setSelected(false);
+                }
                 RelativeLayout relativeLayout = (RelativeLayout) view.findViewById(R.id.rl_root);
-                relativeLayout.setBackgroundResource(R.drawable.recharge_click_shape);
-                TextView view1 = (TextView) view.findViewById(R.id.tv_pay);
-                view1.setTextColor(getResources().getColor(R.color.white));
-                TextView view2 = (TextView) view.findViewById(R.id.tv_sale);
-                view2.setTextColor(getResources().getColor(R.color.white));
+                relativeLayout.setSelected(true);
                 Intent intent = new Intent(RechargeActivity.this, ChosePayActivity.class);
                 Bundle bundle = new Bundle();
                 intent.putExtra("userId", mUserId);

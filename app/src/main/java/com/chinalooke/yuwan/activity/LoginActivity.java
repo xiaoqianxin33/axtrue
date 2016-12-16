@@ -74,6 +74,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     private RequestQueue mQueue;
     private Toast mToast;
     private ProgressDialog mProgressDialog;
+    private long exitTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -452,6 +453,28 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     @Override
     public void onCancel(Platform platform, int i) {
 
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0) {
+                this.exitApp();
+            }
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    private void exitApp() {
+        // 判断2次点击事件时间
+        if ((System.currentTimeMillis() - exitTime) > 2000) {
+            mToast.setText("再按一次退出程序");
+            mToast.show();
+            exitTime = System.currentTimeMillis();
+        } else {
+            finish();
+        }
     }
 
 }

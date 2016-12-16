@@ -370,8 +370,10 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                 case R.id.rl_create_circle:
                     if (mUserInfo != null)
                         startActivity(new Intent(getActivity(), CreateCircleActivity.class));
-                    else
+                    else{
                         startActivity(new Intent(getActivity(), LoginActivity.class));
+                        mActivity.finish();
+                    }
                     break;
             }
         }

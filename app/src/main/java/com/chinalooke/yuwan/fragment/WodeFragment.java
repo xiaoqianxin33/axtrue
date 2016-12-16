@@ -128,7 +128,8 @@ public class WodeFragment extends Fragment {
                 });
             }
         });
-
+        user = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(mActivity, LoginUserInfoUtils.KEY);
+        initView();
         initEvent();
     }
 
@@ -262,12 +263,6 @@ public class WodeFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        user = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(mActivity, LoginUserInfoUtils.KEY);
-        initView();
-    }
 
     private void initView() {
         if (user != null) {

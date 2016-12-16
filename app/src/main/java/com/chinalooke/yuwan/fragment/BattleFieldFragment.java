@@ -27,6 +27,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.GameDeskActivity;
+import com.chinalooke.yuwan.activity.JudgeActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.SearchActivity;
@@ -93,7 +94,6 @@ public class BattleFieldFragment extends Fragment {
     private int mWidth;
     private List<View> mAdList = new ArrayList<>();
     private List<Advertisement.ResultBean> mShowAd = new ArrayList<>();
-    private int mCurrentPage;
     private QuickAdapter mAdapter;
     private boolean isFirst = true;
     private boolean isFresh = false;
@@ -113,6 +113,7 @@ public class BattleFieldFragment extends Fragment {
     private List<String> mList;
     private String KEY_WORDS = "";
     private View mFoot;
+    private boolean isNetbar = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -130,19 +131,31 @@ public class BattleFieldFragment extends Fragment {
                 .getSystemService(Context.WINDOW_SERVICE);
         mWidth = wm.getDefaultDisplay().getWidth();
         user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
+        isNetbar = user != null && user.getUserType().equals("netbar");
         mActivity = (MainActivity) getActivity();
         mFoot = mActivity.getLayoutInflater().inflate(R.layout.foot, null, false);
         mGson = new Gson();
         initView();
         initMenuData();
         initEvent();
-        getGameDeskListWithStatus();
+        if (isNetbar) {
+            expandTabView.setVisibility(View.GONE);
+            CURRENT_STATUS = 1;
+            isFirst = true;
+            PAGE = 1;
+            mDeskList.clear();
+            getGameDeskListWithStatus();
+        } else {
+            expandTabView.setVisibility(View.VISIBLE);
+            getGameDeskListWithStatus();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
+
     }
 
 
@@ -194,6 +207,7 @@ public class BattleFieldFragment extends Fragment {
                     itemLastClickTime = currentTime;
                     if (user == null) {
                         startActivity(new Intent(mActivity, LoginActivity.class));
+                        mActivity.finish();
                     } else {
                         interItem(i);
                     }
@@ -321,7 +335,12 @@ public class BattleFieldFragment extends Fragment {
 
     private void interItem(int i) {
         GameDesk.ResultBean resultBean = mDeskList.get(i);
-        Intent intent = new Intent(mActivity, GameDeskActivity.class);
+        Intent intent = new Intent();
+        if (isNetbar && CURRENT_STATUS == 1) {
+            intent.setClass(mActivity, JudgeActivity.class);
+        } else {
+            intent.setClass(mActivity, GameDeskActivity.class);
+        }
         Bundle bundle = new Bundle();
         bundle.putSerializable("gameDesk", resultBean);
         intent.putExtras(bundle);
@@ -412,13 +431,16 @@ public class BattleFieldFragment extends Fragment {
 
     //按状态取游戏桌列表
     private void getGameDeskListWithStatus() {
-        final String uri = Constant.HOST + "getGameDeskListWithStatus&gameStatus=" + CURRENT_STATUS + "&pageNo=" + PAGE + "&pageSize=5&keywords=" + KEY_WORDS;
+        String uri = Constant.HOST + "getGameDeskListWithStatus&gameStatus=" + CURRENT_STATUS + "&pageNo=" + PAGE + "&pageSize=5&keywords=" + KEY_WORDS;
+        if (isNetbar)
+            uri = uri + "&netbarId=" + user.getUserId();
         if (NetUtil.is_Network_Available(mActivity)) {
             StringRequest stringRequest = new StringRequest(uri,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            mPbLoad.setVisibility(View.GONE);
+                            if (mPbLoad != null)
+                                mPbLoad.setVisibility(View.GONE);
                             if (AnalysisJSON.analysisJson(response)) {
                                 mTvNone.setVisibility(View.GONE);
                                 Type type = new TypeToken<GameDesk>() {

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_judge"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.chinalooke.yuwan.activity.JudgeActivity">
+
+    <com.chinalooke.yuwan.view.MyScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/rl_image"
+                android:layout_width="match_parent"
+                android:layout_height="390px"
+                android:background="@android:color/darker_gray">
+            </RelativeLayout>
+
+            <com.chinalooke.yuwan.view.NoSlidingListView
+                android:id="@+id/list_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="#f8f8f8"
+                android:dividerHeight="20px"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="52px"
+                android:background="#dde1e5"
+                android:gravity="center"
+                android:text="注意：请检查提交信息是否正确"
+                android:textColor="@color/holo_red_light"
+                android:textSize="25px"/>
+
+            <Button
+                android:id="@+id/btn_submit"
+                android:layout_width="match_parent"
+                android:layout_height="98px"
+                android:background="@color/orange"
+                android:text="提交"
+                android:textColor="@android:color/white"
+                android:textSize="36px"/>
+
+        </LinearLayout>
+
+    </com.chinalooke.yuwan.view.MyScrollView>
+
+
+    <include layout="@layout/include_head_wode"/>
+
+
+</RelativeLayout>

@@ -115,8 +115,20 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         mAdvertisementFragment = new AdvertisementFragment();
         requestLocationPermission();
         mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
+        if (mUserInfo != null) {
+            String userType = mUserInfo.getUserType();
+            switch (userType) {
+                case "user":
+                    Constant.USER_TYPE = 0;
+                    break;
+                case "netbar":
+                    Constant.USER_TYPE = 1;
+                    break;
+            }
+        }
         switchContent(mBlackFragment, mBattleFieldFragment);
         setSelected(1);
+        initView();
     }
 
     private void initView() {
@@ -172,23 +184,6 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         mQueue.add(request);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mUserInfo = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
-        if (mUserInfo != null) {
-            String userType = mUserInfo.getUserType();
-            switch (userType) {
-                case "user":
-                    Constant.USER_TYPE = 0;
-                    break;
-                case "netbar":
-                    Constant.USER_TYPE = 1;
-                    break;
-            }
-        }
-        initView();
-    }
 
     @OnClick({R.id.rl_zc, R.id.rl_qz, R.id.rl_yz, R.id.rl_dt, R.id.rl_wd})
     public void onClick(View view) {

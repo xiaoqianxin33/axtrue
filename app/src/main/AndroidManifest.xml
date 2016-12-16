@@ -75,7 +75,6 @@
         <!-- 主页 -->
         <activity
             android:name=".activity.MainActivity"
-            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustNothing"/>
         <activity
             android:name=".activity.QRCodeActivity"
@@ -186,7 +185,7 @@
         </activity>
         <activity
             android:name=".activity.CircleDynamicActivity"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustResize">
         </activity>
         <activity android:name=".activity.CreateCircleActivity">
         </activity>
@@ -268,6 +267,8 @@
         <activity android:name=".activity.SettingActivity">
         </activity>
         <activity android:name=".activity.PayForPlayerActivity">
+        </activity>
+        <activity android:name=".activity.JudgeActivity">
         </activity>
     </application>
 
