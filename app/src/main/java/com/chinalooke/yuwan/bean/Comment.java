@@ -11,6 +11,24 @@ public class Comment {
     private String addTime;
     private String replyName;
     private String userId;
+    private String commentId;
+    private String replyId;
+
+    public String getReplyId() {
+        return replyId;
+    }
+
+    public void setReplyId(String replyId) {
+        this.replyId = replyId;
+    }
+
+    public String getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(String commentId) {
+        this.commentId = commentId;
+    }
 
     public String getUserId() {
         return userId;

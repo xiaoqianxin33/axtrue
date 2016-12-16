@@ -8,6 +8,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -121,6 +122,8 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     private ProgressDialog mProgressDialog;
     private Toast mToast;
     private String mUserId;
+    private String mCommentId;
+    private String mReplyId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,13 +163,18 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                     String comment = mEtComment.getText().toString();
                     KeyboardUtils.hideSoftInput(DynamicDetailActivity.this);
                     mRlComment.setVisibility(View.GONE);
+                    Log.e("TAG", mReplyId);
                     if (!TextUtils.isEmpty(comment)) {
-                        if (TextUtils.isEmpty(mUserId)) {
-                            sendComment(comment);
-                        } else {
-
+                        if (TextUtils.isEmpty(mUserId) && TextUtils.isEmpty(mCommentId) && TextUtils.isEmpty(mReplyId)) {
+                            sendComment(comment, 0);
+                        } else if (TextUtils.isEmpty(mUserId) && !TextUtils.isEmpty(mCommentId) && TextUtils.isEmpty(mReplyId)) {
+                            sendComment(comment, 1);
+                        } else if (!TextUtils.isEmpty(mReplyId)) {
+                            sendComment(comment, 2);
+                            Log.e("TAG", "2");
                         }
                     }
+                    mEtComment.setText("");
                     return true;
                 }
                 return false;
@@ -180,6 +188,8 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 if (mUserInfo != null) {
                     Comment comment = mList.get(position);
                     mUserId = comment.getUserId();
+                    mCommentId = comment.getCommentId();
+                    mReplyId = comment.getReplyId();
                     addComment();
                 } else {
                     mToast.setText("需登录才可以发表评论");
@@ -189,13 +199,24 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
         });
     }
 
+
     //发表评论
-    private void sendComment(String comment) {
+    private void sendComment(String comment, int i) {
         mProgressDialog = MyUtils.initDialog("提交中", this);
         mProgressDialog.show();
+        String url = null;
         try {
-            String url = Constant.HOST + "sendComment&activeId=" + mDynamic.getActiveId() + "&userId=" + mUserInfo.getUserId()
-                    + "&commentContent=" + URLEncoder.encode(comment, "UTF-8");
+            if (i == 0) {
+                url = Constant.HOST + "sendComment&activeId=" + mDynamic.getActiveId() + "&userId=" + mUserInfo.getUserId()
+                        + "&commentContent=" + URLEncoder.encode(comment, "UTF-8");
+            } else if (i == 1) {
+                url = Constant.HOST + "replyComment&commentId=" + mCommentId + "&userId=" + mUserInfo.getUserId()
+                        + "&replyContent=" + URLEncoder.encode(comment, "UTF-8");
+            } else if (i == 2) {
+                url = Constant.HOST + "replyComment&commentId=" + mCommentId + "&userId=" + mUserInfo.getUserId()
+                        + "&replyContent=" + URLEncoder.encode(comment, "UTF-8") + "&replayId=" + mReplyId;
+            }
+
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -303,6 +324,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 @Override
                 public void onResponse(String response) {
                     if (AnalysisJSON.analysisJson(response)) {
+                        Log.e("TAG", response);
                         Gson gson = new Gson();
                         CommentList commentList = gson.fromJson(response, CommentList.class);
                         if (commentList != null && commentList.getResult() != null) {
@@ -340,7 +362,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
             }
             String commentId = resultBean.getCommentId();
             if (!TextUtils.isEmpty(commentId))
-                comment.setUserId(commentId);
+                comment.setCommentId(commentId);
 
             mList.add(comment);
             List<CommentList.ResultBean.RepliesBean> replies = resultBean.getReplies();
@@ -348,6 +370,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 for (CommentList.ResultBean.RepliesBean repliesBean : replies) {
                     Comment comment1 = new Comment();
                     comment1.setReplyName(nickName);
+                    comment1.setCommentId(commentId);
                     String replyTime = repliesBean.getReplyTime();
                     if (!TextUtils.isEmpty(replyTime))
                         comment1.setAddTime(replyTime);
@@ -364,6 +387,10 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                     String userId = repliesBean.getUserId();
                     if (!TextUtils.isEmpty(userId))
                         comment1.setUserId(userId);
+                    String commentId1 = repliesBean.getCommentId();
+                    if (!TextUtils.isEmpty(commentId1))
+                        comment1.setReplyId(commentId1);
+
                     mList.add(comment1);
                 }
             }
@@ -529,7 +556,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                     builder.setSpan(blueSpan, 0, nickName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     viewHolder.mTvContent.setText(builder);
                 } else {
-                    SpannableStringBuilder builder = new SpannableStringBuilder(nickName + "回复" + replyName + ":" + comment);
+                    SpannableStringBuilder builder = new SpannableStringBuilder(nickName + "回复" + replyName + ":" + content);
                     builder.setSpan(blueSpan1, 0, nickName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     builder.setSpan(blueSpan, nickName.length() + 2, nickName.length() + 2 + replyName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     viewHolder.mTvContent.setText(builder);
