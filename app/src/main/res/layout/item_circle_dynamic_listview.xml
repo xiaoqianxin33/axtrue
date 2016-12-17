@@ -89,25 +89,31 @@
     </RelativeLayout>
 
 
-    <TextView
-        android:id="@+id/tv_dianzan"
+    <RelativeLayout
+        android:id="@+id/rl_dianzan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_below="@id/gridView"
-        android:layout_marginTop="26px"
-        android:textColor="@color/shallow_word"
-        android:textSize="20px"/>
+        android:layout_marginLeft="640px"
+        android:layout_marginTop="26px">
 
-    <ImageView
-        android:id="@+id/iv_dianzan"
-        android:layout_width="28px"
-        android:layout_height="28px"
-        android:layout_below="@id/gridView"
-        android:layout_marginRight="@dimen/small_padding"
-        android:layout_marginTop="26px"
-        android:layout_toLeftOf="@id/tv_dianzan"
-        android:src="@mipmap/circle_dianzan"/>
+
+        <ImageView
+            android:id="@+id/iv_dianzan"
+            android:layout_width="28px"
+            android:layout_height="28px"
+            android:src="@mipmap/circle_dianzan"/>
+
+        <TextView
+            android:id="@+id/tv_dianzan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/small_padding"
+            android:layout_toRightOf="@id/iv_dianzan"
+            android:textColor="@color/shallow_word"
+            android:textSize="20px"/>
+    </RelativeLayout>
+
 
     <TextView
         android:id="@+id/tv_name"

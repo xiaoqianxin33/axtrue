@@ -164,6 +164,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("dynamic", listBean);
                 intent.putExtra("dynamic_type", 1);
+                intent.putExtra("isJoin", mUserJoin);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

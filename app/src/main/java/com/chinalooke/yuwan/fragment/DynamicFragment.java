@@ -17,6 +17,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -287,12 +288,11 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
         if (NetUtil.is_Network_Available(mActivity)) {
             String uri;
             if (mUserInfo != null) {
-                uri = Constant.HOST + "getActiveList&pageNo=" + mPage + "&pageSize=5&userId"
+                uri = Constant.HOST + "getActiveList&pageNo=" + mPage + "&pageSize=5&userId="
                         + mUserInfo.getUserId();
             } else {
                 uri = Constant.HOST + "getActiveList&pageNo=" + mPage + "&pageSize=5";
             }
-
             StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -360,8 +360,8 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
 
     private void addFavour(String s, String avtiveId, final DynamicViewHolder viewHolder, boolean isLike) {
 
-        String uri = Constant.HOST + "addFavour&" + s + "=" + avtiveId + " & userId = " + mUserInfo.getUserId();
-        StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+        String url = Constant.HOST + s + "&activeId=" + avtiveId + "&userId=" + mUserInfo.getUserId() + "&activeType=";
+        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
@@ -434,6 +434,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
         TextView mTvPinglun;
         TextView mTvDianzan;
         ImageView mIvDianzan;
+        RelativeLayout mRelativeLayout;
     }
 
 
@@ -460,6 +461,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                 dynamicViewHolder.mGridView = (GridView) convertView.findViewById(R.id.gridView);
                 dynamicViewHolder.mIvDianzan = (ImageView) convertView.findViewById(R.id.iv_dianzan);
                 dynamicViewHolder.mRoundedImageView = (RoundedImageView) convertView.findViewById(R.id.roundedImageView);
+                dynamicViewHolder.mRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.rl_dianzan);
                 convertView.setTag(dynamicViewHolder);
                 AutoUtils.autoSize(convertView);
             } else {
@@ -524,7 +526,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                     dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzanhou);
                 else
                     dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
-                dynamicViewHolder.mIvDianzan.setOnClickListener(new View.OnClickListener() {
+                dynamicViewHolder.mRelativeLayout.setOnClickListener(new View.OnClickListener() {
                     private boolean isLike = isLoginUserLike;
 
                     @Override

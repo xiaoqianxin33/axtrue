@@ -114,6 +114,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     private String mReplyId;
     private int mDynamic_type;
     private Dynamic.ResultBean.ListBean mDynamicList;
+    private boolean mIsJoin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -321,6 +322,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
 
     private void initData() {
         mDynamic_type = getIntent().getIntExtra("dynamic_type", 0);
+        mIsJoin = getIntent().getBooleanExtra("isJoin", false);
         switch (mDynamic_type) {
             case 0:
                 mDynamic = (WholeDynamic.ResultBean) getIntent().getSerializableExtra("dynamic");
@@ -481,12 +483,27 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
         }
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_camera, R.id.rl_pinglun})
+    @OnClick({R.id.iv_back, R.id.iv_camera, R.id.rl_pinglun, R.id.rl_dianzan})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.iv_dianzan:
+
+                break;
             case R.id.rl_pinglun:
                 if (mUserInfo != null)
-                    addComment();
+                    switch (mDynamic_type) {
+                        case 0:
+                            addComment();
+                            break;
+                        case 1:
+                            if (mIsJoin) {
+                                addComment();
+                            } else {
+                                mToast.setText("本圈子成员才可发表评论");
+                                mToast.show();
+                            }
+                            break;
+                    }
                 else {
                     mToast.setText("需登录才可发表评论");
                     mToast.show();
