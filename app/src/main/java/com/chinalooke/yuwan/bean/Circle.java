@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 
-public class Circle {
+public class Circle implements Serializable{
 
 
     /**

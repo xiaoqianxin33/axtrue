@@ -18,7 +18,6 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -33,6 +32,7 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.bean.Comment;
 import com.chinalooke.yuwan.bean.CommentList;
+import com.chinalooke.yuwan.bean.Dynamic;
 import com.chinalooke.yuwan.bean.LikeList;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.WholeDynamic;
@@ -93,22 +93,10 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     TextView mTvDianzanPeople;
     @Bind(R.id.list_view)
     ListView mListView;
-    @Bind(R.id.iv_back)
-    ImageView mIvBack;
-    @Bind(R.id.iv_camera)
-    ImageView mIvCamera;
-    @Bind(R.id.iv_pinglun)
-    ImageView mIvPinglun;
-    @Bind(R.id.iv1)
-    ImageView mIv1;
-    @Bind(R.id.ll_like)
-    LinearLayout mLlLike;
     @Bind(R.id.et_comment)
     EditText mEtComment;
     @Bind(R.id.rl_comment)
     RelativeLayout mRlComment;
-    @Bind(R.id.activity_dynamic_detail)
-    LinearLayout mActivityDynamicDetail;
     @Bind(R.id.scrollView)
     ScrollView mScrollView;
     private WholeDynamic.ResultBean mDynamic;
@@ -124,6 +112,8 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     private String mUserId;
     private String mCommentId;
     private String mReplyId;
+    private int mDynamic_type;
+    private Dynamic.ResultBean.ListBean mDynamicList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +126,6 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
         mMyAdapter = new MyAdapter(mList);
         mListView.setAdapter(mMyAdapter);
         initData();
-        initView();
         initEvent();
     }
 
@@ -163,15 +152,22 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                     String comment = mEtComment.getText().toString();
                     KeyboardUtils.hideSoftInput(DynamicDetailActivity.this);
                     mRlComment.setVisibility(View.GONE);
-                    Log.e("TAG", mReplyId);
+                    String activeId = null;
+                    switch (mDynamic_type) {
+                        case 0:
+                            activeId = mDynamic.getActiveId();
+                            break;
+                        case 1:
+                            activeId = mDynamicList.getActiveId();
+                            break;
+                    }
                     if (!TextUtils.isEmpty(comment)) {
                         if (TextUtils.isEmpty(mUserId) && TextUtils.isEmpty(mCommentId) && TextUtils.isEmpty(mReplyId)) {
-                            sendComment(comment, 0);
+                            sendComment(comment, 0, activeId);
                         } else if (TextUtils.isEmpty(mUserId) && !TextUtils.isEmpty(mCommentId) && TextUtils.isEmpty(mReplyId)) {
-                            sendComment(comment, 1);
+                            sendComment(comment, 1, activeId);
                         } else if (!TextUtils.isEmpty(mReplyId)) {
-                            sendComment(comment, 2);
-                            Log.e("TAG", "2");
+                            sendComment(comment, 2, activeId);
                         }
                     }
                     mEtComment.setText("");
@@ -201,13 +197,13 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
 
 
     //发表评论
-    private void sendComment(String comment, int i) {
+    private void sendComment(String comment, int i, final String activeId) {
         mProgressDialog = MyUtils.initDialog("提交中", this);
         mProgressDialog.show();
         String url = null;
         try {
             if (i == 0) {
-                url = Constant.HOST + "sendComment&activeId=" + mDynamic.getActiveId() + "&userId=" + mUserInfo.getUserId()
+                url = Constant.HOST + "sendComment&activeId=" + activeId + "&userId=" + mUserInfo.getUserId()
                         + "&commentContent=" + URLEncoder.encode(comment, "UTF-8");
             } else if (i == 1) {
                 url = Constant.HOST + "replyComment&commentId=" + mCommentId + "&userId=" + mUserInfo.getUserId()
@@ -217,6 +213,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                         + "&replyContent=" + URLEncoder.encode(comment, "UTF-8") + "&replayId=" + mReplyId;
             }
 
+            Log.e("TAG", url);
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -228,7 +225,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                             mToast.setText("评论成功！");
                             mToast.show();
                             mList.clear();
-                            getCommentList();
+                            getCommentList(activeId);
                         } else {
                             String msg = jsonObject.getString("Msg");
                             mToast.setText(msg);
@@ -252,43 +249,66 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
         }
     }
 
-    private void initView() {
-        String headImg = mDynamic.getHeadImg();
+    private void initView(Object object) {
+        String headImg;
+        String nickName;
+        String createTime;
+        String content;
+        String images;
+        String likes;
+        String comments;
+        String address;
+        boolean isLoginUserLike;
+        if (mDynamic_type == 0) {
+            WholeDynamic.ResultBean dynamic = (WholeDynamic.ResultBean) object;
+            headImg = dynamic.getHeadImg();
+            nickName = dynamic.getNickName();
+            createTime = dynamic.getCreateTime();
+            content = dynamic.getContent();
+            images = dynamic.getImages();
+            likes = dynamic.getLikes();
+            comments = dynamic.getComments();
+            address = dynamic.getAddress();
+            isLoginUserLike = dynamic.isIsLoginUserLike();
+
+        } else {
+            Dynamic.ResultBean.ListBean dynamic = (Dynamic.ResultBean.ListBean) object;
+            headImg = dynamic.getHeadImg();
+            nickName = dynamic.getNickName();
+            createTime = dynamic.getAddTime();
+            content = dynamic.getContent();
+            images = dynamic.getImages();
+            likes = dynamic.getLikes();
+            comments = dynamic.getComments();
+            address = dynamic.getAddress();
+            isLoginUserLike = dynamic.isLoginUserLike();
+        }
         if (!TextUtils.isEmpty(headImg))
             Picasso.with(getApplicationContext()).load(headImg).into(mRoundedImageView);
-        String nickName = mDynamic.getNickName();
         if (!TextUtils.isEmpty(nickName))
             mTvName.setText(nickName);
-        String createTime = mDynamic.getCreateTime();
         if (!TextUtils.isEmpty(createTime))
             mTvTime.setText(createTime);
-        String content = mDynamic.getContent();
         if (!TextUtils.isEmpty(content))
             mTvContent.setText(content);
-        String images = mDynamic.getImages();
         if (!TextUtils.isEmpty(images)) {
             mSplit = images.split(",");
             mGridView.setAdapter(new GridAdapter(mSplit));
         }
-
-        String likes = mDynamic.getLikes();
         if (!TextUtils.isEmpty(likes)) {
             mTvDianzan.setText(likes);
         } else {
             mTvDianzan.setText("0");
         }
 
-        String comments = mDynamic.getComments();
         if (!TextUtils.isEmpty(comments))
             mTvPinglun.setText(comments);
         else
             mTvPinglun.setText("0");
 
-        String address = mDynamic.getAddress();
         if (!TextUtils.isEmpty(address))
             mTvAddress.setText(address);
         if (mUserInfo != null) {
-            boolean isLoginUserLike = mDynamic.isIsLoginUserLike();
             if (isLoginUserLike)
                 mIvDianzan.setImageResource(R.mipmap.dianzanhou);
             else
@@ -300,31 +320,38 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     }
 
     private void initData() {
-        mDynamic = (WholeDynamic.ResultBean) getIntent().getSerializableExtra("dynamic");
-        int mDynamic_type = getIntent().getIntExtra("dynamic_type", 0);
+        mDynamic_type = getIntent().getIntExtra("dynamic_type", 0);
         switch (mDynamic_type) {
             case 0:
+                mDynamic = (WholeDynamic.ResultBean) getIntent().getSerializableExtra("dynamic");
                 activeType = "";
+                initView(mDynamic);
                 break;
             case 1:
+                mDynamicList = (Dynamic.ResultBean.ListBean) getIntent().getSerializableExtra("dynamic");
                 activeType = "group";
+                initView(mDynamicList);
                 break;
         }
         if (mDynamic != null) {
-            getFavourList();
-            getCommentList();
+            getFavourList(mDynamic.getActiveId());
+            getCommentList(mDynamic.getActiveId());
+        }
+
+        if (mDynamicList != null) {
+            getFavourList(mDynamicList.getActiveId());
+            getCommentList(mDynamicList.getActiveId());
         }
     }
 
     //取得评论列表
-    private void getCommentList() {
+    private void getCommentList(String activeId) {
         if (NetUtil.is_Network_Available(getApplicationContext())) {
-            String uri = Constant.HOST + "getCommentList&activeId=" + mDynamic.getActiveId();
+            String uri = Constant.HOST + "getCommentList&activeId=" + activeId;
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     if (AnalysisJSON.analysisJson(response)) {
-                        Log.e("TAG", response);
                         Gson gson = new Gson();
                         CommentList commentList = gson.fromJson(response, CommentList.class);
                         if (commentList != null && commentList.getResult() != null) {
@@ -415,9 +442,9 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     }
 
     //取得点赞用户列表
-    private void getFavourList() {
+    private void getFavourList(String activeId) {
         if (NetUtil.is_Network_Available(getApplicationContext())) {
-            String uri = Constant.HOST + "getFavourList&activeId=" + mDynamic.getActiveId() + "&activeType="
+            String uri = Constant.HOST + "getFavourList&activeId=" + activeId + "&activeType="
                     + activeType;
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override

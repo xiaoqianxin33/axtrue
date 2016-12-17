@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="235px"
               android:layout_height="235px"
+              android:descendantFocusability="blocksDescendants"
               android:orientation="vertical">
 
     <ImageView

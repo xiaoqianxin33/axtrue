@@ -1,8 +1,9 @@
 package com.chinalooke.yuwan.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Dynamic {
+public class Dynamic implements Serializable{
 
 
     /**
@@ -39,7 +40,7 @@ public class Dynamic {
         this.Success = Success;
     }
 
-    public static class ResultBean {
+    public static class ResultBean implements Serializable{
         /**
          * activeId : 176
          * addTime : 2016-08-31 17:24:27
@@ -53,6 +54,15 @@ public class Dynamic {
          * source : 16
          * userId : 1
          */
+        private boolean isUserJoin;
+
+        public boolean isUserJoin() {
+            return isUserJoin;
+        }
+
+        public void setUserJoin(boolean userJoin) {
+            isUserJoin = userJoin;
+        }
 
         private List<ListBean> list;
 
@@ -64,7 +74,7 @@ public class Dynamic {
             this.list = list;
         }
 
-        public static class ListBean {
+        public static class ListBean implements Serializable{
             private String activeId;
             private String addTime;
             private String comments;
@@ -77,6 +87,7 @@ public class Dynamic {
             private String userId;
             private String address;
             private boolean isLoginUserLike;
+            private List<LastCommentBean> lastComment;
 
             public String getAddress() {
                 return address;
@@ -102,7 +113,6 @@ public class Dynamic {
              * nickName :
              */
 
-            private List<LastCommentBean> lastComment;
 
             public String getActiveId() {
                 return activeId;
@@ -192,7 +202,7 @@ public class Dynamic {
                 this.lastComment = lastComment;
             }
 
-            public static class LastCommentBean {
+            public static class LastCommentBean implements Serializable{
                 private String addTime;
                 private String commentId;
                 private String content;

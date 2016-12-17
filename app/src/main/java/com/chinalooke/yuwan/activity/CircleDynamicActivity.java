@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -151,6 +152,20 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                 if (firstVisibleItem + visibleItemCount == totalItemCount && !isLoading) {
                     loadMore();
                 }
+            }
+        });
+
+        //listView item点击事件监听
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Dynamic.ResultBean.ListBean listBean = mDynamics.get(position);
+                Intent intent = new Intent(CircleDynamicActivity.this, DynamicDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("dynamic", listBean);
+                intent.putExtra("dynamic_type", 1);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
     }
@@ -433,6 +448,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                 dynamicViewHolder.mGridView = (GridView) convertView.findViewById(R.id.gridView);
                 dynamicViewHolder.mIvDianzan = (ImageView) convertView.findViewById(R.id.iv_dianzan);
                 dynamicViewHolder.mRoundedImageView = (RoundedImageView) convertView.findViewById(R.id.roundedImageView);
+                dynamicViewHolder.mRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.rl_pinglun);
                 convertView.setTag(dynamicViewHolder);
                 AutoUtils.autoSize(convertView);
             } else {
@@ -538,5 +554,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         TextView mTvPinglun;
         TextView mTvDianzan;
         ImageView mIvDianzan;
+        RelativeLayout mRelativeLayout;
     }
+
 }

@@ -180,7 +180,7 @@ public class CircleDetail implements Serializable {
             this.games = games;
         }
 
-        public static class GamesBean {
+        public static class GamesBean implements Serializable {
             /**
              * gameId : 7
              * gameName : 魔兽争霸
