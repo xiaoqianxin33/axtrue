@@ -48,6 +48,7 @@ public class ChosePayActivity extends AutoLayoutActivity {
     private Toast mToast;
     private LoginUser.ResultBean mUser;
     private String mUserId;
+    private int mPayMoney;
 
 
     @Override
@@ -64,10 +65,14 @@ public class ChosePayActivity extends AutoLayoutActivity {
 
     private void initData() {
         mResultBean = (ExchangeLevels.ResultBean) getIntent().getSerializableExtra("pay");
+
         mUserId = getIntent().getStringExtra("userId");
         String money = mResultBean.getMoney();
-        if (!TextUtils.isEmpty(money))
+        if (!TextUtils.isEmpty(money)) {
             mTvPrice.setText(money + "元");
+            float parseFloat = Float.parseFloat(money) * 100;
+            mPayMoney = (int) parseFloat;
+        }
     }
 
     @OnClick({R.id.fl_x, R.id.rl_wx, R.id.rl_ali, R.id.btn_pay})
@@ -105,7 +110,7 @@ public class ChosePayActivity extends AutoLayoutActivity {
     //支付调用ping++
     private void payment(String orderId) {
         try {
-            String url = Constant.HOST + "payment&orderNo=" + orderId + "&amount=0.1"
+            String url = Constant.HOST + "payment&orderNo=" + orderId + "&amount=" + mPayMoney
                     + "&subject=" + URLEncoder.encode("雷熊币充值", "UTF-8") + "&body=" + URLEncoder.encode("雷熊币充值", "UTF-8") + "&userId" + mUserId;
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override

@@ -128,9 +128,14 @@ public class WodeFragment extends Fragment {
                 });
             }
         });
+        initEvent();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         user = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(mActivity, LoginUserInfoUtils.KEY);
         initView();
-        initEvent();
     }
 
     private void initEvent() {
