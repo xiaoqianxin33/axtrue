@@ -487,7 +487,19 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_dianzan:
-
+                if (mUserInfo != null) {
+                    switch (mDynamic_type) {
+                        case 0:
+                            addFavour("addFavour", mDynamic.getActiveId());
+                            break;
+                        case 1:
+                            addFavour("addFavour", mDynamicList.getActiveId());
+                            break;
+                    }
+                } else {
+                    mToast.setText("需登录才可能点赞");
+                    mToast.show();
+                }
                 break;
             case R.id.rl_pinglun:
                 if (mUserInfo != null)
@@ -515,6 +527,11 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
             case R.id.iv_camera:
                 break;
         }
+    }
+
+    //点赞
+    private void addFavour(String s, String avtiveId) {
+        String url = Constant.HOST + s + "&activeId=" + avtiveId + "&userId=" + mUserInfo.getUserId() + "&activeType=" + activeType;
     }
 
     //评论点击
