@@ -251,6 +251,24 @@ public class GameDeskDetails implements Serializable {
                 private String nickName;
                 private String status;
                 private String userId;
+                private boolean isLoser;
+                private String loseGameCount;
+
+                public String getLoseGameCount() {
+                    return loseGameCount;
+                }
+
+                public void setLoseGameCount(String loseGameCount) {
+                    this.loseGameCount = loseGameCount;
+                }
+
+                public boolean isLoser() {
+                    return isLoser;
+                }
+
+                public void setLoser(boolean loser) {
+                    isLoser = loser;
+                }
 
                 public String getHeadImg() {
                     return headImg;
@@ -290,6 +308,24 @@ public class GameDeskDetails implements Serializable {
                 private String nickName;
                 private String status;
                 private String userId;
+                private boolean isLoser;
+                private String loseGameCount;
+
+                public String getLoseGameCount() {
+                    return loseGameCount;
+                }
+
+                public void setLoseGameCount(String loseGameCount) {
+                    this.loseGameCount = loseGameCount;
+                }
+
+                public boolean isLoser() {
+                    return isLoser;
+                }
+
+                public void setLoser(boolean loser) {
+                    isLoser = loser;
+                }
 
                 public String getHeadImg() {
                     return headImg;

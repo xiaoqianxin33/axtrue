@@ -308,7 +308,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
     }
 
     private void getHTTPRegister() {
-        String URLRegister = Constant.REGISTER + "&" + Constant.PHONE + phone + "&" + Constant.PWD + passWord + "&" + Constant.INTRODUCE_PHONE + mIntroducePhone;
+        String URLRegister = Constant.REGISTER + "&" + Constant.PHONE + phone + "&" + Constant.PWD + passWord + "&userType=player&" + Constant.INTRODUCE_PHONE + mIntroducePhone;
         StringRequest stringRequest = new StringRequest(URLRegister,
                 new Response.Listener<String>() {
                     @Override

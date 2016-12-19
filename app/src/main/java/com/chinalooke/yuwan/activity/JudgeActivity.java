@@ -10,7 +10,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -69,6 +71,14 @@ public class JudgeActivity extends AutoLayoutActivity {
     RelativeLayout mRlScroll;
     @Bind(R.id.scrollView)
     MyScrollView mMyScrollView;
+    @Bind(R.id.tv_count)
+    TextView mTvCount;
+    @Bind(R.id.tv_chose)
+    TextView mTvChose;
+    @Bind(R.id.gridView)
+    GridView mGridView;
+    @Bind(R.id.ll_front)
+    LinearLayout mLlFront;
     private int START_ALPHA = 0;
     private int mHeight;
     private int END_ALPHA = 255;
@@ -232,7 +242,7 @@ public class JudgeActivity extends AutoLayoutActivity {
             viewHolder.mTvRanking.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    alertPicker(viewHolder.mTvRanking,viewHolder.mTvPrice);
+                    alertPicker(viewHolder.mTvRanking, viewHolder.mTvPrice);
                 }
             });
 

@@ -338,6 +338,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                 Editable text = etRule.getText();
                 if (!TextUtils.isEmpty(text)) {
                     mSlogan = etRule.getText().toString();
+                    mTvSlogen.setText(mSlogan);
                 }
             }
         });

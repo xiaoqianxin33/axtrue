@@ -25,17 +25,61 @@
                 android:background="@android:color/darker_gray">
             </RelativeLayout>
 
-            <com.chinalooke.yuwan.view.NoSlidingListView
-                android:id="@+id/list_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:divider="#f8f8f8"
-                android:dividerHeight="20px"/>
-
-            <TextView
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1">
+
+                <com.chinalooke.yuwan.view.NoSlidingListView
+                    android:id="@+id/list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="#f8f8f8"
+                    android:dividerHeight="20px"/>
+
+                <LinearLayout
+                    android:id="@+id/ll_front"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="96px"
+                        android:background="@android:color/white"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/tv_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/mid_padding"
+                            android:text="第一场赢家"
+                            android:textColor="@color/black_word"
+                            android:textSize="34px"/>
+
+                        <TextView
+                            android:id="@+id/tv_chose"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/mid_padding"
+                            android:text="已选0"/>
+
+                    </RelativeLayout>
+
+                    <com.chinalooke.yuwan.view.NoScrollGridView
+                        android:id="@+id/gridView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:numColumns="4"/>
+
+                </LinearLayout>
+
+
+            </FrameLayout>
 
 
             <TextView
@@ -47,14 +91,6 @@
                 android:textColor="@color/holo_red_light"
                 android:textSize="25px"/>
 
-            <Button
-                android:id="@+id/btn_submit"
-                android:layout_width="match_parent"
-                android:layout_height="98px"
-                android:background="@color/orange"
-                android:text="提交"
-                android:textColor="@android:color/white"
-                android:textSize="36px"/>
 
         </LinearLayout>
 
@@ -62,6 +98,16 @@
 
 
     <include layout="@layout/include_head_wode"/>
+
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="98px"
+        android:layout_alignParentBottom="true"
+        android:background="@color/orange"
+        android:text="提交"
+        android:textColor="@android:color/white"
+        android:textSize="36px"/>
 
 
 </RelativeLayout>
