@@ -20,5 +20,71 @@
         android:textColor="@color/shallow_word"
         android:textSize="25px"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_message"
+        android:layout_width="match_parent"
+        android:layout_height="96px"
+        android:background="@android:color/white"
+        android:paddingLeft="@dimen/mid_padding"
+        android:paddingRight="@dimen/mid_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="对话消息提醒"
+            android:textColor="@color/black_word"
+            android:textSize="35px"/>
+
+        <com.hyphenate.easeui.widget.EaseSwitchButton
+            android:id="@+id/switch_button_message"
+            android:layout_width="100px"
+            android:layout_height="64px"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/mid_padding"
+        android:background="@color/line_color"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_dynamic"
+        android:layout_width="match_parent"
+        android:layout_height="96px"
+        android:background="@android:color/white"
+        android:paddingLeft="@dimen/mid_padding"
+        android:paddingRight="@dimen/mid_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="动态评论提醒"
+            android:textColor="@color/black_word"
+            android:textSize="35px"/>
+
+        <com.hyphenate.easeui.widget.EaseSwitchButton
+            android:id="@+id/switch_button_dynamic"
+            android:layout_width="100px"
+            android:layout_height="64px"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
 
 </LinearLayout>

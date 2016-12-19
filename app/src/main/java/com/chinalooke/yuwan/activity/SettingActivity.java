@@ -1,5 +1,6 @@
 package com.chinalooke.yuwan.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -67,7 +68,7 @@ public class SettingActivity extends AutoLayoutActivity {
             case R.id.rl_head:
                 break;
             case R.id.rl_remind:
-
+                startActivity(new Intent(this, MessageRemindSettingActivity.class));
                 break;
             case R.id.rl_image:
                 break;

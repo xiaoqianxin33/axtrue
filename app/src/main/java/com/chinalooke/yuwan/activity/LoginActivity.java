@@ -298,6 +298,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                     @Override
                     public void onResponse(String response) {
                         if (response != null) {
+                            mProgressDialog.dismiss();
                             analysisJson(response);
                         }
                         //解析数据
@@ -325,12 +326,19 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                 registerHx(userInfo.getResult());
                 PushService.subscribe(this, userInfo.getResult().getUserId() + "game_result", MyMessageActivity.class);
             }
-            mProgressDialog.dismiss();
             loginSuccess();//调用登录成功方法
         } else {
-            mProgressDialog.dismiss();
-            mToast.setText("密码错误，请重新输入");
-            mToast.show();
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                String msg = jsonObject.getString("Msg");
+                if (!TextUtils.isEmpty(msg)) {
+                    mToast.setText(msg);
+                    mToast.show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -432,6 +440,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
             @Override
             public void onResponse(String response) {
                 analysisJson(response);
+                mProgressDialog.dismiss();
             }
         }, new Response.ErrorListener() {
             @Override

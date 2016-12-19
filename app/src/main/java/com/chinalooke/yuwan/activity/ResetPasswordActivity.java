@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,10 +16,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.bean.ResultDatas;
-import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.KeyboardUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.zhy.autolayout.AutoLayoutActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
 
@@ -75,6 +76,7 @@ public class ResetPasswordActivity extends AutoLayoutActivity {
                 case R.id.btn_next_reset_password:
                     if (checkInput()) {
                         resetPassword();
+                        KeyboardUtils.hideSoftInput(this);
                     }
                     break;
             }
@@ -130,14 +132,18 @@ public class ResetPasswordActivity extends AutoLayoutActivity {
             public void onResponse(String response) {
                 mProgressDialog.dismiss();
                 if (response != null) {
-                    ResultDatas result = AnalysisJSON.getAnalysisJSON().AnalysisJSONResult(response);
-                    if ("true".equals(result.getSuccess()) && "false".equals(result.getResult())) {
-                        mToast.setText("修改失败");
-                        mToast.show();
-                    }
-                    if ("true".equals(result.getSuccess()) && "true".equals(result.getResult())) {
-                        Log.d("TAG", "修改成功跳到下一步");
-                        successResetPassWord();
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("Success");
+                        if (success) {
+                            successResetPassWord();
+                        } else {
+                            String msg = jsonObject.getString("Msg");
+                            mToast.setText(msg);
+                            mToast.show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
             }

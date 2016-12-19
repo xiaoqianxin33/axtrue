@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVMobilePhoneVerifyCallback;
@@ -19,11 +21,13 @@ import com.avos.avoscloud.RequestMobileCodeCallback;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.bean.ResultDatas;
 import com.chinalooke.yuwan.utils.GetHTTPDatas;
 import com.chinalooke.yuwan.utils.LeanCloudUtil;
-import com.chinalooke.yuwan.utils.Validator;
+import com.chinalooke.yuwan.utils.MyUtils;
 import com.zhy.autolayout.AutoLayoutActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -96,7 +100,7 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
             case R.id.btn__get_verification_code_forget_password:
                 //判断是否是手机号
                 phone = mphoneForgetPassword.getText().toString();
-                if (Validator.isMobile(phone))
+                if (MyUtils.CheckPhoneNumber(phone))
                     //判断用户是否注册
                     getHTTPIsPhoneExists();
                 else
@@ -119,7 +123,7 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
             verificationCodeForget.requestFocus();
             return;
         }
-        if (!Validator.isMobile(phone))
+        if (!MyUtils.CheckPhoneNumber(phone))
             mphoneForgetPassword.setError("请输入正确的手机号码");
         else {
             //提交验证码
@@ -157,24 +161,38 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
     //网络获取  验证手机号是否注册
     private void getHTTPIsPhoneExists() {
         String URLPhone = Constant.IS_PHONE_EXISTS + "&" + Constant.PHONE + phone;
-        getHTTPDatas.getHTTPIsPhoneExists(URLPhone);
-
-        ResultDatas result = getHTTPDatas.getResult();
-
-        if (result != null) {
-            if ("true".equals(result.getSuccess()) && "false".equals(result.getResult())) {
-                Log.d("TAG", "该号码未注册");
-                mphoneForgetPassword.setError("该号码未注册");
+        StringRequest request = new StringRequest(URLPhone, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (!TextUtils.isEmpty(response)) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("Success");
+                        if (success) {
+                            boolean result = jsonObject.getBoolean("Result");
+                            if (result) {
+                                //启动倒计时
+                                mcountTimer.start();
+                                //获取验证码 开始获取验证码
+                                sendSMSRandom();
+                            } else {
+                                String msg = jsonObject.getString("Msg");
+                                mphoneForgetPassword.setError(msg);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
             }
-            if ("true".equals(result.getSuccess()) && "true".equals(result.getResult())) {
-                Log.d("TAG", "验证密码");
-                //启动倒计时
-                mcountTimer.start();
-                //获取验证码 开始获取验证码
-                sendSMSRandom();
-            }
-        }
+        });
+
+        mQueue.add(request);
     }
 
     /**

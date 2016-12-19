@@ -30,6 +30,7 @@ import com.chinalooke.yuwan.activity.GameDeskActivity;
 import com.chinalooke.yuwan.activity.JudgeActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
+import com.chinalooke.yuwan.activity.QRCodeActivity;
 import com.chinalooke.yuwan.activity.SearchActivity;
 import com.chinalooke.yuwan.bean.Advertisement;
 import com.chinalooke.yuwan.bean.GameDesk;
@@ -594,6 +595,7 @@ public class BattleFieldFragment extends Fragment {
                     startActivity(new Intent(mActivity, SearchActivity.class));
                     break;
                 case R.id.iv_qcode:
+                    startActivity(new Intent(mActivity, QRCodeActivity.class));
                     break;
             }
         }
