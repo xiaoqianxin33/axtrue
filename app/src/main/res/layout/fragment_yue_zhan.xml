@@ -186,6 +186,38 @@
         android:background="@color/line_color"/>
 
     <RelativeLayout
+        android:id="@+id/rl_playerLevel"
+        android:layout_width="match_parent"
+        android:layout_height="95px"
+        android:background="@android:color/white">
+
+        <TextView
+            style="@style/yuezhan_title"
+            android:text="参赛玩家积分范围"/>
+
+
+        <ImageView
+            style="@style/yuezhan_arrow"
+            android:src="@mipmap/arrow_right"/>
+
+        <TextView
+            android:id="@+id/tv_playerLevel"
+            style="@style/yuezhan_content"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20px"
+        android:background="@color/line_color"/>
+
+    <RelativeLayout
         android:id="@+id/rl_friend"
         android:layout_width="match_parent"
         android:layout_height="95px"

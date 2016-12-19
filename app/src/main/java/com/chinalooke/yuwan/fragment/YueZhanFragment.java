@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +45,10 @@ import com.chinalooke.yuwan.utils.KeyboardUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMGroup;
+import com.hyphenate.chat.EMGroupManager;
+import com.hyphenate.exceptions.HyphenateException;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.utils.AutoUtils;
@@ -220,17 +223,20 @@ public class YueZhanFragment extends Fragment {
 
 
     @OnClick({R.id.rl_game_name, R.id.rl_time, R.id.rl_people, R.id.rl_money,
-            R.id.tv_skip, R.id.rl_friend, R.id.rl_rule, R.id.rl_times})
+            R.id.tv_skip, R.id.rl_friend, R.id.rl_rule, R.id.rl_times, R.id.rl_playerLevel})
     public void onClick(View view) {
         if (mUsrInfo == null) {
             startActivity(new Intent(getActivity(), LoginActivity.class));
         } else {
             switch (view.getId()) {
+                // TODO: 2016/12/19 参赛玩家积分范围选择
+                case R.id.rl_playerLevel:
+                    break;
                 case R.id.rl_times:
                     alertPicker(mTimesList, "选择游戏场数", 3);
                     break;
                 case R.id.tv_skip:
-                    createDesk();
+                    createRoom();
                     break;
                 case R.id.rl_game_name:
                     if (gameID == null) {
@@ -291,8 +297,21 @@ public class YueZhanFragment extends Fragment {
 
     }
 
+    //创建环信群组
+    private void createRoom() {
+        EMGroupManager.EMGroupOptions option = new EMGroupManager.EMGroupOptions();
+        option.maxUsers = 200;
+        option.style = EMGroupManager.EMGroupStyle.EMGroupStylePrivateMemberCanInvite;
+        try {
+            EMGroup group = EMClient.getInstance().groupManager().createGroup(mChoseGame.getName(), "对战群组", null, null, option);
+            createDesk(group);
+        } catch (HyphenateException e) {
+            e.printStackTrace();
+        }
+    }
+
     //提交发布战场
-    private void createDesk() {
+    private void createDesk(EMGroup group) {
         if (NetUtil.is_Network_Available(getActivity())) {
             mProgressDialog = MyUtils.initDialog("正在提交", getActivity());
             mProgressDialog.show();
@@ -302,7 +321,7 @@ public class YueZhanFragment extends Fragment {
             String times = mTvTimes.getText().toString();
             String uri = Constant.HOST + "addGameDesk&gameId=" + mGameId +
                     "&playerNum=" + Integer.parseInt(people) + "&gamePay=" + money + "&gameCount=" + times
-                    + "&ownerId=" + mUsrInfo.getUserId() + "&roomId=" + mUsrInfo.getUserId();
+                    + "&ownerId=" + mUsrInfo.getUserId() + "&roomId=" + group.getGroupId();
 
             if (mRule != null) {
                 uri = uri + "&gameRule=" + mRule;
@@ -320,7 +339,6 @@ public class YueZhanFragment extends Fragment {
             }
 
             uri = uri + "&startTime=" + time;
-            Log.e("TAG", uri);
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {

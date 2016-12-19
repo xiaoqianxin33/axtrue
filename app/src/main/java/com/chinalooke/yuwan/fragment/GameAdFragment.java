@@ -1,5 +1,6 @@
 package com.chinalooke.yuwan.fragment;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -7,10 +8,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +42,7 @@ import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
 import com.squareup.picasso.Picasso;
+import com.zhy.autolayout.utils.AutoUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -82,11 +86,16 @@ public class GameAdFragment extends Fragment {
     TextView mTvGameName;
     @Bind(R.id.iv_gameimage)
     RoundedImageView mIvGameimage;
+    @Bind(R.id.tv_pay)
+    TextView mTvPay;
+    @Bind(R.id.tv_cup)
+    TextView mTvCup;
     private int CHOOSE_GAME = 0;
     private GameMessage.ResultBean mChoseGame;
     private String mGameId;
     private ArrayList<String> mPeopleNumberList = new ArrayList<>();
     private ArrayList<String> mTimesList = new ArrayList<>();
+    private ArrayList<String> mMoneyList = new ArrayList<>();
     private Date mBeginDate;
     private Toast mToast;
     private MainActivity mActivity;
@@ -103,6 +112,7 @@ public class GameAdFragment extends Fragment {
     private UploadManager mUploadManager;
     private int upCount;
     private RequestQueue mQueue;
+    private String mCup;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gameadfragment, container, false);
@@ -154,9 +164,23 @@ public class GameAdFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
-    @OnClick({R.id.rl_game, R.id.rl_time, R.id.rl_people, R.id.rl_times})
+    @OnClick({R.id.rl_game, R.id.rl_time, R.id.rl_people, R.id.rl_times, R.id.rl_pay, R.id.rl_cup
+            , R.id.rl_playerLevel})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.rl_playerLevel:
+                break;
+            case R.id.rl_cup:
+                showEditDialog();
+                break;
+            case R.id.rl_pay:
+                if (mChoseGame != null) {
+                    alertPicker(mMoneyList, "选择游戏币金额", 1);
+                } else {
+                    mToast.setText("请先选择游戏");
+                    mToast.show();
+                }
+                break;
             case R.id.rl_game:
                 Intent intent = new Intent(getActivity(), FrequentlyGameActivity.class);
                 intent.putExtra("isNetbar", true);
@@ -179,6 +203,35 @@ public class GameAdFragment extends Fragment {
         }
     }
 
+    private void showEditDialog() {
+        final Dialog dialog = new Dialog(mActivity, R.style.Dialog);
+        View inflate = LayoutInflater.from(mActivity).inflate(R.layout.dialog_edit_cup, null);
+        final EditText editText = (EditText) inflate.findViewById(R.id.et_input);
+        Button noButton = (Button) inflate.findViewById(R.id.btn_cancel);
+        Button yesButton = (Button) inflate.findViewById(R.id.btn_ok);
+        noButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Editable text = editText.getText();
+                if (!TextUtils.isEmpty(text)) {
+                    mTvCup.setText(text.toString());
+                    mCup = text.toString();
+                }
+            }
+        });
+        AutoUtils.autoSize(inflate);
+        dialog.setContentView(inflate);
+        dialog.show();
+    }
+
     private void alertPicker(ArrayList<String> list, String title, final int type) {
         OptionsPickerView<String> optionsPickerView = new OptionsPickerView<>(getActivity());
         optionsPickerView.setTitle(title);
@@ -192,6 +245,10 @@ public class GameAdFragment extends Fragment {
                         break;
                     case 3:
                         mTvTimes.setText(mTimesList.get(options1));
+                        break;
+                    case 1:
+                        mTvPay.setText(mMoneyList.get(options1));
+                        break;
                 }
             }
         });
@@ -214,6 +271,7 @@ public class GameAdFragment extends Fragment {
                     mTvGameName.setText(name);
                 setPeopleCount(mChoseGame);
                 setTimesCount();
+                setMoneyCount();
             }
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_CHOOSE_PHOTO) {
             mPhotosSnpl.setData(BGAPhotoPickerActivity.getSelectedImages(data));
@@ -221,6 +279,24 @@ public class GameAdFragment extends Fragment {
             mPhotosSnpl.setData(BGAPhotoPickerPreviewActivity.getSelectedImages(data));
         }
     }
+
+
+    //设置参与游戏币范围
+    private void setMoneyCount() {
+        String wagerMin = mChoseGame.getWagerMin();
+        String wagerMax = mChoseGame.getWagerMax();
+        if (!TextUtils.isEmpty(wagerMin) && !TextUtils.isEmpty(wagerMax)) {
+            double min = Double.parseDouble(wagerMin);
+            double max = Double.parseDouble(wagerMax);
+            mMoneyList.add(min + "");
+            int imin = (int) min;
+            for (int i = imin + 10; i < max; i = i + 10) {
+                mMoneyList.add(i + "");
+            }
+            mMoneyList.add(max + "");
+        }
+    }
+
 
     //设置游戏人数范围
     private void setPeopleCount(GameMessage.ResultBean choseGame) {

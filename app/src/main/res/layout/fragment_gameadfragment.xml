@@ -198,6 +198,87 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_pay"
+            android:layout_width="match_parent"
+            android:layout_height="95px"
+            android:background="@android:color/white">
+
+            <TextView
+                style="@style/yuezhan_title"
+                android:text="参赛费"/>
+
+
+            <ImageView
+                style="@style/yuezhan_arrow"
+                android:src="@mipmap/arrow_right"/>
+
+            <TextView
+                android:id="@+id/tv_pay"
+                style="@style/yuezhan_content"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_cup"
+            android:layout_width="match_parent"
+            android:layout_height="95px"
+            android:background="@android:color/white">
+
+            <TextView
+                style="@style/yuezhan_title"
+                android:text="奖金"/>
+
+
+            <ImageView
+                style="@style/yuezhan_arrow"
+                android:src="@mipmap/arrow_right"/>
+
+            <TextView
+                android:id="@+id/tv_cup"
+                style="@style/yuezhan_content"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_playerLevel"
+            android:layout_width="match_parent"
+            android:layout_height="95px"
+            android:background="@android:color/white">
+
+            <TextView
+                style="@style/yuezhan_title"
+                android:text="参战积分级别"/>
+
+
+            <ImageView
+                style="@style/yuezhan_arrow"
+                android:src="@mipmap/arrow_right"/>
+
+            <TextView
+                android:id="@+id/tv_playerLevel"
+                style="@style/yuezhan_content"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
             android:background="@color/line_color"/>
 
 

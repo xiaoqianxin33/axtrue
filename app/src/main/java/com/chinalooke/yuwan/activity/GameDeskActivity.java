@@ -50,6 +50,8 @@ import com.chinalooke.yuwan.view.HorizontalListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMGroup;
+import com.hyphenate.chat.EMGroupManager;
 import com.hyphenate.exceptions.HyphenateException;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
@@ -444,10 +446,16 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     finish();
                     break;
                 case R.id.tv_chat:
-                    Intent intent = new Intent(GameDeskActivity.this, EaseGroupChatActivity.class);
-                    if (mRoomId != null)
-                        intent.putExtra("groupId", mRoomId);
-                    startActivity(intent);
+                    if (NetUtil.is_Network_Available(getApplicationContext())) {
+                        if (TextUtils.isEmpty(mRoomId)) {
+                            createRoom();
+                        } else {
+                            intentToRoom();
+                        }
+                    } else {
+                        mToast.setText("网络不可用，无法连接聊天室");
+                        mToast.show();
+                    }
                     break;
                 case R.id.tv_ok:
                     switch (mStatus) {
@@ -481,6 +489,39 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     break;
             }
         }
+    }
+
+    //跳转聊天室
+    private void intentToRoom() {
+        Intent intent = new Intent(GameDeskActivity.this, EaseGroupChatActivity.class);
+        intent.putExtra("groupId", mRoomId);
+        startActivity(intent);
+    }
+
+    //创建聊天室
+    private void createRoom() {
+        EMGroupManager.EMGroupOptions option = new EMGroupManager.EMGroupOptions();
+        option.maxUsers = 200;
+        option.style = EMGroupManager.EMGroupStyle.EMGroupStylePrivateMemberCanInvite;
+        try {
+            EMGroup group = EMClient.getInstance().groupManager().createGroup(mGameDeskDetails.getResult().getGameName(), "对战群组", null, null, option);
+            mRoomId = group.getGroupId();
+            intentToRoom();
+            updateRoomId(mRoomId);
+        } catch (HyphenateException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 更新游戏桌聊天室id
+     *
+     * @param roomId 聊天室id
+     */
+    private void updateRoomId(String roomId) {
+        String url = Constant.HOST + "updateRoomId&gameDeskId=" + mGameDeskId + "&roomId=" + roomId;
+        StringRequest request = new StringRequest(url, null, null);
+        mQueue.add(request);
     }
 
     //房主关闭游戏桌

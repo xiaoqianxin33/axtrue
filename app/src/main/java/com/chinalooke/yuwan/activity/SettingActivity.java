@@ -67,6 +67,7 @@ public class SettingActivity extends AutoLayoutActivity {
             case R.id.rl_head:
                 break;
             case R.id.rl_remind:
+
                 break;
             case R.id.rl_image:
                 break;

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_message_remid_setting"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.chinalooke.yuwan.activity.MessageRemindSettingActivity">
+
+
+    <include layout="@layout/include_head"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="72px"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/mid_padding"
+        android:text="关闭后，依然会收到消息，但不会收到提醒"
+        android:textColor="@color/shallow_word"
+        android:textSize="25px"/>
+
+
+</LinearLayout>

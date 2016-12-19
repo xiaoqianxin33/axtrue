@@ -270,6 +270,8 @@
         </activity>
         <activity android:name=".activity.JudgeActivity">
         </activity>
+        <activity android:name=".activity.MessageRemindSettingActivity">
+        </activity>
     </application>
 
 </manifest>

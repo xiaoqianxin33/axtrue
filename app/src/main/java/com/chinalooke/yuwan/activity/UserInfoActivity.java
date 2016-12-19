@@ -17,10 +17,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -90,76 +88,18 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     TextView mTvSkip;
     @Bind(R.id.ll_game)
     LinearLayout mLlGame;
-    @Bind(R.id.iv_back)
-    FrameLayout mIvBack;
-    @Bind(R.id.iv_arrow_head)
-    ImageView mIvArrowHead;
-    @Bind(R.id.rl_head)
-    RelativeLayout mRlHead;
-    @Bind(R.id.iv1)
-    ImageView mIv1;
-    @Bind(R.id.rl_head_t)
-    RelativeLayout mRlHeadT;
-    @Bind(R.id.iv2)
-    ImageView mIv2;
-    @Bind(R.id.rl_name)
-    RelativeLayout mRlName;
-    @Bind(R.id.iv3)
-    ImageView mIv3;
-    @Bind(R.id.rl_sex)
-    RelativeLayout mRlSex;
-    @Bind(R.id.iv4)
-    ImageView mIv4;
-    @Bind(R.id.rl_age)
-    RelativeLayout mRlAge;
-    @Bind(R.id.iv5)
-    ImageView mIv5;
-    @Bind(R.id.rl_play_age)
-    RelativeLayout mRlPlayAge;
     @Bind(R.id.ll1)
     LinearLayout mLl1;
-    @Bind(R.id.iv6)
-    ImageView mIv6;
-    @Bind(R.id.rl_address)
-    RelativeLayout mRlAddress;
-    @Bind(R.id.iv7)
-    ImageView mIv7;
-    @Bind(R.id.rl_id)
-    RelativeLayout mRlId;
-    @Bind(R.id.iv8)
-    ImageView mIv8;
-    @Bind(R.id.tv_qcodr)
-    TextView mTvQcodr;
-    @Bind(R.id.rl_qcode)
-    RelativeLayout mRlQcode;
-    @Bind(R.id.iv9)
-    ImageView mIv9;
-    @Bind(R.id.rl_slogen)
-    RelativeLayout mRlSlogen;
     @Bind(R.id.ll2)
     LinearLayout mLl2;
-    @Bind(R.id.iv2_netbar)
-    ImageView mIv2Netbar;
     @Bind(R.id.tv_name_netbar)
     TextView mTvNameNetbar;
-    @Bind(R.id.rl_name_netbar)
-    RelativeLayout mRlNameNetbar;
-    @Bind(R.id.iv4_netbar)
-    ImageView mIv4Netbar;
     @Bind(R.id.tv_age_netbar)
     TextView mTvAgeNetbar;
-    @Bind(R.id.rl_age_netbar)
-    RelativeLayout mRlAgeNetbar;
-    @Bind(R.id.iv5_netbar)
-    ImageView mIv5Netbar;
     @Bind(R.id.tv_address_netbar)
     TextView mTvAddressNetbar;
-    @Bind(R.id.rl_netbar_address)
-    RelativeLayout mRlNetbarAddress;
     @Bind(R.id.ll3)
     LinearLayout mLl3;
-    @Bind(R.id.activity_user_info)
-    LinearLayout mActivityUserInfo;
     private LoginUser.ResultBean mUserInfo;
     private ImgSelConfig mConfig;
     private int RC_ACCESS_FINE_LOCATION = 0;
