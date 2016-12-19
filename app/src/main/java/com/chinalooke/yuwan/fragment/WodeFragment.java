@@ -18,6 +18,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.activity.MyChatActivity;
 import com.chinalooke.yuwan.activity.FriendsActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
@@ -160,7 +161,7 @@ public class WodeFragment extends Fragment {
                     if (isNetbar) {
                         startActivity(new Intent(mActivity, PayForPlayerActivity.class));
                     } else {
-                        Intent intent = new Intent(mActivity, FriendsActivity.class);
+                        Intent intent = new Intent(mActivity, MyChatActivity.class);
                         intent.putExtra("chat", true);
                         startActivity(intent);
                     }

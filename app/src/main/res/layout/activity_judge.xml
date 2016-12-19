@@ -23,6 +23,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="390px"
                 android:background="@android:color/darker_gray">
+
+                <com.chinalooke.yuwan.view.ViewRight
+                    android:id="@+id/viewLeft"
+                    android:layout_width="180px"
+                    android:layout_height="80px"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="@dimen/mid_padding"
+                    android:layout_marginRight="@dimen/mid_padding"/>
             </RelativeLayout>
 
             <FrameLayout
@@ -82,22 +91,22 @@
             </FrameLayout>
 
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="52px"
-                android:background="#dde1e5"
-                android:gravity="center"
-                android:text="注意：请检查提交信息是否正确"
-                android:textColor="@color/holo_red_light"
-                android:textSize="25px"/>
-
-
         </LinearLayout>
 
     </com.chinalooke.yuwan.view.MyScrollView>
 
 
     <include layout="@layout/include_head_wode"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="52px"
+        android:layout_above="@id/btn_submit"
+        android:background="#dde1e5"
+        android:gravity="center"
+        android:text="注意：请检查提交信息是否正确"
+        android:textColor="@color/holo_red_light"
+        android:textSize="25px"/>
 
     <Button
         android:id="@+id/btn_submit"

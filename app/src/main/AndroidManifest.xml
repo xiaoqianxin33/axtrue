@@ -272,6 +272,8 @@
         </activity>
         <activity android:name=".activity.MessageRemindSettingActivity">
         </activity>
+        <activity android:name=".activity.MyChatActivity">
+        </activity>
     </application>
 
 </manifest>

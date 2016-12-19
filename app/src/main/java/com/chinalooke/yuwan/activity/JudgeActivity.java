@@ -99,6 +99,11 @@ public class JudgeActivity extends AutoLayoutActivity {
         mToast = YuwanApplication.getToast();
         initTopScroll();
         initData();
+        initView();
+
+    }
+
+    private void initView() {
 
     }
 

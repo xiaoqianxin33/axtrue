@@ -504,7 +504,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
         option.maxUsers = 200;
         option.style = EMGroupManager.EMGroupStyle.EMGroupStylePrivateMemberCanInvite;
         try {
-            EMGroup group = EMClient.getInstance().groupManager().createGroup(mGameDeskDetails.getResult().getGameName(), "对战群组", null, null, option);
+            EMGroup group = EMClient.getInstance().groupManager().createGroup(mGameDeskDetails.getResult().getGameName(), "对战群组", new String[0], null, option);
             mRoomId = group.getGroupId();
             intentToRoom();
             updateRoomId(mRoomId);

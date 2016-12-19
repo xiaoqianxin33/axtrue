@@ -15,7 +15,7 @@ import com.chinalooke.yuwan.adapter.TextAdapter;
 public class ViewRight extends RelativeLayout implements ViewBaseAction {
 
     private ListView mListView;
-    private final String[] items = new String[]{"约战中", "进行中", "已结束"};//显示字段
+    private String[] items = new String[]{"约战中", "进行中", "已结束"};//显示字段
     private final String[] itemsVaule = new String[]{"1", "2", "3", "4", "5", "6"};//隐藏id
     private OnSelectListener mOnSelectListener;
     private TextAdapter adapter;
@@ -66,7 +66,7 @@ public class ViewRight extends RelativeLayout implements ViewBaseAction {
 
                 if (mOnSelectListener != null) {
                     showText = items[position];
-                    mOnSelectListener.getValue(itemsVaule[position], items[position],position);
+                    mOnSelectListener.getValue(itemsVaule[position], items[position], position);
                 }
             }
         });
@@ -77,7 +77,12 @@ public class ViewRight extends RelativeLayout implements ViewBaseAction {
     }
 
     public interface OnSelectListener {
-        public void getValue(String distance, String showText,int position);
+        void getValue(String distance, String showText, int position);
+    }
+
+    public void setContent(String[] strings) {
+        this.items = strings;
+        adapter.notifyDataSetChanged();
     }
 
     @Override

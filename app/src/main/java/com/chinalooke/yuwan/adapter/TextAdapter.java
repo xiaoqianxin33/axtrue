@@ -34,7 +34,6 @@ public class TextAdapter extends ArrayAdapter<String> {
         mListData = listData;
         selectedDrawble = mContext.getResources().getDrawable(sId);
         normalDrawbleId = nId;
-
         init();
     }
 
