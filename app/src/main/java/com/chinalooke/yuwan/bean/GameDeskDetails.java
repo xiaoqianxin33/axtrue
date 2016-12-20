@@ -97,8 +97,18 @@ public class GameDeskDetails implements Serializable {
         private String roomId;
         @DatabaseField(columnName = "deskId")
         private String deskId;
+        @DatabaseField(columnName = "playerLevel")
+        private String playerLevel;
         @DatabaseField(columnName = "isAgree")
         private boolean isAgree;
+
+        public String getPlayerLevel() {
+            return playerLevel;
+        }
+
+        public void setPlayerLevel(String playerLevel) {
+            this.playerLevel = playerLevel;
+        }
 
         public String getDeskId() {
             return deskId;

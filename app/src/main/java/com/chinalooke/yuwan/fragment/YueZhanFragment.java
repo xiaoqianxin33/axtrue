@@ -28,10 +28,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bigkoo.pickerview.OptionsPickerView;
+import com.chinalooke.yuwan.Engine.PickerEngine;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.AddFriendActivity;
 import com.chinalooke.yuwan.activity.FrequentlyGameActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
+import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.PersonalInfoActivity;
 import com.chinalooke.yuwan.bean.FriendInfo;
 import com.chinalooke.yuwan.bean.GameMessage;
@@ -87,6 +89,8 @@ public class YueZhanFragment extends Fragment {
     TextView mTvFriends;
     @Bind(R.id.tv_times)
     TextView mTvTimes;
+    @Bind(R.id.tv_playerLevel)
+    TextView mTvPlayerLevel;
 
     private Toast mToast;
     private LoginUser.ResultBean mUsrInfo;
@@ -95,6 +99,7 @@ public class YueZhanFragment extends Fragment {
     private ArrayList<String> mPeopleNumberList = new ArrayList<>();
     private ArrayList<String> mMoneyList = new ArrayList<>();
     private ArrayList<String> mTimesList = new ArrayList<>();
+    private ArrayList<String> mLevelList = new ArrayList<>();
     private GameMessage.ResultBean mChoseGame;
     private int ADD_FRIENDS = 2;
     private String mRule;
@@ -123,6 +128,9 @@ public class YueZhanFragment extends Fragment {
     private List<SortModel> mChoseFriends;
     private RequestQueue mQueue;
     private ProgressDialog mProgressDialog;
+    private MainActivity mMainActivity;
+    private int minLevel = -1;
+    private int maxLevel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -138,6 +146,7 @@ public class YueZhanFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mMainActivity = (MainActivity) getActivity();
         initView();
         initData();
         initEvent();
@@ -191,11 +200,12 @@ public class YueZhanFragment extends Fragment {
 
 
     private void initData() {
-        mUsrInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getActivity(), LoginUserInfoUtils.KEY);
+        mUsrInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(mMainActivity, LoginUserInfoUtils.KEY);
         if (mUsrInfo != null) {
             gameID = mUsrInfo.getGameId();
         }
     }
+
 
     private void initView() {
         mIvBack.setVisibility(View.GONE);
@@ -226,11 +236,18 @@ public class YueZhanFragment extends Fragment {
             R.id.tv_skip, R.id.rl_friend, R.id.rl_rule, R.id.rl_times, R.id.rl_playerLevel})
     public void onClick(View view) {
         if (mUsrInfo == null) {
-            startActivity(new Intent(getActivity(), LoginActivity.class));
+            startActivity(new Intent(mMainActivity, LoginActivity.class));
         } else {
             switch (view.getId()) {
-                // TODO: 2016/12/19 参赛玩家积分范围选择
                 case R.id.rl_playerLevel:
+                    PickerEngine.alertLevelPicker(mMainActivity, new OptionsPickerView.OnOptionsSelectListener() {
+                        @Override
+                        public void onOptionsSelect(int options1, int option2, int options3) {
+                            minLevel = options1 + 1;
+                            maxLevel = options1 + option2 + 1;
+                            mTvPlayerLevel.setText("最低" + minLevel + ",最高" + maxLevel);
+                        }
+                    });
                     break;
                 case R.id.rl_times:
                     alertPicker(mTimesList, "选择游戏场数", 3);
@@ -240,7 +257,7 @@ public class YueZhanFragment extends Fragment {
                     break;
                 case R.id.rl_game_name:
                     if (gameID == null) {
-                        MyUtils.showCustomDialog(getActivity(), "提示", "还没有添加常玩游戏无法约战，现在就去添加常玩游戏么?"
+                        MyUtils.showCustomDialog(mMainActivity, "提示", "还没有添加常玩游戏无法约战，现在就去添加常玩游戏么?"
                                 , "不了", "好的", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -249,11 +266,11 @@ public class YueZhanFragment extends Fragment {
                                 }, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        startActivity(new Intent(getActivity(), PersonalInfoActivity.class));
+                                        startActivity(new Intent(mMainActivity, PersonalInfoActivity.class));
                                     }
                                 });
                     } else {
-                        Intent intent = new Intent(getActivity(), FrequentlyGameActivity.class);
+                        Intent intent = new Intent(mMainActivity, FrequentlyGameActivity.class);
                         intent.putExtra("isYueZhan", true);
                         startActivityForResult(intent, CHOOSE_GAME);
                     }
@@ -281,7 +298,7 @@ public class YueZhanFragment extends Fragment {
                 case R.id.rl_friend:
                     if (mChoseGame != null) {
                         String maxPeopleNumber = mChoseGame.getMaxPeopleNumber();
-                        Intent intent = new Intent(getActivity(), AddFriendActivity.class);
+                        Intent intent = new Intent(mMainActivity, AddFriendActivity.class);
                         intent.putExtra("maxPeopleNumber", maxPeopleNumber);
                         startActivityForResult(intent, ADD_FRIENDS);
                     } else {
@@ -297,8 +314,14 @@ public class YueZhanFragment extends Fragment {
 
     }
 
+
     //创建环信群组
     private void createRoom() {
+        if (minLevel < 0) {
+            mToast.setText("请选择参战最大最小积分等级");
+            mToast.show();
+            return;
+        }
         EMGroupManager.EMGroupOptions option = new EMGroupManager.EMGroupOptions();
         option.maxUsers = 200;
         option.style = EMGroupManager.EMGroupStyle.EMGroupStylePrivateMemberCanInvite;
@@ -312,8 +335,8 @@ public class YueZhanFragment extends Fragment {
 
     //提交发布战场
     private void createDesk(EMGroup group) {
-        if (NetUtil.is_Network_Available(getActivity())) {
-            mProgressDialog = MyUtils.initDialog("正在提交", getActivity());
+        if (NetUtil.is_Network_Available(mMainActivity)) {
+            mProgressDialog = MyUtils.initDialog("正在提交", mMainActivity);
             mProgressDialog.show();
             String time = mTvTime.getText().toString();
             String people = mTvPeople.getText().toString();
@@ -321,8 +344,7 @@ public class YueZhanFragment extends Fragment {
             String times = mTvTimes.getText().toString();
             String uri = Constant.HOST + "addGameDesk&gameId=" + mGameId +
                     "&playerNum=" + Integer.parseInt(people) + "&gamePay=" + money + "&gameCount=" + times
-                    + "&ownerId=" + mUsrInfo.getUserId() + "&roomId=" + group.getGroupId();
-
+                    + "&ownerId=" + mUsrInfo.getUserId() + "&roomId=" + group.getGroupId() + "&playerLevel=" + minLevel + "," + maxLevel;
             if (mRule != null) {
                 uri = uri + "&gameRule=" + mRule;
             }
@@ -344,7 +366,7 @@ public class YueZhanFragment extends Fragment {
                 public void onResponse(String response) {
                     mProgressDialog.dismiss();
                     if (AnalysisJSON.analysisJson(response)) {
-                        MyUtils.showDialog(getActivity(), "提示", "您已发起了约战\r系统将自动扣除相应金额", new DialogInterface.OnClickListener() {
+                        MyUtils.showDialog(mMainActivity, "提示", "您已发起了约战\r系统将自动扣除相应金额", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -383,8 +405,8 @@ public class YueZhanFragment extends Fragment {
     }
 
     private void showRuleDialog() {
-        final Dialog dialog = new Dialog(getActivity(), R.style.Dialog);
-        View inflate = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_add_game_rule, null);
+        final Dialog dialog = new Dialog(mMainActivity, R.style.Dialog);
+        View inflate = LayoutInflater.from(mMainActivity).inflate(R.layout.dialog_add_game_rule, null);
         TextView tvOk = (TextView) inflate.findViewById(R.id.tv_ok);
         TextView tvCancel = (TextView) inflate.findViewById(R.id.tv_cancel);
         final EditText etRule = (EditText) inflate.findViewById(R.id.et_rule);
@@ -394,7 +416,7 @@ public class YueZhanFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                KeyboardUtils.hideSoftInput(getActivity());
+                KeyboardUtils.hideSoftInput(mMainActivity);
             }
         });
 
@@ -403,14 +425,14 @@ public class YueZhanFragment extends Fragment {
             public void onClick(View v) {
                 dialog.dismiss();
                 mRule = etRule.getText().toString();
-                KeyboardUtils.hideSoftInput(getActivity());
+                KeyboardUtils.hideSoftInput(mMainActivity);
             }
         });
         AutoUtils.autoSize(inflate);
         dialog.setContentView(inflate);
         dialog.show();
         etRule.requestFocus();
-        WindowManager windowManager = getActivity().getWindowManager();
+        WindowManager windowManager = mMainActivity.getWindowManager();
         Display display = windowManager.getDefaultDisplay();
         WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
         lp.width = display.getWidth(); //设置宽度
@@ -418,7 +440,7 @@ public class YueZhanFragment extends Fragment {
     }
 
     private void alertPicker(ArrayList<String> list, String title, final int type) {
-        OptionsPickerView<String> optionsPickerView = new OptionsPickerView<>(getActivity());
+        OptionsPickerView<String> optionsPickerView = new OptionsPickerView<>(mMainActivity);
         optionsPickerView.setTitle(title);
         optionsPickerView.setPicker(list);
         optionsPickerView.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
@@ -441,7 +463,7 @@ public class YueZhanFragment extends Fragment {
     }
 
     private void alertTimePicker() {
-        OptionsPickerView<String> optionsPickerView = new OptionsPickerView<>(getActivity());
+        OptionsPickerView<String> optionsPickerView = new OptionsPickerView<>(mMainActivity);
         optionsPickerView.setTitle("选择开战时间");
         final ArrayList<String> dayList = new ArrayList<>();
         final ArrayList<ArrayList<String>> options2Items = new ArrayList<>();
@@ -509,7 +531,7 @@ public class YueZhanFragment extends Fragment {
                 String thumb = mChoseGame.getThumb();
                 mGameId = mChoseGame.getGameId();
                 if (!TextUtils.isEmpty(thumb))
-                    Picasso.with(getActivity()).load(thumb).resize(60, 60).centerCrop().into(mIvGameimage);
+                    Picasso.with(mMainActivity).load(thumb).resize(60, 60).centerCrop().into(mIvGameimage);
                 String name = mChoseGame.getName();
                 if (!TextUtils.isEmpty(name))
                     mTvGameName.setText(name);

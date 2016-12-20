@@ -18,7 +18,9 @@ import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.DBManager;
+import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
+import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hyphenate.chat.EMClient;
@@ -55,7 +57,21 @@ public class SplashActivity extends AppCompatActivity {
         //leanCloud推送服务
         AVInstallation.getCurrentInstallation().saveInBackground();
         PushService.setDefaultPushCallback(this, MainActivity.class);
+        getLevelList();
         mHandler.sendEmptyMessageDelayed(1, 2000);
+    }
+
+    //查询所有积分级别
+    private void getLevelList() {
+        String url = Constant.HOST + "getlevelList";
+        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (AnalysisJSON.analysisJson(response))
+                    PreferenceUtils.setPrefString(getApplicationContext(), Constant.LevelList, response);
+            }
+        }, null);
+        mQueue.add(request);
     }
 
     private void getGameMessage() {
