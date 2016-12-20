@@ -519,7 +519,8 @@ public class BattleFieldFragment extends Fragment {
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    mBanner.setVisibility(View.VISIBLE);
+                    if (mBanner != null)
+                        mBanner.setVisibility(View.VISIBLE);
                     if (AnalysisJSON.analysisJson(response)) {
                         Type type = new TypeToken<Advertisement>() {
                         }.getType();

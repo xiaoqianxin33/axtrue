@@ -1,5 +1,9 @@
 package com.chinalooke.yuwan.bean;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -44,18 +48,32 @@ public class LevelList {
         this.Result = Result;
     }
 
-    public static class ResultBean {
+    @DatabaseTable(tableName = "tb_level")
+    public static class ResultBean implements Serializable {
         /**
          * least : 0
          * levelId : 1
          * levelName : 1
          * max : 500
          */
-
+        @DatabaseField(columnName = "least")
         private String least;
+        @DatabaseField(columnName = "levelId")
         private String levelId;
+        @DatabaseField(columnName = "levelName")
         private String levelName;
+        @DatabaseField(columnName = "max")
         private String max;
+        @DatabaseField(generatedId = true)
+        private int id;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
 
         public String getLeast() {
             return least;

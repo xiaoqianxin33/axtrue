@@ -15,10 +15,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.NearbyPeople;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
@@ -26,6 +26,9 @@ import com.zhy.autolayout.AutoLayoutActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -40,12 +43,12 @@ public class SendUpAddFriendActivity extends AutoLayoutActivity {
     TextView mTvSkip;
     @Bind(R.id.et_input)
     EditText mEtInput;
-    private NearbyPeople.ResultBean mNearbyPeople;
     private String mInput;
     private LoginUser.ResultBean mUser;
     private RequestQueue mQueue;
     private Toast mToast;
     private ProgressDialog mProgressDialog;
+    private String mPeopleId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +64,12 @@ public class SendUpAddFriendActivity extends AutoLayoutActivity {
     }
 
     private void initData() {
-        mNearbyPeople = (NearbyPeople.ResultBean) getIntent().getSerializableExtra("people");
+        NearbyPeople.ResultBean nearbyPeople = (NearbyPeople.ResultBean) getIntent().getSerializableExtra("people");
+        if (nearbyPeople != null) {
+            mPeopleId = nearbyPeople.getId();
+        } else {
+            mPeopleId = getIntent().getStringExtra("peopleId");
+        }
     }
 
     private void initEvent() {
@@ -96,7 +104,12 @@ public class SendUpAddFriendActivity extends AutoLayoutActivity {
             if (NetUtil.is_Network_Available(getApplicationContext())) {
                 mProgressDialog = MyUtils.initDialog("发送中", this);
                 mProgressDialog.show();
-                String uri = Constant.HOST + "sendUpAddFrind&userId=" + mUser.getUserId() + "&friendId=" + mNearbyPeople.getId() + "&sendUpMsg=" + mInput;
+                String uri = null;
+                try {
+                    uri = Constant.HOST + "sendUpAddFrind&userId=" + mUser.getUserId() + "&friendId=" + mPeopleId + "&sendUpMsg=" + URLEncoder.encode(mInput, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
                 StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

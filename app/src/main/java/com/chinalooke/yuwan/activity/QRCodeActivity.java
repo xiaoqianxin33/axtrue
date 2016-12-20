@@ -1,16 +1,16 @@
 package com.chinalooke.yuwan.activity;
 
+import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.utils.MyUtils;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bingoogolapple.qrcode.core.QRCodeView;
-import cn.bingoogolapple.qrcode.zxing.QRCodeDecoder;
 import cn.bingoogolapple.qrcode.zxing.ZXingView;
 
 public class QRCodeActivity extends AppCompatActivity implements QRCodeView.Delegate {
@@ -24,23 +24,22 @@ public class QRCodeActivity extends AppCompatActivity implements QRCodeView.Dele
         setContentView(R.layout.activity_qrcode);
         ButterKnife.bind(this);
         mQRCodeView = (ZXingView) findViewById(R.id.zxingview);
-
         mQRCodeView.setDelegate(this);
         mQRCodeView.startCamera(Camera.CameraInfo.CAMERA_FACING_BACK);
-
         mQRCodeView.startSpot();
-
     }
 
     @Override
-    public void onScanQRCodeSuccess(final String result) {
+    public void onScanQRCodeSuccess(String result) {
         mQRCodeView.stopSpot();
-        MyUtils.showToast(getApplicationContext(), result);
+        Intent intent = new Intent(this, SendUpAddFriendActivity.class);
+        intent.putExtra("peopleId", result);
+        startActivity(intent);
     }
 
     @Override
     public void onScanQRCodeOpenCameraError() {
-
+        Log.e("TAG", "onScanQRCodeOpenCameraError");
     }
 
     @OnClick(R.id.iv_wirte_back)

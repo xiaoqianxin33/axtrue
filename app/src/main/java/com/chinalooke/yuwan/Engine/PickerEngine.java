@@ -1,11 +1,10 @@
-package com.chinalooke.yuwan.Engine;
+package com.chinalooke.yuwan.engine;
 
 import android.app.Activity;
 import android.text.TextUtils;
 
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.chinalooke.yuwan.bean.LevelList;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.google.gson.Gson;
 
@@ -23,12 +22,12 @@ public class PickerEngine {
     public static void alertLevelPicker(Activity context, OptionsPickerView.OnOptionsSelectListener listener) {
         ArrayList<String> list = new ArrayList<>();
         ArrayList<ArrayList<String>> list2 = new ArrayList<>();
-        String level = PreferenceUtils.getPrefString(context, Constant.LevelList, "");
+        String level = PreferenceUtils.getPrefString(context, "level", "");
         if (!TextUtils.isEmpty(level)) {
             Gson gson = new Gson();
             LevelList levelList = gson.fromJson(level, LevelList.class);
             List<LevelList.ResultBean> result = levelList.getResult();
-            if (result != null && result.size() != 0) {
+            if (result != null) {
                 for (LevelList.ResultBean resultBean : result) {
                     list.add(resultBean.getLevelName() + "(最低" + resultBean.getLeast() + ")");
                 }
@@ -48,5 +47,6 @@ public class PickerEngine {
             }
         }
     }
-
 }
+
+

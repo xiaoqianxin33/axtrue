@@ -41,7 +41,7 @@ public class MyQRCodeActivity extends AutoLayoutActivity {
     }
 
     private void initData() {
-        String data = mUserInfo.getUserId() + mUserInfo.getNickName();
+        String data = mUserInfo.getUserId();
         String uri = "http://api.k780.com:88/?app=qr.get&data=" + data + "&level=L&size=6";
         Picasso.with(getApplicationContext()).load(uri).resize(530, 530).centerCrop().into(mIvQrcode);
     }

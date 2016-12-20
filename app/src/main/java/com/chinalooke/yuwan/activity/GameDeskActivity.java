@@ -38,7 +38,9 @@ import com.avos.avoscloud.SendCallback;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.GameDesk;
 import com.chinalooke.yuwan.bean.GameDeskDetails;
+import com.chinalooke.yuwan.bean.LevelList;
 import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.bean.UserBalance;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
@@ -46,6 +48,7 @@ import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
+import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.chinalooke.yuwan.view.HorizontalListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -128,7 +131,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
     //记录游戏桌状态变量 0-迎战中 1-进行中 2-已结束
     private int mStatus;
     private boolean isJoin = false;
-
     private Handler mHandler = new Handler();
     private int mLeftSize;
     private int mRightSize;
@@ -141,6 +143,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private boolean isFirst = true;
     private Runnable mRunnable;
     private boolean isOwner = false;
+    private Gson mGson;
 
 
     @Override
@@ -151,6 +154,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
         setContentView(R.layout.activity_game_desk);
         ButterKnife.bind(this);
         mQueue = Volley.newRequestQueue(getApplicationContext());
+        mGson = new Gson();
         DisplayMetrics displayMetrics = MyUtils.getDisplayMetrics(this);
         mWidthPixels = displayMetrics.widthPixels;
         mToast = YuwanApplication.getToast();
@@ -349,7 +353,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
         mGdYuezhan.setAdapter(myLeftAdapter);
         mGdYingzhan.setAdapter(myRightAdapter);
     }
-
 
     private void initData() {
         mGameDesk = (GameDesk.ResultBean) getIntent().getSerializableExtra("gameDesk");
@@ -675,10 +678,9 @@ public class GameDeskActivity extends AutoLayoutActivity {
         pushQuery.whereEqualTo("channels", pushUserId + "game_result");
         AVPush push = new AVPush();
         JSONObject jsonObject = new JSONObject();
-        Gson gson = new Gson();
         mGameDeskDetails.getResult().setAgree(false);
         mGameDeskDetails.getResult().setDeskId(mGameDeskId);
-        String gameDeskDetails = gson.toJson(mGameDeskDetails);
+        String gameDeskDetails = mGson.toJson(mGameDeskDetails);
         try {
             jsonObject.put("title", "雷熊");
             jsonObject.put("alert", "您有战场结果出炉了，请确认输赢");
@@ -702,7 +704,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
         }
     }
 
-
     //加入环信群组
     private void joinEaseGroup() {
         new Thread(new Runnable() {
@@ -717,7 +718,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
             }
         }).start();
     }
-
 
     //退出环信群组
     private void quitEaseGroup() {
@@ -771,7 +771,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             mProgressDialog = MyUtils.initDialog("加入中...", GameDeskActivity.this);
             mProgressDialog.show();
             mTvOk.setText("退出战场");
-            sendInternet(i);
+            getUserBalance(i);
         } else {
             mToast.setText("网络不可用，请检查网络连接");
             mToast.show();
@@ -779,6 +779,66 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
     }
 
+    //查询余额
+    private void getUserBalance(final int i) {
+        String url = Constant.HOST + "getUserBalance&userId=" + user.getUserId();
+        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (AnalysisJSON.analysisJson(response)) {
+                    UserBalance userBalance = mGson.fromJson(response, UserBalance.class);
+                    String score = userBalance.getResult().getScore();
+                    checkLevel(score, i);
+                } else {
+                    mProgressDialog.dismiss();
+                    MyUtils.showMsg(mToast, response);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                mToast.setText("服务器抽风了，请稍后再试");
+                mToast.show();
+            }
+        });
+
+        mQueue.add(request);
+    }
+
+    //检查是否符合等级要求
+    private void checkLevel(String score, int i) {
+        String playerLevel = mGameDeskDetails.getResult().getPlayerLevel();
+        String[] split = playerLevel.split(",");
+        String min = split[0];
+        String max = split[1];
+        String least = null;
+        String max1 = null;
+        String level = PreferenceUtils.getPrefString(getApplicationContext(), "level", "");
+        if (!TextUtils.isEmpty(level)) {
+            LevelList levelList = mGson.fromJson(level, LevelList.class);
+            List<LevelList.ResultBean> result = levelList.getResult();
+            for (LevelList.ResultBean resultBean : result) {
+                String levelId = resultBean.getLevelId();
+                if (min.equals(levelId)) {
+                    least = resultBean.getLeast();
+                } else if (max.equals(levelId)) {
+                    max1 = resultBean.getMax();
+                }
+            }
+            if (Integer.parseInt(score) < Integer.parseInt(least) && Integer.parseInt(score) > Integer.parseInt(max1)) {
+                mProgressDialog.dismiss();
+                mToast.setText("不满足该战场参赛范围，换个战场试试！");
+                mToast.show();
+            } else {
+                sendInternet(i);
+            }
+        } else {
+            mProgressDialog.dismiss();
+            mToast.setText("连接失败，请稍后重试");
+            mToast.show();
+        }
+    }
 
     class MyLeftAdapter extends BaseAdapter {
 
@@ -860,7 +920,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
             return convertView;
         }
     }
-
 
     private void setDetails(ViewHolder viewHolder, int position) {
         if (!TextUtils.isEmpty(mWiner) && "left".equals(mWiner)) {
@@ -973,10 +1032,9 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 mProgressDialog.dismiss();
                 if (AnalysisJSON.analysisJson(response)) {
                     showJoinSucceedDialog();
-                    Gson gson = new Gson();
                     Type type = new TypeToken<GameDeskDetails>() {
                     }.getType();
-                    GameDeskDetails o = gson.fromJson(response, type);
+                    GameDeskDetails o = mGson.fromJson(response, type);
                     if (o != null)
                         mGameDeskDetails = o;
                     initView();
@@ -1079,10 +1137,9 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     @Override
                     public void onResponse(String response) {
                         if (AnalysisJSON.analysisJson(response)) {
-                            Gson gson = new Gson();
                             Type type = new TypeToken<GameDeskDetails>() {
                             }.getType();
-                            GameDeskDetails gameDesk = gson.fromJson(response, type);
+                            GameDeskDetails gameDesk = mGson.fromJson(response, type);
                             if (gameDesk != null) {
                                 mGameDeskDetails = gameDesk;
                                 initView();

@@ -67,8 +67,9 @@ public class SplashActivity extends AppCompatActivity {
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (AnalysisJSON.analysisJson(response))
-                    PreferenceUtils.setPrefString(getApplicationContext(), Constant.LevelList, response);
+                if (AnalysisJSON.analysisJson(response)) {
+                    PreferenceUtils.setPrefString(getApplicationContext(), "level", response);
+                }
             }
         }, null);
         mQueue.add(request);

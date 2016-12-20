@@ -101,7 +101,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="52px"
-        android:layout_above="@id/btn_submit"
+        android:layout_above="@+id/btn_submit"
         android:background="#dde1e5"
         android:gravity="center"
         android:text="注意：请检查提交信息是否正确"

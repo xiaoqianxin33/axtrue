@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.chinalooke.yuwan.bean.ExchangeLevels;
 import com.chinalooke.yuwan.bean.GameDeskDetails;
+import com.chinalooke.yuwan.bean.LevelList;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
@@ -21,10 +22,11 @@ public class ExchangeHelper extends OrmLiteSqliteOpenHelper {
      */
     private Dao<ExchangeLevels.ResultBean, Integer> userDao;
     private Dao<GameDeskDetails.ResultBean, Integer> gameDao;
+    private Dao<LevelList.ResultBean, Integer> levelDao;
 
 
     private ExchangeHelper(Context context) {
-        super(context, TABLE_NAME, null, 2);
+        super(context, TABLE_NAME, null, 3);
     }
 
 
@@ -83,4 +85,5 @@ public class ExchangeHelper extends OrmLiteSqliteOpenHelper {
         }
         return gameDao;
     }
+
 }
