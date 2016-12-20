@@ -1,7 +1,5 @@
 package com.chinalooke.yuwan.bean;
 
-import java.util.List;
-
 /**
  * 游戏桌选手实体类
  * Created by xiao on 2016/12/20.
@@ -9,24 +7,49 @@ import java.util.List;
 
 public class PlayerBean {
 
-    private List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> mLeftBeen;
-    private List<GameDeskDetails.ResultBean.PlayersBean.RightBean> mRightBeen;
+    private String headImg;
+    private boolean isLoser;
+    private String status;
+    private String userId;
+    private String nickName;
 
-    public List<GameDeskDetails.ResultBean.PlayersBean.RightBean> getRightBeen() {
-        return mRightBeen;
+    public String getHeadImg() {
+        return headImg;
     }
 
-    public void setRightBeen(List<GameDeskDetails.ResultBean.PlayersBean.RightBean> rightBeen) {
-        mRightBeen = rightBeen;
+    public void setHeadImg(String headImg) {
+        this.headImg = headImg;
     }
 
-    public List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> getLeftBeen() {
-        return mLeftBeen;
+    public boolean isLoser() {
+        return isLoser;
     }
 
-    public void setLeftBeen(List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> leftBeen) {
-        mLeftBeen = leftBeen;
+    public void setLoser(boolean loser) {
+        isLoser = loser;
     }
 
+    public String getStatus() {
+        return status;
+    }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
 }

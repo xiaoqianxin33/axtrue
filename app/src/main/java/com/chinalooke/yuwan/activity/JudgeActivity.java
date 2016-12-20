@@ -101,7 +101,8 @@ public class JudgeActivity extends AutoLayoutActivity {
     private List<CustemObject> mCustemObjects;
     private CustemSpinerAdapter mCustemSpinerAdapter;
     private SpinnerPopWindow mSpinnerPopWindow;
-    private PlayerBean mPlayerBean;
+    private List<PlayerBean> mPlayerBeanList = new ArrayList<>();
+    private GridAdapter mGridAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,8 +114,8 @@ public class JudgeActivity extends AutoLayoutActivity {
         mQueue = YuwanApplication.getQueue();
         mToast = YuwanApplication.getToast();
         initTopScroll();
-        initData();
         initView();
+        initData();
     }
 
     private void initView() {
@@ -131,6 +132,8 @@ public class JudgeActivity extends AutoLayoutActivity {
 
             mQueue.add(request);
         }
+        mGridAdapter = new GridAdapter(mPlayerBeanList);
+        mGridView.setAdapter(mGridAdapter);
     }
 
     private void initData() {
@@ -186,12 +189,33 @@ public class JudgeActivity extends AutoLayoutActivity {
                                 if (gameDesk.getResult() != null && players != null) {
                                     List<GameDeskDetails.ResultBean.PlayersBean.RightBean> right = players.getRight();
                                     List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> left = players.getLeft();
-                                    mPlayerBean = new PlayerBean();
                                     if (right != null && right.size() != 0) {
-                                        mPlayerBean.setRightBeen(right);
+                                        for (GameDeskDetails.ResultBean.PlayersBean.RightBean rightBean : right) {
+                                            PlayerBean playerBean = new PlayerBean();
+                                            if (!TextUtils.isEmpty(rightBean.getHeadImg()))
+                                                playerBean.setHeadImg(rightBean.getHeadImg());
+                                            if (!TextUtils.isEmpty(rightBean.getNickName()))
+                                                playerBean.setNickName(rightBean.getNickName());
+                                            if (!TextUtils.isEmpty(rightBean.getStatus()))
+                                                playerBean.setStatus(rightBean.getStatus());
+                                            if (!TextUtils.isEmpty(rightBean.getUserId()))
+                                                playerBean.setUserId(rightBean.getUserId());
+                                            mPlayerBeanList.add(playerBean);
+                                        }
                                     }
                                     if (left != null && left.size() != 0) {
-                                        mPlayerBean.setLeftBeen(left);
+                                        for (GameDeskDetails.ResultBean.PlayersBean.LeftBean rightBean : left) {
+                                            PlayerBean playerBean = new PlayerBean();
+                                            if (!TextUtils.isEmpty(rightBean.getHeadImg()))
+                                                playerBean.setHeadImg(rightBean.getHeadImg());
+                                            if (!TextUtils.isEmpty(rightBean.getNickName()))
+                                                playerBean.setNickName(rightBean.getNickName());
+                                            if (!TextUtils.isEmpty(rightBean.getStatus()))
+                                                playerBean.setStatus(rightBean.getStatus());
+                                            if (!TextUtils.isEmpty(rightBean.getUserId()))
+                                                playerBean.setUserId(rightBean.getUserId());
+                                            mPlayerBeanList.add(playerBean);
+                                        }
                                     }
                                 }
                             }
@@ -332,6 +356,46 @@ public class JudgeActivity extends AutoLayoutActivity {
             TextView mTvPrice;
             @Bind(R.id.rl_price)
             RelativeLayout mRlPrice;
+
+            ViewHolder(View view) {
+                ButterKnife.bind(this, view);
+            }
+        }
+    }
+
+    class GridAdapter extends MyBaseAdapter {
+
+        GridAdapter(List dataSource) {
+            super(dataSource);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder viewHolder;
+            if (convertView == null) {
+                convertView = View.inflate(getApplicationContext(), R.layout.item_gamelist_gradview, null);
+                viewHolder = new ViewHolder(convertView);
+                convertView.setTag(viewHolder);
+                AutoUtils.autoSize(convertView);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+
+            PlayerBean playerBean = mPlayerBeanList.get(position);
+            String nickName = playerBean.getNickName();
+            if (!TextUtils.isEmpty(nickName))
+                viewHolder.mTvGameName.setText(nickName);
+            String headImg = playerBean.getHeadImg();
+            if (!TextUtils.isEmpty(headImg))
+                Picasso.with(getApplicationContext()).load(headImg).into(viewHolder.mIvGameimage);
+            return convertView;
+        }
+
+        class ViewHolder {
+            @Bind(R.id.iv_gameimage)
+            ImageView mIvGameimage;
+            @Bind(R.id.tv_game_name)
+            TextView mTvGameName;
 
             ViewHolder(View view) {
                 ButterKnife.bind(this, view);

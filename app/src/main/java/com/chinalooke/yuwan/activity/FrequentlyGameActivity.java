@@ -179,7 +179,6 @@ public class FrequentlyGameActivity extends AutoLayoutActivity {
             viewHolder.mTvGameName.setText(name);
             return convertView;
         }
-
     }
 
     static class ViewHolder {
