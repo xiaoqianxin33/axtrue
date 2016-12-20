@@ -369,7 +369,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 @Override
                 public void onResponse(Bitmap response) {
                     if (response != null) {
-                        mRlImage.setBackground(new BitmapDrawable(response));
+                        if (mRlImage != null)
+                            mRlImage.setBackground(new BitmapDrawable(response));
                     }
                 }
             }, mWidthPixels, 390, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, new Response.ErrorListener() {
@@ -678,7 +679,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
         pushQuery.whereEqualTo("channels", pushUserId + "game_result");
         AVPush push = new AVPush();
         JSONObject jsonObject = new JSONObject();
-        mGameDeskDetails.getResult().setAgree(false);
         mGameDeskDetails.getResult().setDeskId(mGameDeskId);
         String gameDeskDetails = mGson.toJson(mGameDeskDetails);
         try {

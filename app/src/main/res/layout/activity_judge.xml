@@ -24,14 +24,19 @@
                 android:layout_height="390px"
                 android:background="@android:color/darker_gray">
 
-                <com.chinalooke.yuwan.view.ViewRight
+                <TextView
                     android:id="@+id/viewLeft"
                     android:layout_width="180px"
                     android:layout_height="80px"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="@dimen/mid_padding"
-                    android:layout_marginRight="@dimen/mid_padding"/>
+                    android:layout_marginRight="@dimen/mid_padding"
+                    android:background="@android:color/white"
+                    android:gravity="center"
+                    android:text="加载中"
+                    android:textColor="@color/black_word"
+                    android:textSize="16sp"/>
             </RelativeLayout>
 
             <FrameLayout

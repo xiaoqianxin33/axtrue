@@ -1,5 +1,7 @@
 package com.chinalooke.yuwan.activity;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -22,16 +24,22 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.adapter.AbstractSpinerAdapter;
+import com.chinalooke.yuwan.adapter.CustemSpinerAdapter;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
+import com.chinalooke.yuwan.bean.CustemObject;
 import com.chinalooke.yuwan.bean.GameDesk;
 import com.chinalooke.yuwan.bean.GameDeskDetails;
+import com.chinalooke.yuwan.bean.PlayerBean;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.ViewHelper;
 import com.chinalooke.yuwan.view.MyScrollView;
+import com.chinalooke.yuwan.view.SpinnerPopWindow;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -48,6 +56,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class JudgeActivity extends AutoLayoutActivity {
 
@@ -79,6 +88,8 @@ public class JudgeActivity extends AutoLayoutActivity {
     GridView mGridView;
     @Bind(R.id.ll_front)
     LinearLayout mLlFront;
+    @Bind(R.id.viewLeft)
+    TextView mViewLeft;
     private int START_ALPHA = 0;
     private int mHeight;
     private int END_ALPHA = 255;
@@ -87,6 +98,10 @@ public class JudgeActivity extends AutoLayoutActivity {
     private Toast mToast;
     private List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> mLeftPlayersBeenList = new ArrayList<>();
     private List<GameDeskDetails.ResultBean.PlayersBean.RightBean> mRightPlayersBeenList = new ArrayList<>();
+    private List<CustemObject> mCustemObjects;
+    private CustemSpinerAdapter mCustemSpinerAdapter;
+    private SpinnerPopWindow mSpinnerPopWindow;
+    private PlayerBean mPlayerBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,11 +115,22 @@ public class JudgeActivity extends AutoLayoutActivity {
         initTopScroll();
         initData();
         initView();
-
     }
 
     private void initView() {
+        mTvSignUp.setVisibility(View.GONE);
+        String gameImage = mGameDesk.getGameImage();
+        if (!TextUtils.isEmpty(gameImage)) {
+            ImageRequest request = new ImageRequest(gameImage, new Response.Listener<Bitmap>() {
+                @Override
+                public void onResponse(Bitmap response) {
+                    if (response != null)
+                        mRlImage.setBackground(new BitmapDrawable(response));
+                }
+            }, ViewHelper.getDisplayMetrics(getApplicationContext()).widthPixels, 390, Bitmap.Config.ARGB_8888, null);
 
+            mQueue.add(request);
+        }
     }
 
     private void initData() {
@@ -153,19 +179,19 @@ public class JudgeActivity extends AutoLayoutActivity {
                             }.getType();
                             GameDeskDetails gameDesk = gson.fromJson(response, type);
                             if (gameDesk != null) {
+                                GameDeskDetails.ResultBean result = gameDesk.getResult();
+                                String gameCount = result.getGameCount();
+                                initSpinnerData(gameCount);
                                 GameDeskDetails.ResultBean.PlayersBean players = gameDesk.getResult().getPlayers();
                                 if (gameDesk.getResult() != null && players != null) {
-                                    String winer = gameDesk.getResult().getWiner();
-                                    if (winer.equals("left")) {
-                                        if (players.getLeft() != null)
-                                            mLeftPlayersBeenList.addAll(players.getLeft());
-                                        MyAdapter myAdapter = new MyAdapter(mLeftPlayersBeenList, 0);
-                                        mListView.setAdapter(myAdapter);
-                                    } else if (winer.equals("right")) {
-                                        if (players.getRight() != null)
-                                            mRightPlayersBeenList.addAll(players.getRight());
-                                        MyAdapter myAdapter = new MyAdapter(mRightPlayersBeenList, 1);
-                                        mListView.setAdapter(myAdapter);
+                                    List<GameDeskDetails.ResultBean.PlayersBean.RightBean> right = players.getRight();
+                                    List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> left = players.getLeft();
+                                    mPlayerBean = new PlayerBean();
+                                    if (right != null && right.size() != 0) {
+                                        mPlayerBean.setRightBeen(right);
+                                    }
+                                    if (left != null && left.size() != 0) {
+                                        mPlayerBean.setLeftBeen(left);
                                     }
                                 }
                             }
@@ -188,6 +214,43 @@ public class JudgeActivity extends AutoLayoutActivity {
             }
         });
         mQueue.add(stringRequest);
+    }
+
+    //初始化spinner数据
+    private void initSpinnerData(String gameCount) {
+        mCustemSpinerAdapter = new CustemSpinerAdapter(this);
+        mSpinnerPopWindow = new SpinnerPopWindow(this);
+        mSpinnerPopWindow.setAdatper(mCustemSpinerAdapter);
+        mCustemObjects = new ArrayList<>();
+        for (int i = 1; i <= Integer.parseInt(gameCount); i++) {
+            CustemObject custemObject = new CustemObject();
+            custemObject.data = "第" + i + "场";
+            mCustemObjects.add(custemObject);
+        }
+        mViewLeft.setText("第1场");
+    }
+
+    @OnClick({R.id.viewLeft, R.id.iv_back})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.viewLeft:
+                String s = mViewLeft.getText().toString();
+                if (!s.equals("加载中")) {
+                    mCustemSpinerAdapter.refreshData(mCustemObjects, 0, null);
+                    mSpinnerPopWindow.setItemListener(new AbstractSpinerAdapter.IOnItemSelectListener() {
+                        @Override
+                        public void onItemClick(int pos) {
+                            String data = mCustemObjects.get(pos).data;
+                            mViewLeft.setText(data);
+                        }
+                    });
+                    mSpinnerPopWindow.showAsDropDown(mViewLeft);
+                }
+                break;
+            case R.id.iv_back:
+                finish();
+                break;
+        }
     }
 
     class MyAdapter extends MyBaseAdapter {

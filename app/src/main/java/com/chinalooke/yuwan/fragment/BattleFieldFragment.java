@@ -140,14 +140,10 @@ public class BattleFieldFragment extends Fragment {
         initMenuData();
         initEvent();
         if (isNetbar) {
-            expandTabView.setVisibility(View.GONE);
-            CURRENT_STATUS = 1;
             isFirst = true;
-            PAGE = 1;
             mDeskList.clear();
             getGameDeskListWithStatus();
         } else {
-            expandTabView.setVisibility(View.VISIBLE);
             getGameDeskListWithStatus();
         }
     }
@@ -337,7 +333,7 @@ public class BattleFieldFragment extends Fragment {
     private void interItem(int i) {
         GameDesk.ResultBean resultBean = mDeskList.get(i);
         Intent intent = new Intent();
-        if (isNetbar && CURRENT_STATUS == 1) {
+        if (isNetbar) {
             intent.setClass(mActivity, JudgeActivity.class);
         } else {
             intent.setClass(mActivity, GameDeskActivity.class);
