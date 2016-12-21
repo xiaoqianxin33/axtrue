@@ -288,7 +288,11 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
         }
         if (!TextUtils.isEmpty(name) && !"请输入昵称".equals(name)) {
             userInfo.setNickName(name);
-            updateUserInfo = updateUserInfo + "&nickName=" + name;
+            try {
+                updateUserInfo = updateUserInfo + "&nickName=" + URLEncoder.encode(name,"utf8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
         if (!TextUtils.isEmpty(mAge) && !"请输入真实年龄".equals(mAge)) {
             userInfo.setAge(mAge);

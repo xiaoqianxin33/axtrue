@@ -3,6 +3,8 @@ package com.chinalooke.yuwan.activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,8 +26,6 @@ import com.chinalooke.yuwan.db.ExchangeHelper;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.dao.Dao;
 import com.zhy.autolayout.AutoLayoutActivity;
 import com.zhy.autolayout.utils.AutoUtils;
@@ -33,7 +33,6 @@ import com.zhy.autolayout.utils.AutoUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -78,29 +77,32 @@ public class MyMessageActivity extends AutoLayoutActivity {
 
     private void initData() {
         try {
-            mGameDao = mHelper.getGameDao();
-
-            JSONObject json = new JSONObject(getIntent().getExtras().getString("com.avos.avoscloud.Data"));
-            if (json != null) {
-                String gameDeskDetails = json.getString("gameDeskDetails");
-                Gson gson = new Gson();
-                Type type = new TypeToken<GameDeskDetails>() {
-                }.getType();
-                GameDeskDetails gameDeskDetails1 = gson.fromJson(gameDeskDetails, type);
-                GameDeskDetails.ResultBean result = gameDeskDetails1.getResult();
-                if (result != null) {
-                    mGameDao.createOrUpdate(result);
-                }
+//            mGameDao = mHelper.getGameDao();
+            String string = getIntent().getExtras().getString("com.avos.avoscloud.Data");
+            if (!TextUtils.isEmpty(string)) {
+                JSONObject json = new JSONObject(string);
+                Log.e("TAG", string);
             }
-            mResultBeen = mGameDao.queryForAll();
-            if (mResultBeen.size() != 0) {
-                mMyAdapter = new MyAdapter(mResultBeen);
-                mListView.setAdapter(mMyAdapter);
-                mTvNone.setVisibility(View.VISIBLE);
-            } else {
-                mTvNone.setVisibility(View.GONE);
-            }
-        } catch (SQLException | JSONException e) {
+//            if (json != null) {
+//                String gameDeskDetails = json.getString("gameDeskDetails");
+//                Gson gson = new Gson();
+//                Type type = new TypeToken<GameDeskDetails>() {
+//                }.getType();
+//                GameDeskDetails gameDeskDetails1 = gson.fromJson(gameDeskDetails, type);
+//                GameDeskDetails.ResultBean result = gameDeskDetails1.getResult();
+//                if (result != null) {
+//                    mGameDao.createOrUpdate(result);
+//                }
+//            }
+//            mResultBeen = mGameDao.queryForAll();
+//            if (mResultBeen.size() != 0) {
+//                mMyAdapter = new MyAdapter(mResultBeen);
+//                mListView.setAdapter(mMyAdapter);
+//                mTvNone.setVisibility(View.VISIBLE);
+//            } else {
+//                mTvNone.setVisibility(View.GONE);
+//            }
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -135,8 +137,6 @@ public class MyMessageActivity extends AutoLayoutActivity {
             String startTime = resultBean.getStartTime();
             viewHolder.mTvMessage.setText("今天你在" + netBarName + "所参与的" + gameName + "游戏，已失败，对方胜利，确定？");
             viewHolder.mTvTime.setText(startTime);
-            boolean agree = resultBean.isAgree();
-            viewHolder.mBtnOk.setSelected(agree);
             viewHolder.mBtnOk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -204,7 +204,6 @@ public class MyMessageActivity extends AutoLayoutActivity {
 
     //更新数据库
     private void upDateDB(GameDeskDetails.ResultBean resultBean) {
-        resultBean.setAgree(true);
         try {
             mGameDao.update(resultBean);
             mResultBeen.clear();

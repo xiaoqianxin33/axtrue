@@ -157,6 +157,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         LoginUser.ResultBean userInfo = new LoginUser.ResultBean();
         userInfo.setUserId(userId);
         userInfo.setHeadImg(headImg);
+        userInfo.setUserType("player");
         try {
             LoginUserInfoUtils.saveLoginUserInfo(getApplicationContext(),
                     LoginUserInfoUtils.KEY, userInfo);
@@ -308,7 +309,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
     }
 
     private void getHTTPRegister() {
-        String URLRegister = Constant.REGISTER + "&" + Constant.PHONE + phone + "&" + Constant.PWD + passWord + "&userType=player&" + Constant.INTRODUCE_PHONE + mIntroducePhone;
+        String URLRegister = Constant.REGISTER + "&phone=" + phone + "&pwd=" + passWord + "&userType=player&introducerPhone=" + mIntroducePhone;
         StringRequest stringRequest = new StringRequest(URLRegister,
                 new Response.Listener<String>() {
                     @Override

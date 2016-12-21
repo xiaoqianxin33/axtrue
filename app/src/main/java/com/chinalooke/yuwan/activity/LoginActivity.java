@@ -324,7 +324,8 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                 LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo.getResult());//设置userInfo
                 LoginUserInfoUtils.saveObject(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo.getResult());
                 registerHx(userInfo.getResult());
-                PushService.subscribe(this, userInfo.getResult().getUserId() + "game_result", MyMessageActivity.class);
+                PushService.subscribe(this, userInfo.getResult().getUserId(), MyMessageActivity.class);
+                Log.e("TAG", userInfo.getResult().getUserId());
             }
             loginSuccess();//调用登录成功方法
         } else {

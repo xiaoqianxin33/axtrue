@@ -103,6 +103,7 @@ public class JudgeActivity extends AutoLayoutActivity {
     private SpinnerPopWindow mSpinnerPopWindow;
     private List<PlayerBean> mPlayerBeanList = new ArrayList<>();
     private GridAdapter mGridAdapter;
+    private int GAME_COUNT = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,9 +114,23 @@ public class JudgeActivity extends AutoLayoutActivity {
         ButterKnife.bind(this);
         mQueue = YuwanApplication.getQueue();
         mToast = YuwanApplication.getToast();
+        mGameDesk = (GameDesk.ResultBean) getIntent().getSerializableExtra("gameDesk");
         initTopScroll();
         initView();
         initData();
+        initEvent();
+    }
+
+    private void initEvent() {
+        //场次选择事件监听
+        mSpinnerPopWindow.setItemListener(new AbstractSpinerAdapter.IOnItemSelectListener() {
+            @Override
+            public void onItemClick(int pos) {
+                GAME_COUNT = pos;
+
+            }
+        });
+
     }
 
     private void initView() {
@@ -137,7 +152,6 @@ public class JudgeActivity extends AutoLayoutActivity {
     }
 
     private void initData() {
-        mGameDesk = (GameDesk.ResultBean) getIntent().getSerializableExtra("gameDesk");
         String gameDeskId = mGameDesk.getGameDeskId();
         if (!TextUtils.isEmpty(gameDeskId))
             getGameDeskWithId(gameDeskId);

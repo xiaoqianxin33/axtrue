@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.avos.avoscloud.PushService;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.MyChatActivity;
 import com.chinalooke.yuwan.activity.FriendsActivity;
@@ -250,6 +251,7 @@ public class WodeFragment extends Fragment {
 
                                 }
                             });
+                            PushService.unsubscribe(mActivity, user.getUserId());
                             LoginUserInfoUtils.getLoginUserInfoUtils().clearData(mActivity);//清除资料
                             LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(null);
                             setCancelDialog();
