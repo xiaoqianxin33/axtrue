@@ -24,6 +24,7 @@ import com.chinalooke.yuwan.activity.FriendsActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.MyBalanceActivity;
+import com.chinalooke.yuwan.activity.MyMessageActivity;
 import com.chinalooke.yuwan.activity.PayForPlayerActivity;
 import com.chinalooke.yuwan.activity.RecordActivity;
 import com.chinalooke.yuwan.activity.SettingActivity;
@@ -174,7 +175,7 @@ public class WodeFragment extends Fragment {
                     if (isNetbar) {
                         startActivity(new Intent(mActivity, UserInfoActivity.class));
                     } else {
-
+                        startActivity(new Intent(mActivity, MyMessageActivity.class));
                     }
                 } else
                     startActivity(new Intent(mActivity, LoginActivity.class));

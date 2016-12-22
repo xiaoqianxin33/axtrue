@@ -13,10 +13,6 @@
         android:textColor="@color/black_word"
         android:textSize="22px"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/line_color"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -30,7 +26,6 @@
             android:layout_marginLeft="@dimen/mid_padding"
             android:layout_marginTop="28px"
             android:scaleType="centerCrop"
-            android:src="@mipmap/placeholder"
             app:riv_oval="true"/>
 
 

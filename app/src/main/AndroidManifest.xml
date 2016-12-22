@@ -274,6 +274,18 @@
         </activity>
         <activity android:name=".activity.MyChatActivity">
         </activity>
+
+        <receiver
+            android:name=".receiver.MyReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="com.chinalooke.yuwan"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

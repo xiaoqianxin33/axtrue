@@ -20,20 +20,26 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.bean.GameDeskDetails;
 import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.bean.PushMessage;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.ExchangeHelper;
+import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.j256.ormlite.dao.Dao;
+import com.makeramen.roundedimageview.RoundedImageView;
+import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
 import com.zhy.autolayout.utils.AutoUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -49,7 +55,6 @@ public class MyMessageActivity extends AutoLayoutActivity {
     ListView mListView;
     @Bind(R.id.tv_none)
     TextView mTvNone;
-    private ExchangeHelper mHelper;
     private List<GameDeskDetails.ResultBean> mResultBeen;
     private RequestQueue mQueue;
     private Toast mToast;
@@ -57,13 +62,13 @@ public class MyMessageActivity extends AutoLayoutActivity {
     private LoginUser.ResultBean mUser;
     private Dao<GameDeskDetails.ResultBean, Integer> mGameDao;
     private MyAdapter mMyAdapter;
+    private List<PushMessage> mPushMessages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_message);
         ButterKnife.bind(this);
-        mHelper = ExchangeHelper.getHelper(getApplicationContext());
         mQueue = YuwanApplication.getQueue();
         mToast = YuwanApplication.getToast();
         mUser = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
@@ -73,38 +78,23 @@ public class MyMessageActivity extends AutoLayoutActivity {
 
     private void initView() {
         mTvTitle.setText("我的消息");
+        mMyAdapter = new MyAdapter(mPushMessages);
+        mListView.setAdapter(mMyAdapter);
     }
 
     private void initData() {
+        ExchangeHelper helper = ExchangeHelper.getHelper(getApplicationContext());
         try {
-//            mGameDao = mHelper.getGameDao();
-            String string = getIntent().getExtras().getString("com.avos.avoscloud.Data");
-            if (!TextUtils.isEmpty(string)) {
-                JSONObject json = new JSONObject(string);
-                Log.e("TAG", string);
-            }
-//            if (json != null) {
-//                String gameDeskDetails = json.getString("gameDeskDetails");
-//                Gson gson = new Gson();
-//                Type type = new TypeToken<GameDeskDetails>() {
-//                }.getType();
-//                GameDeskDetails gameDeskDetails1 = gson.fromJson(gameDeskDetails, type);
-//                GameDeskDetails.ResultBean result = gameDeskDetails1.getResult();
-//                if (result != null) {
-//                    mGameDao.createOrUpdate(result);
-//                }
-//            }
-//            mResultBeen = mGameDao.queryForAll();
-//            if (mResultBeen.size() != 0) {
-//                mMyAdapter = new MyAdapter(mResultBeen);
-//                mListView.setAdapter(mMyAdapter);
-//                mTvNone.setVisibility(View.VISIBLE);
-//            } else {
-//                mTvNone.setVisibility(View.GONE);
-//            }
-        } catch (JSONException e) {
+            Dao<PushMessage, Integer> pushDao = helper.getPushDao();
+            mPushMessages.clear();
+            mPushMessages.addAll(pushDao.queryForAll());
+            mMyAdapter.notifyDataSetChanged();
+            pushDao.closeLastIterator();
+            Log.e("TAG", mPushMessages.size() + "");
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
+
     }
 
     @OnClick(R.id.iv_back)
@@ -130,26 +120,110 @@ public class MyMessageActivity extends AutoLayoutActivity {
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
+            final PushMessage pushMessage = mPushMessages.get(position);
+            String date = pushMessage.getDate();
+            if (!TextUtils.isEmpty(date))
+                viewHolder.mTvTime.setText(date);
+            String type = pushMessage.getType();
+            switch (type) {
+                case "userInfo":
+                    String temp = pushMessage.getTemp();
+                    String content = pushMessage.getContent();
+                    if (!TextUtils.isEmpty(content))
+                        viewHolder.mTvMessage.setText(content);
+                    final String[] split = temp.split(",");
+                    if (!TextUtils.isEmpty(split[1]))
+                        Picasso.with(getApplicationContext()).load(split[1]).into(viewHolder.mRoundedImageView);
+                    viewHolder.mBtnReJudge.setVisibility(View.VISIBLE);
+                    viewHolder.mBtnReJudge.setText("拒绝");
+                    viewHolder.mBtnOk.setText("同意");
+                    boolean done = pushMessage.isDone();
+                    viewHolder.mBtnOk.setSelected(done);
+                    viewHolder.mBtnOk.setEnabled(!done);
+                    viewHolder.mBtnReJudge.setSelected(done);
+                    viewHolder.mBtnReJudge.setEnabled(!done);
+                    viewHolder.mBtnOk.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            addFriendsClick(split[0], pushMessage, 0);
+                        }
+                    });
+                    viewHolder.mBtnReJudge.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            addFriendsClick(split[0], pushMessage, 1);
+                        }
+                    });
 
-            final GameDeskDetails.ResultBean resultBean = mResultBeen.get(position);
-            String gameName = resultBean.getGameName();
-            String netBarName = resultBean.getNetBarName();
-            String startTime = resultBean.getStartTime();
-            viewHolder.mTvMessage.setText("今天你在" + netBarName + "所参与的" + gameName + "游戏，已失败，对方胜利，确定？");
-            viewHolder.mTvTime.setText(startTime);
-            viewHolder.mBtnOk.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    boolean selected = viewHolder.mBtnOk.isSelected();
-                    if (!selected) {
-                        loserConfirm(resultBean);
-                    }
-                }
-            });
+                case "joindeskGameDesk":
+                    break;
+                case "resultGameDesk":
+                    break;
+                case "gameDesk":
+                    break;
+                case "netbarGameDesk":
+                    break;
+            }
+
             return convertView;
         }
 
+        class ViewHolder {
+            @Bind(R.id.tv_time)
+            TextView mTvTime;
+            @Bind(R.id.roundedImageView)
+            RoundedImageView mRoundedImageView;
+            @Bind(R.id.tv_message)
+            TextView mTvMessage;
+            @Bind(R.id.btn_ok)
+            Button mBtnOk;
+            @Bind(R.id.btn_reJudge)
+            Button mBtnReJudge;
+
+            ViewHolder(View view) {
+                ButterKnife.bind(this, view);
+            }
+        }
     }
+
+    private void addFriendsClick(String str, final PushMessage pushMessage, int i) {
+        mProgressDialog.show();
+        if (!TextUtils.isEmpty(str)) {
+            String url = Constant.HOST + "agreeFriend&userId=" + mUser.getUserId() + "&friendId=" + str + "&agree=" + i + "&disagreeMsg=";
+            StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    mProgressDialog.dismiss();
+                    if (AnalysisJSON.analysisJson(response)) {
+                        mToast.setText("好友添加成功！");
+                        mToast.show();
+                        pushMessage.setDone(true);
+                        ExchangeHelper helper = ExchangeHelper.getHelper(getApplicationContext());
+                        try {
+                            Dao<PushMessage, Integer> pushDao = helper.getPushDao();
+                            pushDao.update(pushMessage);
+                            helper.close();
+                            initData();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        MyUtils.showMsg(mToast, response);
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    mProgressDialog.dismiss();
+                    mToast.setText("服务器抽风了，请稍后再试");
+                    mToast.show();
+                }
+            });
+
+            mQueue.add(request);
+        }
+    }
+
 
     // 输家确定输
     private void loserConfirm(final GameDeskDetails.ResultBean resultBean) {
@@ -172,7 +246,6 @@ public class MyMessageActivity extends AutoLayoutActivity {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.dismiss();
-                                            upDateDB(resultBean);
                                         }
                                     });
                                 }
@@ -202,29 +275,5 @@ public class MyMessageActivity extends AutoLayoutActivity {
         }
     }
 
-    //更新数据库
-    private void upDateDB(GameDeskDetails.ResultBean resultBean) {
-        try {
-            mGameDao.update(resultBean);
-            mResultBeen.clear();
-            mResultBeen.addAll(mGameDao.queryForAll());
-            mMyAdapter.notifyDataSetChanged();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    static class ViewHolder {
-        @Bind(R.id.tv_time)
-        TextView mTvTime;
-        @Bind(R.id.tv_message)
-        TextView mTvMessage;
-        @Bind(R.id.btn_ok)
-        Button mBtnOk;
-
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
-        }
-    }
 
 }

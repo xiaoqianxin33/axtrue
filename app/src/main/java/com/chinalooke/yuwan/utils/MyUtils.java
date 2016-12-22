@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -154,8 +155,10 @@ public class MyUtils {
         try {
             JSONObject jsonObject = new JSONObject(response);
             String msg = jsonObject.getString("Msg");
-            toast.setText(msg);
-            toast.show();
+            if (!TextUtils.isEmpty(msg)) {
+                toast.setText(msg);
+                toast.show();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
