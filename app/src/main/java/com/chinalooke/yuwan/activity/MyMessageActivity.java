@@ -134,14 +134,12 @@ public class MyMessageActivity extends AutoLayoutActivity {
                     final String[] split = temp.split(",");
                     if (!TextUtils.isEmpty(split[1]))
                         Picasso.with(getApplicationContext()).load(split[1]).into(viewHolder.mRoundedImageView);
-                    viewHolder.mBtnReJudge.setVisibility(View.VISIBLE);
                     viewHolder.mBtnReJudge.setText("拒绝");
                     viewHolder.mBtnOk.setText("同意");
                     boolean done = pushMessage.isDone();
                     viewHolder.mBtnOk.setSelected(done);
                     viewHolder.mBtnOk.setEnabled(!done);
-                    viewHolder.mBtnReJudge.setSelected(done);
-                    viewHolder.mBtnReJudge.setEnabled(!done);
+                    viewHolder.mBtnReJudge.setVisibility(done ? View.GONE : View.VISIBLE);
                     viewHolder.mBtnOk.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

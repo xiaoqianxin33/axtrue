@@ -56,7 +56,7 @@ public class MyReceiver extends AVBroadcastReceiver {
                         .setColor(Color.parseColor("#98903B"))//smallIcon的背景色
                         .setContentIntent(pendingIntent)
                         .build();
-
+                notification.flags |= Notification.FLAG_AUTO_CANCEL;
                 manager.notify(1, notification);
             } catch (SQLException | IOException e) {
                 Log.e("TAG", e.getMessage());
