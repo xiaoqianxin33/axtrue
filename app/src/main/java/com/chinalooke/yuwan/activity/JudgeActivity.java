@@ -1,5 +1,6 @@
 package com.chinalooke.yuwan.activity;
 
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -37,6 +38,7 @@ import com.chinalooke.yuwan.bean.PlayerBean;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.ViewHelper;
 import com.chinalooke.yuwan.view.MyScrollView;
@@ -55,6 +57,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -109,6 +112,8 @@ public class JudgeActivity extends AutoLayoutActivity {
     private int mCount;
     private HashMap<PlayerBean, String> mHashMap = new HashMap<>();
     private int mChose;
+    private ProgressDialog mProgressDialog;
+    private List<PlayerBean> mWinnerList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -321,7 +326,22 @@ public class JudgeActivity extends AutoLayoutActivity {
 
     //提交赢家
     private void JudgeWinerForNetbar() {
+        for (Map.Entry<PlayerBean, String> next : mHashMap.entrySet()) {
+            String value = next.getValue();
+            if ("1".equals(value)) {
+                mWinnerList.add(next.getKey());
+            }
+        }
+        if (mWinnerList.size() == 0) {
+            mToast.setText("请选择战场赢家！");
+            mToast.show();
+            return;
+        }
+
         if (NetUtil.is_Network_Available(getApplicationContext())) {
+            mProgressDialog = MyUtils.initDialog("提交中", this);
+            mProgressDialog.show();
+
 
         } else {
             mToast.setText("网络不可用，请检查网络连接");
