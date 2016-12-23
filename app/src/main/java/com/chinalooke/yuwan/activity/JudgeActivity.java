@@ -15,11 +15,8 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -33,9 +30,7 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.adapter.CustemSpinerAdapter;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
-import com.chinalooke.yuwan.bean.CustemObject;
 import com.chinalooke.yuwan.bean.GameDesk;
 import com.chinalooke.yuwan.bean.GameDeskDetails;
 import com.chinalooke.yuwan.bean.LoginUser;
@@ -48,7 +43,6 @@ import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.ViewHelper;
 import com.chinalooke.yuwan.view.MyScrollView;
-import com.chinalooke.yuwan.view.SpinnerPopWindow;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -76,12 +70,6 @@ public class JudgeActivity extends AutoLayoutActivity {
     RelativeLayout mRlImage;
     @Bind(R.id.list_view)
     ListView mListView;
-    @Bind(R.id.btn_submit)
-    Button mBtnSubmit;
-    @Bind(R.id.iv_back)
-    FrameLayout mIvBack;
-    @Bind(R.id.iv_arrow_head)
-    ImageView mIvArrowHead;
     @Bind(R.id.tv_title)
     TextView mTvTitle;
     @Bind(R.id.tv_sign_up)
@@ -98,8 +86,6 @@ public class JudgeActivity extends AutoLayoutActivity {
     TextView mTvChose;
     @Bind(R.id.gridView)
     GridView mGridView;
-    @Bind(R.id.ll_front)
-    LinearLayout mLlFront;
     @Bind(R.id.viewLeft)
     TextView mViewLeft;
     private int START_ALPHA = 0;
@@ -108,14 +94,8 @@ public class JudgeActivity extends AutoLayoutActivity {
     private GameDesk.ResultBean mGameDesk;
     private RequestQueue mQueue;
     private Toast mToast;
-    private List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> mLeftPlayersBeenList = new ArrayList<>();
-    private List<GameDeskDetails.ResultBean.PlayersBean.RightBean> mRightPlayersBeenList = new ArrayList<>();
-    private List<CustemObject> mCustemObjects;
-    private CustemSpinerAdapter mCustemSpinerAdapter;
-    private SpinnerPopWindow mSpinnerPopWindow;
     private ArrayList<PlayerBean> mPlayerBeanList = new ArrayList<>();
     private GridAdapter mGridAdapter;
-    private int GAME_COUNT = 1;
     private int mCount;
     private HashMap<PlayerBean, String> mHashMap = new HashMap<>();
     private HashMap<String, String> mPayMap = new HashMap<>();
@@ -279,7 +259,6 @@ public class JudgeActivity extends AutoLayoutActivity {
                                     mListView.setVisibility(View.VISIBLE);
                                     mGridView.setVisibility(View.GONE);
                                 }
-                                initSpinnerData(gameCount);
                                 GameDeskDetails.ResultBean.PlayersBean players = gameDesk.getResult().getPlayers();
                                 if (gameDesk.getResult() != null && players != null) {
                                     List<GameDeskDetails.ResultBean.PlayersBean.RightBean> right = players.getRight();
@@ -360,20 +339,6 @@ public class JudgeActivity extends AutoLayoutActivity {
         }
     }
 
-    //初始化spinner数据
-    private void initSpinnerData(String gameCount) {
-        mCustemSpinerAdapter = new CustemSpinerAdapter(this);
-        mSpinnerPopWindow = new SpinnerPopWindow(this);
-        mSpinnerPopWindow.setAdatper(mCustemSpinerAdapter);
-        mCustemObjects = new ArrayList<>();
-        for (int i = 1; i <= Integer.parseInt(gameCount); i++) {
-            CustemObject custemObject = new CustemObject();
-            custemObject.data = "第" + i + "场";
-            mCustemObjects.add(custemObject);
-        }
-        mViewLeft.setText("第1场");
-    }
-
     @OnClick({R.id.iv_back, R.id.btn_submit})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -431,7 +396,6 @@ public class JudgeActivity extends AutoLayoutActivity {
         }
         return true;
     }
-
 
     /**
      * 单次提交名次

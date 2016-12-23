@@ -23,7 +23,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
-import com.chinalooke.yuwan.bean.GameDeskDetails;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.PushMessage;
 import com.chinalooke.yuwan.config.YuwanApplication;
@@ -64,12 +63,10 @@ public class MyMessageActivity extends AutoLayoutActivity implements EasyPermiss
     ListView mListView;
     @Bind(R.id.tv_none)
     TextView mTvNone;
-    private List<GameDeskDetails.ResultBean> mResultBeen;
     private RequestQueue mQueue;
     private Toast mToast;
     private ProgressDialog mProgressDialog;
     private LoginUser.ResultBean mUser;
-    private Dao<GameDeskDetails.ResultBean, Integer> mGameDao;
     private MyAdapter mMyAdapter;
     private List<PushMessage> mPushMessages = new ArrayList<>();
     private Dao<PushMessage, Integer> mPushDao;
@@ -139,6 +136,13 @@ public class MyMessageActivity extends AutoLayoutActivity implements EasyPermiss
             mPushMessages.clear();
             mPushMessages.addAll(mPushDao.queryForAll());
             mMyAdapter.notifyDataSetChanged();
+            if (mPushMessages.size() == 0) {
+                mTvNone.setText("暂无消息");
+                mTvNone.setVisibility(View.VISIBLE);
+            } else {
+                mTvNone.setVisibility(View.GONE);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -396,7 +400,6 @@ public class MyMessageActivity extends AutoLayoutActivity implements EasyPermiss
             mQueue.add(request);
         }
     }
-
 
     // 输家确定输
     private void loserConfirm(String gameDeskId, final PushMessage pushMessage) {
