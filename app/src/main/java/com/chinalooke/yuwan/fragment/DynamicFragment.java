@@ -273,7 +273,6 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
         });
     }
 
-
     private void loadMore() {
         isLoading = true;
         if (!isFoot) {
@@ -282,7 +281,6 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
             initData();
         }
     }
-
 
     private void initData() {
         if (NetUtil.is_Network_Available(mActivity)) {
@@ -357,8 +355,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
         }
     }
 
-
-    private void addFavour(String s, String avtiveId, final DynamicViewHolder viewHolder, boolean isLike) {
+    private void addFavour(String s, String avtiveId, final DynamicViewHolder viewHolder, final boolean isLike, final WholeDynamic.ResultBean resultBean) {
 
         String url = Constant.HOST + s + "&activeId=" + avtiveId + "&userId=" + mUserInfo.getUserId() + "&activeType=";
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
@@ -370,16 +367,21 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                         JSONObject jsonObject = new JSONObject(response);
                         boolean success = jsonObject.getBoolean("Success");
                         if (success) {
-                            boolean result = jsonObject.getBoolean("Result");
-                            if (result) {
+                            if (isLike)
+                                mToast.setText("取消点赞成功");
+                            else
                                 mToast.setText("点赞成功");
-                                mToast.show();
-                            }
+                            resultBean.setIsLoginUserLike(!isLike);
+                            boolean loginUserLike = resultBean.isLoginUserLike();
+                            viewHolder.mIvDianzan.setImageResource(loginUserLike ? R.mipmap.dianzanhou : R.mipmap.dianzan);
+                            mToast.show();
+
                         } else {
                             String msg = jsonObject.getString("Msg");
                             mToast.setText("点赞失败," + msg);
                             mToast.show();
-                            viewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
+                            boolean loginUserLike = resultBean.isLoginUserLike();
+                            viewHolder.mIvDianzan.setImageResource(loginUserLike ? R.mipmap.dianzanhou : R.mipmap.dianzan);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -436,7 +438,6 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
         ImageView mIvDianzan;
         RelativeLayout mRelativeLayout;
     }
-
 
     class MyDynamicAdapter extends MyBaseAdapter {
         private Context mContext;
@@ -534,16 +535,15 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                         if (isLike) {
                             dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
                             isLike = false;
-                            addFavour("delFavour", resultBean.getActiveId(), dynamicViewHolder, isLike);
+                            addFavour("delFavour", resultBean.getActiveId(), dynamicViewHolder, isLike, resultBean);
                         } else {
                             dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzanhou);
                             isLike = true;
-                            addFavour("addFavour", resultBean.getActiveId(), dynamicViewHolder, isLike);
+                            addFavour("addFavour", resultBean.getActiveId(), dynamicViewHolder, isLike, resultBean);
                         }
                     }
                 });
             }
-
 
             return convertView;
         }
