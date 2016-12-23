@@ -9,23 +9,15 @@ import java.util.List;
 
 public class CommentList {
 
+
     /**
      * Msg :
-     * Result : [{"addTime":"","commentId":"","content":"","headImg":"","nickName":"","replies":[{"content":"","nickName":"","replyTime":"","userId":""}]}]
+     * Result : [{"addTime":"2016-12-23 16:01:34","commentId":"534","content":"来一个","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","nickName":"肖前欣","replayName":""},{"addTime":"2016-12-23 16:09:01","commentId":"535","content":"厕所","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","nickName":"肖前欣","replayName":"肖前欣"},{"addTime":"2016-12-23 16:10:01","commentId":"536","content":"回复的回复改了没有","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","nickName":"肖前欣","replayName":"肖前欣"},{"addTime":"2016-12-23 16:17:07","commentId":"537","content":"谷歌","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","nickName":"肖前欣","replayName":"肖前欣"},{"addTime":"2016-12-23 16:17:37","commentId":"538","content":"这个？","headImg":"http://121.42.172.61/public/images/defaultAvatar.png","nickName":"肖前欣","replayName":"肖前欣"}]
      * Success : true
      */
 
     private String Msg;
     private boolean Success;
-    /**
-     * addTime :
-     * commentId :
-     * content :
-     * headImg :
-     * nickName :
-     * replies : [{"content":"","nickName":"","replyTime":"","userId":""}]
-     */
-
     private List<ResultBean> Result;
 
     public String getMsg() {
@@ -53,19 +45,21 @@ public class CommentList {
     }
 
     public static class ResultBean {
+        /**
+         * addTime : 2016-12-23 16:01:34
+         * commentId : 534
+         * content : 来一个
+         * headImg : http://121.42.172.61/public/images/defaultAvatar.png
+         * nickName : 肖前欣
+         * replayName :
+         */
+
         private String addTime;
         private String commentId;
         private String content;
         private String headImg;
         private String nickName;
-        /**
-         * content :
-         * nickName :
-         * replyTime :
-         * userId :
-         */
-
-        private List<RepliesBean> replies;
+        private String replayName;
 
         public String getAddTime() {
             return addTime;
@@ -107,60 +101,12 @@ public class CommentList {
             this.nickName = nickName;
         }
 
-        public List<RepliesBean> getReplies() {
-            return replies;
+        public String getReplayName() {
+            return replayName;
         }
 
-        public void setReplies(List<RepliesBean> replies) {
-            this.replies = replies;
-        }
-
-        public static class RepliesBean {
-            private String content;
-            private String nickName;
-            private String replyTime;
-            private String userId;
-            private String commentId;
-
-            public String getCommentId() {
-                return commentId;
-            }
-
-            public void setCommentId(String commentId) {
-                this.commentId = commentId;
-            }
-
-            public String getContent() {
-                return content;
-            }
-
-            public void setContent(String content) {
-                this.content = content;
-            }
-
-            public String getNickName() {
-                return nickName;
-            }
-
-            public void setNickName(String nickName) {
-                this.nickName = nickName;
-            }
-
-            public String getReplyTime() {
-                return replyTime;
-            }
-
-            public void setReplyTime(String replyTime) {
-                this.replyTime = replyTime;
-            }
-
-            public String getUserId() {
-                return userId;
-            }
-
-            public void setUserId(String userId) {
-                this.userId = userId;
-            }
+        public void setReplayName(String replayName) {
+            this.replayName = replayName;
         }
     }
 }

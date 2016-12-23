@@ -30,7 +30,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
-import com.chinalooke.yuwan.bean.Comment;
 import com.chinalooke.yuwan.bean.CommentList;
 import com.chinalooke.yuwan.bean.Dynamic;
 import com.chinalooke.yuwan.bean.LikeList;
@@ -105,16 +104,16 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     private RequestQueue mQueue;
     private String[] mSplit;
     private MyAdapter mMyAdapter;
-    private List<Comment> mList = new ArrayList<>();
     private Handler mHandler = new Handler();
     private ProgressDialog mProgressDialog;
     private Toast mToast;
-    private String mUserId;
     private String mCommentId;
     private int mDynamic_type;
     private Dynamic.ResultBean.ListBean mDynamicList;
     private boolean mIsJoin;
-    private String mReplyName;
+    private List<CommentList.ResultBean> mComments = new ArrayList<>();
+    private int COMMENT_TYPE;
+    private boolean mIsLoginUserLike;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,8 +123,9 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         mQueue = YuwanApplication.getQueue();
         mToast = YuwanApplication.getToast();
-        mMyAdapter = new MyAdapter(mList);
+        mMyAdapter = new MyAdapter(mComments);
         mListView.setAdapter(mMyAdapter);
+        mProgressDialog = MyUtils.initDialog("提交中", this);
         initData();
         initEvent();
     }
@@ -163,9 +163,9 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                             break;
                     }
                     if (!TextUtils.isEmpty(comment)) {
-                        if (TextUtils.isEmpty(mUserId) && TextUtils.isEmpty(mCommentId) && TextUtils.isEmpty(mReplyName)) {
+                        if (COMMENT_TYPE == 0) {
                             sendComment(comment, 0, activeId);
-                        } else if (!TextUtils.isEmpty(mCommentId)) {
+                        } else {
                             sendComment(comment, 1, activeId);
                         }
                     }
@@ -181,10 +181,9 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (mUserInfo != null) {
-                    Comment comment = mList.get(position);
-                    mUserId = comment.getUserId();
+                    CommentList.ResultBean comment = mComments.get(position);
                     mCommentId = comment.getCommentId();
-                    mReplyName = comment.getReplyName();
+                    COMMENT_TYPE = 1;
                     addComment();
                 } else {
                     mToast.setText("需登录才可以发表评论");
@@ -194,30 +193,28 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
         });
     }
 
-
     //发表评论
     private void sendComment(String comment, int i, final String activeId) {
-        mProgressDialog = MyUtils.initDialog("提交中", this);
         mProgressDialog.show();
         String url = null;
         switch (i) {
             case 0:
                 try {
-                    url = Constant.HOST + "sendComment&activeId=" + activeId + "&userId=" + mUserInfo.getUserId() + "&commentContent=" + URLEncoder.encode(comment, "utf8");
+                    url = Constant.HOST + "sendComment&activeId=" + activeId + "&userId=" + mUserInfo.getUserId() + "&commentContent=" + URLEncoder.encode(comment, "utf8")
+                            + "&activeType=" + activeType;
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
                 break;
             case 1:
                 try {
-                    url = Constant.HOST + "replyComment&commentId=" + mCommentId + "&replyContent=" + URLEncoder.encode(comment, "utf8") + "&userId=" + mUserInfo.getUserId();
+                    url = Constant.HOST + "replyComment&commentId=" + mCommentId + "&replyContent=" + URLEncoder.encode(comment, "utf8") + "&userId=" + mUserInfo.getUserId() + "&activeType=" + activeType;
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
                 break;
         }
 
-        Log.e("TAG", url);
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -228,7 +225,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                     if (success) {
                         mToast.setText("评论成功！");
                         mToast.show();
-                        mList.clear();
+                        mComments.clear();
                         getCommentList(activeId);
                     } else {
                         String msg = jsonObject.getString("Msg");
@@ -311,10 +308,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
         if (!TextUtils.isEmpty(address))
             mTvAddress.setText(address);
         if (mUserInfo != null) {
-            if (isLoginUserLike)
-                mIvDianzan.setImageResource(R.mipmap.dianzanhou);
-            else
-                mIvDianzan.setImageResource(R.mipmap.dianzan);
+            mIvDianzan.setImageResource(isLoginUserLike ? R.mipmap.dianzanhou : R.mipmap.dianzan);
         } else {
             mIvDianzan.setImageResource(R.mipmap.dianzan);
         }
@@ -328,11 +322,13 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
             case 0:
                 mDynamic = (WholeDynamic.ResultBean) getIntent().getSerializableExtra("dynamic");
                 activeType = "";
+                mIsLoginUserLike = mDynamic.isIsLoginUserLike();
                 initView(mDynamic);
                 break;
             case 1:
                 mDynamicList = (Dynamic.ResultBean.ListBean) getIntent().getSerializableExtra("dynamic");
                 activeType = "group";
+                mIsLoginUserLike = mDynamicList.isLoginUserLike();
                 initView(mDynamicList);
                 break;
         }
@@ -350,17 +346,33 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     //取得评论列表
     private void getCommentList(String activeId) {
         if (NetUtil.is_Network_Available(getApplicationContext())) {
-            String uri = Constant.HOST + "getCommentList&activeId=" + activeId;
-            Log.e("TAG", uri);
+            String uri = Constant.HOST + "getCommentList&activeId=" + activeId + "&avtiveType=" + activeType;
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     if (AnalysisJSON.analysisJson(response)) {
-                        Log.e("TAG", response);
                         Gson gson = new Gson();
                         CommentList commentList = gson.fromJson(response, CommentList.class);
                         if (commentList != null && commentList.getResult() != null) {
-                            classifyComment(commentList);
+                            List<CommentList.ResultBean> result = commentList.getResult();
+                            mComments.addAll(result);
+                            Collections.sort(mComments, new Comparator<CommentList.ResultBean>() {
+                                @Override
+                                public int compare(CommentList.ResultBean lhs, CommentList.ResultBean rhs) {
+                                    String laddTime = lhs.getAddTime();
+                                    String raddTime = rhs.getAddTime();
+                                    if (!TextUtils.isEmpty(laddTime) && !TextUtils.isEmpty(raddTime)) {
+                                        Date ldate = DateUtils.getDate(laddTime, "yyyy-MM-dd HH:mm:ss");
+                                        Date rdate = DateUtils.getDate(raddTime, "yyyy-MM-dd HH:mm:ss");
+                                        if (ldate.before(rdate))
+                                            return -1;
+                                        else
+                                            return 1;
+                                    }
+                                    return 0;
+                                }
+                            });
+                            mMyAdapter.notifyDataSetChanged();
                         }
                     }
 
@@ -373,75 +385,6 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
             });
             mQueue.add(request);
         }
-    }
-
-    //评论分组
-    private void classifyComment(CommentList commentList) {
-        List<CommentList.ResultBean> result = commentList.getResult();
-        for (CommentList.ResultBean resultBean : result) {
-            Comment comment = new Comment();
-            String addTime = resultBean.getAddTime();
-            if (!TextUtils.isEmpty(addTime)) {
-                comment.setAddTime(addTime);
-            }
-            String nickName = resultBean.getNickName();
-            if (!TextUtils.isEmpty(nickName))
-                comment.setName(nickName);
-
-            String content = resultBean.getContent();
-            if (!TextUtils.isEmpty(content)) {
-                comment.setContent(content);
-            }
-            String commentId = resultBean.getCommentId();
-            if (!TextUtils.isEmpty(commentId))
-                comment.setCommentId(commentId);
-
-            mList.add(comment);
-            List<CommentList.ResultBean.RepliesBean> replies = resultBean.getReplies();
-            if (replies != null && replies.size() != 0) {
-                for (CommentList.ResultBean.RepliesBean repliesBean : replies) {
-                    Comment comment1 = new Comment();
-                    comment1.setReplyName(nickName);
-                    String replyTime = repliesBean.getReplyTime();
-                    if (!TextUtils.isEmpty(replyTime))
-                        comment1.setAddTime(replyTime);
-
-                    String content1 = repliesBean.getContent();
-                    if (!TextUtils.isEmpty(content1)) {
-                        comment1.setContent(content1);
-                    }
-
-                    String nickName1 = repliesBean.getNickName();
-                    if (!TextUtils.isEmpty(nickName1))
-                        comment1.setName(nickName1);
-
-                    String userId = repliesBean.getUserId();
-                    if (!TextUtils.isEmpty(userId))
-                        comment1.setUserId(userId);
-                    String commentId1 = repliesBean.getCommentId();
-                    if (!TextUtils.isEmpty(commentId1))
-                        comment1.setCommentId(commentId1);
-                    mList.add(comment1);
-                }
-            }
-        }
-        Collections.sort(mList, new Comparator<Comment>() {
-            @Override
-            public int compare(Comment lhs, Comment rhs) {
-                String laddTime = lhs.getAddTime();
-                String raddTime = rhs.getAddTime();
-                if (!TextUtils.isEmpty(laddTime) && !TextUtils.isEmpty(raddTime)) {
-                    Date ldate = DateUtils.getDate(laddTime, "yyyy-MM-dd HH:mm:ss");
-                    Date rdate = DateUtils.getDate(raddTime, "yyyy-MM-dd HH:mm:ss");
-                    if (ldate.before(rdate))
-                        return -1;
-                    else
-                        return 1;
-                }
-                return 0;
-            }
-        });
-        mMyAdapter.notifyDataSetChanged();
     }
 
     //取得点赞用户列表
@@ -487,14 +430,21 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     @OnClick({R.id.iv_back, R.id.iv_camera, R.id.rl_pinglun, R.id.rl_dianzan})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_dianzan:
+            case R.id.rl_dianzan:
                 if (mUserInfo != null) {
                     switch (mDynamic_type) {
                         case 0:
-                            addFavour("addFavour", mDynamic.getActiveId());
+                            if (mIsLoginUserLike) {
+                                addFavour("delFavour", mDynamic.getActiveId());
+                            } else {
+                                addFavour("addFavour", mDynamic.getActiveId());
+                            }
                             break;
                         case 1:
-                            addFavour("addFavour", mDynamicList.getActiveId());
+                            if (mIsLoginUserLike) {
+                                addFavour("delFavour", mDynamicList.getActiveId());
+                            } else
+                                addFavour("addFavour", mDynamicList.getActiveId());
                             break;
                     }
                 } else {
@@ -503,6 +453,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 }
                 break;
             case R.id.rl_pinglun:
+                COMMENT_TYPE = 0;
                 if (mUserInfo != null)
                     switch (mDynamic_type) {
                         case 0:
@@ -532,7 +483,52 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
 
     //点赞
     private void addFavour(String s, String avtiveId) {
+        mProgressDialog.show();
         String url = Constant.HOST + s + "&activeId=" + avtiveId + "&userId=" + mUserInfo.getUserId() + "&activeType=" + activeType;
+        Log.e("TAG", url);
+        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                mProgressDialog.dismiss();
+                if (!TextUtils.isEmpty(response)) {
+                    Log.e("TAG", response);
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("Success");
+                        if (success) {
+                            if (mIsLoginUserLike)
+                                mToast.setText("取消点赞成功");
+                            else
+                                mToast.setText("点赞成功");
+                            mToast.show();
+                            mIsLoginUserLike = !mIsLoginUserLike;
+                            mIvDianzan.setImageResource(mIsLoginUserLike ? R.mipmap.dianzanhou : R.mipmap.dianzan);
+                        } else {
+                            String msg = jsonObject.getString("Msg");
+                            mToast.setText("点赞失败," + msg);
+                            mToast.show();
+                            mIvDianzan.setImageResource(mIsLoginUserLike ? R.mipmap.dianzanhou : R.mipmap.dianzan);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    mToast.setText("点赞失败");
+                    mToast.show();
+                    mIvDianzan.setImageResource(R.mipmap.dianzan);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                mToast.setText("点赞失败");
+                mToast.show();
+                mIvDianzan.setImageResource(R.mipmap.dianzan);
+            }
+        });
+        mQueue.add(request);
     }
 
     //评论点击
@@ -605,10 +601,10 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            Comment comment = mList.get(position);
-            String nickName = comment.getName();
+            CommentList.ResultBean comment = mComments.get(position);
+            String nickName = comment.getNickName();
             String content = comment.getContent();
-            String replyName = comment.getReplyName();
+            String replyName = comment.getReplayName();
             ForegroundColorSpan blueSpan = new ForegroundColorSpan(getResources().getColor(R.color.comment_text));
             ForegroundColorSpan blueSpan1 = new ForegroundColorSpan(getResources().getColor(R.color.comment_text));
             if (!TextUtils.isEmpty(nickName) && !TextUtils.isEmpty(content)) {
