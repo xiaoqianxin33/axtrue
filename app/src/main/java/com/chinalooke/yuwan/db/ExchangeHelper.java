@@ -75,6 +75,7 @@ public class ExchangeHelper extends OrmLiteSqliteOpenHelper {
     public void close() {
         super.close();
         userDao = null;
+        pushMessageDao = null;
     }
 
 

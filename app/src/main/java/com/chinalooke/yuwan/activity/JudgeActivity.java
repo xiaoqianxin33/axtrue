@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridView;
@@ -27,7 +28,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.adapter.AbstractSpinerAdapter;
 import com.chinalooke.yuwan.adapter.CustemSpinerAdapter;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.bean.CustemObject;
@@ -37,6 +37,7 @@ import com.chinalooke.yuwan.bean.PlayerBean;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.ViewHelper;
 import com.chinalooke.yuwan.view.MyScrollView;
 import com.chinalooke.yuwan.view.SpinnerPopWindow;
@@ -52,6 +53,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -104,6 +106,9 @@ public class JudgeActivity extends AutoLayoutActivity {
     private List<PlayerBean> mPlayerBeanList = new ArrayList<>();
     private GridAdapter mGridAdapter;
     private int GAME_COUNT = 1;
+    private int mCount;
+    private HashMap<PlayerBean, String> mHashMap = new HashMap<>();
+    private int mChose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,12 +127,23 @@ public class JudgeActivity extends AutoLayoutActivity {
     }
 
     private void initEvent() {
-        //场次选择事件监听
-        mSpinnerPopWindow.setItemListener(new AbstractSpinerAdapter.IOnItemSelectListener() {
+        //gridView item点击选择事件
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(int pos) {
-                GAME_COUNT = pos;
-
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PlayerBean playerBean = (PlayerBean) parent.getItemAtPosition(position);
+                ImageView viewById = (ImageView) view.findViewById(R.id.iv_check);
+                String s = mHashMap.get(playerBean);
+                if ("0".equals(s)) {
+                    viewById.setVisibility(View.VISIBLE);
+                    mHashMap.put(playerBean, "1");
+                    mChose++;
+                } else if ("1".equals(s)) {
+                    viewById.setVisibility(View.GONE);
+                    mHashMap.put(playerBean, "0");
+                    mChose--;
+                }
+                mTvChose.setText("已选(" + mChose + ")");
             }
         });
 
@@ -152,7 +168,11 @@ public class JudgeActivity extends AutoLayoutActivity {
     }
 
     private void initData() {
-        String gameDeskId = mGameDesk.getGameDeskId();
+        String count = getIntent().getStringExtra("count");
+        mViewLeft.setText("第" + count + "场");
+        mTvCount.setText("第" + count + "场赢家选择");
+        mCount = Integer.parseInt(count);
+        String gameDeskId = getIntent().getStringExtra("gameDeskId");
         if (!TextUtils.isEmpty(gameDeskId))
             getGameDeskWithId(gameDeskId);
     }
@@ -198,6 +218,14 @@ public class JudgeActivity extends AutoLayoutActivity {
                             if (gameDesk != null) {
                                 GameDeskDetails.ResultBean result = gameDesk.getResult();
                                 String gameCount = result.getGameCount();
+                                int gameCountInt = Integer.parseInt(gameCount);
+                                if (mCount < gameCountInt) {
+                                    mListView.setVisibility(View.GONE);
+                                    mGridView.setVisibility(View.VISIBLE);
+                                } else {
+                                    mListView.setVisibility(View.VISIBLE);
+                                    mGridView.setVisibility(View.GONE);
+                                }
                                 initSpinnerData(gameCount);
                                 GameDeskDetails.ResultBean.PlayersBean players = gameDesk.getResult().getPlayers();
                                 if (gameDesk.getResult() != null && players != null) {
@@ -205,31 +233,42 @@ public class JudgeActivity extends AutoLayoutActivity {
                                     List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> left = players.getLeft();
                                     if (right != null && right.size() != 0) {
                                         for (GameDeskDetails.ResultBean.PlayersBean.RightBean rightBean : right) {
-                                            PlayerBean playerBean = new PlayerBean();
-                                            if (!TextUtils.isEmpty(rightBean.getHeadImg()))
-                                                playerBean.setHeadImg(rightBean.getHeadImg());
-                                            if (!TextUtils.isEmpty(rightBean.getNickName()))
-                                                playerBean.setNickName(rightBean.getNickName());
-                                            if (!TextUtils.isEmpty(rightBean.getStatus()))
-                                                playerBean.setStatus(rightBean.getStatus());
-                                            if (!TextUtils.isEmpty(rightBean.getUserId()))
-                                                playerBean.setUserId(rightBean.getUserId());
-                                            mPlayerBeanList.add(playerBean);
+                                            boolean isLoser = rightBean.isIsLoser();
+                                            if (!isLoser) {
+                                                PlayerBean playerBean = new PlayerBean();
+                                                if (!TextUtils.isEmpty(rightBean.getHeadImg()))
+                                                    playerBean.setHeadImg(rightBean.getHeadImg());
+                                                if (!TextUtils.isEmpty(rightBean.getNickName()))
+                                                    playerBean.setNickName(rightBean.getNickName());
+                                                if (!TextUtils.isEmpty(rightBean.getStatus()))
+                                                    playerBean.setStatus(rightBean.getStatus());
+                                                if (!TextUtils.isEmpty(rightBean.getUserId()))
+                                                    playerBean.setUserId(rightBean.getUserId());
+                                                mPlayerBeanList.add(playerBean);
+                                            }
                                         }
                                     }
                                     if (left != null && left.size() != 0) {
                                         for (GameDeskDetails.ResultBean.PlayersBean.LeftBean rightBean : left) {
-                                            PlayerBean playerBean = new PlayerBean();
-                                            if (!TextUtils.isEmpty(rightBean.getHeadImg()))
-                                                playerBean.setHeadImg(rightBean.getHeadImg());
-                                            if (!TextUtils.isEmpty(rightBean.getNickName()))
-                                                playerBean.setNickName(rightBean.getNickName());
-                                            if (!TextUtils.isEmpty(rightBean.getStatus()))
-                                                playerBean.setStatus(rightBean.getStatus());
-                                            if (!TextUtils.isEmpty(rightBean.getUserId()))
-                                                playerBean.setUserId(rightBean.getUserId());
-                                            mPlayerBeanList.add(playerBean);
+                                            boolean isLoser = rightBean.isIsLoser();
+                                            if (!isLoser) {
+                                                PlayerBean playerBean = new PlayerBean();
+                                                if (!TextUtils.isEmpty(rightBean.getHeadImg()))
+                                                    playerBean.setHeadImg(rightBean.getHeadImg());
+                                                if (!TextUtils.isEmpty(rightBean.getNickName()))
+                                                    playerBean.setNickName(rightBean.getNickName());
+                                                if (!TextUtils.isEmpty(rightBean.getStatus()))
+                                                    playerBean.setStatus(rightBean.getStatus());
+                                                if (!TextUtils.isEmpty(rightBean.getUserId()))
+                                                    playerBean.setUserId(rightBean.getUserId());
+                                                mPlayerBeanList.add(playerBean);
+                                            }
                                         }
+                                    }
+
+                                    for (int i = 0; i < mPlayerBeanList.size(); i++) {
+                                        PlayerBean playerBean = mPlayerBeanList.get(i);
+                                        mHashMap.put(playerBean, "0");
                                     }
                                 }
                             }
@@ -268,26 +307,25 @@ public class JudgeActivity extends AutoLayoutActivity {
         mViewLeft.setText("第1场");
     }
 
-    @OnClick({R.id.viewLeft, R.id.iv_back})
+    @OnClick({R.id.iv_back, R.id.btn_submit})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.viewLeft:
-                String s = mViewLeft.getText().toString();
-                if (!s.equals("加载中")) {
-                    mCustemSpinerAdapter.refreshData(mCustemObjects, 0, null);
-                    mSpinnerPopWindow.setItemListener(new AbstractSpinerAdapter.IOnItemSelectListener() {
-                        @Override
-                        public void onItemClick(int pos) {
-                            String data = mCustemObjects.get(pos).data;
-                            mViewLeft.setText(data);
-                        }
-                    });
-                    mSpinnerPopWindow.showAsDropDown(mViewLeft);
-                }
+            case R.id.btn_submit:
+                JudgeWinerForNetbar();
                 break;
             case R.id.iv_back:
                 finish();
                 break;
+        }
+    }
+
+    //提交赢家
+    private void JudgeWinerForNetbar() {
+        if (NetUtil.is_Network_Available(getApplicationContext())) {
+
+        } else {
+            mToast.setText("网络不可用，请检查网络连接");
+            mToast.show();
         }
     }
 

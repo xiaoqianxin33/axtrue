@@ -19,11 +19,11 @@ import android.widget.TextView;
 
 import com.avos.avoscloud.PushService;
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.activity.MyChatActivity;
 import com.chinalooke.yuwan.activity.FriendsActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.MyBalanceActivity;
+import com.chinalooke.yuwan.activity.MyChatActivity;
 import com.chinalooke.yuwan.activity.MyMessageActivity;
 import com.chinalooke.yuwan.activity.PayForPlayerActivity;
 import com.chinalooke.yuwan.activity.RecordActivity;
@@ -32,14 +32,21 @@ import com.chinalooke.yuwan.activity.ShopActivity;
 import com.chinalooke.yuwan.activity.SignInActivity;
 import com.chinalooke.yuwan.activity.UserInfoActivity;
 import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.bean.PushMessage;
+import com.chinalooke.yuwan.db.ExchangeHelper;
 import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.ViewHelper;
 import com.chinalooke.yuwan.view.MyScrollView;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
+import com.j256.ormlite.dao.Dao;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -257,6 +264,15 @@ public class WodeFragment extends Fragment {
                             LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(null);
                             setCancelDialog();
                             onResume();
+                            ExchangeHelper helper = ExchangeHelper.getHelper(mActivity);
+                            try {
+                                Dao<PushMessage, Integer> pushDao = helper.getPushDao();
+                                List<PushMessage> pushMessages = pushDao.queryForAll();
+                                pushDao.delete(pushMessages);
+                                pushDao.closeLastIterator();
+                            } catch (SQLException | IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }, new DialogInterface.OnClickListener() {
                         @Override

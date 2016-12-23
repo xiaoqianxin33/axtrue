@@ -23,6 +23,7 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.db.ExchangeHelper;
 import com.chinalooke.yuwan.fragment.AdvertisementFragment;
 import com.chinalooke.yuwan.fragment.BattleFieldFragment;
 import com.chinalooke.yuwan.fragment.BlackFragment;
@@ -340,6 +341,8 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
             mToast.show();
             exitTime = System.currentTimeMillis();
         } else {
+            ExchangeHelper helper = ExchangeHelper.getHelper(getApplicationContext());
+            helper.close();
             finish();
         }
     }

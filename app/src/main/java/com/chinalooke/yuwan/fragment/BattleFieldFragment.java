@@ -27,7 +27,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.GameDeskActivity;
-import com.chinalooke.yuwan.activity.JudgeActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.QRCodeActivity;
@@ -332,16 +331,14 @@ public class BattleFieldFragment extends Fragment {
 
     private void interItem(int i) {
         GameDesk.ResultBean resultBean = mDeskList.get(i);
-        Intent intent = new Intent();
-        if (isNetbar) {
-            intent.setClass(mActivity, JudgeActivity.class);
-        } else {
+        if (!isNetbar) {
+            Intent intent = new Intent();
             intent.setClass(mActivity, GameDeskActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("gameDesk", resultBean);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("gameDesk", resultBean);
-        intent.putExtras(bundle);
-        startActivity(intent);
     }
 
     //判断recycleView是否已经滑到底部

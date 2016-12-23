@@ -30,11 +30,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVInstallation;
-import com.avos.avoscloud.AVPush;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.SendCallback;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.GameDesk;
 import com.chinalooke.yuwan.bean.GameDeskDetails;
@@ -630,7 +625,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             boolean result = jsonObject.getBoolean("Result");
                             if (result) {
-                                pushToLose();
                                 mTvOk.setText("请等待对方确认");
                                 mTvOk.setEnabled(false);
                             }
@@ -661,46 +655,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
         } else {
             mToast.setText("网络未连接，请稍后尝试");
             mToast.show();
-        }
-    }
-
-    //推送消息给输家
-    private void pushToLose() {
-        String pushUserId = null;
-        switch (mGroup) {
-            case 1:
-                pushUserId = mRight.get(0).getUserId();
-                break;
-            case 2:
-                pushUserId = mLeftBeen.get(0).getUserId();
-                break;
-        }
-        AVQuery<AVInstallation> pushQuery = AVInstallation.getQuery();
-        pushQuery.whereEqualTo("channels", pushUserId + "game_result");
-        AVPush push = new AVPush();
-        JSONObject jsonObject = new JSONObject();
-        mGameDeskDetails.getResult().setDeskId(mGameDeskId);
-        String gameDeskDetails = mGson.toJson(mGameDeskDetails);
-        try {
-            jsonObject.put("title", "雷熊");
-            jsonObject.put("alert", "您有战场结果出炉了，请确认输赢");
-            jsonObject.put("gameDeskDetails", gameDeskDetails);
-            push.setData(jsonObject);
-            push.setQuery(pushQuery);
-            push.setPushToAndroid(true);
-            push.setPushToIOS(true);
-            push.sendInBackground(new SendCallback() {
-                @Override
-                public void done(AVException e) {
-                    if (e == null) {
-
-                    } else {
-                        pushToLose();
-                    }
-                }
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 
