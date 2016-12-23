@@ -51,8 +51,7 @@
         android:id="@+id/rl_ranking"
         android:layout_width="match_parent"
         android:layout_height="95px"
-        android:background="@android:color/white"
-        android:visibility="gone">
+        android:background="@android:color/white">
 
         <TextView
             android:layout_width="match_parent"
@@ -86,8 +85,7 @@
         android:id="@+id/rl_price"
         android:layout_width="match_parent"
         android:layout_height="95px"
-        android:background="@android:color/white"
-        android:visibility="gone">
+        android:background="@android:color/white">
 
         <TextView
             style="@style/yuezhan_title"

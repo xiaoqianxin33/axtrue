@@ -1,10 +1,13 @@
 package com.chinalooke.yuwan.activity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,16 +31,19 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.bigkoo.pickerview.OptionsPickerView;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.CustemSpinerAdapter;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.bean.CustemObject;
 import com.chinalooke.yuwan.bean.GameDesk;
 import com.chinalooke.yuwan.bean.GameDeskDetails;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.PlayerBean;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.ViewHelper;
@@ -56,6 +62,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -106,14 +113,50 @@ public class JudgeActivity extends AutoLayoutActivity {
     private List<CustemObject> mCustemObjects;
     private CustemSpinerAdapter mCustemSpinerAdapter;
     private SpinnerPopWindow mSpinnerPopWindow;
-    private List<PlayerBean> mPlayerBeanList = new ArrayList<>();
+    private ArrayList<PlayerBean> mPlayerBeanList = new ArrayList<>();
     private GridAdapter mGridAdapter;
     private int GAME_COUNT = 1;
     private int mCount;
     private HashMap<PlayerBean, String> mHashMap = new HashMap<>();
+    private HashMap<String, String> mPayMap = new HashMap<>();
+    private HashMap<Integer, Integer> mIntegerIntegerHashMap = new HashMap<>();
     private int mChose;
     private ProgressDialog mProgressDialog;
     private List<PlayerBean> mWinnerList = new ArrayList<>();
+    private LoginUser.ResultBean mUser;
+    private String mGameDeskId;
+    private int mGameCountInt;
+    private int SUBMIT_COUNT;
+    private List<String> mRantingList = new ArrayList<>();
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 1) {
+                if (mCount < mGameCountInt) {
+                    if (SUBMIT_COUNT == mWinnerList.size()) {
+                        showSucceedDialog();
+                    }
+                } else {
+                    if (SUBMIT_COUNT == mIntegerIntegerHashMap.size()) {
+                        showSucceedDialog();
+                    }
+                }
+            }
+        }
+    };
+
+    private void showSucceedDialog() {
+        mProgressDialog.dismiss();
+        MyUtils.showDialog(JudgeActivity.this, "提示", "提交成功", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+    }
+
+    private MyAdapter mMyAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +168,7 @@ public class JudgeActivity extends AutoLayoutActivity {
         mQueue = YuwanApplication.getQueue();
         mToast = YuwanApplication.getToast();
         mGameDesk = (GameDesk.ResultBean) getIntent().getSerializableExtra("gameDesk");
+        mUser = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         initTopScroll();
         initView();
         initData();
@@ -170,6 +214,8 @@ public class JudgeActivity extends AutoLayoutActivity {
         }
         mGridAdapter = new GridAdapter(mPlayerBeanList);
         mGridView.setAdapter(mGridAdapter);
+        mMyAdapter = new MyAdapter(mPlayerBeanList);
+        mListView.setAdapter(mMyAdapter);
     }
 
     private void initData() {
@@ -177,9 +223,9 @@ public class JudgeActivity extends AutoLayoutActivity {
         mViewLeft.setText("第" + count + "场");
         mTvCount.setText("第" + count + "场赢家选择");
         mCount = Integer.parseInt(count);
-        String gameDeskId = getIntent().getStringExtra("gameDeskId");
-        if (!TextUtils.isEmpty(gameDeskId))
-            getGameDeskWithId(gameDeskId);
+        mGameDeskId = getIntent().getStringExtra("gameDeskId");
+        if (!TextUtils.isEmpty(mGameDeskId))
+            getGameDeskWithId(mGameDeskId);
     }
 
     //顶部滑动渐变设置
@@ -222,9 +268,11 @@ public class JudgeActivity extends AutoLayoutActivity {
                             GameDeskDetails gameDesk = gson.fromJson(response, type);
                             if (gameDesk != null) {
                                 GameDeskDetails.ResultBean result = gameDesk.getResult();
+                                String gamePay = result.getGamePay();
+                                initPay(gamePay);
                                 String gameCount = result.getGameCount();
-                                int gameCountInt = Integer.parseInt(gameCount);
-                                if (mCount < gameCountInt) {
+                                mGameCountInt = Integer.parseInt(gameCount);
+                                if (mCount < mGameCountInt) {
                                     mListView.setVisibility(View.GONE);
                                     mGridView.setVisibility(View.VISIBLE);
                                 } else {
@@ -277,7 +325,8 @@ public class JudgeActivity extends AutoLayoutActivity {
                                     }
                                 }
                             }
-
+                            mMyAdapter.notifyDataSetChanged();
+                            mGridAdapter.notifyDataSetChanged();
                         } else {
                             try {
                                 JSONObject jsonObject = new JSONObject(response);
@@ -298,6 +347,19 @@ public class JudgeActivity extends AutoLayoutActivity {
         mQueue.add(stringRequest);
     }
 
+    /**
+     * 初始化奖金名次数据
+     *
+     * @param gamePay 网络请求返回字符串
+     */
+    private void initPay(String gamePay) {
+        String[] substring = gamePay.split(",");
+        for (String s : substring) {
+            String[] split = s.split("|");
+            mPayMap.put(split[0], split[1]);
+        }
+    }
+
     //初始化spinner数据
     private void initSpinnerData(String gameCount) {
         mCustemSpinerAdapter = new CustemSpinerAdapter(this);
@@ -316,7 +378,40 @@ public class JudgeActivity extends AutoLayoutActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_submit:
-                JudgeWinerForNetbar();
+                if (NetUtil.is_Network_Available(getApplicationContext())) {
+                    if (mCount < mGameCountInt) {
+                        for (Map.Entry<PlayerBean, String> next : mHashMap.entrySet()) {
+                            String value = next.getValue();
+                            if ("1".equals(value)) {
+                                mWinnerList.add(next.getKey());
+                            }
+                        }
+                        if (mWinnerList.size() == 0) {
+                            mToast.setText("请选择战场赢家！");
+                            mToast.show();
+                            return;
+                        } else {
+                            SUBMIT_COUNT = 0;
+                            mProgressDialog = MyUtils.initDialog("提交中", this);
+                            mProgressDialog.show();
+                            for (PlayerBean playerBean : mPlayerBeanList) {
+                                submitRating(playerBean.getUserId(), "1");
+                            }
+                        }
+                    } else if (mCount == mGameCountInt) {
+                        if (checkRating()) {
+                            for (Map.Entry<Integer, Integer> next : mIntegerIntegerHashMap.entrySet()) {
+                                Integer key = next.getValue();
+                                PlayerBean playerBean = mPlayerBeanList.get(key);
+                                String userId = playerBean.getUserId();
+                                submitRating(userId, next.getKey() + "");
+                            }
+                        }
+                    }
+                } else {
+                    mToast.setText("网络不可用，请检查网络连接");
+                    mToast.show();
+                }
                 break;
             case R.id.iv_back:
                 finish();
@@ -324,41 +419,61 @@ public class JudgeActivity extends AutoLayoutActivity {
         }
     }
 
-    //提交赢家
-    private void JudgeWinerForNetbar() {
-        for (Map.Entry<PlayerBean, String> next : mHashMap.entrySet()) {
-            String value = next.getValue();
-            if ("1".equals(value)) {
-                mWinnerList.add(next.getKey());
+    //检查是否有重复名次
+    private boolean checkRating() {
+        HashSet set = new HashSet();
+        for (String s : mRantingList)
+            set.add(s);
+        if (!(set.size() == mRantingList.size())) {
+            mToast.setText("名次不能重复，请重新选择");
+            mToast.show();
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * 单次提交名次
+     *
+     * @param userId 玩家id
+     * @param rating 玩家名次
+     */
+    private void submitRating(String userId, String rating) {
+        String url = Constant.HOST + "JudgeWinerForNetbar&netbarId=" + mUser.getUserId() + "&netbarUserId=" + mUser.getUserId()
+                + "&gameDeskId=" + mGameDeskId + "&gameCount=" + mCount + "&userId=" + userId + "&rating=" + rating;
+
+        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (AnalysisJSON.analysisJson(response)) {
+                    SUBMIT_COUNT++;
+                    mHandler.sendEmptyMessage(1);
+                } else {
+                    mProgressDialog.dismiss();
+                    MyUtils.showMsg(mToast, response);
+                }
             }
-        }
-        if (mWinnerList.size() == 0) {
-            mToast.setText("请选择战场赢家！");
-            mToast.show();
-            return;
-        }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                mToast.setText("服务器抽风了，请稍后再试");
+                mToast.show();
+            }
+        });
 
-        if (NetUtil.is_Network_Available(getApplicationContext())) {
-            mProgressDialog = MyUtils.initDialog("提交中", this);
-            mProgressDialog.show();
-
-
-        } else {
-            mToast.setText("网络不可用，请检查网络连接");
-            mToast.show();
-        }
+        mQueue.add(request);
     }
 
     class MyAdapter extends MyBaseAdapter {
-        private int mWinner;
 
-        public MyAdapter(List dataSource, int winner) {
+        public MyAdapter(List dataSource) {
             super(dataSource);
-            this.mWinner = winner;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             final ViewHolder viewHolder;
             if (convertView == null) {
                 convertView = View.inflate(JudgeActivity.this, R.layout.item_judge_listview, null);
@@ -369,21 +484,11 @@ public class JudgeActivity extends AutoLayoutActivity {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            String headImg;
-            String nickName;
-            if (mWinner == 0) {
-                GameDeskDetails.ResultBean.PlayersBean.LeftBean leftBean = (GameDeskDetails.ResultBean.PlayersBean.LeftBean) mDataSource.get(position);
-                headImg = leftBean.getHeadImg();
-                nickName = leftBean.getNickName();
-            } else {
-                GameDeskDetails.ResultBean.PlayersBean.RightBean rightBean = (GameDeskDetails.ResultBean.PlayersBean.RightBean) mDataSource.get(position);
-                headImg = rightBean.getHeadImg();
-                nickName = rightBean.getNickName();
-            }
-
+            PlayerBean playerBean = mPlayerBeanList.get(position);
+            String headImg = playerBean.getHeadImg();
+            String nickName = playerBean.getNickName();
             if (!TextUtils.isEmpty(nickName))
                 viewHolder.mTvName.setText(nickName);
-
             if (!TextUtils.isEmpty(headImg))
                 Picasso.with(getApplicationContext()).load(headImg + "?imageView2/1/w/64/h/64").into(viewHolder.mRoundedImageView);
 
@@ -406,7 +511,7 @@ public class JudgeActivity extends AutoLayoutActivity {
             viewHolder.mTvRanking.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    alertPicker(viewHolder.mTvRanking, viewHolder.mTvPrice);
+                    alertPicker(viewHolder.mTvRanking, viewHolder.mTvPrice, position);
                 }
             });
 
@@ -475,7 +580,29 @@ public class JudgeActivity extends AutoLayoutActivity {
         }
     }
 
-    private void alertPicker(TextView tvRanking, TextView tvPrice) {
-
+    private void alertPicker(final TextView tvRanking, final TextView tvPrice, final int position) {
+        ArrayList<String> list = new ArrayList<>();
+        for (int i = 1; i <= mPlayerBeanList.size(); i++) {
+            list.add(i + "");
+        }
+        OptionsPickerView optionsPickerView = new OptionsPickerView(this);
+        optionsPickerView.setPicker(list);
+        optionsPickerView.setTitle("选择名次");
+        optionsPickerView.setCyclic(false);
+        optionsPickerView.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
+            @Override
+            public void onOptionsSelect(int options1, int option2, int options3) {
+                String s1 = tvRanking.getText().toString();
+                if (!TextUtils.isEmpty(s1))
+                    mRantingList.remove(s1);
+                tvRanking.setText(options1 + "");
+                mRantingList.add(options1 + "");
+                mIntegerIntegerHashMap.put(options1, position);
+                String s = mPayMap.get(options1 + "");
+                if (!TextUtils.isEmpty(s))
+                    tvPrice.setText(s);
+            }
+        });
+        optionsPickerView.show();
     }
 }

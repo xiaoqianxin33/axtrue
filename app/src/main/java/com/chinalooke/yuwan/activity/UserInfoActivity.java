@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -556,7 +555,11 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     private void update() {
         String url = Constant.HOST + "updateUserInfo&userId=" + mUserInfo.getUserId() + "&headImg=" + mPath;
         if (mAddress != null)
-            url = url + "&address=" + mAddress;
+            try {
+                url = url + "&address=" + URLEncoder.encode(mAddress,"utf8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         else
             url = url + "&address=";
         if (mSlogan != null)
@@ -597,7 +600,6 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             String replace = substring.replace(" ", "");
             url = url + "&gameId=" + replace;
         }
-        Log.e("TAG", url);
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
