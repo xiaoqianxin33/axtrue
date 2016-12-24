@@ -5,7 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-import com.chinalooke.yuwan.bean.LoginUser;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
@@ -40,16 +39,16 @@ public class NetUtil {
     }
 
     //注册环信账号
-    public static void registerHx(final LoginUser.ResultBean result) {
+    public static void registerHx(final String phone) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    EMClient.getInstance().createAccount(result.getUserId(), result.getUserId() + "aa");
-                    loginHx(result);
+                    EMClient.getInstance().createAccount(phone, phone);
+                    loginHx(phone);
                 } catch (HyphenateException e) {
                     e.printStackTrace();
-                    loginHx(result);
+                    loginHx(phone);
                 }
             }
         }).start();
@@ -57,8 +56,8 @@ public class NetUtil {
 
 
     //登录环信
-    public static void loginHx(LoginUser.ResultBean result) {
-        EMClient.getInstance().login(result.getUserId(), result.getUserId() + "aa", new EMCallBack() {//回调
+    public static void loginHx(final String phone) {
+        EMClient.getInstance().login(phone, phone, new EMCallBack() {//回调
             @Override
             public void onSuccess() {
                 EMClient.getInstance().groupManager().loadAllGroups();

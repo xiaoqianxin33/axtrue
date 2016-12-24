@@ -258,7 +258,7 @@ public class BindPhoneActivity extends AutoLayoutActivity {
             e.printStackTrace();
         }
         Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
-        NetUtil.registerHx(userInfo);
+        NetUtil.registerHx(mPhone);
         Intent intent = new Intent(this, PersonalInfoActivity.class);
         startActivity(intent);
         finish();

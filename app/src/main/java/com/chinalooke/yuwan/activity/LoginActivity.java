@@ -323,7 +323,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
             if (userInfo != null) {
                 LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo.getResult());//设置userInfo
                 LoginUserInfoUtils.saveObject(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo.getResult());
-                registerHx(userInfo.getResult());
+                registerHx(phone);
                 PushService.subscribe(this, userInfo.getResult().getUserId(), MyMessageActivity.class);
                 Log.e("TAG", userInfo.getResult().getUserId());
             }

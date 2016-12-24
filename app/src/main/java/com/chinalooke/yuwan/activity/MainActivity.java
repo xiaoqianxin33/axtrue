@@ -36,6 +36,10 @@ import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
+import com.hyphenate.EMMessageListener;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMMessageBody;
 import com.zhy.autolayout.AutoLayoutActivity;
 
 import java.util.ArrayList;
@@ -93,6 +97,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     private AdvertisementFragment mAdvertisementFragment;
     private OnBGAListener mOnBGAListener;
     private OnBGAListener mPhotoOnBGAListener;
+    private EMMessageListener mMsgListener;
 
     public RequestQueue getQueue() {
         return mQueue;
@@ -130,6 +135,47 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         switchContent(mBlackFragment, mBattleFieldFragment);
         setSelected(1);
         initView();
+        initEvent();
+    }
+
+    private void initEvent() {
+        boolean hxMessage = PreferenceUtils.getPrefBoolean(getApplicationContext(), "hxMessage", true);
+        if (hxMessage) {
+            EMClient.getInstance().chatManager().addMessageListener(mMsgListener);
+            mMsgListener = new EMMessageListener() {
+
+                @Override
+                public void onMessageReceived(List<EMMessage> messages) {
+                    //收到消息
+                    if (messages != null && messages.size() != 0) {
+                        EMMessage emMessage = messages.get(0);
+                        EMMessageBody body = emMessage.getBody();
+                        String userName = emMessage.getUserName();
+
+                    }
+                }
+
+                @Override
+                public void onCmdMessageReceived(List<EMMessage> messages) {
+                    //收到透传消息
+                }
+
+                @Override
+                public void onMessageReadAckReceived(List<EMMessage> messages) {
+                    //收到已读回执
+                }
+
+                @Override
+                public void onMessageDeliveryAckReceived(List<EMMessage> message) {
+                    //收到已送达回执
+                }
+
+                @Override
+                public void onMessageChanged(EMMessage message, Object change) {
+                    //消息状态变动
+                }
+            };
+        }
     }
 
     private void initView() {
@@ -154,7 +200,8 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
             mLocationClient.stopLocation();
             mLocationClient.onDestroy();
         }
-
+        if (mMsgListener != null)
+            EMClient.getInstance().chatManager().removeMessageListener(mMsgListener);
     }
 
     public void setPhotoOnBGAListener(OnBGAListener photoOnBGAListener) {
