@@ -48,6 +48,7 @@ import com.chinalooke.yuwan.bean.CircleAD;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.ImageUtils;
 import com.chinalooke.yuwan.utils.LocationUtils;
@@ -325,8 +326,8 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                 String img = adImg.get(0);
                 ImageView imageView = new ImageView(getActivity());
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                Picasso.with(getActivity()).load(img).resize(MyUtils.Dp2Px(getActivity(), ViewHelper.getDisplayMetrics(getActivity()).widthPixels), 340)
-                        .centerCrop().into(imageView);
+                String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, img, MyUtils.Dp2Px(getActivity(), ViewHelper.getDisplayMetrics(getActivity()).widthPixels), 340);
+                Picasso.with(getActivity()).load(loadImageUrl).into(imageView);
                 mAdList.add(imageView);
             }
         }
@@ -370,7 +371,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                 case R.id.rl_create_circle:
                     if (mUserInfo != null)
                         startActivity(new Intent(getActivity(), CreateCircleActivity.class));
-                    else{
+                    else {
                         startActivity(new Intent(getActivity(), LoginActivity.class));
                         mActivity.finish();
                     }
@@ -468,8 +469,12 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             Circle.ResultBean resultBean = mNearbyCircles.get(position);
-            Picasso.with(mActivity).load(resultBean.getHeadImg()).resize(MyUtils.Dp2Px(mActivity
-                    , 80), MyUtils.Dp2Px(mActivity, 80)).centerCrop().into(viewHolder.mIvCircleImage);
+            String headImg = resultBean.getHeadImg();
+            if (!TextUtils.isEmpty(headImg)) {
+                String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, headImg, MyUtils.Dp2Px(mActivity
+                        , 80), MyUtils.Dp2Px(mActivity, 80));
+                Picasso.with(mActivity).load(loadImageUrl).into(viewHolder.mIvCircleImage);
+            }
             viewHolder.mTvCircleName.setText(resultBean.getGroupName());
             viewHolder.mTvCircleDetails.setText(resultBean.getDetails());
             viewHolder.mTvDiscountCircle.setText(resultBean.getDistance() + "m");
@@ -557,8 +562,12 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             Circle.ResultBean resultBean = mList.get(position);
             viewHolder.mTvGameName.setText(resultBean.getGroupName());
             viewHolder.mTvView.setText("人气  " + resultBean.getViews());
-            Picasso.with(mActivity).load(resultBean.getHeadImg() + "?imageView2/1/w/200/h/200")
-                    .into(viewHolder.mIvGameimage);
+            String headImg = resultBean.getHeadImg();
+            if (!TextUtils.isEmpty(headImg)) {
+                String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, headImg, 200, 200);
+                Picasso.with(mActivity).load(loadImageUrl)
+                        .into(viewHolder.mIvGameimage);
+            }
             return convertView;
         }
 

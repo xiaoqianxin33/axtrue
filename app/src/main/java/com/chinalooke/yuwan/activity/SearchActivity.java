@@ -26,6 +26,7 @@ import com.chinalooke.yuwan.bean.GameDesk;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.constant.MyLinearLayoutManager;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.KeyboardUtils;
@@ -339,8 +340,8 @@ public class SearchActivity extends AutoLayoutActivity {
 
             String gameImage = item.getGameImage();
             if (!TextUtils.isEmpty(gameImage)) {
-                String url = gameImage + "?imageView2/1/w/225/h/172";
-                Picasso.with(mContext).load(url).into((ImageView) helper.getView(R.id.image));
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), gameImage, 225, 172);
+                Picasso.with(mContext).load(loadImageUrl).into((ImageView) helper.getView(R.id.image));
             }
 
             String curPlayNum = item.getCurPlayNum();

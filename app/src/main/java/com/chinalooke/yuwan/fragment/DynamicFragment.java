@@ -41,10 +41,10 @@ import com.chinalooke.yuwan.bean.NetbarAdvertisement;
 import com.chinalooke.yuwan.bean.WholeDynamic;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
-import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.ViewHelper;
 import com.google.gson.Gson;
@@ -191,7 +191,8 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                 for (String uri : adImg) {
                     ImageView imageView = new ImageView(mActivity);
                     imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    Picasso.with(mActivity).load(uri + "?imageView2/1/w/" + ViewHelper.getDisplayMetrics(mActivity).widthPixels + "/h/" + MyUtils.Dp2Px(getActivity(), 200))
+                    String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, uri, ViewHelper.getDisplayMetrics(mActivity).widthPixels, 200);
+                    Picasso.with(mActivity).load(loadImageUrl)
                             .into(imageView);
                     AutoUtils.autoSize(imageView);
                     mAdList.add(imageView);
@@ -471,8 +472,10 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
 
             final WholeDynamic.ResultBean resultBean = (WholeDynamic.ResultBean) mDataSource.get(position);
             String headImg = resultBean.getHeadImg();
-            if (!TextUtils.isEmpty(headImg))
-                Picasso.with(mContext).load(headImg).resize(72, 72).centerCrop().into(dynamicViewHolder.mRoundedImageView);
+            if (!TextUtils.isEmpty(headImg)){
+                String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, headImg, 72, 72);
+                Picasso.with(mContext).load(loadImageUrl).into(dynamicViewHolder.mRoundedImageView);
+            }
             String content = resultBean.getContent();
             if (!TextUtils.isEmpty(content))
                 dynamicViewHolder.mTvContent.setText(content);
@@ -583,7 +586,8 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-            Picasso.with(mActivity).load(mStrings[position] + "?imageView2/1/w/235/h/235").into(viewHolder.mImage);
+            String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, mStrings[position], 235, 235);
+            Picasso.with(mActivity).load(loadImageUrl).into(viewHolder.mImage);
             return convertView;
         }
 

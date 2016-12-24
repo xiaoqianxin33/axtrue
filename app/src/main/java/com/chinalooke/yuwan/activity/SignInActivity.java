@@ -26,6 +26,7 @@ import com.chinalooke.yuwan.bean.SignHistory;
 import com.chinalooke.yuwan.bean.SignMoney;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -197,7 +198,8 @@ public class SignInActivity extends AutoLayoutActivity {
         mDayOfMonthToday = mCalendarToday.get(Calendar.DAY_OF_MONTH);
         initSignView();
         String headImg = mUser.getHeadImg();
-        Picasso.with(getApplicationContext()).load(headImg + "?imageView2/1/w/150/h/150").into(mRoundedImageView);
+        String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 150, 150);
+        Picasso.with(getApplicationContext()).load(loadImageUrl).into(mRoundedImageView);
         String nickName = mUser.getNickName();
         mTvName.setText(nickName);
 

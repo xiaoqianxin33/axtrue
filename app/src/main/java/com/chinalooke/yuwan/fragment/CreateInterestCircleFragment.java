@@ -41,6 +41,7 @@ import com.chinalooke.yuwan.bean.GameMessage;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.Auth;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -425,7 +426,9 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
                 String thumb = resultBean.getThumb();
                 RoundedImageView imageView = new RoundedImageView(mActivity);
                 imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(70, 70));
-                Picasso.with(mActivity).load(thumb).resize(70, 70).centerCrop().into(imageView);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, thumb, 70, 70);
+                Picasso.with(mActivity).load(loadImageUrl).into(imageView);
                 imageView.setOval(true);
                 mLlGame.addView(imageView);
             }

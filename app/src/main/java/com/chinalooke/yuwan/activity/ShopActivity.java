@@ -21,6 +21,7 @@ import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.Goods;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.google.gson.Gson;
@@ -163,8 +164,10 @@ public class ShopActivity extends AutoLayoutActivity {
 
             Goods.ResultBean resultBean = mGoods.get(position);
             String image = resultBean.getImage();
-            if (!TextUtils.isEmpty(image))
-                Picasso.with(getApplicationContext()).load(image).resize(150, 150).centerCrop().into(viewHolder.mIvImage);
+            if (!TextUtils.isEmpty(image)) {
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), image, 150, 150);
+                Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mIvImage);
+            }
             String paymoney = resultBean.getPaymoney();
             if (!TextUtils.isEmpty(paymoney))
                 viewHolder.mTvPayMoney.setText("¥" + paymoney);

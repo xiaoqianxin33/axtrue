@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +38,7 @@ import com.chinalooke.yuwan.bean.ResultDatas;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.DBManager;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -545,7 +547,9 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
                 String thumb = resultBean.getThumb();
                 RoundedImageView imageView = new RoundedImageView(getApplicationContext());
                 imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(70, 70));
-                Picasso.with(getApplicationContext()).load(thumb).resize(70, 70).centerCrop().into(imageView);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), thumb, 70, 70);
+                Picasso.with(getApplicationContext()).load(loadImageUrl).into(imageView);
                 imageView.setOval(true);
                 mLlGame.addView(imageView);
             }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.chinalooke.yuwan.bean.Circle;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -196,8 +198,12 @@ public class CircleWodeWFragment extends Fragment {
             }
 
             Circle.ResultBean resultBean = mCircle.get(position);
-            Picasso.with(getActivity()).load(resultBean.getHeadImg()).resize(MyUtils.Dp2Px(getActivity()
-                    , 80), MyUtils.Dp2Px(getActivity(), 80)).centerCrop().into(viewHolder.mIvCircleImage);
+            String headImg = resultBean.getHeadImg();
+            if (!TextUtils.isEmpty(headImg)) {
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getActivity(), headImg, MyUtils.Dp2Px(getActivity()
+                        , 80), MyUtils.Dp2Px(getActivity(), 80));
+                Picasso.with(getActivity()).load(loadImageUrl).into(viewHolder.mIvCircleImage);
+            }
             viewHolder.mTvCircleName.setText(resultBean.getGroupName());
             viewHolder.mTvCircleDetails.setText(resultBean.getDetails());
             viewHolder.mTvDiscountCircle.setVisibility(View.GONE);

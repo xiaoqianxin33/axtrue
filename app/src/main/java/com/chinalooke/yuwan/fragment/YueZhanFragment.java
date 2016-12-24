@@ -28,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bigkoo.pickerview.OptionsPickerView;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.engine.PickerEngine;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.AddFriendActivity;
@@ -530,8 +531,10 @@ public class YueZhanFragment extends Fragment {
                 mChoseGame = (GameMessage.ResultBean) data.getSerializableExtra("choseGame");
                 String thumb = mChoseGame.getThumb();
                 mGameId = mChoseGame.getGameId();
-                if (!TextUtils.isEmpty(thumb))
-                    Picasso.with(mMainActivity).load(thumb).resize(60, 60).centerCrop().into(mIvGameimage);
+                if (!TextUtils.isEmpty(thumb)) {
+                    String loadImageUrl = ImageEngine.getLoadImageUrl(mMainActivity, thumb, 60, 60);
+                    Picasso.with(mMainActivity).load(loadImageUrl).into(mIvGameimage);
+                }
                 String name = mChoseGame.getName();
                 if (!TextUtils.isEmpty(name))
                     mTvGameName.setText(name);

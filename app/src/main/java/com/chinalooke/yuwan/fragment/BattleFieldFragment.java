@@ -39,6 +39,7 @@ import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.constant.MyLinearLayoutManager;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -542,7 +543,8 @@ public class BattleFieldFragment extends Fragment {
                 String img = imagesBean.getImg();
                 ImageView imageView = new ImageView(mActivity);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                Picasso.with(mActivity).load(img + "?imageView2/1/w/" + mWidth + "/h/" + MyUtils.Dp2Px(mActivity, 180)).into(imageView);
+                String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, img, mWidth, MyUtils.Dp2Px(mActivity, 180));
+                Picasso.with(mActivity).load(loadImageUrl).into(imageView);
                 mShowAd.add(resultBean);
                 mAdList.add(imageView);
             }
@@ -686,8 +688,8 @@ public class BattleFieldFragment extends Fragment {
 
             String gameImage = item.getGameImage();
             if (!TextUtils.isEmpty(gameImage)) {
-                String url = gameImage + "?imageView2/1/w/225/h/172";
-                Picasso.with(mContext).load(url).into((ImageView) helper.getView(R.id.image));
+                String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, gameImage, 225, 172);
+                Picasso.with(mContext).load(loadImageUrl).into((ImageView) helper.getView(R.id.image));
             }
 
             String curPlayNum = item.getCurPlayNum();

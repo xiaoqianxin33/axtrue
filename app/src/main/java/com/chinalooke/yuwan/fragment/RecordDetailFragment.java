@@ -25,6 +25,7 @@ import com.chinalooke.yuwan.bean.GameDesk;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -289,8 +290,10 @@ public class RecordDetailFragment extends Fragment {
 
             GameDesk.ResultBean resultBean = (GameDesk.ResultBean) mDataSource.get(position);
             String headImg = mUser.getHeadImg();
-            if (!TextUtils.isEmpty(headImg))
-                Picasso.with(mActivity).load(headImg + "?imageView2/1/w/60/h/60").into(viewHolder.mRoundedImageView);
+            if (!TextUtils.isEmpty(headImg)){
+                String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, headImg, 60, 60);
+                Picasso.with(mActivity).load(loadImageUrl).into(viewHolder.mRoundedImageView);
+            }
 
             String nickName = mUser.getNickName();
             if (!TextUtils.isEmpty(nickName))

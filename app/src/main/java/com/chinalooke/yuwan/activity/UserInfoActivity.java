@@ -33,6 +33,7 @@ import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.DBManager;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.Auth;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -179,7 +180,8 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         String headImg = mUserInfo.getHeadImg();
         if (!TextUtils.isEmpty(headImg)) {
             mPath = headImg;
-            Picasso.with(getApplicationContext()).load(headImg).resize(120, 120).centerCrop().into(mRoundedImageView);
+            String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 120, 120);
+            Picasso.with(getApplicationContext()).load(loadImageUrl).into(mRoundedImageView);
         }
 
         String userType = mUserInfo.getUserType();
@@ -221,7 +223,9 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                 String thumb = resultBean.getThumb();
                 RoundedImageView imageView = new RoundedImageView(getApplicationContext());
                 imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(70, 70));
-                Picasso.with(getApplicationContext()).load(thumb).resize(70, 70).centerCrop().into(imageView);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), thumb, 70, 70);
+                Picasso.with(getApplicationContext()).load(loadImageUrl).into(imageView);
                 imageView.setOval(true);
                 mLlGame.addView(imageView);
             }
@@ -510,7 +514,9 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                     String thumb = resultBean.getThumb();
                     RoundedImageView imageView = new RoundedImageView(getApplicationContext());
                     imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(70, 70));
-                    Picasso.with(getApplicationContext()).load(thumb).resize(70, 70).centerCrop().into(imageView);
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), thumb, 70, 70);
+                    Picasso.with(getApplicationContext()).load(loadImageUrl).into(imageView);
                     imageView.setOval(true);
                     mLlGame.addView(imageView);
                 }

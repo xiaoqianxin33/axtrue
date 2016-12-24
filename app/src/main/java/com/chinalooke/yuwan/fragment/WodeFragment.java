@@ -34,6 +34,7 @@ import com.chinalooke.yuwan.activity.UserInfoActivity;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.PushMessage;
 import com.chinalooke.yuwan.db.ExchangeHelper;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.ViewHelper;
@@ -299,8 +300,10 @@ public class WodeFragment extends Fragment {
             else
                 mTvName.setText("暂未设置昵称");
             String headImg = user.getHeadImg();
-            if (!TextUtils.isEmpty(headImg))
-                Picasso.with(mActivity).load(headImg).resize(160, 160).centerCrop().into(mRoundedImageView);
+            if (!TextUtils.isEmpty(headImg)){
+                String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, headImg, 160, 160);
+                Picasso.with(mActivity).load(loadImageUrl).into(mRoundedImageView);
+            }
             String slogan = user.getSlogan();
             if (!TextUtils.isEmpty(slogan))
                 mTvSlogen.setText("简介：  " + slogan);
