@@ -213,6 +213,11 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
         for (int i = 0; i < mPhotos.size(); i++) {
             Bitmap bitmap = ImageUtils.getBitmap(mPhotos.get(i));
             Bitmap bitmap1 = ImageEngine.getCompressBitmap(bitmap, getApplicationContext());
+            if (bitmap1 == null) {
+                mToast.setText("当前设置为非wifi下不能上传图片，请连接wifi");
+                mToast.show();
+                return;
+            }
             String fileName = "dynamic" + new Date().getTime();
             paths.add(Constant.QINIU_DOMAIN + "/" + fileName);
             mUploadManager.put(BitmapUtils.toArray(bitmap1), fileName, token, new UpCompletionHandler() {

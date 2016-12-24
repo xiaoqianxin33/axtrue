@@ -349,6 +349,11 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
         final String fileName = "circle_name" + new Date().getTime();
         Bitmap bitmap = ImageUtils.getBitmap(mPath);
         Bitmap compressBitmap = ImageEngine.getCompressBitmap(bitmap, mActivity);
+        if (compressBitmap == null) {
+            mToast.setText("当前设置为非wifi下不能上传图片，请连接wifi");
+            mToast.show();
+            return;
+        }
         mUploadManager.put(BitmapUtils.toArray(compressBitmap), fileName, token, new UpCompletionHandler() {
             @Override
             public void complete(String key, ResponseInfo info, JSONObject response) {
