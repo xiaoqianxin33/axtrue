@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
@@ -28,8 +27,6 @@ public class CircleFragment extends Fragment {
     TextView mTvCircle;
     @Bind(R.id.tv_wode_circle)
     TextView mTvWodeCircle;
-    @Bind(R.id.fl_circle)
-    FrameLayout mFlCircle;
     @Bind(R.id.tv_circle_bar)
     TextView mTvCircleBar;
     @Bind(R.id.tv_wode_circle_bar)

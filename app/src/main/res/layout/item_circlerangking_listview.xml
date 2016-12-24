@@ -50,6 +50,8 @@
         android:layout_marginLeft="@dimen/small_padding"
         android:layout_marginTop="42px"
         android:layout_toRightOf="@id/roundedImageView"
+        android:maxLines="2"
+        android:paddingRight="150px"
         android:textColor="#4f4f4f"
         android:textSize="@dimen/mid_padding"/>
 

@@ -81,6 +81,8 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
     private List<CircleRanking.ResultBean> mRankings = new ArrayList<>();
     private MyAdapter mMyAdapter;
     private boolean isLoading = false;
+    private View mFoot;
+    private boolean isFirst = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +93,7 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
         mQueue = YuwanApplication.getQueue();
         mMyAdapter = new MyAdapter(mRankings);
         mListView.setAdapter(mMyAdapter);
+        mFoot = View.inflate(this, R.layout.foot, null);
         initData();
         initView();
         initEvent();
@@ -202,63 +205,80 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
                 break;
         }
 
+
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                mPbLoad.setVisibility(View.GONE);
-                if (AnalysisJSON.analysisJson(response)) {
-                    mTvNone.setVisibility(View.GONE);
-                    Gson gson = new Gson();
-                    Type type = new TypeToken<CircleRanking>() {
-                    }.getType();
-                    CircleRanking circleRanking = gson.fromJson(response, type);
-                    if (circleRanking != null) {
-                        List<CircleRanking.ResultBean> result = circleRanking.getResult();
-                        if (result != null) {
-                            mRankings.addAll(result);
-                            String loginUserRanking = mRankings.get(0).getLoginUserRanking();
-                            if (!TextUtils.isEmpty(loginUserRanking)) {
-                                mTvRanking.setText(loginUserRanking);
-                            }
-                            Collections.sort(mRankings, new Comparator<CircleRanking.ResultBean>() {
-                                @Override
-                                public int compare(CircleRanking.ResultBean lhs, CircleRanking.ResultBean rhs) {
-                                    if (lhs.getScore() != null && rhs.getScore() != null) {
-                                        int l = Integer.parseInt(lhs.getScore());
-                                        int r = Integer.parseInt(rhs.getScore());
-                                        if (l >= r)
-                                            return -1;
-                                        else
-                                            return 1;
-                                    } else {
-                                        return 0;
-                                    }
-
+                try {
+                    mPbLoad.setVisibility(View.GONE);
+                    if (AnalysisJSON.analysisJson(response)) {
+                        mTvNone.setVisibility(View.GONE);
+                        Gson gson = new Gson();
+                        Type type = new TypeToken<CircleRanking>() {
+                        }.getType();
+                        CircleRanking circleRanking = gson.fromJson(response, type);
+                        if (circleRanking != null) {
+                            List<CircleRanking.ResultBean> result = circleRanking.getResult();
+                            if (result != null && result.size() != 0) {
+                                mRankings.addAll(result);
+                                String loginUserRanking = mRankings.get(0).getLoginUserRanking();
+                                if (!TextUtils.isEmpty(loginUserRanking)) {
+                                    mTvRanking.setText(loginUserRanking);
                                 }
-                            });
-                            mMyAdapter.notifyDataSetChanged();
-                            isLoading = false;
+                                Collections.sort(mRankings, new Comparator<CircleRanking.ResultBean>() {
+                                    @Override
+                                    public int compare(CircleRanking.ResultBean lhs, CircleRanking.ResultBean rhs) {
+                                        if (lhs.getScore() != null && rhs.getScore() != null) {
+                                            int l = Integer.parseInt(lhs.getScore());
+                                            int r = Integer.parseInt(rhs.getScore());
+                                            if (l >= r)
+                                                return -1;
+                                            else
+                                                return 1;
+                                        } else {
+                                            return 0;
+                                        }
+
+                                    }
+                                });
+                                mMyAdapter.notifyDataSetChanged();
+                                isLoading = false;
+                                isFirst = false;
+                            } else {
+                                if (isFirst) {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    String msg = jsonObject.getString("Msg");
+                                    mTvNone.setVisibility(View.VISIBLE);
+                                    mTvNone.setText(msg);
+                                } else {
+                                    mListView.addFooterView(mFoot);
+                                }
+                            }
                         }
-                    }
-                } else {
-                    try {
+                    } else {
                         JSONObject jsonObject = new JSONObject(response);
                         String msg = jsonObject.getString("Msg");
                         mTvNone.setVisibility(View.VISIBLE);
                         mTvNone.setText(msg);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
-        }, new Response.ErrorListener() {
+        }
+
+                , new Response.ErrorListener()
+
+        {
             @Override
             public void onErrorResponse(VolleyError error) {
                 mPbLoad.setVisibility(View.GONE);
                 mTvNone.setVisibility(View.VISIBLE);
                 mTvNone.setText("服务器抽风了，请稍后再试");
             }
-        });
+        }
+
+        );
         mQueue.add(request);
     }
 
@@ -278,6 +298,7 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
     }
 
     //弹出城市选择器
+
     private void showCitySelector() {
         CityPickerView cityPicker = new CityPickerView(this);
         cityPicker.setIsCyclic(false);

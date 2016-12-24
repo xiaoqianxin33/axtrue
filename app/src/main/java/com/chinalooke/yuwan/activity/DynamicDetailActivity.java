@@ -215,11 +215,13 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 break;
         }
 
+        Log.e("TAG", url);
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 mProgressDialog.dismiss();
                 try {
+                    Log.e("TAG", response);
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("Success");
                     if (success) {
@@ -347,10 +349,12 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     private void getCommentList(String activeId) {
         if (NetUtil.is_Network_Available(getApplicationContext())) {
             String uri = Constant.HOST + "getCommentList&activeId=" + activeId + "&avtiveType=" + activeType;
+            Log.e("TAG", uri);
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     if (AnalysisJSON.analysisJson(response)) {
+                        Log.e("TAG", response);
                         Gson gson = new Gson();
                         CommentList commentList = gson.fromJson(response, CommentList.class);
                         if (commentList != null && commentList.getResult() != null) {
