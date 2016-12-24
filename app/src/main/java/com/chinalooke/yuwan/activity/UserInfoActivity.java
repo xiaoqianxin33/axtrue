@@ -37,6 +37,7 @@ import com.chinalooke.yuwan.utils.Auth;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
+import com.hyphenate.chat.EMClient;
 import com.lljjcoder.citypickerview.widget.CityPickerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.qiniu.android.http.ResponseInfo;
@@ -126,9 +127,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     private ProgressDialog mProgressDialog;
     private Toast mToast;
     private int REQUEST_GAME = 3;
-    private List<GameMessage.ResultBean> mChose;
     private String[] mStrings;
-    private boolean isNetbar = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,8 +183,6 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         }
 
         String userType = mUserInfo.getUserType();
-        if (userType.equals("netbar"))
-            isNetbar = true;
         mLl1.setVisibility(userType.equals("netbar") ? View.GONE : View.VISIBLE);
         mLl2.setVisibility(userType.equals("netbar") ? View.GONE : View.VISIBLE);
         mLl3.setVisibility(userType.equals("netbar") ? View.VISIBLE : View.GONE);
@@ -506,10 +503,10 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             isChangeHead = true;
             Picasso.with(getApplicationContext()).load("file://" + mPath).into(mRoundedImageView);
         } else if (requestCode == REQUEST_GAME) {
-            mChose = (List<GameMessage.ResultBean>) data.getSerializableExtra("list");
-            if (mChose != null && mChose.size() != 0) {
+            List<GameMessage.ResultBean> chose = (List<GameMessage.ResultBean>) data.getSerializableExtra("list");
+            if (chose != null && chose.size() != 0) {
                 mLlGame.removeAllViews();
-                for (GameMessage.ResultBean resultBean : mChose) {
+                for (GameMessage.ResultBean resultBean : chose) {
                     String thumb = resultBean.getThumb();
                     RoundedImageView imageView = new RoundedImageView(getApplicationContext());
                     imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(70, 70));
@@ -517,9 +514,9 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                     imageView.setOval(true);
                     mLlGame.addView(imageView);
                 }
-                mStrings = new String[mChose.size()];
-                for (int i = 0; i < mChose.size(); i++) {
-                    mStrings[i] = mChose.get(i).getGameId();
+                mStrings = new String[chose.size()];
+                for (int i = 0; i < chose.size(); i++) {
+                    mStrings[i] = chose.get(i).getGameId();
                 }
             }
         }
@@ -556,7 +553,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         String url = Constant.HOST + "updateUserInfo&userId=" + mUserInfo.getUserId() + "&headImg=" + mPath;
         if (mAddress != null)
             try {
-                url = url + "&address=" + URLEncoder.encode(mAddress,"utf8");
+                url = url + "&address=" + URLEncoder.encode(mAddress, "utf8");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -614,8 +611,10 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                                 mToast.setText("修改成功！");
                                 mToast.show();
                                 mUserInfo.setHeadImg(mPath);
-                                if (mName != null)
+                                if (mName != null) {
                                     mUserInfo.setNickName(mName);
+                                    EMClient.getInstance().updateCurrentUserNick(mName);
+                                }
                                 if (mAge != null)
                                     mUserInfo.setAge(mAge);
                                 if (mAddress != null)

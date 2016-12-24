@@ -17,7 +17,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,11 +37,10 @@ import com.chinalooke.yuwan.bean.ResultDatas;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.DBManager;
-import com.chinalooke.yuwan.interf.UpdateGetCity;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
-import com.chinalooke.yuwan.utils.CityPicker;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
+import com.hyphenate.chat.EMClient;
 import com.lljjcoder.citypickerview.widget.CityPickerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
@@ -61,7 +59,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterView.OnItemClickListener, View.OnClickListener, UpdateGetCity, AMapLocationListener {
+public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterView.OnItemClickListener, View.OnClickListener, AMapLocationListener {
 
     @Bind(R.id.tv_title)
     TextView mTvTitle;
@@ -82,16 +80,11 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
 
     private ArrayList<String> sexListDatas;
     private ArrayList<String> playAgeListDatas;
-    private PopupWindow popupWindow;
 
     private List<GameMessage.ResultBean> mChose = new ArrayList<>();
-    private CityPicker cityPicker;
 
-    private String mProvince;
-    private String mCity;
     //定义PickerView
     OptionsPickerView<String> pvOptions;
-    private String mCouny;
     private String updateUserInfo = Constant.HOST + "updateUserInfo";
     String sexPersonalInfo;
     String playAge;
@@ -103,9 +96,7 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
     LoginUser.ResultBean userInfo;
     RequestQueue mQueue;
     private Toast mToast;
-    private GameMessage mGameMessage;
     private String[] mStrings;
-    private String mAge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -280,7 +271,7 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
         playAge = mEtPlayAge.getText().toString();
         address = mTvLocation.getText().toString();
         name = mEtName.getText().toString();
-        mAge = mEtAge.getText().toString();
+        String age = mEtAge.getText().toString();
         if (mChose.size() == 0) {
             mToast.setText("请选择常玩游戏");
             mToast.show();
@@ -289,14 +280,14 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
         if (!TextUtils.isEmpty(name) && !"请输入昵称".equals(name)) {
             userInfo.setNickName(name);
             try {
-                updateUserInfo = updateUserInfo + "&nickName=" + URLEncoder.encode(name,"utf8");
+                updateUserInfo = updateUserInfo + "&nickName=" + URLEncoder.encode(name, "utf8");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
         }
-        if (!TextUtils.isEmpty(mAge) && !"请输入真实年龄".equals(mAge)) {
-            userInfo.setAge(mAge);
-            updateUserInfo = updateUserInfo + "&age=" + mAge;
+        if (!TextUtils.isEmpty(age) && !"请输入真实年龄".equals(age)) {
+            userInfo.setAge(age);
+            updateUserInfo = updateUserInfo + "&age=" + age;
         }
         if (!TextUtils.isEmpty(playAge) && !"请输入真实玩龄".equals(playAge)) {
             userInfo.setPlayAge(playAge);
@@ -348,12 +339,10 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
         }
         updateUserInfo = updateUserInfo + "&gameId=" + stringBuffer.toString();
 
-        Log.e("TAG", updateUserInfo);
         StringRequest stringRequest = new StringRequest(updateUserInfo,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("TAG", response);
                         //解析数据
                         if (response != null) {
                             ResultDatas result = AnalysisJSON.getAnalysisJSON().AnalysisJSONResult(response);
@@ -361,7 +350,8 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
                                 if ("true".equals(result.getResult())) {
                                     Log.d("TAG", "保存成功");
                                     setSaveDialog("保存成功");
-
+                                    if (!TextUtils.isEmpty(name))
+                                        EMClient.getInstance().updateCurrentUserNick(name);
                                 } else {
                                     Log.d("TAG", "false");
                                     setSaveDialog("保存失败");
@@ -453,32 +443,6 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
         // msexPersonalInfo.setText(sexListDatas.get(position));
     }
 
-
-    /**
-     * 更新城市信息
-     *
-     * @paramcity
-     * @paramid
-     */
-
-    public void updateCityInfo(String city, int id) {
-        Log.d("TAG", city + "id---" + id);
-        switch (id) {
-            case UpdateGetCity.PROVINCE_ID:
-                if (city != null || !"".equals(city))
-                    mProvince = city;
-                break;
-            case UpdateGetCity.CITY_ID:
-                if (city != null || !"".equals(city))
-                    this.mCity = city;
-                break;
-            case UpdateGetCity.COUNY_ID:
-                if (city != null || !"".equals(city))
-                    mCouny = city;
-                break;
-
-        }
-    }
 
     private void selectLocation() {
         CityPickerView cityPickerView = new CityPickerView(this);

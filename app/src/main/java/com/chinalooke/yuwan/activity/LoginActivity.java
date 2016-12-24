@@ -390,7 +390,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     @Override
     public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
 //        String userName = platform.getDb().getUserName();//获取第三方平台显示的名称
-//        String password = platform.getDb().getUserId();//获取第三方平台的密码
+//        String password = platform.getDb().getId();//获取第三方平台的密码
 //        String userIcon = platform.getDb().getUserIcon();//获取第三方平台的头标
         final String token = platform.getDb().getToken();
         String uri = Constant.HOST + "isAuthExists&auth=" + token;

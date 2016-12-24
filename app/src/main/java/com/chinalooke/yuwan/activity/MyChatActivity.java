@@ -24,7 +24,11 @@ public class MyChatActivity extends AutoLayoutActivity {
 
             @Override
             public void onListItemClicked(EMConversation conversation) {
-                startActivity(new Intent(MyChatActivity.this, EaseGroupChatActivity.class).putExtra("groupId", conversation.getUserName()));
+                EMConversation.EMConversationType type = conversation.getType();
+                if (type == EMConversation.EMConversationType.GroupChat)
+                    startActivity(new Intent(MyChatActivity.this, EaseGroupChatActivity.class).putExtra("groupId", conversation.getUserName()));
+                else if(type== EMConversation.EMConversationType.Chat)
+                    startActivity(new Intent(MyChatActivity.this, EaseChatActivity.class).putExtra("userId", conversation.getUserName()));
             }
         });
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_chat, conversationListFragment).commit();

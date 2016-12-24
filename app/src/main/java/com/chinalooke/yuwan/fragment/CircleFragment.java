@@ -21,8 +21,6 @@ import butterknife.OnClick;
 
 public class CircleFragment extends Fragment {
 
-    @Bind(R.id.tv_scoreboard)
-    TextView mTvScoreBoard;
     @Bind(R.id.tv_circle)
     TextView mTvCircle;
     @Bind(R.id.tv_wode_circle)

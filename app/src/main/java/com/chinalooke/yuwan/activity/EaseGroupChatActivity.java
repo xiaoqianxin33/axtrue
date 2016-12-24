@@ -1,8 +1,7 @@
 package com.chinalooke.yuwan.activity;
 
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 
 import com.chinalooke.yuwan.R;
 import com.hyphenate.chat.EMClient;
@@ -10,8 +9,9 @@ import com.hyphenate.chat.EMGroup;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.ui.EaseChatFragment;
 import com.hyphenate.exceptions.HyphenateException;
+import com.zhy.autolayout.AutoLayoutActivity;
 
-public class EaseGroupChatActivity extends AppCompatActivity {
+public class EaseGroupChatActivity extends AutoLayoutActivity {
 
     private String mGroupId;
 

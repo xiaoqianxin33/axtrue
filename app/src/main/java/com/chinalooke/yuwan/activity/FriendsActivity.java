@@ -2,6 +2,7 @@ package com.chinalooke.yuwan.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -55,7 +56,6 @@ public class FriendsActivity extends AutoLayoutActivity {
     private SortAdapter mSortAdapter;
     private List<SortModel> mSortModels = new ArrayList<>();
     private List<FriendsList.ResultBean> mFriends;
-    private boolean mChat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,23 +70,22 @@ public class FriendsActivity extends AutoLayoutActivity {
     }
 
     private void initEvent() {
-        if (mChat) {
-            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    SortModel sortModel = mSortModels.get(position);
-                    FriendsList.ResultBean friends = sortModel.getFriends();
-                    String userId = friends.getUserId();
-                    Intent intent = new Intent(FriendsActivity.this, EaseChatActivity.class);
-                    intent.putExtra("userId", userId);
-                    startActivity(intent);
-                }
-            });
-        }
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SortModel sortModel = mSortModels.get(position);
+                FriendsList.ResultBean friends = sortModel.getFriends();
+                String userId = friends.getId();
+                String nickName = friends.getNickName();
+                Intent intent = new Intent(FriendsActivity.this, EaseChatActivity.class);
+                intent.putExtra("userId", userId);
+                intent.putExtra("nickName", nickName);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initData() {
-        mChat = getIntent().getBooleanExtra("chat", false);
         getFriendsWithUserId();
     }
 
@@ -99,6 +98,7 @@ public class FriendsActivity extends AutoLayoutActivity {
                 public void onResponse(String response) {
                     mPbLoad.setVisibility(View.GONE);
                     if (AnalysisJSON.analysisJson(response)) {
+                        Log.e("TAG", response);
                         Gson gson = new Gson();
                         Type type = new TypeToken<FriendsList>() {
                         }.getType();

@@ -12,7 +12,7 @@ public class FriendsList {
 
     /**
      * Msg :
-     * Result : [{"headImg":"","nickName":"","score":"","slogan":"","userId":""}]
+     * Result : [{"headImg":"","nickName":"","score":"","slogan":"","id":""}]
      * Success : true
      */
 
@@ -23,7 +23,7 @@ public class FriendsList {
      * nickName :
      * score :
      * slogan :
-     * userId :
+     * id :
      */
 
     private List<ResultBean> Result;
@@ -57,7 +57,7 @@ public class FriendsList {
         private String nickName;
         private String score;
         private String slogan;
-        private String userId;
+        private String id;
 
         public String getHeadImg() {
             return headImg;
@@ -91,12 +91,12 @@ public class FriendsList {
             this.slogan = slogan;
         }
 
-        public String getUserId() {
-            return userId;
+        public String getId() {
+            return id;
         }
 
-        public void setUserId(String userId) {
-            this.userId = userId;
+        public void setId(String id) {
+            this.id = id;
         }
     }
 }

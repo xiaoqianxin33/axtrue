@@ -275,6 +275,8 @@
         <activity android:name=".activity.MyChatActivity">
         </activity>
 
+        <activity android:name=".activity.EaseChatActivity"/>
+
         <receiver
             android:name=".receiver.MyReceiver">
             <intent-filter>
