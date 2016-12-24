@@ -8,7 +8,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -214,14 +213,11 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 }
                 break;
         }
-
-        Log.e("TAG", url);
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 mProgressDialog.dismiss();
                 try {
-                    Log.e("TAG", response);
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("Success");
                     if (success) {
@@ -348,13 +344,11 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     //取得评论列表
     private void getCommentList(String activeId) {
         if (NetUtil.is_Network_Available(getApplicationContext())) {
-            String uri = Constant.HOST + "getCommentList&activeId=" + activeId + "&avtiveType=" + activeType;
-            Log.e("TAG", uri);
+            String uri = Constant.HOST + "getCommentList&activeId=" + activeId + "&activeType=" + activeType;
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     if (AnalysisJSON.analysisJson(response)) {
-                        Log.e("TAG", response);
                         Gson gson = new Gson();
                         CommentList commentList = gson.fromJson(response, CommentList.class);
                         if (commentList != null && commentList.getResult() != null) {
@@ -489,14 +483,12 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     private void addFavour(String s, String avtiveId) {
         mProgressDialog.show();
         String url = Constant.HOST + s + "&activeId=" + avtiveId + "&userId=" + mUserInfo.getUserId() + "&activeType=" + activeType;
-        Log.e("TAG", url);
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
                 mProgressDialog.dismiss();
                 if (!TextUtils.isEmpty(response)) {
-                    Log.e("TAG", response);
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         boolean success = jsonObject.getBoolean("Success");

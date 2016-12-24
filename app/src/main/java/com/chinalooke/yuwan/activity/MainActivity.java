@@ -1,12 +1,20 @@
 package com.chinalooke.yuwan.activity;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.NotificationCompat;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -55,7 +63,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 import static com.chinalooke.yuwan.constant.Constant.MIN_CLICK_DELAY_TIME;
 import static com.chinalooke.yuwan.constant.Constant.lastClickTime;
 
-public class MainActivity extends AutoLayoutActivity implements AMapLocationListener, EasyPermissions.PermissionCallbacks, BGASortableNinePhotoLayout.Delegate {
+public class MainActivity extends AutoLayoutActivity implements AMapLocationListener, EasyPermissions.PermissionCallbacks, BGASortableNinePhotoLayout.Delegate, EMMessageListener {
 
     @Bind(R.id.iv_zc)
     ImageView mIvZc;
@@ -139,43 +147,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     }
 
     private void initEvent() {
-        boolean hxMessage = PreferenceUtils.getPrefBoolean(getApplicationContext(), "hxMessage", true);
-        if (hxMessage) {
-            EMClient.getInstance().chatManager().addMessageListener(mMsgListener);
-            mMsgListener = new EMMessageListener() {
-
-                @Override
-                public void onMessageReceived(List<EMMessage> messages) {
-                    //收到消息
-                    if (messages != null && messages.size() != 0) {
-                        EMMessage emMessage = messages.get(0);
-                        EMMessageBody body = emMessage.getBody();
-                        String userName = emMessage.getUserName();
-
-                    }
-                }
-
-                @Override
-                public void onCmdMessageReceived(List<EMMessage> messages) {
-                    //收到透传消息
-                }
-
-                @Override
-                public void onMessageReadAckReceived(List<EMMessage> messages) {
-                    //收到已读回执
-                }
-
-                @Override
-                public void onMessageDeliveryAckReceived(List<EMMessage> message) {
-                    //收到已送达回执
-                }
-
-                @Override
-                public void onMessageChanged(EMMessage message, Object change) {
-                    //消息状态变动
-                }
-            };
-        }
+        EMClient.getInstance().chatManager().addMessageListener(this);
     }
 
     private void initView() {
@@ -300,6 +272,57 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onMessageReceived(List<EMMessage> list) {
+        boolean hxMessage = PreferenceUtils.getPrefBoolean(getApplicationContext(), "hxMessage", true);
+        if (hxMessage) {
+            if (list != null && list.size() != 0) {
+                EMMessage emMessage = list.get(0);
+                String from = emMessage.getFrom();
+                EMMessageBody body = emMessage.getBody();
+                String body1 = body.toString();
+                String replace = body1.replace("txt:", "");
+                String substring = replace.substring(1, replace.length() - 1);
+                Intent intent = new Intent(MainActivity.this, MyChatActivity.class);
+                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this);
+                Notification notification = builder
+                        .setContentTitle("聊天消息来自：" + from)//标题
+                        .setContentText(substring)//内容
+                        .setWhen(System.currentTimeMillis())//通知时间，系统时间
+                        .setSmallIcon(R.mipmap.icon_512)//标题栏上显示的通知icon
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.icon_512))//通知显示的icon
+                        .setDefaults(Notification.DEFAULT_ALL)//DEFAULT_VIBRATE默认震动，DEFAULT_SOUND默认声音,DEFAULT_LIGHTS默认灯光
+                        .setColor(Color.parseColor("#98903B"))//smallIcon的背景色
+                        .setContentIntent(pendingIntent)
+                        .build();
+                notification.flags |= Notification.FLAG_AUTO_CANCEL;
+                manager.notify(1, notification);
+            }
+        }
+    }
+
+    @Override
+    public void onCmdMessageReceived(List<EMMessage> list) {
+
+    }
+
+    @Override
+    public void onMessageReadAckReceived(List<EMMessage> list) {
+
+    }
+
+    @Override
+    public void onMessageDeliveryAckReceived(List<EMMessage> list) {
+
+    }
+
+    @Override
+    public void onMessageChanged(EMMessage emMessage, Object o) {
+
     }
 
     public interface OnBGAListener {

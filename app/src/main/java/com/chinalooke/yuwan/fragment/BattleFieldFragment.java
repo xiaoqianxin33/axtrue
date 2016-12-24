@@ -436,7 +436,8 @@ public class BattleFieldFragment extends Fragment {
                             if (mPbLoad != null)
                                 mPbLoad.setVisibility(View.GONE);
                             if (AnalysisJSON.analysisJson(response)) {
-                                mTvNone.setVisibility(View.GONE);
+                                if (mTvNone != null)
+                                    mTvNone.setVisibility(View.GONE);
                                 Type type = new TypeToken<GameDesk>() {
                                 }.getType();
                                 GameDesk gameDesk = mGson.fromJson(response, type);

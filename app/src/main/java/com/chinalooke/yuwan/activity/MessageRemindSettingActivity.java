@@ -34,13 +34,13 @@ public class MessageRemindSettingActivity extends AutoLayoutActivity {
 
     private void initView() {
         mTvTitle.setText("消息提醒设置");
-        boolean message_remind = PreferenceUtils.getPrefBoolean(getApplicationContext(), "message_remind", true);
+        boolean message_remind = PreferenceUtils.getPrefBoolean(getApplicationContext(), "hxMessage", true);
         if (message_remind) {
             mSwitchButtonMessage.openSwitch();
         } else {
             mSwitchButtonMessage.closeSwitch();
         }
-        boolean dynamic_remind = PreferenceUtils.getPrefBoolean(getApplicationContext(), "dynamic_remind", true);
+        boolean dynamic_remind = PreferenceUtils.getPrefBoolean(getApplicationContext(), "leanMessage", true);
         if (dynamic_remind) {
             mSwitchButtonDynamic.openSwitch();
         } else {
@@ -58,20 +58,20 @@ public class MessageRemindSettingActivity extends AutoLayoutActivity {
                 boolean switchOpen = mSwitchButtonMessage.isSwitchOpen();
                 if (switchOpen) {
                     mSwitchButtonMessage.closeSwitch();
-                    PreferenceUtils.setPrefBoolean(getApplicationContext(), "message_remind", false);
+                    PreferenceUtils.setPrefBoolean(getApplicationContext(), "hxMessage", false);
                 } else {
                     mSwitchButtonMessage.openSwitch();
-                    PreferenceUtils.setPrefBoolean(getApplicationContext(), "message_remind", true);
+                    PreferenceUtils.setPrefBoolean(getApplicationContext(), "hxMessage", true);
                 }
                 break;
             case R.id.switch_button_dynamic:
                 boolean switchOpen1 = mSwitchButtonDynamic.isSwitchOpen();
                 if (switchOpen1) {
                     mSwitchButtonDynamic.closeSwitch();
-                    PreferenceUtils.setPrefBoolean(getApplicationContext(), "dynamic_remind", false);
+                    PreferenceUtils.setPrefBoolean(getApplicationContext(), "leanMessage", false);
                 } else {
                     mSwitchButtonDynamic.openSwitch();
-                    PreferenceUtils.setPrefBoolean(getApplicationContext(), "dynamic_remind", true);
+                    PreferenceUtils.setPrefBoolean(getApplicationContext(), "leanMessage", true);
                 }
 
                 break;
