@@ -19,6 +19,7 @@ import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.db.DBManager;
 import com.chinalooke.yuwan.bean.GameMessage;
 import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.squareup.picasso.Picasso;
@@ -173,8 +174,9 @@ public class FrequentlyGameActivity extends AutoLayoutActivity {
             String thumb = resultBean.getThumb();
             String name = resultBean.getName();
             if (!TextUtils.isEmpty(thumb)) {
-                Picasso.with(getApplicationContext()).load(thumb).resize(MyUtils.Dp2Px(getApplicationContext(),
-                        100), MyUtils.Dp2Px(getApplicationContext(), 100)).centerCrop().into(viewHolder.mIvGameimage);
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), thumb, MyUtils.Dp2Px(getApplicationContext(),
+                        100), MyUtils.Dp2Px(getApplicationContext(), 100));
+                Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mIvGameimage);
             }
             viewHolder.mTvGameName.setText(name);
             return convertView;

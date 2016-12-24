@@ -3,8 +3,6 @@ package com.chinalooke.yuwan.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,10 +11,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.UserBalance;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -34,16 +32,11 @@ import butterknife.OnClick;
 
 public class MyBalanceActivity extends AutoLayoutActivity {
 
-    @Bind(R.id.iv_back)
-    FrameLayout mIvBack;
-    @Bind(R.id.iv_arrow_head)
-    ImageView mIvArrowHead;
+
     @Bind(R.id.tv_title)
     TextView mTvTitle;
     @Bind(R.id.tv_skip)
     TextView mTvSkip;
-    @Bind(R.id.iv1)
-    TextView mIv1;
     @Bind(R.id.tv_score)
     TextView mTvScore;
     private RequestQueue mQueue;

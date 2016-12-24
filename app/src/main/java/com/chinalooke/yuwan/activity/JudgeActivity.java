@@ -37,6 +37,7 @@ import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.PlayerBean;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -453,8 +454,10 @@ public class JudgeActivity extends AutoLayoutActivity {
             String nickName = playerBean.getNickName();
             if (!TextUtils.isEmpty(nickName))
                 viewHolder.mTvName.setText(nickName);
-            if (!TextUtils.isEmpty(headImg))
-                Picasso.with(getApplicationContext()).load(headImg + "?imageView2/1/w/64/h/64").into(viewHolder.mRoundedImageView);
+            if (!TextUtils.isEmpty(headImg)){
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 64, 64);
+                Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mRoundedImageView);
+            }
 
             viewHolder.mRlTop.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -527,8 +530,10 @@ public class JudgeActivity extends AutoLayoutActivity {
             if (!TextUtils.isEmpty(nickName))
                 viewHolder.mTvGameName.setText(nickName);
             String headImg = playerBean.getHeadImg();
-            if (!TextUtils.isEmpty(headImg))
-                Picasso.with(getApplicationContext()).load(headImg).into(viewHolder.mIvGameimage);
+            if (!TextUtils.isEmpty(headImg)){
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 200, 200);
+                Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mIvGameimage);
+            }
             return convertView;
         }
 

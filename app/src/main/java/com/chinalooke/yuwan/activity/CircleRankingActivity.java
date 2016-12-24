@@ -26,6 +26,7 @@ import com.chinalooke.yuwan.bean.CircleRanking;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.ImageUtils;
 import com.chinalooke.yuwan.utils.LocationUtils;
@@ -128,8 +129,8 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
         if (mUserInfo != null) {
             String img = mUserInfo.getHeadImg();
             if (!TextUtils.isEmpty(img)) {
-                String headImg = img + "?imageView2/1/w/100/h/100";
-                Picasso.with(getApplicationContext()).load(headImg).into(mRoundedImageView);
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), img, 100, 100);
+                Picasso.with(getApplicationContext()).load(loadImageUrl).into(mRoundedImageView);
                 setStackBlurBackground(img);
             }
             String nickName = mUserInfo.getNickName();
@@ -361,8 +362,8 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
             }
             String headImg = resultBean.getHeadImg();
             if (!TextUtils.isEmpty(headImg)) {
-                String uri = headImg + "?imageView2/1/w/80/h/80";
-                Picasso.with(getApplicationContext()).load(uri).into(viewHolder.mRoundedImageView);
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 80, 80);
+                Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mRoundedImageView);
             }
             String slogan = resultBean.getSlogan();
             if (!TextUtils.isEmpty(slogan))

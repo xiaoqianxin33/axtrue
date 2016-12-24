@@ -23,6 +23,7 @@ import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.NetbarAdvertisement;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
@@ -252,7 +253,8 @@ public class NetbarADActivity extends AutoLayoutActivity implements AMapLocation
             List<String> adImg = ad.getADImg();
             if (adImg != null && adImg.size() != 0) {
                 String uri = adImg.get(0);
-                Picasso.with(getApplicationContext()).load(uri).resize(270, 200).centerCrop().into(viewHolder.mIvImage);
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), uri, 270, 200);
+                Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mIvImage);
             }
 
             String title = ad.getTitle();

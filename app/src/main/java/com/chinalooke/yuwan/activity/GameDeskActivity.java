@@ -38,6 +38,7 @@ import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.UserBalance;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -887,8 +888,10 @@ public class GameDeskActivity extends AutoLayoutActivity {
         } else {
             GameDeskDetails.ResultBean.PlayersBean.LeftBean leftBean = mLeftBeen.get(position);
             String headImg = leftBean.getHeadImg();
-            if (!TextUtils.isEmpty(headImg))
-                Picasso.with(getApplicationContext()).load(headImg).resize(80, 80).centerCrop().into(viewHolder.mView);
+            if (!TextUtils.isEmpty(headImg)) {
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 80, 80);
+                Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mView);
+            }
             String nickName = leftBean.getNickName();
             if (!TextUtils.isEmpty(nickName)) {
                 viewHolder.mTvName.setText(nickName);
@@ -908,8 +911,10 @@ public class GameDeskActivity extends AutoLayoutActivity {
         } else {
             GameDeskDetails.ResultBean.PlayersBean.RightBean leftBean = mRight.get(position);
             String headImg = leftBean.getHeadImg();
-            if (!TextUtils.isEmpty(headImg))
-                Picasso.with(getApplicationContext()).load(headImg).resize(80, 80).centerCrop().into(viewHolder.mView);
+            if (!TextUtils.isEmpty(headImg)) {
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 80, 80);
+                Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mView);
+            }
             String nickName = leftBean.getNickName();
             if (!TextUtils.isEmpty(nickName)) {
                 viewHolder.mTvName.setText(nickName);

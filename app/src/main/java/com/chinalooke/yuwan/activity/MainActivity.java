@@ -26,7 +26,6 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationListener;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
@@ -96,7 +95,6 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     private DynamicFragment mDynamicFragment;
     private WodeFragment mWodeFragment;
     private YueZhanFragment mYueZhanFragment;
-    private BlackFragment mBlackFragment;
     private long exitTime = 0;
     private Toast mToast;
     private LoginUser.ResultBean mUserInfo;
@@ -105,7 +103,6 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     private AdvertisementFragment mAdvertisementFragment;
     private OnBGAListener mOnBGAListener;
     private OnBGAListener mPhotoOnBGAListener;
-    private EMMessageListener mMsgListener;
 
     public RequestQueue getQueue() {
         return mQueue;
@@ -118,13 +115,13 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         ButterKnife.bind(this);
         mToast = YuwanApplication.getToast();
         mFragmentManager = getSupportFragmentManager();
-        mQueue = Volley.newRequestQueue(getApplicationContext());
+        mQueue = YuwanApplication.getQueue();
         mBattleFieldFragment = new BattleFieldFragment();
         mCircleFragment = new CircleFragment();
         mDynamicFragment = new DynamicFragment();
         mWodeFragment = new WodeFragment();
         mYueZhanFragment = new YueZhanFragment();
-        mBlackFragment = new BlackFragment();
+        BlackFragment blackFragment = new BlackFragment();
         mHistoryFragment = new HistoryFragment();
         mAdvertisementFragment = new AdvertisementFragment();
         requestLocationPermission();
@@ -140,7 +137,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
                     break;
             }
         }
-        switchContent(mBlackFragment, mBattleFieldFragment);
+        switchContent(blackFragment, mBattleFieldFragment);
         setSelected(1);
         initView();
         initEvent();
@@ -172,8 +169,6 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
             mLocationClient.stopLocation();
             mLocationClient.onDestroy();
         }
-        if (mMsgListener != null)
-            EMClient.getInstance().chatManager().removeMessageListener(mMsgListener);
     }
 
     public void setPhotoOnBGAListener(OnBGAListener photoOnBGAListener) {
@@ -203,7 +198,6 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         StringRequest request = new StringRequest(uri, null, null);
         mQueue.add(request);
     }
-
 
     @OnClick({R.id.rl_zc, R.id.rl_qz, R.id.rl_yz, R.id.rl_dt, R.id.rl_wd})
     public void onClick(View view) {

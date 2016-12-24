@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_image_setting"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.chinalooke.yuwan.activity.ImageSettingActivity">
+
+    <include layout="@layout/include_head"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="72px"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/mid_padding"
+        android:text="上传图片质量"
+        android:textColor="@color/shallow_word"
+        android:textSize="25px"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="96px"
+        android:background="@android:color/white"
+        android:paddingLeft="@dimen/mid_padding"
+        android:paddingRight="@dimen/mid_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="自动压缩图片上传"
+            android:textColor="@color/black_word"
+            android:textSize="35px"/>
+
+        <com.hyphenate.easeui.widget.EaseSwitchButton
+            android:id="@+id/switch_button_auto"
+            android:layout_width="100px"
+            android:layout_height="64px"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/mid_padding"
+        android:background="@color/line_color"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="96px"
+        android:background="@android:color/white"
+        android:paddingLeft="@dimen/mid_padding"
+        android:paddingRight="@dimen/mid_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="只在WiFi下上传"
+            android:textColor="@color/black_word"
+            android:textSize="35px"/>
+
+        <com.hyphenate.easeui.widget.EaseSwitchButton
+            android:id="@+id/switch_button_wifi"
+            android:layout_width="100px"
+            android:layout_height="64px"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="72px"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/mid_padding"
+        android:text="下载图片质量"
+        android:textColor="@color/shallow_word"
+        android:textSize="25px"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_auto"
+        android:layout_width="match_parent"
+        android:layout_height="95px"
+        android:background="@android:color/white"
+        android:paddingLeft="@dimen/mid_padding"
+        android:paddingRight="@dimen/mid_padding">
+
+        <ImageView
+            android:id="@+id/iv_auto"
+            android:layout_width="26px"
+            android:layout_height="26px"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/gou_pay"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="自动"
+            android:textColor="@color/black_word"
+            android:textSize="@dimen/mid_padding"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/mid_padding"
+        android:background="@color/line_color"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_high"
+        android:layout_width="match_parent"
+        android:layout_height="95px"
+        android:background="@android:color/white"
+        android:paddingLeft="@dimen/mid_padding"
+        android:paddingRight="@dimen/mid_padding">
+
+        <ImageView
+            android:id="@+id/iv_high"
+            android:layout_width="26px"
+            android:layout_height="26px"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/gou_pay"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="高清 ( 建议在WiFi情况下使用 )"
+            android:textColor="@color/black_word"
+            android:textSize="@dimen/mid_padding"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/mid_padding"
+        android:background="@color/line_color"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_low"
+        android:layout_width="match_parent"
+        android:layout_height="95px"
+        android:background="@android:color/white"
+        android:paddingLeft="@dimen/mid_padding"
+        android:paddingRight="@dimen/mid_padding">
+
+        <ImageView
+            android:id="@+id/iv_low"
+            android:layout_width="26px"
+            android:layout_height="26px"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/gou_pay"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="普通 ( 下载速度快，省流量 )"
+            android:textColor="@color/black_word"
+            android:textSize="@dimen/mid_padding"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/line_color"/>
+</LinearLayout>

@@ -28,6 +28,7 @@ import com.chinalooke.yuwan.bean.PushMessage;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.ExchangeHelper;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -198,8 +199,10 @@ public class MyMessageActivity extends AutoLayoutActivity implements EasyPermiss
                 viewHolder.mTvMessage.setText(content);
             String temp = pushMessage.getTemp();
             final String[] split = temp.split(",");
-            if (!TextUtils.isEmpty(split[1]))
-                Picasso.with(getApplicationContext()).load(split[1]).into(viewHolder.mRoundedImageView);
+            if (!TextUtils.isEmpty(split[1])) {
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), split[1], 100, 100);
+                Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mRoundedImageView);
+            }
             switch (type) {
                 case "userInfo":
                     viewHolder.mBtnReJudge.setText("拒绝");

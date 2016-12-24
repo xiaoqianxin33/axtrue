@@ -25,6 +25,7 @@ import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.UserBalance;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -137,8 +138,8 @@ public class GoodsActivity extends AutoLayoutActivity {
             for (String uri : images) {
                 ImageView imageView = new ImageView(this);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                Picasso.with(this).load(uri).resize(MyUtils.Dp2Px(this, ViewHelper.getDisplayMetrics(this).widthPixels), 470)
-                        .centerCrop().into(imageView);
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), uri, ViewHelper.getDisplayMetrics(this).widthPixels, 470);
+                Picasso.with(this).load(loadImageUrl).into(imageView);
                 viewList.add(imageView);
             }
             if (mBanner != null) {

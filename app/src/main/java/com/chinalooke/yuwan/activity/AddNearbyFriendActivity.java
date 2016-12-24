@@ -21,6 +21,7 @@ import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.NearbyPeople;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
@@ -162,8 +163,10 @@ public class AddNearbyFriendActivity extends AutoLayoutActivity {
                 viewHolder.mTvName.setText(nickName);
 
             String headImg = friend.getHeadImg();
-            if (!TextUtils.isEmpty(headImg))
-                Picasso.with(getApplicationContext()).load(headImg).resize(100, 100).into(viewHolder.mIvHead);
+            if (!TextUtils.isEmpty(headImg)) {
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 100, 100);
+                Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mIvHead);
+            }
             String slogan = friend.getSlogan();
             if (!TextUtils.isEmpty(slogan))
                 viewHolder.mTvSlogen.setText(slogan);

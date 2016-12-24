@@ -37,6 +37,7 @@ import com.chinalooke.yuwan.bean.Dynamic;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -203,8 +204,10 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
             mTvSlogen.setText(details);
 
         String headImg = mCircle.getHeadImg();
-        if (!TextUtils.isEmpty(headImg))
-            Picasso.with(getApplicationContext()).load(headImg).resize(130, 130).centerCrop().into(mRoundedImageView);
+        if (!TextUtils.isEmpty(headImg)) {
+            String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 130, 130);
+            Picasso.with(getApplicationContext()).load(loadImageUrl).into(mRoundedImageView);
+        }
     }
 
     private void setIsJoin() {
@@ -458,8 +461,10 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
 
             Dynamic.ResultBean.ListBean resultBean = (Dynamic.ResultBean.ListBean) mDataSource.get(position);
             String headImg = resultBean.getHeadImg();
-            if (!TextUtils.isEmpty(headImg))
-                Picasso.with(mContext).load(headImg).resize(72, 72).centerCrop().into(dynamicViewHolder.mRoundedImageView);
+            if (!TextUtils.isEmpty(headImg)) {
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 72, 72);
+                Picasso.with(mContext).load(loadImageUrl).into(dynamicViewHolder.mRoundedImageView);
+            }
             String content = resultBean.getContent();
             if (!TextUtils.isEmpty(content))
                 dynamicViewHolder.mTvContent.setText(content);
@@ -540,7 +545,8 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
             } else {
                 imageview = (ImageView) convertView;
             }
-            Picasso.with(CircleDynamicActivity.this).load(mStrings[position]).into(imageview);
+            String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), mStrings[position], 235, 235);
+            Picasso.with(CircleDynamicActivity.this).load(loadImageUrl).into(imageview);
             return imageview;
         }
     }

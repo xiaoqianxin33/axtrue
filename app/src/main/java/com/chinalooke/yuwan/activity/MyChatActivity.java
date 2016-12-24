@@ -12,14 +12,12 @@ import butterknife.ButterKnife;
 
 public class MyChatActivity extends AutoLayoutActivity {
 
-    private EaseConversationListFragment conversationListFragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
-        conversationListFragment = new EaseConversationListFragment();
+        EaseConversationListFragment conversationListFragment = new EaseConversationListFragment();
         conversationListFragment.setConversationListItemClickListener(new EaseConversationListFragment.EaseConversationListItemClickListener() {
 
             @Override

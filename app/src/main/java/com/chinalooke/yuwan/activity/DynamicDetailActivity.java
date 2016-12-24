@@ -36,6 +36,7 @@ import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.WholeDynamic;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.KeyboardUtils;
@@ -574,7 +575,8 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
             } else {
                 imageview = (ImageView) convertView;
             }
-            Picasso.with(DynamicDetailActivity.this).load(mStrings[position]).into(imageview);
+            String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), mStrings[position], 235, 235);
+            Picasso.with(DynamicDetailActivity.this).load(loadImageUrl).into(imageview);
             return imageview;
         }
     }

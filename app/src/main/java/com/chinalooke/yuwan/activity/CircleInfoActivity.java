@@ -17,6 +17,7 @@ import com.chinalooke.yuwan.bean.Circle;
 import com.chinalooke.yuwan.bean.CircleDetail;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
@@ -134,7 +135,8 @@ public class CircleInfoActivity extends AutoLayoutActivity {
                     RoundedImageView imageView = new RoundedImageView(getApplicationContext());
                     imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(60, 60));
                     imageView.setPaddingRelative(5, 0, 5, 0);
-                    Picasso.with(this).load(thumb).resize(60, 60).centerCrop().into(imageView);
+                    String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), thumb, 60, 60);
+                    Picasso.with(this).load(loadImageUrl).into(imageView);
                     imageView.setOval(true);
                     AutoUtils.autoSize(imageView);
                     mLlGame.addView(imageView);
@@ -145,8 +147,8 @@ public class CircleInfoActivity extends AutoLayoutActivity {
 
     //设置头像
     private void setHeadImg(String headImg) {
-        String uri = headImg + "?imageView2/1/w/120/h/120";
-        Picasso.with(getApplicationContext()).load(uri).into(mRoundedImageView);
+        String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 120, 120);
+        Picasso.with(getApplicationContext()).load(loadImageUrl).into(mRoundedImageView);
     }
 
     @OnClick({R.id.iv_back, R.id.tv_skip})

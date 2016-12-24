@@ -1,17 +1,17 @@
 package com.chinalooke.yuwan.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.bean.LoginUser;
-import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.zhy.autolayout.AutoLayoutActivity;
 
 import java.util.List;
@@ -29,30 +29,40 @@ public class AddFriendsActivity extends AutoLayoutActivity implements EasyPermis
     EditText mEtPhone;
     @Bind(R.id.tv_phone)
     TextView mTvPhone;
-    @Bind(R.id.rl_near)
-    RelativeLayout mRlNear;
-    @Bind(R.id.rl_phone)
-    RelativeLayout mRlPhone;
-    private LoginUser.ResultBean mUser;
     private int RC_ACCESS_FINE_LOCATION = 1;
+    private int READ_PHONE_STATE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friends);
         ButterKnife.bind(this);
-        mUser = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         initView();
-        initData();
     }
 
-    private void initData() {
-
-    }
 
     private void initView() {
         mTvTitle.setText("添加好友");
+        requestReadPermission();
+    }
 
+    //设置手机号码
+    private void setPhone() {
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String line1Number = tm.getLine1Number();
+        if (!TextUtils.isEmpty(line1Number))
+            mTvPhone.setText("我的手机号： " + line1Number.substring(3));
+    }
+
+
+    private void requestReadPermission() {
+        String[] perms = {Manifest.permission.READ_PHONE_STATE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            setPhone();
+        } else {
+            EasyPermissions.requestPermissions(this, "需要读取手机号码权限",
+                    READ_PHONE_STATE, perms);
+        }
     }
 
     @OnClick({R.id.iv_back, R.id.rl_near, R.id.rl_phone})
@@ -89,7 +99,10 @@ public class AddFriendsActivity extends AutoLayoutActivity implements EasyPermis
 
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
-        startActivity(new Intent(this, AddAddressBookFriendActivity.class));
+        if (requestCode == RC_ACCESS_FINE_LOCATION)
+            startActivity(new Intent(this, AddAddressBookFriendActivity.class));
+        else if (requestCode == READ_PHONE_STATE)
+            setPhone();
     }
 
     @Override

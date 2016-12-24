@@ -2,6 +2,7 @@ package com.chinalooke.yuwan.activity;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -22,6 +23,7 @@ import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.Circle;
 import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
@@ -212,8 +214,12 @@ public class MyCircleActivity extends AutoLayoutActivity {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             Circle.ResultBean resultBean = mMyCircleResult.get(position);
-            Picasso.with(getApplicationContext()).load(resultBean.getHeadImg()).resize(MyUtils.Dp2Px(getApplicationContext()
-                    , 80), MyUtils.Dp2Px(getApplicationContext(), 80)).centerCrop().into(viewHolder.mIvCircleImage);
+            String headImg = resultBean.getHeadImg();
+            if (!TextUtils.isEmpty(headImg)) {
+                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, MyUtils.Dp2Px(getApplicationContext()
+                        , 80), MyUtils.Dp2Px(getApplicationContext(), 80));
+                Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mIvCircleImage);
+            }
             viewHolder.mTvCircleName.setText(resultBean.getGroupName());
             viewHolder.mTvCircleDetails.setText(resultBean.getDetails());
             viewHolder.mTvDiscountCircle.setVisibility(View.GONE);

@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/small_padding"
-        android:text="我的手机号： 13603098692"
+        android:text="我的手机号："
         android:textSize="26px"/>
 
 

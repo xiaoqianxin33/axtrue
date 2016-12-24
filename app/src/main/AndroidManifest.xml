@@ -82,7 +82,6 @@
         <activity android:name=".activity.GameDeskActivity"/>
 
         <!-- 首页 -->
-        <activity android:name=".activity.FirstActivity"/>
         <!-- 登录 -->
         <activity
             android:name=".activity.LoginActivity"
@@ -274,11 +273,9 @@
         </activity>
         <activity android:name=".activity.MyChatActivity">
         </activity>
-
         <activity android:name=".activity.EaseChatActivity"/>
 
-        <receiver
-            android:name=".receiver.MyReceiver">
+        <receiver android:name=".receiver.MyReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.USER_PRESENT"/>
@@ -287,6 +284,8 @@
             </intent-filter>
         </receiver>
 
+        <activity android:name=".activity.ImageSettingActivity">
+        </activity>
     </application>
 
 </manifest>

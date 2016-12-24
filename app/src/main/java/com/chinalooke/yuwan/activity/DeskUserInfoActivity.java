@@ -16,6 +16,7 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.DeskUserInfo;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.view.PieChartView;
 import com.google.gson.Gson;
@@ -108,8 +109,10 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
     private void initView() {
         DeskUserInfo.ResultBean result = mDeskUserInfo.getResult();
         String headImg = result.getHeadImg();
-        if (!TextUtils.isEmpty(headImg))
-            Picasso.with(getApplicationContext()).load(headImg).resize(200, 200).centerCrop().into(mIvHead);
+        if (!TextUtils.isEmpty(headImg)) {
+            String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 200, 200);
+            Picasso.with(getApplicationContext()).load(loadImageUrl).into(mIvHead);
+        }
         String sex = result.getSex();
         if (!TextUtils.isEmpty(sex)) {
             switch (sex) {
