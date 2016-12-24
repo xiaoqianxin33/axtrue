@@ -39,6 +39,7 @@ import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
@@ -503,8 +504,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
 
             String addTime = resultBean.getAddTime();
             if (!TextUtils.isEmpty(addTime))
-                dynamicViewHolder.mTvTime.setText(addTime);
-
+                DateUtils.setDynamicTime(addTime, dynamicViewHolder.mTvTime);
             return convertView;
         }
 

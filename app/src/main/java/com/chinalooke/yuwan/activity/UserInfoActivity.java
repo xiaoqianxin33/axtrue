@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,6 +36,8 @@ import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.DBManager;
 import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.Auth;
+import com.chinalooke.yuwan.utils.BitmapUtils;
+import com.chinalooke.yuwan.utils.ImageUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
@@ -538,7 +541,9 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                 Auth auth = Auth.create(Constant.QINIU_ACCESSKEY, Constant.QINIU_SECRETKEY);
                 String token = auth.uploadToken("yuwan");
                 final String fileName = "head" + new Date().getTime();
-                mUploadManager.put(mPath, fileName, token, new UpCompletionHandler() {
+                Bitmap bitmap = ImageUtils.getBitmap(mPath);
+                Bitmap compressBitmap = ImageEngine.getCompressBitmap(bitmap, getApplicationContext());
+                mUploadManager.put(BitmapUtils.toArray(compressBitmap), fileName, token, new UpCompletionHandler() {
                     @Override
                     public void complete(String key, ResponseInfo info, JSONObject response) {
                         if (info.error == null) {

@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
@@ -55,8 +56,10 @@ public class MyQRCodeActivity extends AutoLayoutActivity {
         if (!TextUtils.isEmpty(slogan))
             mTvSlogen.setText(slogan);
         String headImg = mUserInfo.getHeadImg();
-        if (!TextUtils.isEmpty(headImg))
-            Picasso.with(getApplicationContext()).load(headImg).resize(100, 100).centerCrop().into(mRoundedImageView);
+        if (!TextUtils.isEmpty(headImg)) {
+            String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 100, 100);
+            Picasso.with(getApplicationContext()).load(loadImageUrl).into(mRoundedImageView);
+        }
 
     }
 

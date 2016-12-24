@@ -1,6 +1,7 @@
 package com.chinalooke.yuwan.utils;
 
 import android.text.TextUtils;
+import android.widget.TextView;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -530,6 +531,15 @@ public final class DateUtils implements Serializable {
         return date;
     }
 
+    //获取昨天的日期
+    public static Date getBeforeDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        date = calendar.getTime();
+        return date;
+    }
+
     //获取后天的日期
     public static Date getNextNextDay(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -537,6 +547,34 @@ public final class DateUtils implements Serializable {
         calendar.add(Calendar.DAY_OF_MONTH, 2);
         date = calendar.getTime();
         return date;
+    }
+
+    public static void setDynamicTime(String addTime, TextView textView) {
+        textView.setText(addTime);
+        Calendar cal = new GregorianCalendar();
+        Date date = DateUtils.getDate(addTime, "yyyy-MM-dd HH:mm:ss");
+        cal.setTime(date);
+        int dateY = cal.get(Calendar.YEAR);
+        int dateM = cal.get(Calendar.MONTH);
+        int dateD = cal.get(Calendar.DAY_OF_YEAR);
+        cal.setTime(new Date());
+        int cdateY = cal.get(Calendar.YEAR);
+        int cdateM = cal.get(Calendar.MONTH);
+        int cdateD = cal.get(Calendar.DAY_OF_YEAR);
+        cal.setTime(DateUtils.getBeforeDay(new Date()));
+        int bdateD = cal.get(Calendar.DAY_OF_YEAR);
+        if (dateM == cdateM && dateY == cdateY) {
+            if (dateD == cdateD) {
+                textView.setText("今天 " + addTime.substring(10));
+            } else if (dateD == bdateD) {
+                textView.setText("昨天 " + addTime.substring(10));
+            }
+        }
+        long l = new Date().getTime() - date.getTime();
+        l = l / 1000;
+        if (l <= 60) {
+            textView.setText("刚刚");
+        }
     }
 
 }

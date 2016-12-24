@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -286,10 +287,12 @@ public class SignInActivity extends AutoLayoutActivity {
             mProgressDialog = MyUtils.initDialog("", this);
             mProgressDialog.show();
             String url = Constant.HOST + "signIn&userId=" + mUser.getUserId() + "&signInDate=" + DateUtils.getCurrentDate();
+            Log.e("TAG", url);
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     mProgressDialog.dismiss();
+                    Log.e("TAG", response);
                     if (AnalysisJSON.analysisJson(response)) {
                         mToast.setText("签到成功");
                         mToast.show();
@@ -297,8 +300,7 @@ public class SignInActivity extends AutoLayoutActivity {
                         refreshView();
                     } else {
                         mBtnSign.setEnabled(true);
-                        mToast.setText("签到失败");
-                        mToast.show();
+                        MyUtils.showMsg(mToast, response);
                     }
                 }
             }, new Response.ErrorListener() {

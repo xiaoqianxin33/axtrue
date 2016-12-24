@@ -25,6 +25,7 @@ import com.chinalooke.yuwan.bean.Circle;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.Auth;
 import com.chinalooke.yuwan.utils.BitmapUtils;
 import com.chinalooke.yuwan.utils.DateUtils;
@@ -211,7 +212,7 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
         final ArrayList<String> paths = new ArrayList<>();
         for (int i = 0; i < mPhotos.size(); i++) {
             Bitmap bitmap = ImageUtils.getBitmap(mPhotos.get(i));
-            Bitmap bitmap1 = ImageUtils.compressByScale(bitmap, 235, 235);
+            Bitmap bitmap1 = ImageEngine.getCompressBitmap(bitmap, getApplicationContext());
             String fileName = "dynamic" + new Date().getTime();
             paths.add(Constant.QINIU_DOMAIN + "/" + fileName);
             mUploadManager.put(BitmapUtils.toArray(bitmap1), fileName, token, new UpCompletionHandler() {

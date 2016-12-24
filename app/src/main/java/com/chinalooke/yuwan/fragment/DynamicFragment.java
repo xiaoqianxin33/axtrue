@@ -43,6 +43,7 @@ import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
@@ -472,7 +473,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
 
             final WholeDynamic.ResultBean resultBean = (WholeDynamic.ResultBean) mDataSource.get(position);
             String headImg = resultBean.getHeadImg();
-            if (!TextUtils.isEmpty(headImg)){
+            if (!TextUtils.isEmpty(headImg)) {
                 String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, headImg, 72, 72);
                 Picasso.with(mContext).load(loadImageUrl).into(dynamicViewHolder.mRoundedImageView);
             }
@@ -521,8 +522,9 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                 dynamicViewHolder.mTvAddress.setText(address);
 
             String addTime = resultBean.getCreateTime();
-            if (!TextUtils.isEmpty(addTime))
-                dynamicViewHolder.mTvTime.setText(addTime);
+            if (!TextUtils.isEmpty(addTime)) {
+                DateUtils.setDynamicTime(addTime, dynamicViewHolder.mTvTime);
+            }
 
             if (mUserInfo != null) {
                 final boolean isLoginUserLike = resultBean.isIsLoginUserLike();

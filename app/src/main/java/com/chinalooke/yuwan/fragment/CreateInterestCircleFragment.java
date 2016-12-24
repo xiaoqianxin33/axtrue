@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,6 +44,8 @@ import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.Auth;
+import com.chinalooke.yuwan.utils.BitmapUtils;
+import com.chinalooke.yuwan.utils.ImageUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
@@ -80,8 +83,6 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
     private static final int CHOSE_GAME = 2;
     @Bind(R.id.tv_circle_name)
     TextView mTvCircleName;
-    @Bind(R.id.iv_gameimage)
-    RoundedImageView mIvGameimage;
     @Bind(R.id.ll_game)
     LinearLayout mLlGame;
     @Bind(R.id.tv_circle_expalin)
@@ -232,7 +233,9 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
         Auth auth = Auth.create(Constant.QINIU_ACCESSKEY, Constant.QINIU_SECRETKEY);
         String token = auth.uploadToken("yuwan");
         final String fileName = "circle_name" + new Date().getTime();
-        mUploadManager.put(mPath, fileName, token, new UpCompletionHandler() {
+        Bitmap bitmap = ImageUtils.getBitmap(mPath);
+        Bitmap compressBitmap = ImageEngine.getCompressBitmap(bitmap, mActivity);
+        mUploadManager.put(BitmapUtils.toArray(compressBitmap), fileName, token, new UpCompletionHandler() {
             @Override
             public void complete(String key, ResponseInfo info, JSONObject response) {
                 if (info.error == null) {
