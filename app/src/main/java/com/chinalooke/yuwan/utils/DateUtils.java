@@ -574,6 +574,8 @@ public final class DateUtils implements Serializable {
         l = l / 1000;
         if (l <= 60) {
             textView.setText("刚刚");
+        } else if (l < 120 && l > 60) {
+            textView.setText("1分钟之前");
         }
     }
 
