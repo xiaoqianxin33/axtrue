@@ -104,7 +104,7 @@
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="a97e1889f1413692488576c7d4cb1d6f"/>
+            android:value="7517ead7e8b35833759613eb4014e4d2"/>
 
         <activity
             android:name="com.mob.tools.MobUIShell"
