@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -24,11 +23,12 @@ import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hyphenate.chat.EMClient;
+import com.zhy.autolayout.AutoLayoutActivity;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends AutoLayoutActivity {
 
     private RequestQueue mQueue;
     private Handler mHandler = new Handler() {
@@ -38,6 +38,7 @@ public class SplashActivity extends AppCompatActivity {
             finish();
         }
     };
+    private DBManager mDbManager;
 
 
     @Override
@@ -45,6 +46,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         mQueue = YuwanApplication.getQueue();
+        mDbManager = new DBManager(SplashActivity.this);
         getGameMessage();
         LoginUser.ResultBean user = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(this, LoginUserInfoUtils.KEY);
         if (user != null) {
@@ -80,17 +82,17 @@ public class SplashActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                String substring = response.substring(11, 15);
-                if ("true".equals(substring)) {
+                if (AnalysisJSON.analysisJson(response)) {
                     Gson gson = new Gson();
                     Type type = new TypeToken<GameMessage>() {
                     }.getType();
                     GameMessage mGameMessage = gson.fromJson(response, type);
                     if (mGameMessage != null) {
                         List<GameMessage.ResultBean> result = mGameMessage.getResult();
-                        DBManager dbManager = new DBManager(SplashActivity.this);
-                        dbManager.add(result);
-                        dbManager.closeDB();
+                        if (result != null && result.size() != 0) {
+                            mDbManager.add(result);
+                            mDbManager.closeDB();
+                        }
                     }
                 }
             }

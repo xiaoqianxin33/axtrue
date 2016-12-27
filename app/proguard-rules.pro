@@ -21,13 +21,7 @@
 #包明不混合大小写
 -dontusemixedcaseclassnames
 
-#不去忽略非公共的库类
--dontskipnonpubliclibraryclasses
-
- #优化  不优化输入的类文件
--dontoptimize
-
-
+-dontpreverify
 
  #混淆时是否记录日志
 -verbose
@@ -46,95 +40,32 @@
 -keep public class * extends android.content.BroadcastReceiver
 -keep public class * extends android.content.ContentProvider
 -keep public class * extends android.app.backup.BackupAgentHelper
--keep public class * extends android.preference.Preference
 -keep public class com.android.vending.licensing.ILicensingService
+-keep public class * extends android.preference.Preference
+-keep public class * extends android.database.sqlite
+-keep public class com.chinalooke.yuwan.db.DBManager
 #如果有引用v4包可以添加下面这行
 -keep public class * extends android.support.v4.app.Fragment
 
--keep class **.R$* { *; }
 
-##记录生成的日志数据,gradle build时在本项目根目录输出##
-#apk 包内所有 class 的内部结构
--dump proguard/class_files.txt
-#未混淆的类和成员
--printseeds proguard/seeds.txt
-#列出从 apk 中删除的代码
--printusage proguard/unused.txt
-#混淆前后的映射
--printmapping proguard/mapping.txt
-########记录生成的日志数据，gradle build时 在本项目根目录输出-end######
-
-#如果引用了v4或者v7包
--dontwarn android.support.**
-
-
-#保持 native 方法不被混淆
--keepclasseswithmembernames class * {
+-keepclasseswithmembernames class * {  # 保持 native 方法不被混淆
     native <methods>;
 }
-
-#保持自定义控件类不被混淆
--keepclasseswithmembers class * {
+-keepclasseswithmembers class * {   # 保持自定义控件类不被混淆
     public <init>(android.content.Context, android.util.AttributeSet);
 }
-
-#保持自定义控件类不被混淆
--keepclassmembers class * extends android.app.Activity {
-   public void *(android.view.View);
-}
-
--keep public class * extends android.view.View {
-    public <init>(android.content.Context);
-    public <init>(android.content.Context, android.util.AttributeSet);
+-keepclasseswithmembers class * {# 保持自定义控件类不被混淆
     public <init>(android.content.Context, android.util.AttributeSet, int);
-    public void set*(...);
 }
-
-#保持 Parcelable 不被混淆
--keep class * implements android.os.Parcelable {
-  public static final android.os.Parcelable$Creator *;
+-keepclassmembers class * extends android.app.Activity { # 保持自定义控件类不被混淆
+    public void *(android.view.View);
 }
-
-
-
-#保持 native 方法不被混淆
--keepclasseswithmembernames class * {
-    native <methods>;
+-keepclassmembers enum * {     # 保持枚举 enum 类不被混淆
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
 }
-
-#保持自定义控件类不被混淆
--keepclasseswithmembers class * {
-    public <init>(android.content.Context, android.util.AttributeSet);
-}
-
-#保持自定义控件类不被混淆
--keepclassmembers class * extends android.app.Activity {
-   public void *(android.view.View);
-}
-
--keep public class * extends android.view.View {
-    public <init>(android.content.Context);
-    public <init>(android.content.Context, android.util.AttributeSet);
-    public <init>(android.content.Context, android.util.AttributeSet, int);
-    public void set*(...);
-}
-
-#保持 Parcelable 不被混淆
--keep class * implements android.os.Parcelable {
-  public static final android.os.Parcelable$Creator *;
-}
-
-#保持 Serializable 不被混淆并且enum 类也不被混淆
--keepclassmembers class * implements java.io.Serializable {
-    static final long serialVersionUID;
-    private static final java.io.ObjectStreamField[] serialPersistentFields;
-    !static !transient <fields>;
-    !private <fields>;
-    !private <methods>;
-    private void writeObject(java.io.ObjectOutputStream);
-    private void readObject(java.io.ObjectInputStream);
-    java.lang.Object writeReplace();
-    java.lang.Object readResolve();
+-keep class * implements android.os.Parcelable { # 保持 Parcelable 不被混淆
+    public static final android.os.Parcelable$Creator *;
 }
 
 #不混淆资源类
@@ -165,7 +96,7 @@
 }
 
 
--keep class com.chinalooke.yuwan.app.bean.** { *; }
+-keep class com.chinalooke.yuwan.bean.** { *; }
 
 -keep class net.sourceforge.zbar.** { *; }
 -keep interface net.sourceforge.zbar.** { *; }
@@ -180,6 +111,7 @@
 
 -keep class com.hyphenate.** {*;}
 -dontwarn  com.hyphenate.**
+-keep class com.superrtc.** {*;}
 
 -keep class com.qiniu.**{*;}
 -keep class com.qiniu.**{public <init>();}
@@ -261,6 +193,52 @@
 -dontwarn org.xbill.**
 -keep class org.xbill.** { *;}
 
+#如果使用easeui库，需要这么写
+-keep class com.easemob.easeui.utils.EaseSmileUtils {*;}
+-keep class net.java.sip.** {*;}
+-keep class org.webrtc.voiceengine.** {*;}
+-keep class net.sourceforge.zbar.** { *; }
+-keep interface net.sourceforge.zbar.** { *; }
+-dontwarn net.sourceforge.zbar.**
+
+-keep class com.easemob.** {*;}
+-keep class org.jivesoftware.** {*;}
+-keep class org.apache.** {*;}
+-dontwarn  com.easemob.**
+#2.0.9后的不需要加下面这个keep
+
+-dontwarn com.huawei.**
+-keep class com.huawei.**
+
+
+
+#-keep class org.xbill.DNS.** {*;}
+#另外，demo中发送表情的时候使用到反射，需要keep SmileUtils
+-keep class com.chinalooke.yuwan.SmileUtils {*;}
+#注意前面的包名，如果把这个类复制到自己的项目底下，比如放在com.example.utils底下，应该这么写（实际要去掉#）
+#-keep class com.example.utils.SmileUtils {*;}
+#如果使用EaseUI库，需要这么写
+-keep class com.easemob.easeui.utils.EaseSmileUtils {*;}
+
+#2.0.9后加入语音通话功能，如需使用此功能的API，加入以下keep
+-dontwarn ch.imvs.**
+-dontwarn org.slf4j.**
+-keep class org.ice4j.** {*;}
+-keep class net.java.sip.** {*;}
+-keep class org.webrtc.voiceengine.** {*;}
+-keep class org.bitlet.** {*;}
+-keep class org.slf4j.** {*;}
+-keep class ch.imvs.** {*;}
+
+# #  ############### volley混淆  ###############
+# # -------------------------------------------
+-keep class com.android.volley.** {*;}
+-keep class com.android.volley.toolbox.** {*;}
+-keep class com.android.volley.Response$* { *; }
+-keep class com.android.volley.Request$* { *; }
+-keep class com.android.volley.RequestQueue$* { *; }
+-keep class com.android.volley.toolbox.HurlStack$* { *; }
+-keep class com.android.volley.toolbox.ImageLoader$* { *; }
 
 -keepclassmembers class * {
     @android.webkit.JavascriptInterface <methods>;

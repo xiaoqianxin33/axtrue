@@ -1,12 +1,12 @@
 package com.chinalooke.yuwan.fragment;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -46,6 +45,7 @@ import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
+import com.chinalooke.yuwan.utils.ViewHelper;
 import com.chinalooke.yuwan.view.ExpandTabView;
 import com.chinalooke.yuwan.view.RecycleViewDivider;
 import com.chinalooke.yuwan.view.ViewLeft;
@@ -115,6 +115,8 @@ public class BattleFieldFragment extends Fragment {
     private String KEY_WORDS = "";
     private View mFoot;
     private boolean isNetbar = false;
+    private boolean isFoot = false;
+    private boolean isLoading = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -128,13 +130,11 @@ public class BattleFieldFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        WindowManager wm = (WindowManager) getContext()
-                .getSystemService(Context.WINDOW_SERVICE);
-        mWidth = wm.getDefaultDisplay().getWidth();
+        mWidth = ViewHelper.getDisplayMetrics(getActivity()).widthPixels;
         user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
         isNetbar = user != null && user.getUserType().equals("netbar");
         mActivity = (MainActivity) getActivity();
-        mFoot = mActivity.getLayoutInflater().inflate(R.layout.foot, null, false);
+        mFoot = View.inflate(mActivity, R.layout.foot, null);
         mGson = new Gson();
         initView();
         initMenuData();
@@ -155,7 +155,6 @@ public class BattleFieldFragment extends Fragment {
 
     }
 
-
     private void initEvent() {
         //banner的item点击事件
         mBanner.setOnItemClickListener(new BGABanner.OnItemClickListener() {
@@ -173,6 +172,7 @@ public class BattleFieldFragment extends Fragment {
                 if (currentTime - refreshLastClickTime > 3000) {
                     refreshLastClickTime = currentTime;
                     isFresh = true;
+                    isFoot = false;
                     PAGE = 1;
                     getGameDeskListWithStatus();
                     mSr.setRefreshing(false);
@@ -213,7 +213,22 @@ public class BattleFieldFragment extends Fragment {
         });
 
         //recycleView滚动监听
-        mRecyclerView.addOnScrollListener(new MyOnScrollListener());
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (isSlideToBottom(recyclerView) && !isLoading) {
+                    if (!isFoot) {
+                        isLoading = true;
+                        loadMore();
+                    }
+                }
+            }
+        });
 
         mViewLeft.setOnSelectListener(new ViewLeft.OnSelectListener() {
 
@@ -307,24 +322,6 @@ public class BattleFieldFragment extends Fragment {
         }
     }
 
-    class MyOnScrollListener extends RecyclerView.OnScrollListener {
-
-
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            if (isSlideToBottom(recyclerView)) {
-                loadMore();
-            }
-        }
-
-    }
-
     private void loadMore() {
         PAGE++;
         getGameDeskListWithStatus();
@@ -391,7 +388,6 @@ public class BattleFieldFragment extends Fragment {
         mQueue.add(request);
     }
 
-
     private void initVaule() {
         mViewArray.add(mViewLeft);
         mViewArray.add(mViewRight);
@@ -406,16 +402,15 @@ public class BattleFieldFragment extends Fragment {
         expandTabView.setTitle(mViewMiddle.getShowText(), 2);
     }
 
-
     private void onRefresh(View view, String showText) {
         expandTabView.onPressBack();
-        int position = getPositon(view);
+        int position = getPosition(view);
         if (position >= 0 && !expandTabView.getTitle(position).equals(showText)) {
             expandTabView.setTitle(showText, position);
         }
     }
 
-    private int getPositon(View tView) {
+    private int getPosition(View tView) {
         for (int i = 0; i < mViewArray.size(); i++) {
             if (mViewArray.get(i) == tView) {
                 return i;
@@ -459,11 +454,14 @@ public class BattleFieldFragment extends Fragment {
                                                 }
                                             }
                                             mDeskList.addAll(list);
-                                            if (mDeskList.size() < 5)
+                                            if (mDeskList.size() < 5) {
                                                 loadMore();
+                                            }
                                             break;
                                     }
+                                    isLoading = false;
                                 } else {
+                                    isFoot = true;
                                     if (isFirst) {
                                         mAdapter.removeAllFooterView();
                                         mTvNone.setVisibility(View.VISIBLE);
@@ -526,11 +524,9 @@ public class BattleFieldFragment extends Fragment {
                     }
                 }
             }, null);
-
             mQueue.add(request);
         }
     }
-
 
     //设置顶部广告条
     private void setBanner(Advertisement advertisement) {
@@ -562,7 +558,7 @@ public class BattleFieldFragment extends Fragment {
                 android.R.color.holo_red_light);
         MyLinearLayoutManager myLinearLayoutManager = new MyLinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, true);
         mAdapter = new QuickAdapter(R.layout.item_zc_listview, mDeskList);
-        RecycleViewDivider recycleViewDivider = new RecycleViewDivider(mActivity, LinearLayoutManager.HORIZONTAL, 1, getResources().getColor(R.color.line_color));
+        RecycleViewDivider recycleViewDivider = new RecycleViewDivider(mActivity, LinearLayoutManager.HORIZONTAL, 1, ContextCompat.getColor(mActivity, R.color.line_color));
         myLinearLayoutManager.setReverseLayout(false);
         myLinearLayoutManager.setAutoMeasureEnabled(true);
         mRecyclerView.setLayoutManager(myLinearLayoutManager);
@@ -570,7 +566,6 @@ public class BattleFieldFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setNestedScrollingEnabled(false);
     }
-
 
     @Override
     public void onDestroyView() {
@@ -597,7 +592,6 @@ public class BattleFieldFragment extends Fragment {
             }
         }
     }
-
 
     public class QuickAdapter extends BaseQuickAdapter<GameDesk.ResultBean> {
 

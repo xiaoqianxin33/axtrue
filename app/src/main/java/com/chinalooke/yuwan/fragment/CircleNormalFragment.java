@@ -66,6 +66,7 @@ import com.zhy.autolayout.utils.AutoUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -296,8 +297,13 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     //获取顶部广告图片
     private void getADListForSpace(AMapLocation aMapLocation) {
         String city = aMapLocation.getCity();
-        String uri = Constant.HOST + "getADListForSpace&pageNo=1&pageSize=5&city=" + URLEncoder.encode(city);
-        StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+        String url = null;
+        try {
+            url = Constant.HOST + "getADListForSpace&pageNo=1&pageSize=5&city=" + URLEncoder.encode(city, "utf8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (AnalysisJSON.analysisJson(response)) {
@@ -335,7 +341,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             mBanner.setData(mAdList);
         }
     }
-
 
     @Override
     public void onDestroyView() {
@@ -477,11 +482,10 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             }
             viewHolder.mTvCircleName.setText(resultBean.getGroupName());
             viewHolder.mTvCircleDetails.setText(resultBean.getDetails());
-            viewHolder.mTvDiscountCircle.setText(resultBean.getDistance() + "m");
+            viewHolder.mTvDiscountCircle.setText(getString(R.string.distance, resultBean.getDistance()));
             return convertView;
         }
     }
-
 
     static class ViewHolder {
         @Bind(R.id.iv_image)
@@ -497,7 +501,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             ButterKnife.bind(this, view);
         }
     }
-
 
     //得到兴趣圈子
     private void getInterestCircle() {
@@ -523,7 +526,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
         }, null);
         mQueue.add(stringRequest);
     }
-
 
     class GridAdapt extends BaseAdapter {
 
@@ -561,7 +563,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             }
             Circle.ResultBean resultBean = mList.get(position);
             viewHolder.mTvGameName.setText(resultBean.getGroupName());
-            viewHolder.mTvView.setText("人气  " + resultBean.getViews());
+            viewHolder.mTvView.setText(getString(R.string.popularity, resultBean.getViews()));
             String headImg = resultBean.getHeadImg();
             if (!TextUtils.isEmpty(headImg)) {
                 String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, headImg, 200, 200);
@@ -626,7 +628,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                     snippet("我"));
         }
     }
-
 
     @Override
     public void onPause() {
