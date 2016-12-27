@@ -132,7 +132,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
             case R.id.btn__get_verification_code_register:
                 //判断是否是手机号
                 phone = mphoneRegister.getText().toString();
-                if (Validator.isMobile(phone))
+                if (MyUtils.CheckPhoneNumber(phone))
                     getHTTPIsPhoneExists(); //判断用户是否注册
                 else {
                     mphoneRegister.setError("请输入正确的手机号码");
@@ -189,7 +189,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         passWord = mpasswordRegister.getText().toString();
         String repassWord = mrepasswordRegister.getText().toString();
         mIntroducePhone = mIntroducePhoneRegister.getText().toString();
-        if (!Validator.isMobile(phone))
+        if (!MyUtils.CheckPhoneNumber(phone))
             mphoneRegister.setError("请输入正确的手机号码");
         else if (!passWord.equals(repassWord)) {
             mrepasswordRegister.setError("请输入两次相同密码");
@@ -205,7 +205,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
             mProgressDialog = MyUtils.initDialog("正在注册...", RegisterActivity.this);
             mProgressDialog.show();
             if (!TextUtils.isEmpty(mIntroducePhone)) {
-                if (!Validator.isMobile(mIntroducePhone))
+                if (!MyUtils.CheckPhoneNumber(mIntroducePhone))
                     mIntroducePhoneRegister.setError("推荐人手机号码错误，改改试试吧");
                 else {
                     checkSMS();

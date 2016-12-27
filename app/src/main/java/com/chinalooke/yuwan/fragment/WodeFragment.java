@@ -1,12 +1,15 @@
 package com.chinalooke.yuwan.fragment;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -117,14 +120,17 @@ public class WodeFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mActivity = (MainActivity) getActivity();
         final int heightPixels = ViewHelper.getDisplayMetrics(mActivity).heightPixels;
-        final Drawable drawable = getResources().getDrawable(R.drawable.actionbar_color_else);
+        final Drawable drawable = ContextCompat.getDrawable(mActivity, R.drawable.actionbar_color_else);
         drawable.setAlpha(START_ALPHA);
-        mRlTop.setBackground(drawable);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            mRlTop.setBackground(drawable);
+        }
         ViewTreeObserver viewTreeObserver = mRlScroll.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onGlobalLayout() {
-                mRlScroll.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                mRlScroll.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 mHeight = mRlScroll.getHeight();
                 final int height = Math.abs(heightPixels - mHeight);
                 mMyScrollView.setOnScrollChangedListener(new MyScrollView.OnScrollChangedListener() {
@@ -300,13 +306,13 @@ public class WodeFragment extends Fragment {
             else
                 mTvName.setText("暂未设置昵称");
             String headImg = user.getHeadImg();
-            if (!TextUtils.isEmpty(headImg)){
+            if (!TextUtils.isEmpty(headImg)) {
                 String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, headImg, 160, 160);
                 Picasso.with(mActivity).load(loadImageUrl).into(mRoundedImageView);
             }
             String slogan = user.getSlogan();
             if (!TextUtils.isEmpty(slogan))
-                mTvSlogen.setText("简介：  " + slogan);
+                mTvSlogen.setText(getString(R.string.introduction, slogan));
 
             if (user.getUserType().equals("netbar")) {
                 mTvSignUp.setVisibility(View.GONE);
@@ -346,13 +352,11 @@ public class WodeFragment extends Fragment {
         }
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
-
 
     private void setCancelDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);

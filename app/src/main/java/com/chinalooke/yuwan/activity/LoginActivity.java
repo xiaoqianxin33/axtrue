@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -83,6 +84,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
         ButterKnife.bind(this);
         mQueue = YuwanApplication.getQueue();
         mToast = YuwanApplication.getToast();
+        mProgressDialog = MyUtils.initDialog("正在加载中...", LoginActivity.this);
         //初始化Sharesdk;
         ShareSDK.initSDK(this);
         initView();
@@ -90,11 +92,11 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     }
 
     private void initView() {
-        mBtnLoginLogin.setBackgroundColor(getResources().getColor(R.color.grey));
+        mBtnLoginLogin.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.grey));
         mBtnLoginLogin.setEnabled(false);
         mTvTitle.setText("登录");
         mTvSkip.setText("注册");
-        mTvSkip.setTextColor(getResources().getColor(R.color.unselectcolor));
+        mTvSkip.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.unselectcolor));
     }
 
     private void initEvent() {
@@ -103,7 +105,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
             public void onFocusChange(View v, boolean hasFocus) {
                 String phone = mEtPhone.getText().toString();
                 if (hasFocus && !TextUtils.isEmpty(phone)) {
-                    mBtnLoginLogin.setBackgroundColor(getResources().getColor(R.color.btn_yellow));
+                    mBtnLoginLogin.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.btn_yellow));
                     mBtnLoginLogin.setEnabled(true);
                 }
             }
@@ -211,7 +213,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
         } else {
             getHTTPIsPhoneExists();
             //弹出正在登陆
-            mProgressDialog = MyUtils.initDialog("正在加载中...", LoginActivity.this);
             mProgressDialog.show();
         }
 
@@ -325,7 +326,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                 LoginUserInfoUtils.saveObject(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo.getResult());
                 registerHx(phone);
                 PushService.subscribe(this, userInfo.getResult().getUserId(), MyMessageActivity.class);
-                Log.e("TAG", userInfo.getResult().getUserId());
             }
             loginSuccess();//调用登录成功方法
         } else {
@@ -342,7 +342,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
 
         }
     }
-
 
     /**
      * QQ登录
@@ -372,31 +371,24 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
      */
     private void disanfangLogin(String name) {
         Platform platform = ShareSDK.getPlatform(this, name);
+        platform.removeAccount();
         platform.setPlatformActionListener(this);//授权监听
-        platform.authorize();
-        //判断是否验证（判断是否成功登录）
-        if (platform.isValid()) {//通过验证
-            String userName = platform.getDb().getUserName();//获取第三方平台显示的名称
-            String password = platform.getDb().getUserId();//获取第三方平台的密码
-            Log.i("TAG", "验证通-----------------过-----" + userName + password);
-        } else {
-            //没有通过验证
-        }
-        platform.showUser(null);//授权并获取用户信息
+        platform.showUser(null);
     }
-
 
     //授权完成
     @Override
     public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
-//        String userName = platform.getDb().getUserName();//获取第三方平台显示的名称
-//        String password = platform.getDb().getId();//获取第三方平台的密码
-//        String userIcon = platform.getDb().getUserIcon();//获取第三方平台的头标
-        final String token = platform.getDb().getToken();
-        String uri = Constant.HOST + "isAuthExists&auth=" + token;
-        StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+        final String token = platform.getDb().getUserId();
+        afterThirdLogin(token);
+    }
+
+    private void afterThirdLogin(final String token) {
+        String url = Constant.HOST + "isAuthExists&auth=" + token;
+        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Log.e("TAG",response);
                 if (!TextUtils.isEmpty(response)) {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
@@ -435,11 +427,14 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     /**
      * 获取第三方登录过的用户资料
      */
-    private void getUserInfoWithAuth(String phone, String auth) {
-        String uri = Constant.HOST + "getUserInfoWithAuth&phone=" + phone + "&auth=" + auth;
+    private void getUserInfoWithAuth(final String phone1, String auth) {
+        String uri = Constant.HOST + "getUserInfoWithAuth&phone=" + phone1 + "&auth=" + auth;
+        Log.e("TAG", uri);
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Log.e("TAG", response);
+                phone = phone1;
                 analysisJson(response);
                 mProgressDialog.dismiss();
             }

@@ -59,7 +59,6 @@ public class AccountIncomeFragment extends Fragment {
         mListView.setAdapter(accountAdapter);
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();

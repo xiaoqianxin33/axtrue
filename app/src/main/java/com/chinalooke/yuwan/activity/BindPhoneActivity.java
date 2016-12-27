@@ -16,13 +16,16 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVMobilePhoneVerifyCallback;
+import com.avos.avoscloud.RequestMobileCodeCallback;
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.ResultDatas;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
-import com.chinalooke.yuwan.utils.GetHTTPDatas;
+import com.chinalooke.yuwan.utils.LeanCloudUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
@@ -36,8 +39,6 @@ import java.io.IOException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.smssdk.EventHandler;
-import cn.smssdk.SMSSDK;
 
 public class BindPhoneActivity extends AutoLayoutActivity {
 
@@ -49,14 +50,11 @@ public class BindPhoneActivity extends AutoLayoutActivity {
     EditText mEtCode;
     @Bind(R.id.btn_getCode)
     Button mBtnGetCode;
-    @Bind(R.id.btn_bind_phone)
-    Button mBtnBindPhone;
     private String mAuth;
     private Toast mToast;
     private String mPhone;
     private RequestQueue mQueue;
     private CountTimer mCountTimer;
-    EventHandler eh;
     private ProgressDialog mProgressDialog;
     private String userId;
     private String headImg;
@@ -96,72 +94,95 @@ public class BindPhoneActivity extends AutoLayoutActivity {
 
                 break;
             case R.id.btn_bind_phone:
+                checkSMS();
                 break;
+        }
+    }
+
+    //检查验证码
+    private void checkSMS() {
+        String code = mEtCode.getText().toString();
+        if (TextUtils.isEmpty(code)) {
+            mEtCode.setError("请输入验证码");
+        } else {
+            LeanCloudUtil.checkSMS(code, mPhone, new AVMobilePhoneVerifyCallback() {
+                @Override
+                public void done(AVException e) {
+                    if (e == null) {
+                        getHTTPRegister();
+                    } else {
+                        mEtCode.setError("验证码错误，请重新输入");
+                    }
+                }
+            });
         }
     }
 
     private void getHTTPIsPhoneExists() {
         String URLPhone = Constant.IS_PHONE_EXISTS + "&" + Constant.PHONE + mPhone;
-        GetHTTPDatas getHTTPDatas = new GetHTTPDatas();
-        getHTTPDatas.getHTTPIsPhoneExists(URLPhone);
-        ResultDatas result = getHTTPDatas.getResult();
-        if (result != null) {
-            if ("true".equals(result.getSuccess()) && "false".equals(result.getResult())) {
-                mEtPhone.setEnabled(false);
-                //启动倒计时
-                mCountTimer.start();
-                //获取验证码 开始获取验证码
-                sendSMSRandom();
-            }
-            if ("true".equals(result.getSuccess()) && "true".equals(result.getResult())) {
-                Log.d("TAG", "验证密码");
+        StringRequest request = new StringRequest(URLPhone, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
                 mProgressDialog.dismiss();
-                mToast.setText("该手机号码已绑定过，换个试试吧");
+                if (!TextUtils.isEmpty(response)) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("Success");
+                        if (success) {
+                            boolean result = jsonObject.getBoolean("Result");
+                            if (result) {
+                                mEtPhone.setError("该手机号码已被注册，换个试试吧");
+                            } else {
+                                mEtPhone.setEnabled(false);
+                                //启动倒计时
+                                mCountTimer.start();
+                                //获取验证码 开始获取验证码
+                                sendSMSRandom();
+                            }
+                        } else {
+                            MyUtils.showMsg(mToast, response);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                mToast.setText("服务器抽风了，请稍后重试");
                 mToast.show();
             }
-        } else {
-            mProgressDialog.dismiss();
-        }
+        });
+        mQueue.add(request);
     }
 
     private void sendSMSRandom() {
-        eh = new EventHandler() {
+        LeanCloudUtil.sendSMSRandom(mPhone, "绑定手机号码", new RequestMobileCodeCallback() {
             @Override
-            public void afterEvent(int event, int result, Object data) {
-                Log.i("TAG", event + "--------" + result + "-----" + data);
-                if (result == SMSSDK.RESULT_COMPLETE) {
-                    //回调完成
-                    if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
-                        //提交验证码成功
-                        Log.i("TAG", "提交验证码成功");
-                        //开始网上注册
-                        getHTTPRegister();
-                    } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
-                        Log.i("TAG", "获取验证码成功");
-                        //获取验证码成功
-                    }
+            public void done(AVException e) {
+                if (e == null) {
+                    mEtCode.requestFocus();
+                    mToast.setText("短信验证码已发送！");
+                    mToast.show();
                 } else {
-                    ((Throwable) data).printStackTrace();
+                    mEtPhone.setEnabled(true);
+                    mToast.setText("短信验证码发送失败,请稍后重试！");
+                    mToast.show();
                 }
             }
-        };
-        //注册短信回调
-        SMSSDK.registerEventHandler(eh);
-        //获取验证码
-        SMSSDK.getVerificationCode("86", mPhone);
+        });
     }
-
 
     private void getHTTPRegister() {
         String randomPwd = getRandomPwd();
         String URLRegister = Constant.REGISTER + "&" + Constant.PHONE + mPhone + "&pwd=" + randomPwd + "&" +
                 "userType=player&auth=" + mAuth;
-        Log.d("TAG", "电话网址----------" + URLRegister);
         StringRequest stringRequest = new StringRequest(URLRegister,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("TAG", response);
                         //解析数据
                         if (response != null) {
                             ResultDatas result = AnalysisJSON.getAnalysisJSON().AnalysisJSONResult(response);
@@ -199,7 +220,6 @@ public class BindPhoneActivity extends AutoLayoutActivity {
         }
         return stringBuffer.toString();
     }
-
 
     private boolean checkPhone() {
         mPhone = mEtPhone.getText().toString();
@@ -251,6 +271,7 @@ public class BindPhoneActivity extends AutoLayoutActivity {
         LoginUser.ResultBean userInfo = new LoginUser.ResultBean();
         userInfo.setUserId(userId);
         userInfo.setHeadImg(headImg);
+        userInfo.setUserType("player");
         try {
             LoginUserInfoUtils.saveLoginUserInfo(getApplicationContext(),
                     LoginUserInfoUtils.KEY, userInfo);
