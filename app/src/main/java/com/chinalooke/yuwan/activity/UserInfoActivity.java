@@ -100,12 +100,12 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     LinearLayout mLl2;
     @Bind(R.id.tv_name_netbar)
     TextView mTvNameNetbar;
-    @Bind(R.id.tv_age_netbar)
-    TextView mTvAgeNetbar;
     @Bind(R.id.tv_address_netbar)
     TextView mTvAddressNetbar;
     @Bind(R.id.ll3)
     LinearLayout mLl3;
+    @Bind(R.id.iv_license)
+    ImageView mIvLicense;
     private LoginUser.ResultBean mUserInfo;
     private ImgSelConfig mConfig;
     private int RC_ACCESS_FINE_LOCATION = 0;
@@ -189,6 +189,12 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             Picasso.with(getApplicationContext()).load(loadImageUrl).into(mRoundedImageView);
         }
 
+        String license = mUserInfo.getLicense();
+        if (!TextUtils.isEmpty(license)) {
+            String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), license, 144, 144);
+            Picasso.with(getApplicationContext()).load(loadImageUrl).into(mIvLicense);
+        }
+
         String userType = mUserInfo.getUserType();
         isNetbar = userType.equals("netbar");
         mLl1.setVisibility(userType.equals("netbar") ? View.GONE : View.VISIBLE);
@@ -211,7 +217,6 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         mAge = mUserInfo.getAge();
         if (!TextUtils.isEmpty(mAge)) {
             mTvAge.setText(mAge);
-            mTvAgeNetbar.setText(mAge);
         }
         mSex = mUserInfo.getSex();
         if (!TextUtils.isEmpty(mSex))
@@ -263,7 +268,6 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                 if (!TextUtils.isEmpty(s)) {
                     mAge = s;
                     mTvAge.setText(mAge);
-                    mTvAgeNetbar.setText(mAge);
                 }
 
             }
@@ -271,14 +275,11 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         pvOptions.show();
     }
 
-    @OnClick({R.id.rl_netbar_address, R.id.rl_age_netbar, R.id.rl_name_netbar, R.id.tv_skip, R.id.iv_back, R.id.rl_head_t, R.id.rl_name, R.id.rl_sex, R.id.rl_age, R.id.rl_play_age, R.id.rl_address, R.id.rl_id, R.id.rl_qcode, R.id.rl_slogen})
+    @OnClick({R.id.rl_netbar_address, R.id.rl_name_netbar, R.id.tv_skip, R.id.iv_back, R.id.rl_head_t, R.id.rl_name, R.id.rl_sex, R.id.rl_age, R.id.rl_play_age, R.id.rl_address, R.id.rl_id, R.id.rl_qcode, R.id.rl_slogen})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_netbar_address:
                 selectLocation();
-                break;
-            case R.id.rl_age_netbar:
-                setAge();
                 break;
             case R.id.rl_name_netbar:
                 showEditDialog();
@@ -443,7 +444,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
 
     private void showEditDialog() {
         final Dialog dialog = new Dialog(this, R.style.Dialog);
-        View inflate = View.inflate(this,R.layout.dialog_edit_name,null);
+        View inflate = View.inflate(this, R.layout.dialog_edit_name, null);
         final EditText editText = (EditText) inflate.findViewById(R.id.et_input);
         Button noButton = (Button) inflate.findViewById(R.id.btn_cancel);
         Button yesButton = (Button) inflate.findViewById(R.id.btn_ok);
@@ -505,7 +506,6 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && data != null) {
@@ -548,6 +548,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                 Bitmap bitmap = ImageUtils.getBitmap(mPath);
                 Bitmap compressBitmap = ImageEngine.getCompressBitmap(bitmap, getApplicationContext());
                 if (compressBitmap == null) {
+                    mProgressDialog.dismiss();
                     mToast.setText("当前设置为非wifi下不能上传图片，请连接wifi");
                     mToast.show();
                     return;
@@ -672,5 +673,6 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         });
         mQueue.add(request);
     }
+
 }
 

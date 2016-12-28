@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -183,8 +184,9 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 if (mUserInfo != null) {
                     CommentList.ResultBean comment = mComments.get(position);
                     mCommentId = comment.getCommentId();
+                    String replayName = comment.getReplayName();
                     COMMENT_TYPE = 1;
-                    addComment();
+                    addComment(replayName);
                 } else {
                     mToast.setText("需登录才可以发表评论");
                     mToast.show();
@@ -363,6 +365,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                                     if (!TextUtils.isEmpty(laddTime) && !TextUtils.isEmpty(raddTime)) {
                                         Date ldate = DateUtils.getDate(laddTime, "yyyy-MM-dd HH:mm:ss");
                                         Date rdate = DateUtils.getDate(raddTime, "yyyy-MM-dd HH:mm:ss");
+                                        assert ldate != null;
                                         if (ldate.before(rdate))
                                             return -1;
                                         else
@@ -456,11 +459,11 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 if (mUserInfo != null)
                     switch (mDynamic_type) {
                         case 0:
-                            addComment();
+                            addComment(null);
                             break;
                         case 1:
                             if (mIsJoin) {
-                                addComment();
+                                addComment(null);
                             } else {
                                 mToast.setText("本圈子成员才可发表评论");
                                 mToast.show();
@@ -530,8 +533,10 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     }
 
     //评论点击
-    private void addComment() {
+    private void addComment(String replayName) {
         mRlComment.setVisibility(View.VISIBLE);
+        if(!TextUtils.isEmpty(replayName))
+            mEtComment.setHint("回复 "+replayName);
         KeyboardUtils.showSoftInput(this, mEtComment);
         mHandler.post(new Runnable() {
             @Override
@@ -604,8 +609,8 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
             String nickName = comment.getNickName();
             String content = comment.getContent();
             String replyName = comment.getReplayName();
-            ForegroundColorSpan blueSpan = new ForegroundColorSpan(getResources().getColor(R.color.comment_text));
-            ForegroundColorSpan blueSpan1 = new ForegroundColorSpan(getResources().getColor(R.color.comment_text));
+            ForegroundColorSpan blueSpan = new ForegroundColorSpan(ContextCompat.getColor(getApplicationContext(), R.color.comment_text));
+            ForegroundColorSpan blueSpan1 = new ForegroundColorSpan(ContextCompat.getColor(getApplicationContext(), R.color.comment_text));
             if (!TextUtils.isEmpty(nickName) && !TextUtils.isEmpty(content)) {
                 if (TextUtils.isEmpty(replyName)) {
                     SpannableStringBuilder builder = new SpannableStringBuilder(nickName + ":" + content);

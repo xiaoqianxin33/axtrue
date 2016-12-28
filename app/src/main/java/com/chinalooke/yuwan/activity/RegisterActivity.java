@@ -500,14 +500,17 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         userId = result.getUserId();
         headImg = result.getHeadImg();
         mNickName = result.getNickName();
-        LoginUser.ResultBean resultBean = new LoginUser.ResultBean();
-        resultBean.setUserId(userId);
-        resultBean.setHeadImg(headImg);
-        resultBean.setNickName(mNickName);
-        try {
-            LoginUserInfoUtils.saveLoginUserInfo(getApplicationContext(), LoginUserInfoUtils.KEY, resultBean);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!isNetbar) {
+            LoginUser.ResultBean resultBean = new LoginUser.ResultBean();
+            resultBean.setUserId(userId);
+            resultBean.setHeadImg(headImg);
+            resultBean.setNickName(mNickName);
+            resultBean.setUserType("player");
+            try {
+                LoginUserInfoUtils.saveLoginUserInfo(getApplicationContext(), LoginUserInfoUtils.KEY, resultBean);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

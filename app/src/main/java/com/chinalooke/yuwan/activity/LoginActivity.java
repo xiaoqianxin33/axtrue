@@ -316,6 +316,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     }
 
     private void analysisJson(String response) {
+        Log.e("TAG", response);
         if (AnalysisJSON.analysisJson(response)) {
             Gson gson = new Gson();
             Type type = new TypeToken<LoginUser>() {
@@ -388,7 +389,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.e("TAG",response);
+                Log.e("TAG", response);
                 if (!TextUtils.isEmpty(response)) {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
