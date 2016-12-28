@@ -1,9 +1,16 @@
 package com.chinalooke.yuwan.activity;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +18,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -26,7 +35,11 @@ import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.Register;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.Auth;
+import com.chinalooke.yuwan.utils.BitmapUtils;
+import com.chinalooke.yuwan.utils.ImageUtils;
 import com.chinalooke.yuwan.utils.LeanCloudUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -34,6 +47,13 @@ import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.Validator;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UploadManager;
+import com.squareup.picasso.Picasso;
+import com.yuyh.library.imgsel.ImageLoader;
+import com.yuyh.library.imgsel.ImgSelActivity;
+import com.yuyh.library.imgsel.ImgSelConfig;
 import com.zhy.autolayout.AutoLayoutActivity;
 
 import org.json.JSONException;
@@ -41,18 +61,21 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Date;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * 注册缓冲未做，向服务端发送介绍人未写 check的选中未写
  * Created by Administrator on 2016/8/23.
  */
-public class RegisterActivity extends AutoLayoutActivity implements CompoundButton.OnCheckedChangeListener {
+public class RegisterActivity extends AutoLayoutActivity implements CompoundButton.OnCheckedChangeListener, EasyPermissions.PermissionCallbacks {
     //注册按钮
     @Bind(R.id.btn_register_register)
     Button mbtnRegister;
@@ -74,6 +97,12 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
     //验证码
     @Bind(R.id.input_verification_code_register)
     EditText mETVerification;
+    @Bind(R.id.rl_recommend)
+    RelativeLayout mRlRecommend;
+    @Bind(R.id.rl_license)
+    RelativeLayout mRlLicense;
+    @Bind(R.id.iv_license)
+    ImageView mIvLicense;
     //验证码
     CheckBox mcheckUserPro;
 
@@ -92,6 +121,11 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
     private Toast mToast;
     private ProgressDialog mProgressDialog;
     private String mCode;
+    private boolean isNetbar;
+    private int RC_ACCESS_FINE_LOCATION = 0;
+    private ImgSelConfig mConfig;
+    private String mPath;
+    private UploadManager mUploadManager;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +138,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         SMSSDK.initSDK(this, Constant.APPKEY, Constant.APPSECRET);
         mQueue = Volley.newRequestQueue(this);
         mToast = YuwanApplication.getToast();
+        mUploadManager = YuwanApplication.getmUploadManager();
         //设置密码类型
         mcountTimer = new CountTimer(60000, 1000);
         initView();
@@ -114,6 +149,11 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         if (!TextUtils.isEmpty(phone)) {
             mphoneRegister.setText(phone);
         }
+
+        isNetbar = getIntent().getBooleanExtra("netbar", false);
+        mRlRecommend.setVisibility(isNetbar ? View.GONE : View.VISIBLE);
+        mRlLicense.setVisibility(isNetbar ? View.VISIBLE : View.GONE);
+
     }
 
     @Override
@@ -124,10 +164,13 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
             SMSSDK.unregisterEventHandler(eh);
     }
 
-    @OnClick({R.id.btn__get_verification_code_register, R.id.btn_register_register, R.id.iv_back})
+    @OnClick({R.id.btn__get_verification_code_register, R.id.btn_register_register, R.id.iv_back, R.id.rl_license})
     public void onClick(View view) {
-
         switch (view.getId()) {
+            //营业执照点击上传
+            case R.id.rl_license:
+                req();
+                break;
             //获取验证码
             case R.id.btn__get_verification_code_register:
                 //判断是否是手机号
@@ -150,25 +193,77 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void req() {
+        initPhotoPicker();
+        String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            ImgSelActivity.startActivity(this, mConfig, 5);
+        } else {
+            EasyPermissions.requestPermissions(this, "需要拍照权限",
+                    RC_ACCESS_FINE_LOCATION, perms);
+        }
+    }
+
+    //初始化图片选择器
+    private void initPhotoPicker() {
+        ImageLoader loader = new ImageLoader() {
+            @Override
+            public void displayImage(Context context, String path, ImageView imageView) {
+                Picasso.with(context).load("file://" + path).into(imageView);
+            }
+        };
+
+        mConfig = new ImgSelConfig.Builder(loader)
+                // 是否多选
+                .multiSelect(false)
+                // “确定”按钮背景色
+                .btnBgColor(Color.GRAY)
+                // “确定”按钮文字颜色
+                .btnTextColor(Color.BLUE)
+                // 使用沉浸式状态栏
+                .statusBarColor(Color.parseColor("#3F51B5"))
+                // 返回图标ResId
+                .backResId(R.drawable.ic_back)
+                // 标题
+                .title("图片")
+                // 标题文字颜色
+                .titleColor(Color.WHITE)
+                // TitleBar背景色
+                .titleBgColor(Color.parseColor("#3F51B5"))
+                // 裁剪大小。needCrop为true的时候配置
+                .cropSize(1, 1, 200, 200)
+                .needCrop(false)
+                // 第一个是否显示相机
+                .needCamera(true)
+                // 最大选择图片数量
+                .maxNum(9)
+                .build();
+    }
+
     /**
      * 注册成功跳转页面
      */
     private void registerSuccess() {
-        LoginUser.ResultBean userInfo = new LoginUser.ResultBean();
-        userInfo.setUserId(userId);
-        userInfo.setHeadImg(headImg);
-        userInfo.setUserType("player");
-        try {
-            LoginUserInfoUtils.saveLoginUserInfo(getApplicationContext(),
-                    LoginUserInfoUtils.KEY, userInfo);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (isNetbar) {
+
+        } else {
+            LoginUser.ResultBean userInfo = new LoginUser.ResultBean();
+            userInfo.setUserId(userId);
+            userInfo.setHeadImg(headImg);
+            userInfo.setUserType("player");
+            try {
+                LoginUserInfoUtils.saveLoginUserInfo(getApplicationContext(),
+                        LoginUserInfoUtils.KEY, userInfo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
+            NetUtil.registerHx(phone);
+            Intent intent = new Intent(this, PersonalInfoActivity.class);
+            startActivity(intent);
+            finish();
         }
-        Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
-        NetUtil.registerHx(phone);
-        Intent intent = new Intent(this, PersonalInfoActivity.class);
-        startActivity(intent);
-        finish();
     }
 
 
@@ -189,32 +284,45 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         passWord = mpasswordRegister.getText().toString();
         String repassWord = mrepasswordRegister.getText().toString();
         mIntroducePhone = mIntroducePhoneRegister.getText().toString();
-        if (!MyUtils.CheckPhoneNumber(phone))
+        if (!MyUtils.CheckPhoneNumber(phone)) {
             mphoneRegister.setError("请输入正确的手机号码");
-        else if (!passWord.equals(repassWord)) {
+            return;
+        }
+        if (!passWord.equals(repassWord)) {
             mrepasswordRegister.setError("请输入两次相同密码");
             mrepasswordRegister.setText("");
             mpasswordRegister.setText("");
             mpasswordRegister.requestFocus();
-        } else if (!Validator.isPassword(passWord)) {
+            return;
+        }
+        if (!Validator.isPassword(passWord)) {
             //密码不在6-16位之间
             mpasswordRegister.setError("请输入6至16位密码");
             mpasswordRegister.requestFocus();
-        } else {
-            //提交验证码
-            mProgressDialog = MyUtils.initDialog("正在注册...", RegisterActivity.this);
-            mProgressDialog.show();
-            if (!TextUtils.isEmpty(mIntroducePhone)) {
-                if (!MyUtils.CheckPhoneNumber(mIntroducePhone))
-                    mIntroducePhoneRegister.setError("推荐人手机号码错误，改改试试吧");
-                else {
-                    checkSMS();
-                }
-            } else {
-                checkSMS();
+            return;
+        }
+
+        if (isNetbar) {
+            if (TextUtils.isEmpty(mPath)) {
+                mToast.setText("请上传营业执照");
+                mToast.show();
+                return;
             }
         }
 
+
+        //提交验证码
+        mProgressDialog = MyUtils.initDialog("正在注册...", RegisterActivity.this);
+        mProgressDialog.show();
+        if (!TextUtils.isEmpty(mIntroducePhone)) {
+            if (!MyUtils.CheckPhoneNumber(mIntroducePhone))
+                mIntroducePhoneRegister.setError("推荐人手机号码错误，改改试试吧");
+            else {
+                checkSMS();
+            }
+        } else {
+            checkSMS();
+        }
     }
 
     private void checkSMS() {
@@ -222,13 +330,43 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
             @Override
             public void done(AVException e) {
                 if (e == null) {
-                    getHTTPRegister();
+                    if (isNetbar) {
+                        netbarRegister();
+                    } else {
+                        getHTTPRegister();
+                    }
                 } else {
                     mToast.setText("验证码错误，请重试");
                     mToast.show();
                 }
             }
         });
+    }
+
+    //网吧用户注册
+    private void netbarRegister() {
+        Auth auth = Auth.create(Constant.QINIU_ACCESSKEY, Constant.QINIU_SECRETKEY);
+        String token = auth.uploadToken("yuwan");
+        final String fileName = "license" + new Date().getTime();
+        Bitmap bitmap = ImageUtils.getBitmap(mPath);
+        Bitmap compressBitmap = ImageEngine.getCompressBitmap(bitmap, getApplicationContext());
+        if (compressBitmap == null) {
+            mToast.setText("当前设置为非wifi下不能上传图片，请连接wifi");
+            mToast.show();
+            return;
+        }
+
+        mUploadManager.put(BitmapUtils.toArray(compressBitmap), fileName, token, new UpCompletionHandler() {
+            @Override
+            public void complete(String key, ResponseInfo info, JSONObject response) {
+                if (info.error == null) {
+                    mPath = Constant.QINIU_DOMAIN + "/" + fileName;
+                    getHTTPRegister();
+                } else {
+                    mProgressDialog.dismiss();
+                }
+            }
+        }, null);
     }
 
 
@@ -309,7 +447,12 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
     }
 
     private void getHTTPRegister() {
-        String URLRegister = Constant.REGISTER + "&phone=" + phone + "&pwd=" + passWord + "&userType=player&introducerPhone=" + mIntroducePhone;
+        String URLRegister;
+        if (isNetbar) {
+            URLRegister = Constant.REGISTER + "&phone=" + phone + "&pwd=" + passWord + "&userType=netbar";
+        } else {
+            URLRegister = Constant.REGISTER + "&phone=" + phone + "&pwd=" + passWord + "&userType=player&introducerPhone=" + mIntroducePhone;
+        }
         StringRequest stringRequest = new StringRequest(URLRegister,
                 new Response.Listener<String>() {
                     @Override
@@ -361,5 +504,34 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        if (requestCode == RC_ACCESS_FINE_LOCATION)
+            ImgSelActivity.startActivity(this, mConfig, 5);
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 5 && resultCode == RESULT_OK && data != null) {
+            List<String> pathList = data.getStringArrayListExtra(ImgSelActivity.INTENT_RESULT);
+            mPath = pathList.get(0);
+            Picasso.with(getApplicationContext()).load("file://" + mPath).into(mIvLicense);
+        }
+
+
     }
 }

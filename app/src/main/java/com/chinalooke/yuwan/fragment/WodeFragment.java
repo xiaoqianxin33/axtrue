@@ -30,6 +30,7 @@ import com.chinalooke.yuwan.activity.MyChatActivity;
 import com.chinalooke.yuwan.activity.MyMessageActivity;
 import com.chinalooke.yuwan.activity.PayForPlayerActivity;
 import com.chinalooke.yuwan.activity.RecordActivity;
+import com.chinalooke.yuwan.activity.RegisterActivity;
 import com.chinalooke.yuwan.activity.SettingActivity;
 import com.chinalooke.yuwan.activity.ShopActivity;
 import com.chinalooke.yuwan.activity.SignInActivity;
@@ -169,9 +170,14 @@ public class WodeFragment extends Fragment {
 
     @OnClick({R.id.tv_name, R.id.roundedImageView, R.id.tv_login, R.id.rl_info, R.id.rl_friend
             , R.id.rl_shop, R.id.rl_record, R.id.rl_balance, R.id.rl_setting, R.id.rl_message
-            , R.id.rl_chat})
+            , R.id.rl_chat, R.id.rl_netbar_join})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.rl_netbar_join:
+                Intent intent4 = new Intent(mActivity, RegisterActivity.class);
+                intent4.putExtra("netbar", true);
+                startActivity(intent4);
+                break;
             case R.id.rl_chat:
                 if (user != null) {
                     if (isNetbar) {

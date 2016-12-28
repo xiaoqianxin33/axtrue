@@ -1,12 +1,14 @@
 package com.chinalooke.yuwan.activity;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -468,6 +470,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         dialog.show();
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void req() {
         String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS};
         if (EasyPermissions.hasPermissions(this, perms)) {

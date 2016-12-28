@@ -177,6 +177,7 @@
             android:background="@color/line_color"/>
 
         <RelativeLayout
+            android:id="@+id/rl_recommend"
             android:layout_width="match_parent"
             android:layout_height="96px">
 
@@ -200,6 +201,36 @@
                 android:inputType="phone"
                 android:textColorHint="@color/hint_color"
                 android:textSize="28px"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_license"
+            android:layout_marginTop="@dimen/small_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:paddingBottom="@dimen/small_padding">
+
+
+            <TextView
+                android:id="@+id/tv_netbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/mid_padding"
+                android:text="营业执照"
+                android:textColor="@color/black"
+                android:textSize="@dimen/mid_padding"/>
+
+            <ImageView
+                android:id="@+id/iv_license"
+                android:src="@mipmap/placeholder"
+                android:scaleType="centerCrop"
+                android:layout_width="200px"
+                android:layout_height="200px"
+                android:layout_below="@+id/tv_netbar"
+                android:layout_marginLeft="@dimen/mid_padding"
+                android:layout_marginTop="@dimen/mid_padding"/>
+
         </RelativeLayout>
     </LinearLayout>
 
