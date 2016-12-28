@@ -414,7 +414,7 @@
                         android:layout_height="48px"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/mid_padding"
-                        android:src="@mipmap/wode_setting"/>
+                        android:src="@mipmap/netbarjoin"/>
 
                     <TextView
                         android:layout_width="wrap_content"

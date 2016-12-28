@@ -230,9 +230,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/mid_padding"
                 android:layout_marginRight="@dimen/mid_padding"
-                android:layout_marginTop="@dimen/mid_padding"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/placeholder"/>
+                android:background="@mipmap/add_license"/>
 
         </RelativeLayout>
     </LinearLayout>

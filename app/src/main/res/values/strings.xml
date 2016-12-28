@@ -120,6 +120,9 @@
     <string name="introduction">简介：  %1$s</string>
 
     <string name="viewpager_indicator">%1$d/%2$d</string>
+    <string name="message_timer">%1$d后重新发送</string>
+    <string name="leixiong_coin">%1$s雷熊币</string>
+    <string name="battlefield_people">0/%1$d</string>
 
     <string-array name="month_array">
         <item>一月</item>

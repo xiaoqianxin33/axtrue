@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -21,10 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -52,16 +48,14 @@ import com.zhy.autolayout.utils.AutoUtils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterView.OnItemClickListener, View.OnClickListener, AMapLocationListener {
+public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     @Bind(R.id.tv_title)
     TextView mTvTitle;
@@ -92,7 +86,6 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
     String playAge;
     String address;
     String name;
-    public AMapLocationClientOption mLocationOption = null;
     //声明AMapLocationClient类对象
     public AMapLocationClient mLocationClient = null;
     LoginUser.ResultBean userInfo;
@@ -207,12 +200,12 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
     }
 
     private void setAge() {
-        playAgeListDatas = new ArrayList<String>();
+        playAgeListDatas = new ArrayList<>();
         for (int i = 10; i <= 60; i++) {
             playAgeListDatas.add("" + i);
         }
         //选项选择器
-        pvOptions = new OptionsPickerView<String>(this);
+        pvOptions = new OptionsPickerView<>(this);
         //三级联动效果
         pvOptions.setPicker(playAgeListDatas);
         //设置选择的三级单位
@@ -236,7 +229,7 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
 
     private void showEditDialog() {
         final Dialog dialog = new Dialog(this, R.style.Dialog);
-        View inflate = LayoutInflater.from(this).inflate(R.layout.dialog_edit_name, null);
+        View inflate = View.inflate(this, R.layout.dialog_edit_name, null);
         final EditText editText = (EditText) inflate.findViewById(R.id.et_input);
         Button noButton = (Button) inflate.findViewById(R.id.btn_cancel);
         Button yesButton = (Button) inflate.findViewById(R.id.btn_ok);
@@ -322,7 +315,6 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
         return true;
     }
 
-
     /**
      * 提交保存信息
      */
@@ -362,7 +354,6 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
                                 Log.d("TAG", "result");
                                 setSaveDialog("保存失败");
                             }
-                            System.out.println("----result----" + result.getResult());
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -381,11 +372,11 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
     private void setSex() {
 
         //数据
-        sexListDatas = new ArrayList<String>();
+        sexListDatas = new ArrayList<>();
         sexListDatas.add("男");
         sexListDatas.add("女");
         //选项选择器
-        pvOptions = new OptionsPickerView<String>(this);
+        pvOptions = new OptionsPickerView<>(this);
         //三级联动效果
         pvOptions.setPicker(sexListDatas);
         //设置选择的三级单位
@@ -413,12 +404,12 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
     private void setPlayAge() {
 
         //数据
-        playAgeListDatas = new ArrayList<String>();
+        playAgeListDatas = new ArrayList<>();
         for (int i = 0; i <= 60; i++) {
             playAgeListDatas.add("" + i);
         }
         //选项选择器
-        pvOptions = new OptionsPickerView<String>(this);
+        pvOptions = new OptionsPickerView<>(this);
         //三级联动效果
         pvOptions.setPicker(playAgeListDatas);
         //设置选择的三级单位
@@ -445,7 +436,6 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
         // msexPersonalInfo.setText(sexListDatas.get(position));
     }
 
-
     private void selectLocation() {
         CityPickerView cityPickerView = new CityPickerView(this);
         cityPickerView.setTextColor(Color.BLACK);
@@ -462,29 +452,6 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
         });
 
     }
-
-
-    public void onLocationChanged(AMapLocation amapLocation) {
-        if (amapLocation != null) {
-            if (amapLocation.getErrorCode() == 0) {
-                //定位成功回调信息，设置相关消息
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date date = new Date(amapLocation.getTime());
-                String location = amapLocation.getProvince() + amapLocation.getCity() + amapLocation.getDistrict();
-                if (!TextUtils.isEmpty(location)) {
-//                    maddressPersonalInfo.setText(location);
-                }
-                df.format(date);//定位时间
-                Log.d("address", amapLocation.getLongitude() + "-----" + amapLocation.getLatitude());//获取纬度);
-            } else {
-                //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
-                Log.e("AmapError", "location Error, ErrCode:"
-                        + amapLocation.getErrorCode() + ", errInfo:"
-                        + amapLocation.getErrorInfo());
-            }
-        }
-    }
-
 
     private void setSaveDialog(String result) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

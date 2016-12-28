@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -79,13 +80,14 @@ public class NetbarInfoActivity extends AutoLayoutActivity {
     private ImgSelConfig mConfig;
     private int CHOSE_HEAD_REQUEST = 0;
     private String mHead;
-    private String mName;
     private UploadManager mUploadManager;
     private RequestQueue mQueue;
     private Toast mToast;
     private String mAddress;
     private String mAddressDetail;
     private ProgressDialog mProgressDialog;
+    private String mNickName;
+    private boolean isChangeHead = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +146,7 @@ public class NetbarInfoActivity extends AutoLayoutActivity {
         mNetbarId = getIntent().getStringExtra("netbarId");
         mNetbarLicense = getIntent().getStringExtra("netbarLicense");
         mHead = getIntent().getStringExtra("head");
+        mNickName = getIntent().getStringExtra("nickName");
         if (!TextUtils.isEmpty(mHead)) {
             String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), mHead, 120, 120);
             Picasso.with(getApplicationContext()).load(loadImageUrl).into(mRoundedImageView);
@@ -156,10 +159,10 @@ public class NetbarInfoActivity extends AutoLayoutActivity {
         mIvArrowHead.setVisibility(View.GONE);
     }
 
-    @OnClick({R.id.rl_head, R.id.rl_name, R.id.rl_location, R.id.btn_enter})
+    @OnClick({R.id.rl_head_t, R.id.rl_name, R.id.rl_location, R.id.btn_enter})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.rl_head:
+            case R.id.rl_head_t:
                 ImgSelActivity.startActivity(this, mConfig, CHOSE_HEAD_REQUEST);
                 break;
             case R.id.rl_name:
@@ -172,7 +175,10 @@ public class NetbarInfoActivity extends AutoLayoutActivity {
             case R.id.btn_enter:
                 if (checkInput()) {
                     if (NetUtil.is_Network_Available(getApplicationContext())) {
-                        uploadingHeadImage();
+                        if (isChangeHead)
+                            uploadingHeadImage();
+                        else
+                            submit();
                     } else {
                         mToast.setText("网络不可用，请检查网络连接");
                         mToast.show();
@@ -192,6 +198,7 @@ public class NetbarInfoActivity extends AutoLayoutActivity {
         Bitmap bitmap = ImageUtils.getBitmap(mHead);
         Bitmap compressBitmap = ImageEngine.getCompressBitmap(bitmap, getApplicationContext());
         if (compressBitmap == null) {
+            mProgressDialog.dismiss();
             mToast.setText("当前设置为非wifi下不能上传图片，请连接wifi");
             mToast.show();
             return;
@@ -213,11 +220,13 @@ public class NetbarInfoActivity extends AutoLayoutActivity {
     private void submit() {
         try {
             String url = Constant.HOST + "updateUserInfo&userId=" + mNetbarId + "&headImg=" + mHead + "&nickName=" +
-                    URLEncoder.encode(mName, "utf8") + "&address=" + URLEncoder.encode(mAddress + mAddressDetail, "utf8") + "&license=" + mNetbarLicense;
+                    URLEncoder.encode(mNickName, "utf8") + "&address=" + URLEncoder.encode(mAddress + mAddressDetail, "utf8") + "&license=" + mNetbarLicense;
+            Log.e("TAG", url);
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    mProgressDialog.dismiss();
+                    if (mProgressDialog != null)
+                        mProgressDialog.dismiss();
                     if (response != null) {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
@@ -260,11 +269,15 @@ public class NetbarInfoActivity extends AutoLayoutActivity {
 
     //检查输入
     private boolean checkInput() {
-        mName = mTvName.getText().toString();
-        if (TextUtils.isEmpty(mName) || "请填写网吧名称".equals(mName)) {
+        String name = mTvName.getText().toString();
+        if (TextUtils.isEmpty(name)) {
             mToast.setText("请填写网吧名称");
             mToast.show();
             return false;
+        }
+
+        if (!"请填写网吧名称".equals(name)) {
+            mNickName = name;
         }
 
         mAddress = mTvLocation.getText().toString();
@@ -338,6 +351,7 @@ public class NetbarInfoActivity extends AutoLayoutActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CHOSE_HEAD_REQUEST && resultCode == RESULT_OK && data != null) {
             List<String> pathList = data.getStringArrayListExtra(ImgSelActivity.INTENT_RESULT);
+            isChangeHead = true;
             mHead = pathList.get(0);
             Picasso.with(getApplicationContext()).load("file://" + mHead).into(mRoundedImageView);
         }

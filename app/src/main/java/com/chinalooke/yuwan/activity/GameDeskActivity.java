@@ -1,18 +1,19 @@
 package com.chinalooke.yuwan.activity;
 
+import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -135,7 +136,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private String mRoomId;
     private int DESK_TYPE;
     private ProgressDialog mSubmitDialog;
-    private int mGroup;
     private boolean isFirst = true;
     private Runnable mRunnable;
     private boolean isOwner = false;
@@ -236,14 +236,13 @@ public class GameDeskActivity extends AutoLayoutActivity {
             }
             mPersonYingzhan.setText(mRight.size() + "/" + mTotalPeople);
         } else {
-            mPersonYuezhan.setText("0/" + mTotalPeople);
-            mPersonYingzhan.setText("0/" + mTotalPeople);
+            mPersonYuezhan.setText(getString(R.string.battlefield_people, mTotalPeople));
+            mPersonYingzhan.setText(getString(R.string.battlefield_people, mTotalPeople));
         }
         String userId = user.getUserId();
         for (GameDeskDetails.ResultBean.PlayersBean.LeftBean leftBean : mLeftBeen) {
             if (userId.equals(leftBean.getUserId())) {
                 isJoin = true;
-                mGroup = 1;
                 break;
             }
         }
@@ -254,7 +253,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
         for (GameDeskDetails.ResultBean.PlayersBean.RightBean rightBean : mRight) {
             if (userId.equals(rightBean.getUserId())) {
                 isJoin = true;
-                mGroup = 2;
                 break;
             }
         }
@@ -276,7 +274,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 mTvPay.setText("参赛费");
                 String gamePay = mGameDesk.getGamePay();
                 if (!TextUtils.isEmpty(gamePay))
-                    mTvScore.setText(gamePay + "雷熊币");
+                    mTvScore.setText(getString(R.string.leixiong_coin, gamePay));
 
                 String ownerId = mGameDesk.getOwnerId();
                 if (!TextUtils.isEmpty(ownerId)) {
@@ -362,11 +360,12 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
         if (!TextUtils.isEmpty(gameImage)) {
             ImageRequest request = new ImageRequest(gameImage, new Response.Listener<Bitmap>() {
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void onResponse(Bitmap response) {
                     if (response != null) {
                         if (mRlImage != null)
-                            mRlImage.setBackground(new BitmapDrawable(response));
+                            mRlImage.setBackground(new BitmapDrawable(getResources(), response));
                     }
                 }
             }, mWidthPixels, 390, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, new Response.ErrorListener() {
@@ -447,10 +446,15 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     break;
                 case R.id.tv_chat:
                     if (NetUtil.is_Network_Available(getApplicationContext())) {
-                        if (TextUtils.isEmpty(mRoomId)) {
-                            createRoom();
+                        if (isJoin) {
+                            if (TextUtils.isEmpty(mRoomId)) {
+                                createRoom();
+                            } else {
+                                intentToRoom();
+                            }
                         } else {
-                            intentToRoom();
+                            mToast.setText("该战场的玩家才能参与聊天");
+                            mToast.show();
                         }
                     } else {
                         mToast.setText("网络不可用，无法连接聊天室");
@@ -687,8 +691,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 }
             }
         }).start();
-
-
     }
 
     //弹出是否确认退出dialog
@@ -1027,7 +1029,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     //弹出确定加入dialog
     private void showJoinDialog() {
         final Dialog dialog = new Dialog(GameDeskActivity.this, R.style.Dialog);
-        View inflate = LayoutInflater.from(this).inflate(R.layout.dialog_join_desk, null);
+        View inflate = View.inflate(this, R.layout.dialog_join_desk, null);
         TextView tvCancel = (TextView) inflate.findViewById(R.id.tv_cancel);
         TextView tvLeft = (TextView) inflate.findViewById(R.id.tv_left);
         TextView tvRight = (TextView) inflate.findViewById(R.id.tv_right);

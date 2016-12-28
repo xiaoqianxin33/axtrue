@@ -152,7 +152,6 @@ public class FrequentlyGameActivity extends AutoLayoutActivity {
         mTvTitle.setText("添加游戏");
     }
 
-
     class MyAdapt extends MyBaseAdapter {
 
         MyAdapt(List dataSource) {

@@ -106,7 +106,6 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
     //验证码
     CheckBox mcheckUserPro;
 
-
     private String phone;
     private String passWord;
     private RequestQueue mQueue;
@@ -126,6 +125,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
     private ImgSelConfig mConfig;
     private String mPath;
     private UploadManager mUploadManager;
+    private String mNickName;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +141,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         mUploadManager = YuwanApplication.getmUploadManager();
         //设置密码类型
         mcountTimer = new CountTimer(60000, 1000);
+        mProgressDialog = MyUtils.initDialog("正在注册...", RegisterActivity.this);
         initView();
     }
 
@@ -250,6 +251,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
             intent.putExtra("netbarId", userId);
             intent.putExtra("netbarLicense", mPath);
             intent.putExtra("head", headImg);
+            intent.putExtra("nickName", mNickName);
             startActivity(intent);
         } else {
             LoginUser.ResultBean userInfo = new LoginUser.ResultBean();
@@ -270,11 +272,9 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         finish();
     }
 
-
     /**
      * 开始注册
      */
-
     private void beginRegister() {
         mCode = mETVerification.getText().toString();
         if (TextUtils.isEmpty(mCode)) {
@@ -286,20 +286,20 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         //重新获取当前信息
         phone = mphoneRegister.getText().toString();
         passWord = mpasswordRegister.getText().toString();
-        String repassWord = mrepasswordRegister.getText().toString();
+        String passWord = mrepasswordRegister.getText().toString();
         mIntroducePhone = mIntroducePhoneRegister.getText().toString();
         if (!MyUtils.CheckPhoneNumber(phone)) {
             mphoneRegister.setError("请输入正确的手机号码");
             return;
         }
-        if (!passWord.equals(repassWord)) {
+        if (!this.passWord.equals(passWord)) {
             mrepasswordRegister.setError("请输入两次相同密码");
             mrepasswordRegister.setText("");
             mpasswordRegister.setText("");
             mpasswordRegister.requestFocus();
             return;
         }
-        if (!Validator.isPassword(passWord)) {
+        if (!Validator.isPassword(this.passWord)) {
             //密码不在6-16位之间
             mpasswordRegister.setError("请输入6至16位密码");
             mpasswordRegister.requestFocus();
@@ -314,9 +314,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
             }
         }
 
-
         //提交验证码
-        mProgressDialog = MyUtils.initDialog("正在注册...", RegisterActivity.this);
         mProgressDialog.show();
         if (!TextUtils.isEmpty(mIntroducePhone)) {
             if (!MyUtils.CheckPhoneNumber(mIntroducePhone))
@@ -355,6 +353,8 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         Bitmap bitmap = ImageUtils.getBitmap(mPath);
         Bitmap compressBitmap = ImageEngine.getCompressBitmap(bitmap, getApplicationContext());
         if (compressBitmap == null) {
+            if (mProgressDialog != null)
+                mProgressDialog.dismiss();
             mToast.setText("当前设置为非wifi下不能上传图片，请连接wifi");
             mToast.show();
             return;
@@ -367,12 +367,12 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
                     mPath = Constant.QINIU_DOMAIN + "/" + fileName;
                     getHTTPRegister();
                 } else {
-                    mProgressDialog.dismiss();
+                    if (mProgressDialog != null)
+                        mProgressDialog.dismiss();
                 }
             }
         }, null);
     }
-
 
     /**
      * check的监听事件
@@ -384,7 +384,6 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         } else mbtnRegister.setClickable(false);
     }
 
-
     public class CountTimer extends CountDownTimer {
         CountTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
@@ -392,7 +391,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
 
         @Override
         public void onTick(long millisUntilFinished) {
-            mbtnGetVerification.setText(millisUntilFinished / 1000 + "后重新发送");
+            mbtnGetVerification.setText(getString(R.string.message_timer, (int) millisUntilFinished / 1000));
             mbtnGetVerification.setBackgroundResource(R.drawable.btn_wait_verification_corners_bg);
             mbtnGetVerification.setClickable(false);
         }
@@ -498,11 +497,13 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
     }
 
     private void analyzeJson(Register.ResultBean result) {
-        userId = result.getId();
-        headImg = result.getAvatar();
+        userId = result.getUserId();
+        headImg = result.getHeadImg();
+        mNickName = result.getNickName();
         LoginUser.ResultBean resultBean = new LoginUser.ResultBean();
         resultBean.setUserId(userId);
         resultBean.setHeadImg(headImg);
+        resultBean.setNickName(mNickName);
         try {
             LoginUserInfoUtils.saveLoginUserInfo(getApplicationContext(), LoginUserInfoUtils.KEY, resultBean);
         } catch (IOException e) {

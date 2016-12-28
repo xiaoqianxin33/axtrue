@@ -47,23 +47,32 @@ public class Register {
          * id : 174
          */
 
-        private String avatar;
-        private String id;
+        private String headImg;
+        private String userId;
+        private String nickName;
 
-        public String getAvatar() {
-            return avatar;
+        public String getNickName() {
+            return nickName;
         }
 
-        public void setAvatar(String avatar) {
-            this.avatar = avatar;
+        public void setNickName(String nickName) {
+            this.nickName = nickName;
         }
 
-        public String getId() {
-            return id;
+        public String getHeadImg() {
+            return headImg;
         }
 
-        public void setId(String id) {
-            this.id = id;
+        public void setHeadImg(String headImg) {
+            this.headImg = headImg;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
         }
     }
 }

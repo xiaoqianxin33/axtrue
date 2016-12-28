@@ -15,7 +15,6 @@ import android.support.v7.widget.LinearLayoutCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -134,6 +133,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     private Toast mToast;
     private int REQUEST_GAME = 3;
     private String[] mStrings;
+    private boolean isNetbar = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,6 +190,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         }
 
         String userType = mUserInfo.getUserType();
+        isNetbar = userType.equals("netbar");
         mLl1.setVisibility(userType.equals("netbar") ? View.GONE : View.VISIBLE);
         mLl2.setVisibility(userType.equals("netbar") ? View.GONE : View.VISIBLE);
         mLl3.setVisibility(userType.equals("netbar") ? View.VISIBLE : View.GONE);
@@ -321,7 +322,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
 
     private void showRuleDialog() {
         final Dialog dialog = new Dialog(UserInfoActivity.this, R.style.Dialog);
-        View inflate = LayoutInflater.from(UserInfoActivity.this).inflate(R.layout.dialog_add_game_rule, null);
+        View inflate = View.inflate(this, R.layout.dialog_add_game_rule, null);
         TextView tvOk = (TextView) inflate.findViewById(R.id.tv_ok);
         TextView tvCancel = (TextView) inflate.findViewById(R.id.tv_cancel);
         TextView tvTitle = (TextView) inflate.findViewById(R.id.tv_title);
@@ -442,7 +443,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
 
     private void showEditDialog() {
         final Dialog dialog = new Dialog(this, R.style.Dialog);
-        View inflate = LayoutInflater.from(this).inflate(R.layout.dialog_edit_name, null);
+        View inflate = View.inflate(this,R.layout.dialog_edit_name,null);
         final EditText editText = (EditText) inflate.findViewById(R.id.et_input);
         Button noButton = (Button) inflate.findViewById(R.id.btn_cancel);
         Button yesButton = (Button) inflate.findViewById(R.id.btn_ok);
@@ -616,6 +617,11 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             String replace = substring.replace(" ", "");
             url = url + "&gameId=" + replace;
         }
+
+        if (isNetbar) {
+            url = url + "&license=" + mUserInfo.getLicense();
+        }
+
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

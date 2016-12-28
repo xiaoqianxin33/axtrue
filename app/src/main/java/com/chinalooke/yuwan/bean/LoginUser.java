@@ -70,8 +70,17 @@ public class LoginUser implements Serializable {
         private String sex;
         private String slogan;
         private String userId;
+        private String license;
         private String userType;
         private String[] gameId;
+
+        public String getLicense() {
+            return license;
+        }
+
+        public void setLicense(String license) {
+            this.license = license;
+        }
 
         public String getAddress() {
             return address;

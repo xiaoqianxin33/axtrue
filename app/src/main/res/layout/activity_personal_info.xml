@@ -107,7 +107,7 @@
             <TextView
                 android:id="@+id/tv_location"
                 style="@style/regist_right_row"
-                android:text="点击获取位置"/>
+                android:text="点击选择位置"/>
 
             <ImageView
                 style="@style/person_info_arrow"

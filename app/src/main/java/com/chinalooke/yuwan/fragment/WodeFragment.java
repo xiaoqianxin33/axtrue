@@ -67,7 +67,7 @@ public class WodeFragment extends Fragment {
     @Bind(R.id.tv_name)
     TextView mTvName;
     @Bind(R.id.tv_slogen)
-    TextView mTvSlogen;
+    TextView mTvSlogan;
     @Bind(R.id.tv_login)
     TextView mTvLogin;
     @Bind(R.id.tv_sign_up)
@@ -102,6 +102,8 @@ public class WodeFragment extends Fragment {
     ImageView mIv3;
     @Bind(R.id.tv3)
     TextView mTv3;
+    @Bind(R.id.rl_netbar_join)
+    RelativeLayout mRlNetbarJoin;
     private int START_ALPHA = 0;
     private int END_ALPHA = 255;
     private int mHeight;
@@ -301,11 +303,10 @@ public class WodeFragment extends Fragment {
         }
     }
 
-
     private void initView() {
         if (user != null) {
             mTvLogin.setText("退出登录");
-            mTvSlogen.setVisibility(View.VISIBLE);
+            mTvSlogan.setVisibility(View.VISIBLE);
             String nickName = user.getNickName();
             if (!TextUtils.isEmpty(nickName))
                 mTvName.setText(nickName);
@@ -318,9 +319,10 @@ public class WodeFragment extends Fragment {
             }
             String slogan = user.getSlogan();
             if (!TextUtils.isEmpty(slogan))
-                mTvSlogen.setText(getString(R.string.introduction, slogan));
+                mTvSlogan.setText(getString(R.string.introduction, slogan));
 
             if (user.getUserType().equals("netbar")) {
+                mRlNetbarJoin.setVisibility(View.GONE);
                 mTvSignUp.setVisibility(View.GONE);
                 isNetbar = true;
                 mRlBalance.setVisibility(View.GONE);
@@ -335,6 +337,7 @@ public class WodeFragment extends Fragment {
                 mIv3.setImageResource(R.mipmap.wode_setting);
                 mTv3.setText("设置");
             } else {
+                mRlNetbarJoin.setVisibility(View.VISIBLE);
                 mTvSignUp.setVisibility(View.VISIBLE);
                 isNetbar = false;
                 mRlBalance.setVisibility(View.VISIBLE);
@@ -353,7 +356,7 @@ public class WodeFragment extends Fragment {
 
         } else {
             mTvLogin.setText("登录/注册");
-            mTvSlogen.setVisibility(View.GONE);
+            mTvSlogan.setVisibility(View.GONE);
             mTvName.setText("登录/注册");
         }
     }
@@ -386,4 +389,5 @@ public class WodeFragment extends Fragment {
         //显示对话框
         dialog.show();
     }
+
 }
