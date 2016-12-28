@@ -596,14 +596,14 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             }
         else
             url = url + "&nickName=";
-        if (mSex != null)
-            try {
-                url = url + "&sex=" + URLEncoder.encode(mSex, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-        else
+        if (mSex != null) {
+            if (mSex.equals("男")) {
+                url = url + "&sex=1";
+            } else if (mSex.equals("女"))
+                url = url + "&sex=0";
+        } else {
             url = url + "&sex=";
+        }
         if (mAge != null)
             url = url + "&age=" + mAge;
         else

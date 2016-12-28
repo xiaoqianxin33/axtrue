@@ -6,6 +6,11 @@
 
     <include layout="@layout/include_head"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/line_color"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -235,11 +240,6 @@
 
         </RelativeLayout>
     </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/line_color"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

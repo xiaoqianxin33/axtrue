@@ -20,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amap.api.location.AMapLocationClient;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -86,8 +85,6 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
     String playAge;
     String address;
     String name;
-    //声明AMapLocationClient类对象
-    public AMapLocationClient mLocationClient = null;
     LoginUser.ResultBean userInfo;
     RequestQueue mQueue;
     private Toast mToast;
@@ -113,10 +110,6 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
-        if (mLocationClient != null) {
-            mLocationClient.stopLocation();
-            mLocationClient.onDestroy();
-        }
     }
 
     /**
