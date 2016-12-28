@@ -246,7 +246,11 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
      */
     private void registerSuccess() {
         if (isNetbar) {
-
+            Intent intent = new Intent(this, NetbarInfoActivity.class);
+            intent.putExtra("netbarId", userId);
+            intent.putExtra("netbarLicense", mPath);
+            intent.putExtra("head", headImg);
+            startActivity(intent);
         } else {
             LoginUser.ResultBean userInfo = new LoginUser.ResultBean();
             userInfo.setUserId(userId);
@@ -262,8 +266,8 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
             NetUtil.registerHx(phone);
             Intent intent = new Intent(this, PersonalInfoActivity.class);
             startActivity(intent);
-            finish();
         }
+        finish();
     }
 
 

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_netbar_info"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.chinalooke.yuwan.activity.NetbarInfoActivity">
+
+    <include layout="@layout/include_head"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_head_t"
+        android:layout_width="match_parent"
+        android:layout_height="160px"
+        android:background="@android:color/white"
+        android:paddingLeft="@dimen/mid_padding"
+        android:paddingRight="@dimen/mid_padding">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="头像"
+            android:textColor="@color/black_word"
+            android:textSize="35px"/>
+
+
+        <ImageView
+            android:id="@+id/iv1"
+            android:layout_width="26px"
+            android:layout_height="16px"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/arrow_right"/>
+
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/roundedImageView"
+            android:layout_width="120px"
+            android:layout_height="120px"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/mid_padding"
+            android:layout_toLeftOf="@id/iv1"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/placeholder"
+            app:riv_oval="true"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/rl_name"
+            android:layout_width="match_parent"
+            android:layout_height="97px">
+
+            <TextView
+                style="@style/register_row_title"
+                android:text="网吧名称"/>
+
+            <TextView
+                android:id="@+id/tv_name"
+                style="@style/regist_right_row"
+                android:background="@null"
+                android:inputType="text"
+                android:text="请填写网吧名称"/>
+
+            <ImageView
+                style="@style/person_info_arrow"
+                android:src="@mipmap/arrow_right"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_color"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_location"
+            android:layout_width="match_parent"
+            android:layout_height="97px">
+
+            <TextView
+                style="@style/register_row_title"
+                android:text="网吧所在地区"/>
+
+            <TextView
+                android:id="@+id/tv_location"
+                style="@style/regist_right_row"
+                android:background="@null"
+                android:inputType="text"
+                android:text="请选择"/>
+
+            <ImageView
+                style="@style/person_info_arrow"
+                android:src="@mipmap/arrow_right"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_color"/>
+
+        <EditText
+            android:id="@+id/et_address"
+            android:layout_width="match_parent"
+            android:layout_height="180px"
+            android:background="@null"
+            android:gravity="top"
+            android:hint="详细地址"
+            android:inputType="textMultiLine"
+            android:paddingLeft="@dimen/mid_padding"
+            android:paddingRight="@dimen/mid_padding"
+            android:paddingTop="10px"
+            android:textSize="@dimen/mid_padding"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_color"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/btn_enter"
+        android:layout_width="match_parent"
+        android:layout_height="100px"
+        android:background="#ffc000"
+        android:gravity="center"
+        android:text="提交资料"
+        android:textColor="@android:color/white"
+        android:textSize="38px"/>
+
+</LinearLayout>

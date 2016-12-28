@@ -481,7 +481,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     }
 
     //点赞
-    private void addFavour(String s, String avtiveId) {
+    private void addFavour(String s, final String avtiveId) {
         mProgressDialog.show();
         String url = Constant.HOST + s + "&activeId=" + avtiveId + "&userId=" + mUserInfo.getUserId() + "&activeType=" + activeType;
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
@@ -501,6 +501,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                             mToast.show();
                             mIsLoginUserLike = !mIsLoginUserLike;
                             mIvDianzan.setImageResource(mIsLoginUserLike ? R.mipmap.dianzanhou : R.mipmap.dianzan);
+                            getFavourList(avtiveId);
                         } else {
                             String msg = jsonObject.getString("Msg");
                             mToast.setText("点赞失败," + msg);

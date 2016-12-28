@@ -286,6 +286,8 @@
 
         <activity android:name=".activity.ImageSettingActivity">
         </activity>
+        <activity android:name=".activity.NetbarInfoActivity">
+        </activity>
     </application>
 
 </manifest>
