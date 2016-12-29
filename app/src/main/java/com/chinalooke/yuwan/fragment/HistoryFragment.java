@@ -130,7 +130,6 @@ public class HistoryFragment extends Fragment {
         getGameDeskListWithStatus();
     }
 
-
     //获得网吧结束的游戏桌
     private void getGameDeskListWithStatus() {
         String url = Constant.HOST + "getGameDeskListWithStatus&gameStatus=2" + "&pageNo=" + PAGE + "&pageSize=5&netbarId=" + mUser.getUserId();
@@ -199,7 +198,6 @@ public class HistoryFragment extends Fragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
-
 
     class MyAdapter extends MyBaseAdapter {
 
