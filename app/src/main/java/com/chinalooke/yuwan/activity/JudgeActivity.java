@@ -1,14 +1,18 @@
 package com.chinalooke.yuwan.activity;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -54,6 +58,7 @@ import com.zhy.autolayout.utils.AutoUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,7 +105,7 @@ public class JudgeActivity extends AutoLayoutActivity {
     private int mCount;
     private HashMap<PlayerBean, String> mHashMap = new HashMap<>();
     private HashMap<String, String> mPayMap = new HashMap<>();
-    private HashMap<Integer, Integer> mIntegerIntegerHashMap = new HashMap<>();
+    private SparseIntArray mSparseIntArray = new SparseIntArray();
     private int mChose;
     private ProgressDialog mProgressDialog;
     private List<PlayerBean> mWinnerList = new ArrayList<>();
@@ -109,22 +114,31 @@ public class JudgeActivity extends AutoLayoutActivity {
     private int mGameCountInt;
     private int SUBMIT_COUNT;
     private List<String> mRantingList = new ArrayList<>();
-    private Handler mHandler = new Handler() {
+    private MyHandler mHandler = new MyHandler(this);
+    private static class MyHandler extends Handler {
+        WeakReference<JudgeActivity> mActivity;
+
+        MyHandler(JudgeActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what == 1) {
-                if (mCount < mGameCountInt) {
-                    if (SUBMIT_COUNT == mWinnerList.size()) {
-                        showSucceedDialog();
+            JudgeActivity theActivity = mActivity.get();
+            switch (msg.what) {
+                case 1:
+                    if (theActivity.mCount < theActivity.mGameCountInt) {
+                        if (theActivity.SUBMIT_COUNT == theActivity.mWinnerList.size()) {
+                            theActivity.showSucceedDialog();
+                        }
+                    } else {
+                        if (theActivity.SUBMIT_COUNT == theActivity.mSparseIntArray.size()) {
+                            theActivity.showSucceedDialog();
+                        }
                     }
-                } else {
-                    if (SUBMIT_COUNT == mIntegerIntegerHashMap.size()) {
-                        showSucceedDialog();
-                    }
-                }
+                    break;
             }
         }
-    };
+    }
 
     private void showSucceedDialog() {
         mProgressDialog.dismiss();
@@ -184,12 +198,13 @@ public class JudgeActivity extends AutoLayoutActivity {
         String gameImage = mGameDesk.getGameImage();
         if (!TextUtils.isEmpty(gameImage)) {
             ImageRequest request = new ImageRequest(gameImage, new Response.Listener<Bitmap>() {
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void onResponse(Bitmap response) {
                     if (response != null)
-                        mRlImage.setBackground(new BitmapDrawable(response));
+                        mRlImage.setBackground(new BitmapDrawable(getResources(), response));
                 }
-            }, ViewHelper.getDisplayMetrics(getApplicationContext()).widthPixels, 390, Bitmap.Config.ARGB_8888, null);
+            }, ViewHelper.getDisplayMetrics(getApplicationContext()).widthPixels, 390, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.ARGB_8888, null);
 
             mQueue.add(request);
         }
@@ -210,16 +225,17 @@ public class JudgeActivity extends AutoLayoutActivity {
     }
 
     //顶部滑动渐变设置
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void initTopScroll() {
         final int heightPixels = ViewHelper.getDisplayMetrics(getApplicationContext()).heightPixels;
-        final Drawable drawable = getResources().getDrawable(R.drawable.actionbar_color_else);
+        final Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.actionbar_color_else);
         drawable.setAlpha(START_ALPHA);
         mRlTop.setBackground(drawable);
         ViewTreeObserver viewTreeObserver = mRlScroll.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                mRlScroll.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                mRlScroll.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 mHeight = mRlScroll.getHeight();
                 final int height = Math.abs(heightPixels - mHeight);
                 mMyScrollView.setOnScrollChangedListener(new MyScrollView.OnScrollChangedListener() {
@@ -266,7 +282,7 @@ public class JudgeActivity extends AutoLayoutActivity {
                                     List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> left = players.getLeft();
                                     if (right != null && right.size() != 0) {
                                         for (GameDeskDetails.ResultBean.PlayersBean.RightBean rightBean : right) {
-                                            boolean isLoser = rightBean.isIsLoser();
+                                            boolean isLoser = rightBean.isLoser();
                                             if (!isLoser) {
                                                 PlayerBean playerBean = new PlayerBean();
                                                 if (!TextUtils.isEmpty(rightBean.getHeadImg()))
@@ -283,7 +299,7 @@ public class JudgeActivity extends AutoLayoutActivity {
                                     }
                                     if (left != null && left.size() != 0) {
                                         for (GameDeskDetails.ResultBean.PlayersBean.LeftBean rightBean : left) {
-                                            boolean isLoser = rightBean.isIsLoser();
+                                            boolean isLoser = rightBean.isLoser();
                                             if (!isLoser) {
                                                 PlayerBean playerBean = new PlayerBean();
                                                 if (!TextUtils.isEmpty(rightBean.getHeadImg()))
@@ -366,11 +382,11 @@ public class JudgeActivity extends AutoLayoutActivity {
                         }
                     } else if (mCount == mGameCountInt) {
                         if (checkRating()) {
-                            for (Map.Entry<Integer, Integer> next : mIntegerIntegerHashMap.entrySet()) {
-                                Integer key = next.getValue();
+                            for (int i = 0; i < mSparseIntArray.size(); i++) {
+                                Integer key = mSparseIntArray.keyAt(i);
                                 PlayerBean playerBean = mPlayerBeanList.get(key);
                                 String userId = playerBean.getUserId();
-                                submitRating(userId, next.getKey() + "");
+                                submitRating(userId, mSparseIntArray.keyAt(i) + "");
                             }
                         }
                     }
@@ -454,7 +470,7 @@ public class JudgeActivity extends AutoLayoutActivity {
             String nickName = playerBean.getNickName();
             if (!TextUtils.isEmpty(nickName))
                 viewHolder.mTvName.setText(nickName);
-            if (!TextUtils.isEmpty(headImg)){
+            if (!TextUtils.isEmpty(headImg)) {
                 String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 64, 64);
                 Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mRoundedImageView);
             }
@@ -530,7 +546,7 @@ public class JudgeActivity extends AutoLayoutActivity {
             if (!TextUtils.isEmpty(nickName))
                 viewHolder.mTvGameName.setText(nickName);
             String headImg = playerBean.getHeadImg();
-            if (!TextUtils.isEmpty(headImg)){
+            if (!TextUtils.isEmpty(headImg)) {
                 String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 200, 200);
                 Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mIvGameimage);
             }
@@ -566,7 +582,7 @@ public class JudgeActivity extends AutoLayoutActivity {
                     mRantingList.remove(s1);
                 tvRanking.setText(options1 + "");
                 mRantingList.add(options1 + "");
-                mIntegerIntegerHashMap.put(options1, position);
+                mSparseIntArray.put(options1, position);
                 String s = mPayMap.get(options1 + "");
                 if (!TextUtils.isEmpty(s))
                     tvPrice.setText(s);

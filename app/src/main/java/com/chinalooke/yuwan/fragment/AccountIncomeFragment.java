@@ -32,7 +32,6 @@ public class AccountIncomeFragment extends Fragment {
     TextView mTvNone;
     @Bind(R.id.list_view)
     ListView mListView;
-    private AccountDetailActivity mActivity;
 
     @Nullable
     @Override
@@ -42,20 +41,19 @@ public class AccountIncomeFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mActivity = (AccountDetailActivity) getActivity();
-    }
 
     public void initData() {
-        mPbLoad.setVisibility(View.GONE);
-        List<Account.ResultBean> wholeList = mActivity.getWholeList();
-        if (wholeList.size() == 0) {
+        AccountDetailActivity activity = (AccountDetailActivity) getActivity();
+        List<Account.ResultBean> incomeList = activity.getIncomeList();
+        if (mPbLoad != null)
+            mPbLoad.setVisibility(View.GONE);
+        if (incomeList.size() == 0) {
             mTvNone.setText("暂无收支记录");
             mTvNone.setVisibility(View.VISIBLE);
+        } else {
+            mTvNone.setVisibility(View.GONE);
         }
-        AccountAdapter accountAdapter = new AccountAdapter(wholeList, mActivity);
+        AccountAdapter accountAdapter = new AccountAdapter(incomeList, activity);
         mListView.setAdapter(accountAdapter);
     }
 
@@ -64,4 +62,5 @@ public class AccountIncomeFragment extends Fragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
+
 }

@@ -17,10 +17,6 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
 
     private List<Fragment> fragments = new ArrayList<Fragment>();
 
-    public MainPagerAdapter(FragmentManager fm) {
-        super(fm);
-    }
-
     public MainPagerAdapter(FragmentManager fragmentManager,
                             List<Fragment> fragments, String[] titles) {
         super(fragmentManager);

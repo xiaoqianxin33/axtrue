@@ -25,21 +25,15 @@ import com.google.gson.reflect.TypeToken;
 import com.hyphenate.chat.EMClient;
 import com.zhy.autolayout.AutoLayoutActivity;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.List;
 
 public class SplashActivity extends AutoLayoutActivity {
 
     private RequestQueue mQueue;
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            startActivity(new Intent(SplashActivity.this, MainActivity.class));
-            finish();
-        }
-    };
+    private MyHandler mMyHandler = new MyHandler(this);
     private DBManager mDbManager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +54,7 @@ public class SplashActivity extends AutoLayoutActivity {
         AVInstallation.getCurrentInstallation().saveInBackground();
         PushService.setDefaultPushCallback(this, MainActivity.class);
         getLevelList();
-        mHandler.sendEmptyMessageDelayed(1, 2000);
+        mMyHandler.sendEmptyMessageDelayed(1, 2000);
     }
 
     //查询所有积分级别
@@ -104,4 +98,25 @@ public class SplashActivity extends AutoLayoutActivity {
         });
         mQueue.add(stringRequest);
     }
+
+    private static class MyHandler extends Handler {
+        WeakReference<SplashActivity> mActivity;
+
+        MyHandler(SplashActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            SplashActivity theActivity = mActivity.get();
+            switch (msg.what) {
+                case 1:
+                    theActivity.startActivity(new Intent(theActivity, MainActivity.class));
+                    theActivity.finish();
+                    break;
+            }
+        }
+    }
+
+
 }

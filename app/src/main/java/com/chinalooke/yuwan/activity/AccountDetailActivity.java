@@ -2,6 +2,7 @@ package com.chinalooke.yuwan.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.widget.TextView;
@@ -47,26 +48,26 @@ public class AccountDetailActivity extends AutoLayoutActivity {
     PagerSlidingTabStrip mTabs;
     @Bind(R.id.viewPage)
     ViewPager mViewPage;
-    private AccountWholeFragment mWholeFragment;
-    private AccountIncomeFragment mAccountIncomeFragment;
-    private AccountPayFragment mAccountPayFragment;
     private RequestQueue mQueue;
     private LoginUser.ResultBean mUser;
     private List<Account.ResultBean> mWholeList = new ArrayList<>();
     private List<Account.ResultBean> mPayList = new ArrayList<>();
     private List<Account.ResultBean> mIncomeList = new ArrayList<>();
     private Toast mToast;
+    private AccountWholeFragment mWholeFragment;
+    private AccountIncomeFragment mAccountIncomeFragment;
+    private AccountPayFragment mAccountPayFragment;
 
     public List<Account.ResultBean> getWholeList() {
         return mWholeList;
     }
 
-    public List<Account.ResultBean> getPayList() {
-        return mPayList;
-    }
-
     public List<Account.ResultBean> getIncomeList() {
         return mIncomeList;
+    }
+
+    public List<Account.ResultBean> getPayList() {
+        return mPayList;
     }
 
     @Override
@@ -79,6 +80,36 @@ public class AccountDetailActivity extends AutoLayoutActivity {
         mToast = YuwanApplication.getToast();
         initView();
         initData();
+        initEvent();
+    }
+
+    private void initEvent() {
+        mViewPage.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        mWholeFragment.initData();
+                        break;
+                    case 1:
+                        mAccountIncomeFragment.initData();
+                        break;
+                    case 2:
+                        mAccountPayFragment.initData();
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private void initData() {
@@ -140,9 +171,19 @@ public class AccountDetailActivity extends AutoLayoutActivity {
                 mIncomeList.add(resultBean);
             }
         }
-        mWholeFragment.initData();
-        mAccountIncomeFragment.initData();
-        mAccountPayFragment.initData();
+        int currentItem = mViewPage.getCurrentItem();
+
+        switch (currentItem) {
+            case 0:
+                mWholeFragment.initData();
+                break;
+            case 1:
+                mAccountIncomeFragment.initData();
+                break;
+            case 2:
+                mAccountPayFragment.initData();
+                break;
+        }
     }
 
     private void initView() {
@@ -158,9 +199,9 @@ public class AccountDetailActivity extends AutoLayoutActivity {
         mViewPage.setAdapter(new MainPagerAdapter(getSupportFragmentManager(), list, titles));
         mTabs.setViewPager(mViewPage);
         mTabs.setIndicatorHeight(5);
-        mTabs.setIndicatorColor(getResources().getColor(R.color.indicator_color));
-        mTabs.setSelectedTextColor(getResources().getColor(R.color.indicator_color));
-        mTabs.setTextColor(getResources().getColor(R.color.black_word));
+        mTabs.setIndicatorColor(ContextCompat.getColor(getApplicationContext(), R.color.indicator_color));
+        mTabs.setSelectedTextColor(ContextCompat.getColor(getApplicationContext(), R.color.indicator_color));
+        mTabs.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black_word));
         mTabs.setSelectedTabTextSize(MyUtils.Dp2Px(getApplicationContext(), 16));
         mTabs.setTextSize(MyUtils.Dp2Px(getApplicationContext(), 16));
         mTabs.setUnderlineHeight(0);
