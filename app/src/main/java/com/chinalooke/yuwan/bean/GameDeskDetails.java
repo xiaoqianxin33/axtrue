@@ -277,14 +277,6 @@ public class GameDeskDetails implements Serializable {
                     this.headImg = headImg;
                 }
 
-                public boolean isIsLoser() {
-                    return isLoser;
-                }
-
-                public void setIsLoser(boolean isLoser) {
-                    this.isLoser = isLoser;
-                }
-
                 public String getStatus() {
                     return status;
                 }
@@ -338,14 +330,6 @@ public class GameDeskDetails implements Serializable {
 
                 public void setHeadImg(String headImg) {
                     this.headImg = headImg;
-                }
-
-                public boolean isIsLoser() {
-                    return isLoser;
-                }
-
-                public void setIsLoser(boolean isLoser) {
-                    this.isLoser = isLoser;
                 }
 
                 public String getStatus() {

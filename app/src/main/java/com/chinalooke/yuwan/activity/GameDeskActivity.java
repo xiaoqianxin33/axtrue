@@ -30,7 +30,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.GameDesk;
 import com.chinalooke.yuwan.bean.GameDeskDetails;
@@ -149,7 +148,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_game_desk);
         ButterKnife.bind(this);
-        mQueue = Volley.newRequestQueue(getApplicationContext());
+        mQueue = YuwanApplication.getQueue();
         mGson = new Gson();
         DisplayMetrics displayMetrics = MyUtils.getDisplayMetrics(this);
         mWidthPixels = displayMetrics.widthPixels;
@@ -838,6 +837,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
         ImageView mIvCrown;
         @Bind(R.id.tv_name)
         TextView mTvName;
+        @Bind(R.id.tv_lose)
+        TextView mTvLose;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
@@ -889,6 +890,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
             viewHolder.mTvName.setText("");
         } else {
             GameDeskDetails.ResultBean.PlayersBean.LeftBean leftBean = mLeftBeen.get(position);
+            boolean isLoser = leftBean.isLoser();
+            viewHolder.mTvLose.setVisibility(isLoser ? View.VISIBLE : View.GONE);
             String headImg = leftBean.getHeadImg();
             if (!TextUtils.isEmpty(headImg)) {
                 String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 80, 80);
@@ -899,6 +902,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 viewHolder.mTvName.setText(nickName);
             }
         }
+
+
     }
 
     private void setDetailsR(ViewHolder viewHolder, int position) {
@@ -912,6 +917,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
             viewHolder.mTvName.setText("");
         } else {
             GameDeskDetails.ResultBean.PlayersBean.RightBean leftBean = mRight.get(position);
+            boolean loser = leftBean.isLoser();
+            viewHolder.mTvLose.setVisibility(loser ? View.VISIBLE : View.GONE);
             String headImg = leftBean.getHeadImg();
             if (!TextUtils.isEmpty(headImg)) {
                 String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 80, 80);

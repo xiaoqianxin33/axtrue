@@ -129,7 +129,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         if (mUserInfo != null) {
             String userType = mUserInfo.getUserType();
             switch (userType) {
-                case "user":
+                case "player":
                     Constant.USER_TYPE = 0;
                     break;
                 case "netbar":
@@ -153,7 +153,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
             mTvQz.setText("历史");
             mIvYz.setBackgroundResource(R.drawable.ad_selector);
             mTvYz.setText("广告");
-        } else if (mUserInfo != null && mUserInfo.getUserType().equals("user")) {
+        } else if (mUserInfo != null && mUserInfo.getUserType().equals("player")) {
             mIvQz.setBackgroundResource(R.drawable.qz_selector);
             mTvQz.setText("圈子");
             mIvYz.setBackgroundResource(R.drawable.yz_selector);

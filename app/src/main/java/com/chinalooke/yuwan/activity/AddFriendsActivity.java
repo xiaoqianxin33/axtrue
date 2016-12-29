@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
@@ -25,8 +24,6 @@ public class AddFriendsActivity extends AutoLayoutActivity implements EasyPermis
 
     @Bind(R.id.tv_title)
     TextView mTvTitle;
-    @Bind(R.id.et_phone)
-    EditText mEtPhone;
     @Bind(R.id.tv_phone)
     TextView mTvPhone;
     private int RC_ACCESS_FINE_LOCATION = 1;

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="58px"
+    android:layout_marginLeft="27px"
+    android:layout_marginRight="27px"
+    android:layout_marginTop="22px"
+    android:background="@drawable/game_searchview_shape">
+
+    <ImageView
+        android:id="@+id/iv_search"
+        android:layout_width="32px"
+        android:layout_height="32px"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="26px"
+        android:src="@mipmap/search_icn"/>
+
+    <EditText
+        android:id="@+id/et_input"
+        android:layout_width="match_parent"
+        android:layout_height="58px"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="3px"
+        android:layout_toRightOf="@id/iv_search"
+        android:background="@null"
+        android:gravity="center_vertical"
+        android:hint="搜索"
+        android:textSize="24px"/>
+
+</RelativeLayout>

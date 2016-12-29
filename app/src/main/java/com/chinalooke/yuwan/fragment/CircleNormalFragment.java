@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -506,7 +505,6 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
     private void getInterestCircle() {
         String uri = Constant.HOST + "getGroupListWithType&userId=" + mUserInfo.getUserId()
                 + "&groupType=interest";
-        Log.e("TAG", uri);
         StringRequest stringRequest = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

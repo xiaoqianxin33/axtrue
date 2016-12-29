@@ -184,7 +184,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 if (mUserInfo != null) {
                     CommentList.ResultBean comment = mComments.get(position);
                     mCommentId = comment.getCommentId();
-                    String replayName = comment.getReplayName();
+                    String replayName = comment.getNickName();
                     COMMENT_TYPE = 1;
                     addComment(replayName);
                 } else {

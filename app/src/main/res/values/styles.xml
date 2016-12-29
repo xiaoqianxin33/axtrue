@@ -416,4 +416,12 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+
+    <style name="history_textview_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/small_padding</item>
+        <item name="android:textColor">#fee387</item>
+        <item name="android:textSize">24px</item>
+    </style>
 </resources>

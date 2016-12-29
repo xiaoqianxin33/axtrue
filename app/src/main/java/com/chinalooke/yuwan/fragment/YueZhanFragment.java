@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -17,8 +18,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,26 +31,29 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bigkoo.pickerview.OptionsPickerView;
-import com.chinalooke.yuwan.engine.ImageEngine;
-import com.chinalooke.yuwan.engine.PickerEngine;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.AddFriendActivity;
 import com.chinalooke.yuwan.activity.FrequentlyGameActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.PersonalInfoActivity;
+import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.bean.FriendInfo;
 import com.chinalooke.yuwan.bean.GameMessage;
+import com.chinalooke.yuwan.bean.GameRules;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.bean.SortModel;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
+import com.chinalooke.yuwan.engine.PickerEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.KeyboardUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
+import com.google.gson.Gson;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMGroupManager;
@@ -100,7 +106,7 @@ public class YueZhanFragment extends Fragment {
     private ArrayList<String> mPeopleNumberList = new ArrayList<>();
     private ArrayList<String> mMoneyList = new ArrayList<>();
     private ArrayList<String> mTimesList = new ArrayList<>();
-    private ArrayList<String> mLevelList = new ArrayList<>();
+    private List<GameRules.ResultBean> mGameRulesList = new ArrayList<>();
     private GameMessage.ResultBean mChoseGame;
     private int ADD_FRIENDS = 2;
     private String mRule;
@@ -116,10 +122,10 @@ public class YueZhanFragment extends Fragment {
             if (msg.what == 1) {
                 if (isPeopleChose && isGameChose && isMoneyChose && isTimeChose) {
                     mTvSkip.setEnabled(true);
-                    mTvSkip.setTextColor(getResources().getColor(R.color.white));
+                    mTvSkip.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
                 } else {
                     mTvSkip.setEnabled(false);
-                    mTvSkip.setTextColor(getResources().getColor(R.color.grey));
+                    mTvSkip.setTextColor(ContextCompat.getColor(getActivity(), R.color.grey));
                 }
             }
             super.handleMessage(msg);
@@ -132,6 +138,7 @@ public class YueZhanFragment extends Fragment {
     private MainActivity mMainActivity;
     private int minLevel = -1;
     private int maxLevel;
+    private MyAdapter mMyAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -142,7 +149,6 @@ public class YueZhanFragment extends Fragment {
         mQueue = YuwanApplication.getQueue();
         return view;
     }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -159,7 +165,6 @@ public class YueZhanFragment extends Fragment {
         mTvGameName.addTextChangedListener(new CustomerTextWatcher(2));
         mTvMoney.addTextChangedListener(new CustomerTextWatcher(3));
     }
-
 
     class CustomerTextWatcher implements TextWatcher {
         private int isChose;
@@ -199,7 +204,6 @@ public class YueZhanFragment extends Fragment {
         }
     }
 
-
     private void initData() {
         mUsrInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(mMainActivity, LoginUserInfoUtils.KEY);
         if (mUsrInfo != null) {
@@ -207,16 +211,15 @@ public class YueZhanFragment extends Fragment {
         }
     }
 
-
     private void initView() {
         mIvBack.setVisibility(View.GONE);
         mIvArrowHead.setVisibility(View.GONE);
         mTvTitle.setText("约战");
         mTvSkip.setText("发布");
-        mTvSkip.setTextColor(getResources().getColor(R.color.grey));
+        mTvSkip.setTextColor(ContextCompat.getColor(mMainActivity, R.color.grey));
         mTvSkip.setEnabled(false);
+        mMyAdapter = new MyAdapter(mGameRulesList);
     }
-
 
     @Override
     public void onPause() {
@@ -231,7 +234,6 @@ public class YueZhanFragment extends Fragment {
     }
 
     String[] gameID;
-
 
     @OnClick({R.id.rl_game_name, R.id.rl_time, R.id.rl_people, R.id.rl_money,
             R.id.tv_skip, R.id.rl_friend, R.id.rl_rule, R.id.rl_times, R.id.rl_playerLevel})
@@ -314,7 +316,6 @@ public class YueZhanFragment extends Fragment {
         }
 
     }
-
 
     //创建环信群组
     private void createRoom() {
@@ -407,10 +408,21 @@ public class YueZhanFragment extends Fragment {
 
     private void showRuleDialog() {
         final Dialog dialog = new Dialog(mMainActivity, R.style.Dialog);
-        View inflate = LayoutInflater.from(mMainActivity).inflate(R.layout.dialog_add_game_rule, null);
+        View inflate = View.inflate(mMainActivity, R.layout.dialog_add_game_rule, null);
         TextView tvOk = (TextView) inflate.findViewById(R.id.tv_ok);
         TextView tvCancel = (TextView) inflate.findViewById(R.id.tv_cancel);
         final EditText etRule = (EditText) inflate.findViewById(R.id.et_rule);
+        GridView gridView = (GridView) inflate.findViewById(R.id.gridView);
+        gridView.setAdapter(mMyAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                GameRules.ResultBean resultBean = mGameRulesList.get(position);
+                String content = resultBean.getContent();
+                if (!TextUtils.isEmpty(content))
+                    etRule.setText(content);
+            }
+        });
         if (!TextUtils.isEmpty(mRule))
             etRule.setText(mRule);
         tvCancel.setOnClickListener(new View.OnClickListener() {
@@ -522,7 +534,6 @@ public class YueZhanFragment extends Fragment {
         optionsPickerView.show();
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -531,6 +542,9 @@ public class YueZhanFragment extends Fragment {
                 mChoseGame = (GameMessage.ResultBean) data.getSerializableExtra("choseGame");
                 String thumb = mChoseGame.getThumb();
                 mGameId = mChoseGame.getGameId();
+                if (!TextUtils.isEmpty(mGameId)) {
+                    getGameRules();
+                }
                 if (!TextUtils.isEmpty(thumb)) {
                     String loadImageUrl = ImageEngine.getLoadImageUrl(mMainActivity, thumb, 60, 60);
                     Picasso.with(mMainActivity).load(loadImageUrl).into(mIvGameimage);
@@ -548,6 +562,31 @@ public class YueZhanFragment extends Fragment {
                 setFriends(mChoseFriends);
             }
         }
+    }
+
+    //取游戏规则
+    private void getGameRules() {
+        String url = Constant.HOST + "getGameRules&gameId=" + mGameId;
+        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (AnalysisJSON.analysisJson(response)) {
+                    Gson gson = new Gson();
+                    GameRules gameRules = gson.fromJson(response, GameRules.class);
+                    if (gameRules != null) {
+                        List<GameRules.ResultBean> result = gameRules.getResult();
+                        if (result != null && result.size() != 0) {
+                            mGameRulesList.clear();
+                            mGameRulesList.addAll(result);
+                            if (mMyAdapter != null)
+                                mMyAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+            }
+        }, null);
+
+        mQueue.add(request);
     }
 
     private void setTimesCount() {
@@ -599,4 +638,41 @@ public class YueZhanFragment extends Fragment {
             }
         }
     }
+
+    class MyAdapter extends MyBaseAdapter {
+
+        public MyAdapter(List dataSource) {
+            super(dataSource);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder viewHolder;
+            if (convertView == null) {
+                convertView = View.inflate(mMainActivity, R.layout.item_game_rule_listview, null);
+                viewHolder = new ViewHolder(convertView);
+                convertView.setTag(viewHolder);
+                AutoUtils.autoSize(convertView);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            GameRules.ResultBean resultBean = mGameRulesList.get(position);
+            String content = resultBean.getTitle();
+            if (content.length() > 5) {
+                content = content.substring(0, 5);
+            }
+            viewHolder.mTvGameRule.setText(content);
+            return convertView;
+        }
+
+        class ViewHolder {
+            @Bind(R.id.tv_gameRule)
+            TextView mTvGameRule;
+
+            ViewHolder(View view) {
+                ButterKnife.bind(this, view);
+            }
+        }
+    }
+
 }

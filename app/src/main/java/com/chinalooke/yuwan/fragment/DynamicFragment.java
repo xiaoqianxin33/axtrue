@@ -217,6 +217,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                 mPage = 1;
                 isRefresh = true;
                 isFoot = false;
+                isFirst = true;
                 initData();
                 mSr.setRefreshing(false);
                 mLvDynamic.removeFooterView(mFoot);

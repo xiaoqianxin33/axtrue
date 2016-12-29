@@ -20,6 +20,13 @@
             android:src="@mipmap/placeholder"
             app:riv_oval="true"/>
 
+        <TextView
+            android:id="@+id/tv_lose"
+            android:layout_width="80px"
+            android:layout_height="80px"
+            android:background="@drawable/rouded_shape"
+            android:visibility="gone"/>
+
         <ImageView
             android:id="@+id/iv_crown"
             android:layout_width="29px"

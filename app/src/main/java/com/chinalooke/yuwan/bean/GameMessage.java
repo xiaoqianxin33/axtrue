@@ -61,6 +61,15 @@ public class GameMessage implements Serializable {
         private String times;
         private String wagerMax;
         private String wagerMin;
+        private String gameTypeName;
+
+        public String getGameTypeName() {
+            return gameTypeName;
+        }
+
+        public void setGameTypeName(String gameTypeName) {
+            this.gameTypeName = gameTypeName;
+        }
 
         public String getGameId() {
             return gameId;

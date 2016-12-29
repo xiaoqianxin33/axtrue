@@ -465,6 +465,11 @@ public class BattleFieldFragment extends Fragment {
                                     if (isFirst) {
                                         mAdapter.removeAllFooterView();
                                         mTvNone.setVisibility(View.VISIBLE);
+                                        if (isNetbar) {
+                                            mTvNone.setText("您的网吧还没有开展比赛，请发布官方比赛广告");
+                                        } else {
+                                            mTvNone.setText("没找到任何战场，换个搜索条件试试");
+                                        }
                                     } else {
                                         mAdapter.removeAllFooterView();
                                         mAdapter.addFooterView(mFoot);
@@ -474,6 +479,11 @@ public class BattleFieldFragment extends Fragment {
                                 mPbLoad.setVisibility(View.GONE);
                                 if (isFirst) {
                                     mTvNone.setVisibility(View.VISIBLE);
+                                    if (isNetbar) {
+                                        mTvNone.setText("您的网吧还没有开展比赛，请发布官方比赛广告");
+                                    } else {
+                                        mTvNone.setText("没找到任何战场，换个搜索条件试试");
+                                    }
                                 } else {
                                     mAdapter.addFooterView(mFoot);
                                 }
