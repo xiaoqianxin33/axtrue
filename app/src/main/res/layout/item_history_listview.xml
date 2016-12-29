@@ -51,51 +51,7 @@
             android:textColor="@color/black_word"
             android:textSize="28px"/>
 
-        <ImageView
-            android:id="@+id/iv1"
-            android:layout_width="25px"
-            android:layout_height="25px"
-            android:layout_marginLeft="275px"
-            android:layout_marginTop="135px"
-            android:src="@mipmap/price_zc"/>
 
-        <TextView
-            android:id="@+id/tv_money"
-            style="@style/history_textview_style"
-            android:layout_marginTop="135px"
-            android:layout_toRightOf="@id/iv1"
-            />
-
-        <ImageView
-            android:id="@+id/iv2"
-            android:layout_width="25px"
-            android:layout_height="25px"
-            android:layout_marginLeft="275px"
-            android:layout_marginTop="179px"
-            android:src="@mipmap/location_zc"/>
-
-        <TextView
-            android:id="@+id/tv_location"
-            style="@style/history_textview_style"
-            android:layout_marginTop="179px"
-            android:layout_toRightOf="@id/iv2"/>
-
-
-        <ImageView
-            android:id="@+id/iv3"
-            android:layout_width="25px"
-            android:layout_height="25px"
-            android:layout_marginLeft="426px"
-            android:layout_marginTop="135px"
-            android:src="@mipmap/people_zc"/>
-
-
-        <TextView
-            android:id="@+id/tv_people"
-            style="@style/history_textview_style"
-            android:layout_marginTop="135px"
-            android:layout_toRightOf="@id/iv3"
-            />
 
     </RelativeLayout>
 

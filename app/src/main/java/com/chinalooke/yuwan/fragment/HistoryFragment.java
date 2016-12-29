@@ -224,15 +224,7 @@ public class HistoryFragment extends Fragment {
                 String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, gameImage, 226, 172);
                 Picasso.with(mActivity).load(loadImageUrl).into(viewHolder.mRoundedImageView);
             }
-            String netBarName = resultBean.getNetBarName();
-            if (!TextUtils.isEmpty(netBarName))
-                viewHolder.mTvLocation.setText(netBarName);
-            String playerNum = resultBean.getPlayerNum();
-            if (!TextUtils.isEmpty(playerNum))
-                viewHolder.mTvPeople.setText(playerNum);
-            String gamePay = resultBean.getGamePay();
-            if (!TextUtils.isEmpty(gamePay))
-                viewHolder.mTvMoney.setText(gamePay);
+
             String startTime = resultBean.getStartTime();
             if (!TextUtils.isEmpty(startTime)) {
                 viewHolder.mTvTime.setText(getString(R.string.start_time, startTime.substring(5)));
@@ -248,12 +240,7 @@ public class HistoryFragment extends Fragment {
             TextView mTvTime;
             @Bind(R.id.tv_name)
             TextView mTvName;
-            @Bind(R.id.tv_money)
-            TextView mTvMoney;
-            @Bind(R.id.tv_location)
-            TextView mTvLocation;
-            @Bind(R.id.tv_people)
-            TextView mTvPeople;
+
 
             ViewHolder(View view) {
                 ButterKnife.bind(this, view);
