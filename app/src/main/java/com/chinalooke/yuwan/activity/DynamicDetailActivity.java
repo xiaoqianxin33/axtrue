@@ -497,10 +497,15 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                         JSONObject jsonObject = new JSONObject(response);
                         boolean success = jsonObject.getBoolean("Success");
                         if (success) {
-                            if (mIsLoginUserLike)
+                            String s1 = mTvDianzan.getText().toString();
+                            int i = Integer.parseInt(s1);
+                            if (mIsLoginUserLike) {
                                 mToast.setText("取消点赞成功");
-                            else
+                                mTvDianzan.setText(getString(R.string.dianzan_count, i - 1));
+                            } else {
                                 mToast.setText("点赞成功");
+                                mTvDianzan.setText(getString(R.string.dianzan_count, i + 1));
+                            }
                             mToast.show();
                             mIsLoginUserLike = !mIsLoginUserLike;
                             mIvDianzan.setImageResource(mIsLoginUserLike ? R.mipmap.dianzanhou : R.mipmap.dianzan);
@@ -535,8 +540,8 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     //评论点击
     private void addComment(String replayName) {
         mRlComment.setVisibility(View.VISIBLE);
-        if(!TextUtils.isEmpty(replayName))
-            mEtComment.setHint("回复 "+replayName);
+        if (!TextUtils.isEmpty(replayName))
+            mEtComment.setHint("回复 " + replayName);
         KeyboardUtils.showSoftInput(this, mEtComment);
         mHandler.post(new Runnable() {
             @Override

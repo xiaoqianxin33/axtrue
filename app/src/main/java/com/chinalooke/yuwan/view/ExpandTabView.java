@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -170,7 +169,7 @@ public class ExpandTabView extends LinearLayout implements OnDismissListener {
         }
         int widthPixels = ViewHelper.getDisplayMetrics(mContext).widthPixels;
         popupWindow.setWidth(widthPixels);
-        popupWindow.showAsDropDown(this, 0, 0);
+        popupWindow.showAsDropDown(ExpandTabView.this, 0, 0);
     }
 
     /**

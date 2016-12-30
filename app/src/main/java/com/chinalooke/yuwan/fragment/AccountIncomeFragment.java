@@ -44,17 +44,19 @@ public class AccountIncomeFragment extends Fragment {
 
     public void initData() {
         AccountDetailActivity activity = (AccountDetailActivity) getActivity();
-        List<Account.ResultBean> incomeList = activity.getIncomeList();
-        if (mPbLoad != null)
-            mPbLoad.setVisibility(View.GONE);
-        if (incomeList.size() == 0) {
-            mTvNone.setText("暂无收支记录");
-            mTvNone.setVisibility(View.VISIBLE);
-        } else {
-            mTvNone.setVisibility(View.GONE);
+        if (activity != null) {
+            List<Account.ResultBean> incomeList = activity.getIncomeList();
+            if (mPbLoad != null)
+                mPbLoad.setVisibility(View.GONE);
+            if (incomeList.size() == 0) {
+                mTvNone.setText("暂无收支记录");
+                mTvNone.setVisibility(View.VISIBLE);
+            } else {
+                mTvNone.setVisibility(View.GONE);
+            }
+            AccountAdapter accountAdapter = new AccountAdapter(incomeList, activity);
+            mListView.setAdapter(accountAdapter);
         }
-        AccountAdapter accountAdapter = new AccountAdapter(incomeList, activity);
-        mListView.setAdapter(accountAdapter);
     }
 
     @Override

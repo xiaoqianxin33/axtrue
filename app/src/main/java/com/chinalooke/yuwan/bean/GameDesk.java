@@ -67,6 +67,15 @@ public class GameDesk implements Serializable {
         private String cup;
         private String ownerId;
         private boolean isUserWin;
+        private List<Winer> winers;
+
+        public List<Winer> getWiners() {
+            return winers;
+        }
+
+        public void setWiners(List<Winer> winers) {
+            this.winers = winers;
+        }
 
         public boolean isUserWin() {
             return isUserWin;
@@ -178,6 +187,46 @@ public class GameDesk implements Serializable {
 
         public void setNetBarName(String netBarName) {
             this.netBarName = netBarName;
+        }
+
+        public static class Winer implements Serializable {
+
+            private String userId;
+            private String rating;
+            private String nickName;
+            private String money;
+
+            public String getUserId() {
+                return userId;
+            }
+
+            public void setUserId(String userId) {
+                this.userId = userId;
+            }
+
+            public String getRating() {
+                return rating;
+            }
+
+            public void setRating(String rating) {
+                this.rating = rating;
+            }
+
+            public String getNickName() {
+                return nickName;
+            }
+
+            public void setNickName(String nickName) {
+                this.nickName = nickName;
+            }
+
+            public String getMoney() {
+                return money;
+            }
+
+            public void setMoney(String money) {
+                this.money = money;
+            }
         }
     }
 }

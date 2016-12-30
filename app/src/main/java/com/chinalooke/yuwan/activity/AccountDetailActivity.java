@@ -84,6 +84,7 @@ public class AccountDetailActivity extends AutoLayoutActivity {
     }
 
     private void initEvent() {
+        mViewPage.setOffscreenPageLimit(2);
         mViewPage.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

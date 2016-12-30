@@ -43,17 +43,19 @@ public class AccountPayFragment extends Fragment {
 
     public void initData() {
         AccountDetailActivity activity = (AccountDetailActivity) getActivity();
-        List<Account.ResultBean> payList = activity.getPayList();
-        if (mPbLoad != null)
-            mPbLoad.setVisibility(View.GONE);
-        if (payList.size() == 0) {
-            mTvNone.setText("暂无收支记录");
-            mTvNone.setVisibility(View.VISIBLE);
-        } else {
-            mTvNone.setVisibility(View.GONE);
+        if (activity != null) {
+            List<Account.ResultBean> payList = activity.getPayList();
+            if (mPbLoad != null)
+                mPbLoad.setVisibility(View.GONE);
+            if (payList.size() == 0) {
+                mTvNone.setText("暂无收支记录");
+                mTvNone.setVisibility(View.VISIBLE);
+            } else {
+                mTvNone.setVisibility(View.GONE);
+            }
+            AccountAdapter accountAdapter = new AccountAdapter(payList, activity);
+            mListView.setAdapter(accountAdapter);
         }
-        AccountAdapter accountAdapter = new AccountAdapter(payList, activity);
-        mListView.setAdapter(accountAdapter);
     }
 
     @Override

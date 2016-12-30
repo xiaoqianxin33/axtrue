@@ -41,24 +41,21 @@ public class AccountWholeFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
     public void initData() {
         AccountDetailActivity activity = (AccountDetailActivity) getActivity();
-        List<Account.ResultBean> wholeList = activity.getWholeList();
-        if (mPbLoad != null)
-            mPbLoad.setVisibility(View.GONE);
-        if (wholeList.size() == 0) {
-            mTvNone.setText("暂无收支记录");
-            mTvNone.setVisibility(View.VISIBLE);
-        } else {
-            mTvNone.setVisibility(View.GONE);
+        if (activity != null) {
+            List<Account.ResultBean> wholeList = activity.getWholeList();
+            if (mPbLoad != null)
+                mPbLoad.setVisibility(View.GONE);
+            if (wholeList.size() == 0) {
+                mTvNone.setText("暂无收支记录");
+                mTvNone.setVisibility(View.VISIBLE);
+            } else {
+                mTvNone.setVisibility(View.GONE);
+            }
+            AccountAdapter accountAdapter = new AccountAdapter(wholeList, activity);
+            mListView.setAdapter(accountAdapter);
         }
-        AccountAdapter accountAdapter = new AccountAdapter(wholeList, activity);
-        mListView.setAdapter(accountAdapter);
     }
 
     @Override

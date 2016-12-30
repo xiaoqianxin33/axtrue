@@ -26,7 +26,17 @@ public class EaseUser extends EMContact {
 	 * avatar of the user
 	 */
 	protected String avatar;
-	
+
+	protected String nickName;
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
 	public EaseUser(String username){
 	    this.username = username;
 	}

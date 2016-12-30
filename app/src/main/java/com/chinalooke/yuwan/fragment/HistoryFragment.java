@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -138,6 +139,7 @@ public class HistoryFragment extends Fragment {
             public void onResponse(String response) {
                 if (mPbLoad != null)
                     mPbLoad.setVisibility(View.GONE);
+                response = "{Success: true,Result: [{ownerName: \"官方\",cup:\"1:500|2:300\",ownerId: null,winers: null,curPlayNum: \"1\",playerNum: \"5\",winnerTeam: \"\",isUserWin: \"\",gameDeskId: \"141\",gameName: \"守望先锋\",netBarId: \"14\",gameImage: \"http://image.lyyuwan.com/57b575f7d0415.jpeg\",startTime:\"2016-12-31 13:50:12\",netBarName: \"小辣椒\",winers:[{userId:\"1\",rating:\"1\",nickName:\"第一名\",money:\"100\"},{userId:\"1\",rating:\"2\",nickName:\"江飞\",money:\"50\"},{userId:\"1\",rating:\"3\",nickName:\"nice江飞\",money:\"50\"}]}],Msg: \"\"}";
                 if (AnalysisJSON.analysisJson(response)) {
                     if (mTvNone != null)
                         mTvNone.setVisibility(View.GONE);
@@ -222,10 +224,23 @@ public class HistoryFragment extends Fragment {
                 String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, gameImage, 226, 172);
                 Picasso.with(mActivity).load(loadImageUrl).into(viewHolder.mRoundedImageView);
             }
-
             String startTime = resultBean.getStartTime();
             if (!TextUtils.isEmpty(startTime)) {
                 viewHolder.mTvTime.setText(getString(R.string.start_time, startTime.substring(5)));
+            }
+
+            List<GameDesk.ResultBean.Winer> winers = resultBean.getWiners();
+            if (winers != null) {
+                for (GameDesk.ResultBean.Winer winer : winers) {
+                    String nickName = winer.getNickName();
+                    String rating = winer.getRating();
+                    String money = winer.getMoney();
+                    TextView textView = new TextView(mActivity);
+                    textView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    textView.setTextSize(32);
+                    textView.setText("第" + rating + "名： " + nickName + "  奖金:" + money);
+                    viewHolder.mLinearLayout.addView(textView);
+                }
             }
 
             return convertView;
@@ -236,8 +251,8 @@ public class HistoryFragment extends Fragment {
             RoundedImageView mRoundedImageView;
             @Bind(R.id.tv_time)
             TextView mTvTime;
-            @Bind(R.id.tv_name)
-            TextView mTvName;
+            @Bind(R.id.ll_rating)
+            LinearLayout mLinearLayout;
 
 
             ViewHolder(View view) {

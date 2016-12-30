@@ -316,7 +316,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     }
 
     private void analysisJson(String response) {
-        Log.e("TAG", response);
         if (AnalysisJSON.analysisJson(response)) {
             Gson gson = new Gson();
             Type type = new TypeToken<LoginUser>() {
@@ -325,7 +324,8 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
             if (userInfo != null) {
                 LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo.getResult());//设置userInfo
                 LoginUserInfoUtils.saveObject(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo.getResult());
-                registerHx(phone);
+                String nickName = userInfo.getResult().getNickName();
+                registerHx(phone,nickName);
                 PushService.subscribe(this, userInfo.getResult().getUserId(), MyMessageActivity.class);
             }
             loginSuccess();//调用登录成功方法

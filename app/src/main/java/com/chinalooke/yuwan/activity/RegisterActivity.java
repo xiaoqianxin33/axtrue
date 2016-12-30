@@ -265,7 +265,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
                 e.printStackTrace();
             }
             Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
-            NetUtil.registerHx(phone);
+            NetUtil.registerHx(phone, phone);
             Intent intent = new Intent(this, PersonalInfoActivity.class);
             startActivity(intent);
         }

@@ -48,6 +48,7 @@ import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.chinalooke.yuwan.view.HorizontalListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMGroupManager;
@@ -207,7 +208,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private void initView() {
         isJoin = false;
         GameDeskDetails.ResultBean result = mGameDeskDetails.getResult();
-        mRoomId = result.getRoomId();
         mLeftBeen.clear();
         mRight.clear();
         String peopleNumber = result.getPeopleNumber();
@@ -226,8 +226,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 mLeftBeen = players.getLeft();
                 mLeftSize = left.size();
             }
-
-            mPersonYuezhan.setText(mLeftBeen.size() + "/" + mTotalPeople);
+            if (mLeftBeen != null)
+                mPersonYuezhan.setText(mLeftBeen.size() + "/" + mTotalPeople);
             List<GameDeskDetails.ResultBean.PlayersBean.RightBean> right = players.getRight();
             if (right != null) {
                 mRight = players.getRight();
@@ -496,7 +496,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
     //跳转聊天室
     private void intentToRoom() {
-        Intent intent = new Intent(GameDeskActivity.this, EaseGroupChatActivity.class);
+        Intent intent = new Intent(this, EaseGroupChatActivity.class);
         intent.putExtra("groupId", mRoomId);
         startActivity(intent);
     }
@@ -664,17 +664,24 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
     //加入环信群组
     private void joinEaseGroup() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (mRoomId != null)
-                        EMClient.getInstance().groupManager().joinGroup(mRoomId);
-                } catch (HyphenateException e) {
-                    e.printStackTrace();
+        if (mRoomId != null) {
+            EMClient.getInstance().groupManager().asyncJoinGroup(mRoomId, new EMCallBack() {
+                @Override
+                public void onSuccess() {
+
                 }
-            }
-        }).start();
+
+                @Override
+                public void onError(int i, String s) {
+
+                }
+
+                @Override
+                public void onProgress(int i, String s) {
+
+                }
+            });
+        }
     }
 
     //退出环信群组
@@ -1000,13 +1007,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 mProgressDialog.dismiss();
                 if (AnalysisJSON.analysisJson(response)) {
                     showJoinSucceedDialog();
-                    Type type = new TypeToken<GameDeskDetails>() {
-                    }.getType();
-                    GameDeskDetails o = mGson.fromJson(response, type);
-                    if (o != null)
-                        mGameDeskDetails = o;
-                    initView();
                     joinEaseGroup();
+                    initView();
                 } else {
                     mTvOk.setText("我要参战");
                     refreshUI();
@@ -1099,8 +1101,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
     //按照游戏桌id取得游戏桌详情
     private void getGameDeskWithId(final String gameDeskId) {
-
-        StringRequest stringRequest = new StringRequest(Constant.HOST + "getGameDeskWithId&gameDeskId=" + gameDeskId,
+        String url = Constant.HOST + "getGameDeskWithId&gameDeskId=" + gameDeskId;
+        StringRequest stringRequest = new StringRequest(url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -1110,6 +1112,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                             GameDeskDetails gameDesk = mGson.fromJson(response, type);
                             if (gameDesk != null) {
                                 mGameDeskDetails = gameDesk;
+                                mRoomId = mGameDeskDetails.getResult().getRoomId();
                                 initView();
                                 isFirst = false;
                             }

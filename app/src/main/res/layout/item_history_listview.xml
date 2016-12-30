@@ -10,7 +10,6 @@
         android:layout_height="237px"
         android:background="@android:color/white">
 
-
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/roundedImageView"
             android:layout_width="226px"
@@ -40,18 +39,24 @@
 
         </RelativeLayout>
 
+        <!--<TextView-->
+            <!--android:id="@+id/tv_name"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="25px"-->
+            <!--android:layout_marginTop="36px"-->
+            <!--android:layout_toRightOf="@id/roundedImageView"-->
+            <!--android:textColor="@color/black_word"-->
+            <!--android:textSize="28px"/>-->
 
-        <TextView
-            android:id="@+id/tv_name"
+        <LinearLayout
+            android:id="@+id/ll_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="25px"
-            android:layout_marginTop="36px"
+            android:layout_marginLeft="@dimen/mid_padding"
+            android:layout_marginTop="45px"
             android:layout_toRightOf="@id/roundedImageView"
-            android:textColor="@color/black_word"
-            android:textSize="28px"/>
-
-
+            android:orientation="vertical"/>
 
     </RelativeLayout>
 

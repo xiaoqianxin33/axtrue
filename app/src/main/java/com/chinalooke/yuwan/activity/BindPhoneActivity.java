@@ -58,6 +58,7 @@ public class BindPhoneActivity extends AutoLayoutActivity {
     private ProgressDialog mProgressDialog;
     private String userId;
     private String headImg;
+    private String mNickName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,6 +262,7 @@ public class BindPhoneActivity extends AutoLayoutActivity {
             JSONObject jsonObject = new JSONObject(result);
             userId = jsonObject.getString("userId");
             headImg = jsonObject.getString("headImg");
+            mNickName = jsonObject.getString("nickName");
         } catch (JSONException e) {
             e.printStackTrace();
             Log.d("TAG", "解析失败");
@@ -272,6 +274,7 @@ public class BindPhoneActivity extends AutoLayoutActivity {
         userInfo.setUserId(userId);
         userInfo.setHeadImg(headImg);
         userInfo.setUserType("player");
+        userInfo.setNickName(mNickName);
         try {
             LoginUserInfoUtils.saveLoginUserInfo(getApplicationContext(),
                     LoginUserInfoUtils.KEY, userInfo);
@@ -279,7 +282,7 @@ public class BindPhoneActivity extends AutoLayoutActivity {
             e.printStackTrace();
         }
         Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
-        NetUtil.registerHx(mPhone);
+        NetUtil.registerHx(mPhone, userInfo.getNickName());
         Intent intent = new Intent(this, PersonalInfoActivity.class);
         startActivity(intent);
         finish();

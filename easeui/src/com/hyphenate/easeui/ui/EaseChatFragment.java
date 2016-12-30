@@ -43,6 +43,7 @@ import com.hyphenate.easeui.controller.EaseUI;
 import com.hyphenate.easeui.domain.EaseEmojicon;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.model.EaseAtMessageHelper;
+import com.hyphenate.easeui.model.UsersWithRoomId;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.hyphenate.easeui.widget.EaseAlertDialog;
@@ -58,7 +59,9 @@ import com.hyphenate.util.EMLog;
 import com.hyphenate.util.PathUtil;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+
 
 /**
  * you can new an EaseChatFragment to use or you can inherit it to expand.
@@ -111,6 +114,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
     private EMChatRoomChangeListener chatRoomChangeListener;
     private boolean isMessageListInited;
     protected MyItemClickListener extendMenuItemClickListener;
+    private HashMap<String, String> mHashMap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -127,6 +131,15 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
         toChatUsername = fragmentArgs.getString(EaseConstant.EXTRA_USER_ID);
 
         title = fragmentArgs.getString(EaseConstant.EXTRA_TITLE);
+        List<UsersWithRoomId.ResultBean> resultBeen = (List<UsersWithRoomId.ResultBean>) fragmentArgs.getSerializable(EaseConstant.EXTRA_NICKNAME);
+        if (resultBeen != null) {
+            mHashMap = new HashMap<>();
+            for (UsersWithRoomId.ResultBean resultBean : resultBeen) {
+                String nickName = resultBean.getPlayers().getNickName();
+                String phoneNumber = resultBean.getPlayers().getPhoneNumber();
+                mHashMap.put(phoneNumber, nickName);
+            }
+        }
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -650,7 +663,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
         EaseAtMessageHelper.get().addAtUser(username);
         EaseUser user = EaseUserUtils.getUserInfo(username);
         if (user != null) {
-            username = user.getNick();
+            username = mHashMap.get(username);
         }
         if (autoAddAtSymbol)
             inputMenu.insertText("@" + username + " ");
@@ -1063,5 +1076,6 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
          */
         EaseCustomChatRowProvider onSetCustomChatRowProvider();
     }
+
 
 }

@@ -39,16 +39,16 @@ public class NetUtil {
     }
 
     //注册环信账号
-    public static void registerHx(final String phone) {
+    public static void registerHx(final String phone, final String s) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     EMClient.getInstance().createAccount(phone, phone);
-                    loginHx(phone);
+                    loginHx(phone, s);
                 } catch (HyphenateException e) {
                     e.printStackTrace();
-                    loginHx(phone);
+                    loginHx(phone, s);
                 }
             }
         }).start();
@@ -56,12 +56,13 @@ public class NetUtil {
 
 
     //登录环信
-    public static void loginHx(final String phone) {
+    public static void loginHx(final String phone, final String nickName) {
         EMClient.getInstance().login(phone, phone, new EMCallBack() {//回调
             @Override
             public void onSuccess() {
                 EMClient.getInstance().groupManager().loadAllGroups();
                 EMClient.getInstance().chatManager().loadAllConversations();
+                EMClient.getInstance().updateCurrentUserNick(nickName);
                 Log.e("TAG", "登录聊天服务器成功！");
             }
 
