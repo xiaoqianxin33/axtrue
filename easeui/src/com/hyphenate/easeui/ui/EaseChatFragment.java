@@ -77,10 +77,6 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
     protected static final int REQUEST_CODE_CAMERA = 2;
     protected static final int REQUEST_CODE_LOCAL = 3;
 
-    private static final int MESSAGE_TYPE_SENT_VOICE_CALL = 1;
-    private static final int MESSAGE_TYPE_RECV_VOICE_CALL = 2;
-    private static final int MESSAGE_TYPE_SENT_VIDEO_CALL = 3;
-    private static final int MESSAGE_TYPE_RECV_VIDEO_CALL = 4;
 
     /**
      * params to fragment
