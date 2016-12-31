@@ -7,4 +7,10 @@
     android:layout_height="match_parent"
     tools:context="com.chinalooke.yuwan.activity.EaseGroupChatActivity">
 
+    <ProgressBar
+        android:id="@+id/pb_load"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"/>
+
 </FrameLayout>

@@ -2,6 +2,8 @@ package com.chinalooke.yuwan.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -21,8 +23,13 @@ import com.zhy.autolayout.AutoLayoutActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class EaseGroupChatActivity extends AutoLayoutActivity {
 
+    @Bind(R.id.pb_load)
+    ProgressBar mPbLoad;
     private String mGroupId;
     private RequestQueue mQueue;
 
@@ -30,6 +37,7 @@ public class EaseGroupChatActivity extends AutoLayoutActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ease_group_chat);
+        ButterKnife.bind(this);
         mQueue = YuwanApplication.getQueue();
         initData();
     }
@@ -47,11 +55,11 @@ public class EaseGroupChatActivity extends AutoLayoutActivity {
 
     private void initData() {
         mGroupId = getIntent().getStringExtra("groupId");
-        getuserswithroomid();
+        getUsersWithRoomId();
     }
 
     //获取房间玩家信息
-    private void getuserswithroomid() {
+    private void getUsersWithRoomId() {
         String url = Constant.HOST + "getuserswithroomid&roomId=" + mGroupId;
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
@@ -69,14 +77,17 @@ public class EaseGroupChatActivity extends AutoLayoutActivity {
                         hxDBManager.add(list);
                         hxDBManager.closeDB();
                     }
+                    mPbLoad.setVisibility(View.GONE);
                     initView();
                 } else {
+                    mPbLoad.setVisibility(View.GONE);
                     initView();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mPbLoad.setVisibility(View.GONE);
                 initView();
             }
         });
