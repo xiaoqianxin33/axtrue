@@ -13,18 +13,18 @@ import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.google.gson.Gson;
 import com.hyphenate.easeui.EaseConstant;
+import com.hyphenate.easeui.db.HxDBManager;
 import com.hyphenate.easeui.model.UsersWithRoomId;
 import com.hyphenate.easeui.ui.EaseChatFragment;
 import com.zhy.autolayout.AutoLayoutActivity;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EaseGroupChatActivity extends AutoLayoutActivity {
 
     private String mGroupId;
     private RequestQueue mQueue;
-    private List<UsersWithRoomId.ResultBean> mResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +40,6 @@ public class EaseGroupChatActivity extends AutoLayoutActivity {
         Bundle args = new Bundle();
         args.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_GROUP);
         args.putString(EaseConstant.EXTRA_USER_ID, mGroupId);
-        if (mResult != null)
-            args.putSerializable(EaseConstant.EXTRA_NICKNAME, (Serializable) mResult);
         easeChatFragment.setArguments(args);
         supportFragmentManager.beginTransaction().replace(R.id.activity_ease_group_chat, easeChatFragment).commit();
 
@@ -61,7 +59,16 @@ public class EaseGroupChatActivity extends AutoLayoutActivity {
                 if (AnalysisJSON.analysisJson(response)) {
                     Gson gson = new Gson();
                     UsersWithRoomId usersWithRoomId = gson.fromJson(response, UsersWithRoomId.class);
-                    mResult = usersWithRoomId.getResult();
+                    List<UsersWithRoomId.ResultBean> result = usersWithRoomId.getResult();
+                    if (result != null && result.size() != 0) {
+                        List<UsersWithRoomId.ResultBean.PlayersBean> list = new ArrayList<>();
+                        for (UsersWithRoomId.ResultBean resultBean : result) {
+                            list.add(resultBean.getPlayers());
+                        }
+                        HxDBManager hxDBManager = new HxDBManager(getApplicationContext());
+                        hxDBManager.add(list);
+                        hxDBManager.closeDB();
+                    }
                     initView();
                 } else {
                     initView();

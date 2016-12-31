@@ -11,6 +11,7 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.easeui.domain.EaseEmojicon;
 import com.hyphenate.easeui.domain.EaseUser;
+import com.hyphenate.easeui.domain.MyEaseUserProvider;
 import com.hyphenate.easeui.model.EaseAtMessageHelper;
 import com.hyphenate.easeui.model.EaseNotifier;
 
@@ -31,7 +32,7 @@ public final class EaseUI {
     /**
      * user profile provider
      */
-    private EaseUserProfileProvider userProvider;
+    private MyEaseUserProvider userProvider;
     
     private EaseSettingsProvider settingsProvider;
     
@@ -184,7 +185,7 @@ public final class EaseUI {
      * set user profile provider
      * @param provider
      */
-    public void setUserProfileProvider(EaseUserProfileProvider userProvider){
+    public void setUserProfileProvider(MyEaseUserProvider userProvider){
         this.userProvider = userProvider;
     }
     
@@ -192,7 +193,7 @@ public final class EaseUI {
      * get user profile provider
      * @return
      */
-    public EaseUserProfileProvider getUserProfileProvider(){
+    public MyEaseUserProvider getUserProfileProvider(){
         return userProvider;
     }
     

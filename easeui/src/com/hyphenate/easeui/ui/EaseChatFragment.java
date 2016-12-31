@@ -42,6 +42,7 @@ import com.hyphenate.easeui.R;
 import com.hyphenate.easeui.controller.EaseUI;
 import com.hyphenate.easeui.domain.EaseEmojicon;
 import com.hyphenate.easeui.domain.EaseUser;
+import com.hyphenate.easeui.domain.MyEaseUserProvider;
 import com.hyphenate.easeui.model.EaseAtMessageHelper;
 import com.hyphenate.easeui.model.UsersWithRoomId;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
@@ -75,6 +76,11 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
     protected static final int REQUEST_CODE_MAP = 1;
     protected static final int REQUEST_CODE_CAMERA = 2;
     protected static final int REQUEST_CODE_LOCAL = 3;
+
+    private static final int MESSAGE_TYPE_SENT_VOICE_CALL = 1;
+    private static final int MESSAGE_TYPE_RECV_VOICE_CALL = 2;
+    private static final int MESSAGE_TYPE_SENT_VIDEO_CALL = 3;
+    private static final int MESSAGE_TYPE_RECV_VIDEO_CALL = 4;
 
     /**
      * params to fragment
@@ -285,6 +291,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
     }
 
     protected void onMessageListInit() {
+        EaseUI.getInstance().setUserProfileProvider(new MyEaseUserProvider());
         messageList.init(toChatUsername, chatType, chatFragmentHelper != null ?
                 chatFragmentHelper.onSetCustomChatRowProvider() : null);
         setListItemClickListener();
@@ -342,10 +349,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
 
             @Override
             public boolean onBubbleClick(EMMessage message) {
-                if (chatFragmentHelper == null) {
-                    return false;
-                }
-                return chatFragmentHelper.onMessageBubbleClick(message);
+                return chatFragmentHelper != null && chatFragmentHelper.onMessageBubbleClick(message);
             }
 
         });

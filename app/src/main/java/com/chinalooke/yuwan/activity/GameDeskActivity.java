@@ -128,7 +128,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     //记录游戏桌状态变量 0-迎战中 1-进行中 2-已结束
     private int mStatus;
     private boolean isJoin = false;
-    private Handler mHandler = new Handler();
+    private Handler mHandler;
     private int mLeftSize;
     private int mRightSize;
     private int mTotalPeople;
@@ -150,6 +150,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
         setContentView(R.layout.activity_game_desk);
         ButterKnife.bind(this);
         mQueue = YuwanApplication.getQueue();
+        mHandler = YuwanApplication.getHandler();
         mGson = new Gson();
         DisplayMetrics displayMetrics = MyUtils.getDisplayMetrics(this);
         mWidthPixels = displayMetrics.widthPixels;
@@ -226,7 +227,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 mLeftBeen = players.getLeft();
                 mLeftSize = left.size();
             }
-            if (mLeftBeen != null)
+            if (mLeftBeen != null && mPersonYuezhan != null)
                 mPersonYuezhan.setText(mLeftBeen.size() + "/" + mTotalPeople);
             List<GameDeskDetails.ResultBean.PlayersBean.RightBean> right = players.getRight();
             if (right != null) {
@@ -255,7 +256,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 break;
             }
         }
-
 
         String mOwnerName = mGameDesk.getOwnerName();
         int DESK_TYPE_PERSONAL = 1;

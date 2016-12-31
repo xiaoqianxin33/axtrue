@@ -13,7 +13,7 @@ public class UsersWithRoomId implements Serializable {
 
     /**
      * Success : true
-     * Result : [{"players":{"userId":"5","nickName":"弑天","phoneNumber":"13015580263"}},{"players":{"userId":"2","nickName":null,"phoneNumber":"18790117059"}},{"players":{"userId":"3","nickName":"跪下给我唱征服","phoneNumber":"13838895007"}},{"players":{"userId":"1","nickName":"本王不退位づ尔等都是臣","phoneNumber":"15088888888"}},{"players":{"userId":"153","nickName":null,"phoneNumber":"18790117057"}},{"players":{"userId":"152","nickName":null,"phoneNumber":"18790117058"}},{"players":{"userId":"155","nickName":null,"phoneNumber":"18790117056"}},{"players":{"userId":"156","nickName":null,"phoneNumber":"15588652455"}}]
+     * Result : [{"players":{"userId":"238","nickName":"5850916686938","phoneNumber":"15588352355"}},{"players":{"userId":"219","nickName":"前欣老哥","phoneNumber":"15874275350"}},{"players":{"userId":"221","nickName":"砖砖见1","phoneNumber":"18860230170"}}]
      * Msg :
      */
 
@@ -45,9 +45,9 @@ public class UsersWithRoomId implements Serializable {
         this.Result = Result;
     }
 
-    public static class ResultBean implements Serializable {
+    public static class ResultBean {
         /**
-         * players : {"userId":"5","nickName":"弑天","phoneNumber":"13015580263"}
+         * players : {"userId":"238","nickName":"5850916686938","phoneNumber":"15588352355"}
          */
 
         private PlayersBean players;
@@ -60,11 +60,11 @@ public class UsersWithRoomId implements Serializable {
             this.players = players;
         }
 
-        public static class PlayersBean implements Serializable {
+        public static class PlayersBean {
             /**
-             * userId : 5
-             * nickName : 弑天
-             * phoneNumber : 13015580263
+             * userId : 238
+             * nickName : 5850916686938
+             * phoneNumber : 15588352355
              */
 
             private String userId;
