@@ -1,18 +1,13 @@
 package com.chinalooke.yuwan.activity;
 
-import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,15 +25,13 @@ import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.ExchangeHelper;
 import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.j256.ormlite.dao.Dao;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
-import com.yuyh.library.imgsel.ImageLoader;
-import com.yuyh.library.imgsel.ImgSelActivity;
-import com.yuyh.library.imgsel.ImgSelConfig;
 import com.zhy.autolayout.AutoLayoutActivity;
 import com.zhy.autolayout.utils.AutoUtils;
 
@@ -48,15 +41,17 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import pub.devrel.easypermissions.EasyPermissions;
 
 //我的推送消息界面
-public class MyMessageActivity extends AutoLayoutActivity implements EasyPermissions.PermissionCallbacks {
+public class MyMessageActivity extends AutoLayoutActivity {
 
     @Bind(R.id.tv_title)
     TextView mTvTitle;
@@ -71,15 +66,6 @@ public class MyMessageActivity extends AutoLayoutActivity implements EasyPermiss
     private MyAdapter mMyAdapter;
     private List<PushMessage> mPushMessages = new ArrayList<>();
     private Dao<PushMessage, Integer> mPushDao;
-    private ImgSelConfig mConfig;
-    private int RC_ACCESS_FINE_LOCATION = 0;
-    private int REQUEST_CODE = 2;
-    private ImageLoader loader = new ImageLoader() {
-        @Override
-        public void displayImage(Context context, String path, ImageView imageView) {
-            Picasso.with(context).load("file://" + path).into(imageView);
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,32 +81,6 @@ public class MyMessageActivity extends AutoLayoutActivity implements EasyPermiss
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        mConfig = new ImgSelConfig.Builder(loader)
-                // 是否多选
-                .multiSelect(true)
-                // “确定”按钮背景色
-                .btnBgColor(Color.GRAY)
-                // “确定”按钮文字颜色
-                .btnTextColor(Color.BLUE)
-                // 使用沉浸式状态栏
-                .statusBarColor(Color.parseColor("#3F51B5"))
-                // 返回图标ResId
-                .backResId(R.drawable.ic_back)
-                // 标题
-                .title("选择仲裁图片")
-                // 标题文字颜色
-                .titleColor(Color.WHITE)
-                // TitleBar背景色
-                .titleBgColor(Color.parseColor("#3F51B5"))
-                // 裁剪大小。needCrop为true的时候配置
-                .cropSize(1, 1, 200, 200)
-                .needCrop(false)
-                // 第一个是否显示相机
-                .needCamera(true)
-                // 最大选择图片数量
-                .maxNum(9)
-                .build();
-
         initView();
         initData();
     }
@@ -136,6 +96,20 @@ public class MyMessageActivity extends AutoLayoutActivity implements EasyPermiss
         try {
             mPushMessages.clear();
             mPushMessages.addAll(mPushDao.queryForAll());
+            Collections.sort(mPushMessages, new Comparator<PushMessage>() {
+                @Override
+                public int compare(PushMessage lhs, PushMessage rhs) {
+                    Date ldate = DateUtils.getDate(lhs.getDate(), "yyyy-MM-dd");
+                    Date rdate = DateUtils.getDate(rhs.getDate(), "yyyy-MM-dd");
+                    if (ldate != null && rdate != null) {
+                        if (ldate.before(rdate))
+                            return 1;
+                        else
+                            return -1;
+                    }
+                    return 0;
+                }
+            });
             mMyAdapter.notifyDataSetChanged();
             if (mPushMessages.size() == 0) {
                 mTvNone.setText("暂无消息");
@@ -220,6 +194,7 @@ public class MyMessageActivity extends AutoLayoutActivity implements EasyPermiss
                             addFriendsClick(split[0], pushMessage, 1);
                         }
                     });
+                    break;
 
                 case "joindeskGameDesk":
                     viewHolder.mBtnReJudge.setText("忽略");
@@ -263,7 +238,12 @@ public class MyMessageActivity extends AutoLayoutActivity implements EasyPermiss
                         @Override
                         public void onClick(View v) {
                             if (NetUtil.is_Network_Available(getApplicationContext())) {
-                                req();
+                                Intent intent = new Intent(MyMessageActivity.this, ApplyJudgeActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("message", pushMessage);
+                                intent.putExtras(bundle);
+                                intent.putExtra("id", split[0]);
+                                startActivity(intent);
                             } else {
                                 mToast.setText("网络不可用，请检查网络连接");
                                 mToast.show();
@@ -308,7 +288,6 @@ public class MyMessageActivity extends AutoLayoutActivity implements EasyPermiss
                     });
                     break;
             }
-
             return convertView;
         }
 
@@ -454,45 +433,9 @@ public class MyMessageActivity extends AutoLayoutActivity implements EasyPermiss
         }
     }
 
-    private void req() {
-        String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS};
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            ImgSelActivity.startActivity(this, mConfig, REQUEST_CODE);
-        } else {
-            EasyPermissions.requestPermissions(this, "需要摄像头权限",
-                    RC_ACCESS_FINE_LOCATION, perms);
-        }
-    }
-
     @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-        if (requestCode == RC_ACCESS_FINE_LOCATION)
-            ImgSelActivity.startActivity(this, mConfig, REQUEST_CODE);
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            List<String> pathList = data.getStringArrayListExtra(ImgSelActivity.INTENT_RESULT);
-            mProgressDialog.show();
-            upLoadingImage(pathList);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    //上传仲裁图片至七牛
-    private void upLoadingImage(List<String> pathList) {
-
+    protected void onRestart() {
+        super.onRestart();
+        initData();
     }
 }

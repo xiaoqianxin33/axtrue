@@ -56,7 +56,7 @@ public class MyReceiver extends AVBroadcastReceiver {
                                 .setWhen(System.currentTimeMillis())//通知时间，系统时间
                                 .setSmallIcon(R.mipmap.icon_512)//标题栏上显示的通知icon
                                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.icon_512))//通知显示的icon
-                                .setDefaults(Notification.DEFAULT_VIBRATE)//DEFAULT_VIBRATE默认震动，DEFAULT_SOUND默认声音,DEFAULT_LIGHTS默认灯光
+                                .setDefaults(Notification.DEFAULT_ALL)//DEFAULT_VIBRATE默认震动，DEFAULT_SOUND默认声音,DEFAULT_LIGHTS默认灯光
                                 .setColor(Color.parseColor("#98903B"))//smallIcon的背景色
                                 .setContentIntent(pendingIntent)
                                 .build();

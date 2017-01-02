@@ -3,12 +3,14 @@ package com.chinalooke.yuwan.bean;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.io.Serializable;
+
 /**
  * 推送消息实体类
  * Created by xiao on 2016/12/22.
  */
 @DatabaseTable
-public class PushMessage {
+public class PushMessage implements Serializable{
 
     public int getId() {
         return id;

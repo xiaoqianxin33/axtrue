@@ -288,6 +288,8 @@
         </activity>
         <activity android:name=".activity.NetbarInfoActivity">
         </activity>
+        <activity android:name=".activity.ApplyJudgeActivity">
+        </activity>
     </application>
 
 </manifest>

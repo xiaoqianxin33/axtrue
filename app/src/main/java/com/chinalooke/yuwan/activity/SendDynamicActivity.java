@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -111,7 +112,7 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
         mTvTitle.setText("发动态");
         mTvSkip.setText("发送");
         mTvSkip.setVisibility(View.VISIBLE);
-        mTvSkip.setTextColor(getResources().getColor(R.color.orange));
+        mTvSkip.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.orange));
         AMapLocation aMapLocation = LocationUtils.getAMapLocation();
         if (aMapLocation != null) {
             String address = aMapLocation.getProvince() + aMapLocation.getCity() + aMapLocation.getStreet();
@@ -145,7 +146,6 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
                 startActivityForResult(BGAPhotoPickerActivity.newIntent(this, takePhotoDir, mPhotosSnpl.getMaxItemCount(), mPhotosSnpl.getData(), true), REQUEST_CODE_CHOOSE_PHOTO);
             } catch (Exception ignored) {
             }
-
         } else {
             EasyPermissions.requestPermissions(this, "图片选择需要以下权限:\n\n1.访问设备上的照片", REQUEST_CODE_PERMISSION_PHOTO_PICKER, perms);
         }
@@ -216,10 +216,12 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
             if (bitmap1 == null) {
                 mToast.setText("当前设置为非wifi下不能上传图片，请连接wifi");
                 mToast.show();
+                mProgressDialog.dismiss();
                 return;
             }
             String fileName = "dynamic" + new Date().getTime();
             paths.add(Constant.QINIU_DOMAIN + "/" + fileName);
+            upCount = 0;
             mUploadManager.put(BitmapUtils.toArray(bitmap1), fileName, token, new UpCompletionHandler() {
                 @Override
                 public void complete(String key, ResponseInfo info, JSONObject response) {
