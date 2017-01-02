@@ -61,7 +61,6 @@ public class ImageDetailFragment extends Fragment {
 
             }
         });
-
         progressBar = (ProgressBar) v.findViewById(R.id.loading);
         return v;
     }
