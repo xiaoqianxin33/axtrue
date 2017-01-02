@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -30,6 +29,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.DynamicDetailActivity;
+import com.chinalooke.yuwan.activity.ImagePagerActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.NetbarADActivity;
@@ -47,6 +47,7 @@ import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.ViewHelper;
+import com.chinalooke.yuwan.view.NoScrollGridView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -432,7 +433,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
         TextView mTvName;
         TextView mTvTime;
         TextView mTvContent;
-        GridView mGridView;
+        NoScrollGridView mGridView;
         TextView mTvAddress;
         TextView mTvPinglun;
         TextView mTvDianzan;
@@ -460,7 +461,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                 dynamicViewHolder.mTvDianzan = (TextView) convertView.findViewById(R.id.tv_dianzan);
                 dynamicViewHolder.mTvName = (TextView) convertView.findViewById(R.id.tv_name);
                 dynamicViewHolder.mTvContent = (TextView) convertView.findViewById(R.id.tv_content);
-                dynamicViewHolder.mGridView = (GridView) convertView.findViewById(R.id.gridView);
+                dynamicViewHolder.mGridView = (NoScrollGridView) convertView.findViewById(R.id.gridView);
                 dynamicViewHolder.mIvDianzan = (ImageView) convertView.findViewById(R.id.iv_dianzan);
                 dynamicViewHolder.mRoundedImageView = (RoundedImageView) convertView.findViewById(R.id.roundedImageView);
                 dynamicViewHolder.mRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.rl_dianzan);
@@ -488,21 +489,32 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                 dynamicViewHolder.mGridView.setVisibility(View.VISIBLE);
                 final String[] split = images.split(",");
                 dynamicViewHolder.mGridView.setAdapter(new GridAdapter(split));
-                dynamicViewHolder.mGridView.setClickable(false);
-                dynamicViewHolder.mGridView.setPressed(false);
-                dynamicViewHolder.mGridView.setEnabled(false);
                 //图片点击事件监听
-//                dynamicViewHolder.mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                        Intent intent = new Intent(mActivity, ImagePagerActivity.class);
-//                        Bundle bundle = new Bundle();
-//                        bundle.putStringArray("url", split);
-//                        intent.putExtras(bundle);
-//                        intent.putExtra("position", position);
-//                        startActivity(intent);
-//                    }
-//                });
+                dynamicViewHolder.mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent = new Intent(mActivity, ImagePagerActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putStringArray("url", split);
+                        intent.putExtras(bundle);
+                        intent.putExtra("position", position);
+                        startActivity(intent);
+                    }
+                });
+
+                dynamicViewHolder.mGridView.setOnTouchInvalidPositionListener(new NoScrollGridView.OnTouchInvalidPositionListener() {
+                    @Override
+                    public boolean onTouchInvalidPosition(int motionEvent) {
+                        Intent intent = new Intent(mActivity, DynamicDetailActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("dynamic", resultBean);
+                        intent.putExtra("dynamic_type", 0);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                        return true;
+                    }
+                });
+
             }
 
             String likes = resultBean.getLikes();
