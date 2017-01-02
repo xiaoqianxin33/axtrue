@@ -52,9 +52,9 @@
         android:textSize="18px"/>
 
     <ImageView
-        android:layout_width="18px"
-        android:layout_height="18px"
-        android:layout_marginBottom="30px"
+        android:layout_width="36px"
+        android:layout_height="36px"
+        android:scaleType="centerCrop"
         android:layout_marginRight="8px"
         android:layout_marginTop="255px"
         android:layout_toLeftOf="@id/tv_time"

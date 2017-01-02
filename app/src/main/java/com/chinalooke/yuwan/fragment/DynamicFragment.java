@@ -30,7 +30,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.DynamicDetailActivity;
-import com.chinalooke.yuwan.activity.ImagePagerActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.NetbarADActivity;
@@ -69,7 +68,6 @@ import butterknife.OnClick;
 import cn.bingoogolapple.bgabanner.BGABanner;
 
 public class DynamicFragment extends Fragment implements AMapLocationListener {
-
 
     @Bind(R.id.lv_dynamic)
     ListView mLvDynamic;
@@ -490,18 +488,21 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                 dynamicViewHolder.mGridView.setVisibility(View.VISIBLE);
                 final String[] split = images.split(",");
                 dynamicViewHolder.mGridView.setAdapter(new GridAdapter(split));
+                dynamicViewHolder.mGridView.setClickable(false);
+                dynamicViewHolder.mGridView.setPressed(false);
+                dynamicViewHolder.mGridView.setEnabled(false);
                 //图片点击事件监听
-                dynamicViewHolder.mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent intent = new Intent(mActivity, ImagePagerActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putStringArray("url", split);
-                        intent.putExtras(bundle);
-                        intent.putExtra("position", position);
-                        startActivity(intent);
-                    }
-                });
+//                dynamicViewHolder.mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                        Intent intent = new Intent(mActivity, ImagePagerActivity.class);
+//                        Bundle bundle = new Bundle();
+//                        bundle.putStringArray("url", split);
+//                        intent.putExtras(bundle);
+//                        intent.putExtra("position", position);
+//                        startActivity(intent);
+//                    }
+//                });
             }
 
             String likes = resultBean.getLikes();

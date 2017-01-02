@@ -267,20 +267,13 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
                         JSONObject jsonObject = new JSONObject(response);
                         boolean success = jsonObject.getBoolean("Success");
                         if (success) {
-                            boolean result = jsonObject.getBoolean("Result");
-                            if (result) {
-                                MyUtils.showDialog(SendDynamicActivity.this, "提示", "动态发布成功！", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        finish();
-                                    }
-                                });
-                            } else {
-                                String msg = jsonObject.getString("Msg");
-                                mToast.setText(msg);
-                                mToast.show();
-                            }
+                            MyUtils.showDialog(SendDynamicActivity.this, "提示", "动态发布成功！", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            });
                         } else {
                             String msg = jsonObject.getString("Msg");
                             mToast.setText(msg);
