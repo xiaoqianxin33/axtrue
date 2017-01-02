@@ -34,7 +34,7 @@ public class MessageRemindSettingActivity extends AutoLayoutActivity {
 
     private void initView() {
         mTvTitle.setText("消息提醒设置");
-        boolean message_remind = PreferenceUtils.getPrefBoolean(getApplicationContext(), "hxMessage", true);
+        boolean message_remind = PreferenceUtils.getPrefBoolean(getApplicationContext(), "hxMessage", false);
         if (message_remind) {
             mSwitchButtonMessage.openSwitch();
         } else {

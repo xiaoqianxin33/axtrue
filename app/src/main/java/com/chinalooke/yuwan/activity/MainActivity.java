@@ -272,7 +272,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
 
     @Override
     public void onMessageReceived(List<EMMessage> list) {
-        boolean hxMessage = PreferenceUtils.getPrefBoolean(getApplicationContext(), "hxMessage", true);
+        boolean hxMessage = PreferenceUtils.getPrefBoolean(getApplicationContext(), "hxMessage", false);
         if (hxMessage) {
             if (list != null && list.size() != 0) {
                 EMMessage emMessage = list.get(0);

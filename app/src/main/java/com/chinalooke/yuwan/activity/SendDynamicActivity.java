@@ -10,7 +10,6 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -262,7 +261,6 @@ public class SendDynamicActivity extends AutoLayoutActivity implements BGASortab
                 @Override
                 public void onResponse(String response) {
                     mProgressDialog.dismiss();
-                    Log.e("RESPONSE", response);
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         boolean success = jsonObject.getBoolean("Success");

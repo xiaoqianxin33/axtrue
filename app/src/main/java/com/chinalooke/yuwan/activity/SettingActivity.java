@@ -40,13 +40,11 @@ public class SettingActivity extends AutoLayoutActivity {
         }
     }
 
-    @OnClick({R.id.iv_back, R.id.rl_head, R.id.rl_remind, R.id.rl_image, R.id.rl_app, R.id.rl_help, R.id.rl_clear_cache})
+    @OnClick({R.id.iv_back, R.id.rl_remind, R.id.rl_image, R.id.rl_app, R.id.rl_help, R.id.rl_clear_cache})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
                 finish();
-                break;
-            case R.id.rl_head:
                 break;
             case R.id.rl_remind:
                 startActivity(new Intent(this, MessageRemindSettingActivity.class));

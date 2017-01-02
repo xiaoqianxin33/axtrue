@@ -479,6 +479,10 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 finish();
                 break;
             case R.id.iv_camera:
+                if (mUserInfo != null)
+                    startActivity(new Intent(this, SendDynamicActivity.class));
+                else
+                    startActivity(new Intent(this, LoginActivity.class));
                 break;
         }
     }
