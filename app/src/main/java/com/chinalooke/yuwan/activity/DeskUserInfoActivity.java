@@ -1,7 +1,10 @@
 package com.chinalooke.yuwan.activity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -13,11 +16,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.bean.DeskUserInfo;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.bean.DeskUserInfo;
 import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
+import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
+import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.view.PieChartView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -60,9 +66,16 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
     TextView mTvPhone;
     @Bind(R.id.tv_location)
     TextView mTvLocation;
+    @Bind(R.id.add_friends)
+    TextView mAddFriends;
     private RequestQueue mQueue;
     private Toast mToast;
     private DeskUserInfo mDeskUserInfo;
+    private int mType;
+    private LoginUser.ResultBean mUser;
+    private String mUserId;
+    private String mNickName;
+    private String mPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,12 +86,19 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
         ButterKnife.bind(this);
         mQueue = YuwanApplication.getQueue();
         mToast = YuwanApplication.getToast();
+        mUser = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         initData();
     }
 
     private void initData() {
-        String userId = getIntent().getStringExtra("userId");
-        String uri = Constant.HOST + "getUserInfoWithId&userId=" + userId;
+        mUserId = getIntent().getStringExtra("userId");
+        mType = getIntent().getIntExtra("type", 0);
+        if (mType == 0) {
+            mAddFriends.setText("添加好友");
+        } else if (mType == 1) {
+            mAddFriends.setText("聊天");
+        }
+        String uri = Constant.HOST + "getUserInfoWithId&userId=" + mUserId;
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -124,11 +144,13 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
                     break;
             }
         }
-        String nickName = result.getNickName();
-        easySet(nickName, mTvName);
+        mNickName = result.getNickName();
+        easySet(mNickName, mTvName);
         String age = result.getAge();
         if (!TextUtils.isEmpty(age))
-            mTvAge.setText(age + "岁");
+            mTvAge.setText(getString(R.string.age, age));
+
+        mPhone = result.getPhone();
 
         String address = result.getAddress();
         if (!TextUtils.isEmpty(address)) {
@@ -164,14 +186,47 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
         }
     }
 
-
     private void easySet(String string, TextView textView) {
         if (!TextUtils.isEmpty(string))
             textView.setText(string);
     }
 
-    @OnClick(R.id.iv_back)
-    public void onClick() {
-        finish();
+    @OnClick({R.id.iv_back, R.id.add_friends})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_back:
+                finish();
+                break;
+            case R.id.add_friends:
+                if (mUser != null) {
+                    if (mType == 0) {
+                        Intent intent = new Intent(this, SendUpAddFriendActivity.class);
+                        intent.putExtra("peopleId", mUserId);
+                        startActivity(intent);
+                    } else if (mType == 1) {
+                        if (!TextUtils.isEmpty(mPhone)) {
+                            Intent intent = new Intent(this, EaseChatActivity.class);
+                            intent.putExtra("userId", mPhone);
+                            intent.putExtra("nickName", mNickName);
+                            startActivity(intent);
+                        }
+                    }
+                } else {
+                    MyUtils.showCustomDialog(DeskUserInfoActivity.this, "登录提示", "该功能需要登录，现在去登录吗？", "不了", "去登录", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            startActivity(new Intent(DeskUserInfoActivity.this, LoginActivity.class));
+                        }
+                    });
+                }
+                break;
+
+        }
     }
 }

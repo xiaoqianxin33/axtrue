@@ -76,10 +76,9 @@ public class FriendsActivity extends AutoLayoutActivity {
                 SortModel sortModel = mSortModels.get(position);
                 FriendsList.ResultBean friends = sortModel.getFriends();
                 String userId = friends.getId();
-                String nickName = friends.getNickName();
-                Intent intent = new Intent(FriendsActivity.this, EaseChatActivity.class);
+                Intent intent = new Intent(FriendsActivity.this, DeskUserInfoActivity.class);
+                intent.putExtra("type", 1);
                 intent.putExtra("userId", userId);
-                intent.putExtra("nickName", nickName);
                 startActivity(intent);
             }
         });
@@ -143,7 +142,6 @@ public class FriendsActivity extends AutoLayoutActivity {
         mSortAdapter = new SortAdapter(this, mSortModels, 1);
         mListView.setAdapter(mSortAdapter);
     }
-
 
     @OnClick({R.id.iv_back, R.id.iv_add})
     public void onClick(View view) {

@@ -2,6 +2,7 @@ package com.chinalooke.yuwan.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -114,7 +115,7 @@ public class AddFriendActivity extends AutoLayoutActivity {
 
     private void initView() {
         mTvTitle.setText("添加战友");
-        mTvSkip.setTextColor(getResources().getColor(R.color.white));
+        mTvSkip.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.white));
         mTvSkip.setText("已选");
         mSortAdapter = new SortAdapter(getApplicationContext(), mSortModels, 0);
         mListView.setAdapter(mSortAdapter);

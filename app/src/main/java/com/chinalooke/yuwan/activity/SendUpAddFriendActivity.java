@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -110,6 +111,7 @@ public class SendUpAddFriendActivity extends AutoLayoutActivity {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
+                Log.e("TAG", uri);
                 StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -119,19 +121,13 @@ public class SendUpAddFriendActivity extends AutoLayoutActivity {
                                 JSONObject jsonObject = new JSONObject(response);
                                 boolean success = jsonObject.getBoolean("Success");
                                 if (success) {
-                                    boolean result = jsonObject.getBoolean("Result");
-                                    if (result) {
-                                        MyUtils.showDialog(SendUpAddFriendActivity.this, "提示", "验证发送成功，请等待对方确认", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                                finish();
-                                            }
-                                        });
-                                    } else {
-                                        mToast.setText("发送失败，请稍后重试");
-                                        mToast.show();
-                                    }
+                                    MyUtils.showDialog(SendUpAddFriendActivity.this, "提示", "验证发送成功，请等待对方确认", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            finish();
+                                        }
+                                    });
                                 } else {
                                     String msg = jsonObject.getString("Msg");
                                     mToast.setText(msg);
