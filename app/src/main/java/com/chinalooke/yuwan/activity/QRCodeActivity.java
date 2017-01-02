@@ -24,6 +24,7 @@ public class QRCodeActivity extends AppCompatActivity implements QRCodeView.Dele
         setContentView(R.layout.activity_qrcode);
         ButterKnife.bind(this);
         mQRCodeView = (ZXingView) findViewById(R.id.zxingview);
+        assert mQRCodeView != null;
         mQRCodeView.setDelegate(this);
         mQRCodeView.startCamera(Camera.CameraInfo.CAMERA_FACING_BACK);
         mQRCodeView.startSpot();

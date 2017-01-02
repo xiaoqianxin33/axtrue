@@ -126,7 +126,6 @@ public class CircleWodeCFragment extends Fragment {
         });
     }
 
-
     //增加圈子点击量
     private void addHits(Circle.ResultBean resultBean) {
         String url = Constant.HOST + "addHits&groupId=" + resultBean.getGroupId();
@@ -181,7 +180,6 @@ public class CircleWodeCFragment extends Fragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
-
 
     class MyAdapter extends MyBaseAdapter {
 

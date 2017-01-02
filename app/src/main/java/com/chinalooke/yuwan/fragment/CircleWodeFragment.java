@@ -46,7 +46,6 @@ public class CircleWodeFragment extends Fragment {
         return view;
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -79,7 +78,6 @@ public class CircleWodeFragment extends Fragment {
             }
         });
     }
-
 
     @Override
     public void onDestroyView() {

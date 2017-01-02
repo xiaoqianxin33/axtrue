@@ -2,6 +2,7 @@ package com.chinalooke.yuwan.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,7 +59,7 @@ public class MyBalanceActivity extends AutoLayoutActivity {
     private void initView() {
         mTvTitle.setText("余额");
         mTvSkip.setText("明细");
-        mTvSkip.setTextColor(getResources().getColor(R.color.white));
+        mTvSkip.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.white));
     }
 
     private void initData() {

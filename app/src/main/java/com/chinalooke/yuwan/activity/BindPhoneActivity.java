@@ -244,7 +244,7 @@ public class BindPhoneActivity extends AutoLayoutActivity {
 
         @Override
         public void onTick(long millisUntilFinished) {
-            mBtnGetCode.setText(millisUntilFinished / 1000 + "后重新发送");
+            mBtnGetCode.setText(getString(R.string.message_timer, millisUntilFinished / 1000));
             mBtnGetCode.setBackgroundResource(R.drawable.btn_wait_verification_corners_bg);
             mBtnGetCode.setClickable(false);
         }

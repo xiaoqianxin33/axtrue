@@ -178,7 +178,6 @@ public class CircleWodeWFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
-
     class MyAdapter extends MyBaseAdapter {
 
         MyAdapter(List dataSource) {

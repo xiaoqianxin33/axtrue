@@ -1,22 +1,19 @@
 package com.chinalooke.yuwan.activity;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.Circle;
 import com.chinalooke.yuwan.bean.CircleDetail;
 import com.chinalooke.yuwan.bean.LoginUser;
-import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -32,47 +29,24 @@ import butterknife.OnClick;
 
 public class CircleInfoActivity extends AutoLayoutActivity {
 
-    @Bind(R.id.iv_back)
-    FrameLayout mIvBack;
     @Bind(R.id.tv_title)
     TextView mTvTitle;
     @Bind(R.id.tv_skip)
     TextView mTvSkip;
-    @Bind(R.id.iv1)
-    ImageView mIv1;
     @Bind(R.id.tv_circle_name)
     TextView mTvCircleName;
-    @Bind(R.id.rl_game_name)
-    RelativeLayout mRlGameName;
-    @Bind(R.id.iv2)
-    ImageView mIv2;
     @Bind(R.id.ll_game)
     LinearLayout mLlGame;
-    @Bind(R.id.rl_game)
-    RelativeLayout mRlGame;
-    @Bind(R.id.iv3)
-    ImageView mIv3;
     @Bind(R.id.tv_circle_address)
     TextView mTvCircleAddress;
-    @Bind(R.id.rl_address)
-    RelativeLayout mRlAddress;
     @Bind(R.id.tv_time)
     TextView mTvTime;
-    @Bind(R.id.rl_time)
-    RelativeLayout mRlTime;
-    @Bind(R.id.iv4)
-    ImageView mIv4;
     @Bind(R.id.tv_circle_expalin)
     TextView mTvCircleExpalin;
-    @Bind(R.id.rl_explain)
-    RelativeLayout mRlExplain;
-    @Bind(R.id.activity_circle_info)
-    LinearLayout mActivityCircleInfo;
     @Bind(R.id.roundedImageView)
     RoundedImageView mRoundedImageView;
     private LoginUser.ResultBean mUserInfo;
     private Circle.ResultBean mCircle;
-    private RequestQueue mQueue;
     private CircleDetail mCircleDetail;
 
     @Override
@@ -80,7 +54,6 @@ public class CircleInfoActivity extends AutoLayoutActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_info);
         ButterKnife.bind(this);
-        mQueue = YuwanApplication.getQueue();
         initData();
         initView();
     }
@@ -91,7 +64,6 @@ public class CircleInfoActivity extends AutoLayoutActivity {
         mCircleDetail = (CircleDetail) getIntent().getSerializableExtra("circleDetail");
         setGame();
     }
-
 
     private void initView() {
         mTvSkip.setText("编辑");
@@ -126,6 +98,7 @@ public class CircleInfoActivity extends AutoLayoutActivity {
     }
 
     //设置游戏
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void setGame() {
         List<CircleDetail.ResultBean.GamesBean> games = mCircleDetail.getResult().getGames();
         if (games != null && games.size() != 0) {

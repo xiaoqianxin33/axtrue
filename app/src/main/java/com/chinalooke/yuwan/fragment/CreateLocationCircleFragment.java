@@ -60,6 +60,7 @@ import com.zhy.autolayout.utils.AutoUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
@@ -242,10 +243,9 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
         return true;
     }
 
-
     private void showRuleDialog() {
         final Dialog dialog = new Dialog(mActivity, R.style.Dialog);
-        View inflate = LayoutInflater.from(mActivity).inflate(R.layout.dialog_add_game_rule, null);
+        View inflate = View.inflate(mActivity, R.layout.dialog_add_game_rule, null);
         TextView tvOk = (TextView) inflate.findViewById(R.id.tv_ok);
         TextView tvCancel = (TextView) inflate.findViewById(R.id.tv_cancel);
         TextView tvTitle = (TextView) inflate.findViewById(R.id.tv_title);
@@ -280,11 +280,10 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
         dialog.getWindow().setAttributes(lp);
     }
 
-
     //编辑圈子昵称dialog
     private void showEditDialog() {
         final Dialog dialog = new Dialog(mActivity, R.style.Dialog);
-        View inflate = LayoutInflater.from(mActivity).inflate(R.layout.dialog_edit_name, null);
+        View inflate = View.inflate(mActivity, R.layout.dialog_edit_name, null);
         TextView viewById = (TextView) inflate.findViewById(R.id.tv_title);
         final EditText etInput = (EditText) inflate.findViewById(R.id.et_input);
         Button btnCancel = (Button) inflate.findViewById(R.id.btn_cancel);
@@ -341,7 +340,6 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
         }
     }
 
-
     //上传创建圈子
     private void createCircle() {
         Auth auth = Auth.create(Constant.QINIU_ACCESSKEY, Constant.QINIU_SECRETKEY);
@@ -362,9 +360,14 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
                         mRule = "";
                     String longitude = PreferenceUtils.getPrefString(mActivity, "longitude", "");
                     String latitude = PreferenceUtils.getPrefString(mActivity, "latitude", "");
-                    String uri = Constant.HOST + "addGroup&userId=" + mUser.getUserId() + "&lng=" + longitude + "&lat="
-                            + latitude + "&address=" + URLEncoder.encode(mCircleAddress) + "&groupName=" + URLEncoder.encode(mCircleName)
-                            + "&slogan=" + URLEncoder.encode(mRule) + "&head=" + Constant.QINIU_DOMAIN + "/" + fileName;
+                    String uri = null;
+                    try {
+                        uri = Constant.HOST + "addGroup&userId=" + mUser.getUserId() + "&lng=" + longitude + "&lat="
+                                + latitude + "&address=" + URLEncoder.encode(mCircleAddress,"utf8") + "&groupName=" + URLEncoder.encode(mCircleName,"utf8")
+                                + "&slogan=" + URLEncoder.encode(mRule,"utf8") + "&head=" + Constant.QINIU_DOMAIN + "/" + fileName;
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                     StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {

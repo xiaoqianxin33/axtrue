@@ -50,7 +50,6 @@ public class ResetPasswordActivity extends AutoLayoutActivity {
     private ProgressDialog mProgressDialog;
     private RequestQueue mQueue;
 
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activit_reset_password);

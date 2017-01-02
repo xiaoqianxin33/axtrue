@@ -17,11 +17,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.ExchangeLevels;
-import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.utils.DateUtils;
-import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.pingplusplus.android.Pingpp;
 import com.zhy.autolayout.AutoLayoutActivity;
 
@@ -46,7 +43,6 @@ public class ChosePayActivity extends AutoLayoutActivity {
     private ExchangeLevels.ResultBean mResultBean;
     private RequestQueue mQueue;
     private Toast mToast;
-    private LoginUser.ResultBean mUser;
     private String mUserId;
     private int mPayMoney;
 
@@ -58,7 +54,6 @@ public class ChosePayActivity extends AutoLayoutActivity {
         ButterKnife.bind(this);
         mQueue = YuwanApplication.getQueue();
         mToast = YuwanApplication.getToast();
-        mUser = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         initData();
     }
 
@@ -69,7 +64,7 @@ public class ChosePayActivity extends AutoLayoutActivity {
         mUserId = getIntent().getStringExtra("userId");
         String money = mResultBean.getMoney();
         if (!TextUtils.isEmpty(money)) {
-            mTvPrice.setText(money + "元");
+            mTvPrice.setText(getString(R.string.yuan, money));
             float parseFloat = Float.parseFloat(money) * 100;
             mPayMoney = (int) parseFloat;
         }
@@ -156,11 +151,11 @@ public class ChosePayActivity extends AutoLayoutActivity {
              */
                 String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
                 String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
+                assert result != null;
                 switch (result) {
                     case "success":
                         mToast.setText("支付成功");
                         mToast.show();
-//                        savePayInfo();
                         finish();
                         break;
                     case "fail":
@@ -185,12 +180,12 @@ public class ChosePayActivity extends AutoLayoutActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    //保存账单
-    private void savePayInfo() {
-        String url = Constant.HOST + "savePayInfo&payTime=" + DateUtils.getCurrentDateTime() + "&payMoney="
-                + mResultBean.getMoney() + "&userId" + mUserId;
-        StringRequest request = new StringRequest(url, null, null);
-        mQueue.add(request);
-    }
+//    //保存账单
+//    private void savePayInfo() {
+//        String url = Constant.HOST + "savePayInfo&payTime=" + DateUtils.getCurrentDateTime() + "&payMoney="
+//                + mResultBean.getMoney() + "&userId" + mUserId;
+//        StringRequest request = new StringRequest(url, null, null);
+//        mQueue.add(request);
+//    }
 
 }

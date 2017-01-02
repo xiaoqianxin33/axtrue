@@ -278,7 +278,7 @@ public class MoreCircleActivity extends AutoLayoutActivity {
             }
             viewHolder.mTvCircleName.setText(resultBean.getGroupName());
             viewHolder.mTvCircleDetails.setText(resultBean.getDetails());
-            viewHolder.mTvDiscountCircle.setText(resultBean.getDistance() + "m");
+            viewHolder.mTvDiscountCircle.setText(getString(R.string.distance, resultBean.getDistance()));
             return convertView;
         }
     }

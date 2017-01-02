@@ -220,7 +220,7 @@ public class GameAdFragment extends Fragment {
 
     private void showEditDialog() {
         final Dialog dialog = new Dialog(mActivity, R.style.Dialog);
-        View inflate = LayoutInflater.from(mActivity).inflate(R.layout.dialog_edit_cup, null);
+        View inflate = View.inflate(mActivity, R.layout.dialog_edit_cup, null);
         final EditText editText = (EditText) inflate.findViewById(R.id.et_input);
         Button noButton = (Button) inflate.findViewById(R.id.btn_cancel);
         Button yesButton = (Button) inflate.findViewById(R.id.btn_ok);
@@ -297,7 +297,6 @@ public class GameAdFragment extends Fragment {
         }
     }
 
-
     //设置参与游戏币范围
     private void setMoneyCount() {
         String wagerMin = mChoseGame.getWagerMin();
@@ -313,7 +312,6 @@ public class GameAdFragment extends Fragment {
             mMoneyList.add(max + "");
         }
     }
-
 
     //设置游戏人数范围
     private void setPeopleCount(GameMessage.ResultBean choseGame) {

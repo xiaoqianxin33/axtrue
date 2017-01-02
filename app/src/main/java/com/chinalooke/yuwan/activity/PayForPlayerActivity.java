@@ -5,12 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,22 +30,12 @@ import butterknife.OnClick;
 
 public class PayForPlayerActivity extends AutoLayoutActivity {
 
-    @Bind(R.id.iv_back)
-    FrameLayout mIvBack;
-    @Bind(R.id.iv_arrow_head)
-    ImageView mIvArrowHead;
     @Bind(R.id.tv_title)
     TextView mTvTitle;
     @Bind(R.id.tv_skip)
     TextView mTvSkip;
-    @Bind(R.id.rl_head)
-    RelativeLayout mRlHead;
     @Bind(R.id.et_phone)
     EditText mEtPhone;
-    @Bind(R.id.btn_next)
-    Button mBtnNext;
-    @Bind(R.id.activity_pay_for_player)
-    LinearLayout mActivityPayForPlayer;
     private String mPhone;
     private ProgressDialog mProgressDialog;
     private RequestQueue mQueue;

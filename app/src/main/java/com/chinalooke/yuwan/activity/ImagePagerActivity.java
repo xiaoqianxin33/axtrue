@@ -22,8 +22,6 @@ import butterknife.ButterKnife;
 public class ImagePagerActivity extends AutoLayoutActivity {
 
     private static final String STATE_POSITION = "STATE_POSITION";
-    public static final String EXTRA_IMAGE_INDEX = "image_index";
-    public static final String EXTRA_IMAGE_URLS = "image_urls";
     @Bind(R.id.viewPage)
     HackyViewPager mPager;
     @Bind(R.id.indicator)
@@ -53,7 +51,7 @@ public class ImagePagerActivity extends AutoLayoutActivity {
         mIndicator.setText(text);
 
         // 更新下标
-        mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
             public void onPageScrollStateChanged(int arg0) {

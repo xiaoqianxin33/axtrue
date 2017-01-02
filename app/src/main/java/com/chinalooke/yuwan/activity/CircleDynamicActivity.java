@@ -1,10 +1,12 @@
 package com.chinalooke.yuwan.activity;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
@@ -87,7 +89,6 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
     private Circle.ResultBean mCircle;
     private RequestQueue mQueue;
     private DisplayMetrics mDisplayMetrics;
-    private int mCircle_type;
     private int PAGE_NO;
     private LoginUser.ResultBean mUserInfo;
     private List<Dynamic.ResultBean.ListBean> mDynamics = new ArrayList<>();
@@ -183,10 +184,11 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         //设置顶部背景图片
         String bgImage = mCircle.getBgImage();
         ImageRequest request = new ImageRequest(bgImage, new Response.Listener<Bitmap>() {
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onResponse(Bitmap response) {
                 if (response != null)
-                    mRlTop.setBackground(new BitmapDrawable(response));
+                    mRlTop.setBackground(new BitmapDrawable(getResources(), response));
             }
         }, mDisplayMetrics.widthPixels, 400, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, new Response.ErrorListener() {
             @Override
@@ -223,7 +225,6 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
 
     private void initData() {
         mCircle = (Circle.ResultBean) getIntent().getSerializableExtra("circle");
-        mCircle_type = getIntent().getIntExtra("circle_type", 0);
         getGroupWIthId();
     }
 
@@ -363,9 +364,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                 skipToInfo();
                 break;
             case R.id.tv_join:
-                if (mUserJoin) {
-
-                } else {
+                if (!mUserJoin) {
                     if (mUserInfo != null) {
                         joinCircle();
                     } else {

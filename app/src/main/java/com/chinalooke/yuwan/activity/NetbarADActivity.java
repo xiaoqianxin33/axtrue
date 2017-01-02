@@ -140,7 +140,6 @@ public class NetbarADActivity extends AutoLayoutActivity implements AMapLocation
         }
     }
 
-
     //获取广告数据
     private void getADList(AMapLocation aMapLocation) {
         String city = aMapLocation.getCity();

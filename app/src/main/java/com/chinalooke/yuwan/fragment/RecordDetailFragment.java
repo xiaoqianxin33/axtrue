@@ -200,6 +200,7 @@ public class RecordDetailFragment extends Fragment {
                 String rstartTime = rhs.getStartTime();
                 Date ldate = DateUtils.getDate(lstartTime, "yyyy-MM-dd HH:mm:ss");
                 Date rdate = DateUtils.getDate(rstartTime, "yyyy-MM-dd HH:mm:ss");
+                assert ldate != null;
                 if (ldate.before(rdate))
                     return 1;
                 else

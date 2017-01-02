@@ -176,5 +176,4 @@ public class AddAddressBookFriendActivity extends AutoLayoutActivity {
         finish();
     }
 
-
 }

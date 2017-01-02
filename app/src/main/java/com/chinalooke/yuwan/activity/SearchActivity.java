@@ -1,6 +1,7 @@
 package com.chinalooke.yuwan.activity;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -75,7 +76,7 @@ public class SearchActivity extends AutoLayoutActivity {
         ButterKnife.bind(this);
         mQueue = YuwanApplication.getQueue();
         mToast = YuwanApplication.getToast();
-        mFoot = getLayoutInflater().inflate(R.layout.foot, null, false);
+        mFoot = View.inflate(this, R.layout.foot, null);
         initView();
         initEvent();
     }
@@ -83,7 +84,7 @@ public class SearchActivity extends AutoLayoutActivity {
     private void initView() {
         mRlYz.setSelected(true);
         MyLinearLayoutManager myLinearLayoutManager = new MyLinearLayoutManager(this, LinearLayoutManager.VERTICAL, true);
-        RecycleViewDivider recycleViewDivider = new RecycleViewDivider(this, LinearLayoutManager.HORIZONTAL, 1, getResources().getColor(R.color.line_color));
+        RecycleViewDivider recycleViewDivider = new RecycleViewDivider(this, LinearLayoutManager.HORIZONTAL, 1, ContextCompat.getColor(getApplicationContext(),R.color.line_color));
         mAdapter = new QuickAdapter(R.layout.item_zc_listview, mDeskList);
         myLinearLayoutManager.setReverseLayout(false);
         myLinearLayoutManager.setAutoMeasureEnabled(true);
@@ -213,7 +214,6 @@ public class SearchActivity extends AutoLayoutActivity {
 
         }
     }
-
 
     @OnClick({R.id.tv_cancel, R.id.rl_yz, R.id.rl_jx, R.id.rl_js})
     public void onClick(View view) {

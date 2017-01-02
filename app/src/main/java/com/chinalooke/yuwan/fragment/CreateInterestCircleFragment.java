@@ -63,6 +63,7 @@ import com.zhy.autolayout.utils.AutoUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -227,7 +228,6 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
         mQueue.add(request);
     }
 
-
     //上传创建圈子
     private void createCircle() {
         Auth auth = Auth.create(Constant.QINIU_ACCESSKEY, Constant.QINIU_SECRETKEY);
@@ -248,9 +248,14 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
                         mRule = "";
                     String longitude = PreferenceUtils.getPrefString(mActivity, "longitude", "");
                     String latitude = PreferenceUtils.getPrefString(mActivity, "latitude", "");
-                    String uri = Constant.HOST + "addGroup&userId=" + mUser.getUserId() + "&lng=" + longitude + "&lat="
-                            + latitude + "&gameIds=" + mStrings + "&groupName=" + URLEncoder.encode(mCircleName)
-                            + "&slogan=" + mRule + "&head=" + Constant.QINIU_DOMAIN + "/" + fileName;
+                    String uri = null;
+                    try {
+                        uri = Constant.HOST + "addGroup&userId=" + mUser.getUserId() + "&lng=" + longitude + "&lat="
+                                + latitude + "&gameIds=" + mStrings + "&groupName=" + URLEncoder.encode(mCircleName, "utf8")
+                                + "&slogan=" + mRule + "&head=" + Constant.QINIU_DOMAIN + "/" + fileName;
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                     StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -326,7 +331,6 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
         return true;
     }
 
-
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         if (requestCode == RC_ACCESS_FINE_LOCATION)
@@ -357,7 +361,7 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
 
     private void showRuleDialog() {
         final Dialog dialog = new Dialog(mActivity, R.style.Dialog);
-        View inflate = LayoutInflater.from(mActivity).inflate(R.layout.dialog_add_game_rule, null);
+        View inflate = View.inflate(mActivity, R.layout.dialog_add_game_rule, null);
         TextView tvOk = (TextView) inflate.findViewById(R.id.tv_ok);
         TextView tvCancel = (TextView) inflate.findViewById(R.id.tv_cancel);
         TextView tvTitle = (TextView) inflate.findViewById(R.id.tv_title);
@@ -394,7 +398,7 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
     //编辑圈子昵称dialog
     private void showEditDialog() {
         final Dialog dialog = new Dialog(mActivity, R.style.Dialog);
-        View inflate = LayoutInflater.from(mActivity).inflate(R.layout.dialog_edit_name, null);
+        View inflate = View.inflate(mActivity, R.layout.dialog_edit_name, null);
         TextView viewById = (TextView) inflate.findViewById(R.id.tv_title);
         final EditText etInput = (EditText) inflate.findViewById(R.id.et_input);
         Button btnCancel = (Button) inflate.findViewById(R.id.btn_cancel);
@@ -423,22 +427,22 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
         etInput.requestFocus();
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CHOSE_GAME) {
             mChose = (List<GameMessage.ResultBean>) data.getSerializableExtra("list");
-            if (mChose != null && mChose.size() != 0)
+            if (mChose != null && mChose.size() != 0) {
                 mLlGame.removeAllViews();
-            for (GameMessage.ResultBean resultBean : mChose) {
-                String thumb = resultBean.getThumb();
-                RoundedImageView imageView = new RoundedImageView(mActivity);
-                imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(70, 70));
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, thumb, 70, 70);
-                Picasso.with(mActivity).load(loadImageUrl).into(imageView);
-                imageView.setOval(true);
-                mLlGame.addView(imageView);
+                for (GameMessage.ResultBean resultBean : mChose) {
+                    String thumb = resultBean.getThumb();
+                    RoundedImageView imageView = new RoundedImageView(mActivity);
+                    imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(70, 70));
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, thumb, 70, 70);
+                    Picasso.with(mActivity).load(loadImageUrl).into(imageView);
+                    imageView.setOval(true);
+                    mLlGame.addView(imageView);
+                }
             }
             StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < mChose.size(); i++) {

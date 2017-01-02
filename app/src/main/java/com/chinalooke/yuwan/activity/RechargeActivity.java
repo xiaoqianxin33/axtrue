@@ -176,8 +176,8 @@ public class RechargeActivity extends AutoLayoutActivity {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             ExchangeLevels.ResultBean resultBean = mList.get(position);
-            viewHolder.mTvPay.setText(resultBean.getMoney() + "元");
-            viewHolder.mTvSale.setText(resultBean.getExchange() + "鱼丸");
+            viewHolder.mTvPay.setText(getString(R.string.yuan, resultBean.getMoney()));
+            viewHolder.mTvSale.setText(getString(R.string.leixiong_coin, resultBean.getExchange()));
             return convertView;
         }
     }

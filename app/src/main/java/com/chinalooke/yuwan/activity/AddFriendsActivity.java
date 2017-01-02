@@ -48,7 +48,7 @@ public class AddFriendsActivity extends AutoLayoutActivity implements EasyPermis
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         String line1Number = tm.getLine1Number();
         if (!TextUtils.isEmpty(line1Number))
-            mTvPhone.setText("我的手机号： " + line1Number.substring(3));
+            mTvPhone.setText(getString(R.string.my_phone, line1Number.substring(3)));
     }
 
 

@@ -184,7 +184,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
     private void setBanner(NetbarAdvertisement netbarAdvertisement) {
         mAdList.clear();
         List<NetbarAdvertisement.ResultBean> result = netbarAdvertisement.getResult();
-        if (result == null & result.size() == 0)
+        if (result == null || result.size() == 0)
             return;
         for (NetbarAdvertisement.ResultBean resultBean : result) {
             List<String> adImg = resultBean.getADImg();

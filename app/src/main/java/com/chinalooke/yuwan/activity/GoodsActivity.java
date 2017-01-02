@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -65,8 +64,6 @@ public class GoodsActivity extends AutoLayoutActivity {
     TextView mTvSales;
     @Bind(R.id.tv_description)
     TextView mTvDescription;
-    @Bind(R.id.tv_ok)
-    TextView mTvOk;
     private Toast mToast;
     private RequestQueue mQueue;
     private String mGoodsId;
@@ -155,16 +152,16 @@ public class GoodsActivity extends AutoLayoutActivity {
                 mTvDescription.setText(details);
             mPaymoney = mGoods.getPaymoney();
             if (!TextUtils.isEmpty(mPaymoney))
-                mTvExchange.setText("¥" + mPaymoney);
+                mTvExchange.setText(getString(R.string.renmingbi, mPaymoney));
 
             String price = mGoods.getPrice();
             if (!TextUtils.isEmpty(price)) {
-                mTvPrice.setText("原价：" + price);
+                mTvPrice.setText(getString(R.string.yuanjia, price));
                 mTvPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             }
             String sales = mGoods.getSales();
             if (!TextUtils.isEmpty(sales))
-                mTvSales.setText("已兑换：" + sales);
+                mTvSales.setText(getString(R.string.yiduihuan, sales));
         }
     }
 
@@ -276,7 +273,7 @@ public class GoodsActivity extends AutoLayoutActivity {
 
     private void showSucceedDialog(final String code) {
         final Dialog dialog = new Dialog(this, R.style.Dialog);
-        View inflate = LayoutInflater.from(this).inflate(R.layout.dialog_exchange_succeed, null);
+        View inflate = View.inflate(this, R.layout.dialog_exchange_succeed, null);
         TextView tvCode = (TextView) inflate.findViewById(R.id.tv_code);
         tvCode.setText(code);
         TextView tvCopy = (TextView) inflate.findViewById(R.id.tv_copy);

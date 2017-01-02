@@ -170,10 +170,10 @@ public class ShopActivity extends AutoLayoutActivity {
             }
             String paymoney = resultBean.getPaymoney();
             if (!TextUtils.isEmpty(paymoney))
-                viewHolder.mTvPayMoney.setText("¥" + paymoney);
+                viewHolder.mTvPayMoney.setText(getString(R.string.renmingbi, paymoney));
             String price = resultBean.getPrice();
             if (!TextUtils.isEmpty(price)) {
-                viewHolder.mTvPrice.setText("原价：" + price);
+                viewHolder.mTvPrice.setText(getString(R.string.yuanjia, price));
                 viewHolder.mTvPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             }
 
@@ -185,7 +185,7 @@ public class ShopActivity extends AutoLayoutActivity {
                 viewHolder.mTvDescription.setText(summary);
             String sales = resultBean.getSales();
             if (!TextUtils.isEmpty(sales))
-                viewHolder.mTvExchange.setText("已兑换：" + sales);
+                viewHolder.mTvExchange.setText(getString(R.string.yiduihuan, sales));
             return convertView;
         }
 

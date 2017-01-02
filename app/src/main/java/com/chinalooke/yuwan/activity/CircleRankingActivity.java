@@ -1,7 +1,9 @@
 package com.chinalooke.yuwan.activity;
 
+import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -162,11 +164,12 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
         int widthPixels = displayMetrics.widthPixels;
         String uri = img + "?imageView2/1/w/" + widthPixels + "/h/280";
         ImageRequest request = new ImageRequest(uri, new Response.Listener<Bitmap>() {
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onResponse(Bitmap response) {
                 if (response != null) {
                     Bitmap blurBitmap = ImageUtils.fastBlur(getApplicationContext(), response, 0.5f, 0.5f);
-                    mRlHead.setBackground(new BitmapDrawable(blurBitmap));
+                    mRlHead.setBackground(new BitmapDrawable(getResources(), blurBitmap));
                 }
             }
         }, widthPixels, 280, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, null);
@@ -299,7 +302,6 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
     }
 
     //弹出城市选择器
-
     private void showCitySelector() {
         CityPickerView cityPicker = new CityPickerView(this);
         cityPicker.setIsCyclic(false);
@@ -320,7 +322,7 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
         if (aMapLocation != null) {
             if (aMapLocation.getErrorCode() == 0) {
                 mRankings.clear();
-                mTvCity.setText(aMapLocation.getCity() + aMapLocation.getDistrict());
+                mTvCity.setText(getString(R.string.city, aMapLocation.getCity(), aMapLocation.getDistrict()));
             }
         }
     }

@@ -41,8 +41,6 @@ public class RecordGradeFragment extends Fragment {
 
     @Bind(R.id.tv_total_fight)
     TextView mTvTotalFight;
-    @Bind(R.id.textView2)
-    TextView mTextView2;
     @Bind(R.id.pieChart)
     PieChartView mPieChart;
     @Bind(R.id.tv_win)

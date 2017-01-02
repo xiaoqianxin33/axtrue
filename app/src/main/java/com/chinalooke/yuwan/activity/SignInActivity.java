@@ -1,8 +1,11 @@
 package com.chinalooke.yuwan.activity;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -103,10 +106,11 @@ public class SignInActivity extends AutoLayoutActivity {
         initEvent();
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void initEvent() {
         //头部渐变效果实现
         mHeightPixels = ViewHelper.getDisplayMetrics(this).heightPixels;
-        mDrawable = getResources().getDrawable(R.drawable.actionbar_color_else);
+        mDrawable = ContextCompat.getDrawable(getApplicationContext(),R.drawable.actionbar_color_else);
         mDrawable.setAlpha(START_ALPHA);
 
         mRlHead.setBackground(mDrawable);
@@ -114,7 +118,7 @@ public class SignInActivity extends AutoLayoutActivity {
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                mScrollView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                mScrollView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 mHeight = mScrollView.getHeight();
                 final int height = Math.abs(mHeight - mHeightPixels);
                 mScrollView.setOnScrollChangedListener(new MyScrollView.OnScrollChangedListener() {
@@ -162,7 +166,6 @@ public class SignInActivity extends AutoLayoutActivity {
         }, null);
         mQueue.add(request);
     }
-
 
     //查询用户签到记录
     private void getSignInHistory() {
@@ -348,7 +351,7 @@ public class SignInActivity extends AutoLayoutActivity {
             SignMoney.ResultBean resultBean = mSignMontyList.get(position);
             String days = resultBean.getDays();
             if (!TextUtils.isEmpty(days))
-                viewHolder.mTvDay.setText(days + "天礼包");
+                viewHolder.mTvDay.setText(getString(R.string.libao,days));
             String payMoney = resultBean.getPayMoney();
             if (!TextUtils.isEmpty(payMoney))
                 viewHolder.mTvDescription.setText("连续签到" + days + "天奖励" + payMoney + "雷熊币");

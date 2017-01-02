@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
@@ -38,8 +37,6 @@ public class AdvertisementFragment extends Fragment {
     TextView mTvTitle;
     @Bind(R.id.tv_skip)
     TextView mTvSkip;
-    @Bind(R.id.rl_head)
-    RelativeLayout mRlHead;
     @Bind(R.id.tv_game)
     TextView mTvGame;
     @Bind(R.id.tv_photo)
@@ -107,7 +104,6 @@ public class AdvertisementFragment extends Fragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
-
 
     private void setSelect(int i) {
         mTvGame.setSelected(i == 0);

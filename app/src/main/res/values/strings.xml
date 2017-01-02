@@ -126,6 +126,14 @@
     <string name="start_time">开战:%1$s</string>
     <string name="dianzan_count">%1$d  </string>
     <string name="age">%1$s岁</string>
+    <string name="my_phone">我的手机号： %1$s</string>
+    <string name="yuan">%1$s元</string>
+    <string name="city">%1$s%2$s</string>
+    <string name="renmingbi">¥%1$s</string>
+    <string name="yuanjia">原价:%1$s</string>
+    <string name="yiduihuan">已兑换:%1$s</string>
+    <string name="k">0K</string>
+    <string name="libao">%1$s天礼包</string>
 
     <string-array name="month_array">
         <item>一月</item>

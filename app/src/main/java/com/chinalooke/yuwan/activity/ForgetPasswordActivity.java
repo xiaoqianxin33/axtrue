@@ -57,9 +57,6 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
     private RequestQueue mQueue;
     //验证码倒计时
     private CountTimer mcountTimer;
-    //验证码
-    private String mVerificationCode;
-    private GetHTTPDatas getHTTPDatas;
     //短信严重的回调
     EventHandler eh;
     private Toast mToast;
@@ -71,7 +68,7 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
         //初始化smssdk
         SMSSDK.initSDK(this, Constant.APPKEY, Constant.APPSECRET);
         mQueue = Volley.newRequestQueue(this);
-        getHTTPDatas = new GetHTTPDatas();
+        GetHTTPDatas getHTTPDatas = new GetHTTPDatas();
         getHTTPDatas.setmQueue(mQueue);
         mToast = YuwanApplication.getToast();
         //设置初始化倒计时
@@ -117,8 +114,8 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
      */
     private void clickNextBtn() {
         phone = mphoneForgetPassword.getText().toString();
-        mVerificationCode = verificationCodeForget.getText().toString();
-        if (TextUtils.isEmpty(mVerificationCode)) {
+        String verificationCode = verificationCodeForget.getText().toString();
+        if (TextUtils.isEmpty(verificationCode)) {
             verificationCodeForget.setError("请输入验证码");
             verificationCodeForget.requestFocus();
             return;
@@ -127,7 +124,7 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
             mphoneForgetPassword.setError("请输入正确的手机号码");
         else {
             //提交验证码
-            LeanCloudUtil.checkSMS(mVerificationCode, phone, new AVMobilePhoneVerifyCallback() {
+            LeanCloudUtil.checkSMS(verificationCode, phone, new AVMobilePhoneVerifyCallback() {
                 @Override
                 public void done(AVException e) {
                     if (e == null) {
@@ -204,7 +201,6 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
         startActivity(intent);
     }
 
-
     /**
      * 时间计数器
      */
@@ -213,7 +209,7 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
          * @param millisInFuture    倒计时时间
          * @param countDownInterval 刷新的时间
          */
-        public CountTimer(long millisInFuture, long countDownInterval) {
+        CountTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
         }
 
@@ -224,8 +220,7 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
          */
         @Override
         public void onTick(long millisUntilFinished) {
-
-            mgetVerificationCode.setText(millisUntilFinished / 1000 + "后重新发送");
+            mgetVerificationCode.setText(getString(R.string.message_timer, millisUntilFinished / 1000));
             mgetVerificationCode.setBackgroundResource(R.drawable.btn_wait_verification_corners_bg);
             mgetVerificationCode.setClickable(false);
         }

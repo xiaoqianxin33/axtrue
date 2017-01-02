@@ -41,7 +41,6 @@ public class AccountIncomeFragment extends Fragment {
         return view;
     }
 
-
     public void initData() {
         AccountDetailActivity activity = (AccountDetailActivity) getActivity();
         if (activity != null) {

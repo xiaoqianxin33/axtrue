@@ -156,13 +156,13 @@ public class BattleFieldFragment extends Fragment {
     }
 
     private void initEvent() {
-        //banner的item点击事件
-        mBanner.setOnItemClickListener(new BGABanner.OnItemClickListener() {
-            @Override
-            public void onBannerItemClick(BGABanner banner, View view, Object model, int position) {
-                Advertisement.ResultBean resultBean = mShowAd.get(position);
-            }
-        });
+//        //banner的item点击事件
+//        mBanner.setOnItemClickListener(new BGABanner.OnItemClickListener() {
+//            @Override
+//            public void onBannerItemClick(BGABanner banner, View view, Object model, int position) {
+//                Advertisement.ResultBean resultBean = mShowAd.get(position);
+//            }
+//        });
 
         //swipeRefreshLayout下拉刷新事件
         mSr.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

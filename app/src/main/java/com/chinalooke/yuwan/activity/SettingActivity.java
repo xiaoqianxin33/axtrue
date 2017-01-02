@@ -3,9 +3,6 @@ package com.chinalooke.yuwan.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
@@ -19,26 +16,10 @@ import butterknife.OnClick;
 //设置界面
 public class SettingActivity extends AutoLayoutActivity {
 
-    @Bind(R.id.iv_back)
-    FrameLayout mIvBack;
-    @Bind(R.id.iv_arrow_head)
-    ImageView mIvArrowHead;
     @Bind(R.id.tv_title)
     TextView mTvTitle;
     @Bind(R.id.tv_skip)
     TextView mTvSkip;
-    @Bind(R.id.rl_head)
-    RelativeLayout mRlHead;
-    @Bind(R.id.rl_remind)
-    RelativeLayout mRlRemind;
-    @Bind(R.id.rl_image)
-    RelativeLayout mRlImage;
-    @Bind(R.id.rl_app)
-    RelativeLayout mRlApp;
-    @Bind(R.id.rl_help)
-    RelativeLayout mRlHelp;
-    @Bind(R.id.rl_clear_cache)
-    RelativeLayout mRlClearCache;
     @Bind(R.id.tv_cache)
     TextView mTvCache;
 
@@ -79,7 +60,7 @@ public class SettingActivity extends AutoLayoutActivity {
                 break;
             case R.id.rl_clear_cache:
                 DataCleanManager.clearAllCache(getApplicationContext());
-                mTvCache.setText("0K");
+                mTvCache.setText(getString(R.string.k));
                 break;
         }
     }
