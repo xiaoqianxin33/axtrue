@@ -84,7 +84,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                 String token = (String) msg.obj;
                 afterThirdLogin(token);
             }
-
         }
     };
 
@@ -465,7 +464,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     //授权出错
     @Override
     public void onError(Platform platform, int i, Throwable throwable) {
-
     }
 
     //取消授权

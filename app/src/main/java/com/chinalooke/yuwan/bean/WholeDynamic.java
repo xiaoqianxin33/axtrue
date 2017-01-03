@@ -143,14 +143,6 @@ public class WholeDynamic implements Serializable {
             this.images = images;
         }
 
-        public boolean isIsLoginUserLike() {
-            return isLoginUserLike;
-        }
-
-        public void setIsLoginUserLike(boolean isLoginUserLike) {
-            this.isLoginUserLike = isLoginUserLike;
-        }
-
         public String getLikes() {
             return likes;
         }

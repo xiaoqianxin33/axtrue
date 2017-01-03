@@ -18,6 +18,7 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -44,6 +45,7 @@ import com.chinalooke.yuwan.utils.KeyboardUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
+import com.chinalooke.yuwan.view.HorizontalListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -67,6 +69,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.chinalooke.yuwan.R.id.textView;
+
 public class DynamicDetailActivity extends AutoLayoutActivity {
 
     @Bind(R.id.tv_title)
@@ -89,8 +93,8 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     TextView mTvDianzan;
     @Bind(R.id.iv_dianzan)
     ImageView mIvDianzan;
-    @Bind(R.id.tv_dianzan_people)
-    TextView mTvDianzanPeople;
+    @Bind(R.id.like_listView)
+    HorizontalListView mLikeListView;
     @Bind(R.id.list_view)
     ListView mListView;
     @Bind(R.id.et_comment)
@@ -99,6 +103,8 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     RelativeLayout mRlComment;
     @Bind(R.id.scrollView)
     ScrollView mScrollView;
+    @Bind(R.id.ll_like)
+    LinearLayout mLlLike;
     private WholeDynamic.ResultBean mDynamic;
     private LoginUser.ResultBean mUserInfo;
     private String activeType;
@@ -115,6 +121,8 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
     private List<CommentList.ResultBean> mComments = new ArrayList<>();
     private int COMMENT_TYPE;
     private boolean mIsLoginUserLike;
+    private List<LikeList.ResultBean> mLikeList = new ArrayList<>();
+    private MyLikeAdapter mMyLikeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +134,8 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
         mToast = YuwanApplication.getToast();
         mMyAdapter = new MyAdapter(mComments);
         mListView.setAdapter(mMyAdapter);
+        mMyLikeAdapter = new MyLikeAdapter(mLikeList);
+        mLikeListView.setAdapter(mMyLikeAdapter);
         mProgressDialog = MyUtils.initDialog("提交中", this);
         initData();
         initEvent();
@@ -190,6 +200,21 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 } else {
                     mToast.setText("需登录才可以发表评论");
                     mToast.show();
+                }
+            }
+        });
+
+        //点赞人点击监听
+        mLikeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                LikeList.ResultBean resultBean = mLikeList.get(position);
+                String userId = resultBean.getUserId();
+                if (!TextUtils.isEmpty(userId)) {
+                    Intent intent = new Intent(DynamicDetailActivity.this, DeskUserInfoActivity.class);
+                    intent.putExtra("type", 0);
+                    intent.putExtra("userId", userId);
+                    startActivity(intent);
                 }
             }
         });
@@ -269,7 +294,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
             likes = dynamic.getLikes();
             comments = dynamic.getComments();
             address = dynamic.getAddress();
-            isLoginUserLike = dynamic.isIsLoginUserLike();
+            isLoginUserLike = dynamic.isLoginUserLike();
 
         } else {
             Dynamic.ResultBean.ListBean dynamic = (Dynamic.ResultBean.ListBean) object;
@@ -323,7 +348,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
             case 0:
                 mDynamic = (WholeDynamic.ResultBean) getIntent().getSerializableExtra("dynamic");
                 activeType = "";
-                mIsLoginUserLike = mDynamic.isIsLoginUserLike();
+                mIsLoginUserLike = mDynamic.isLoginUserLike();
                 initView(mDynamic);
                 break;
             case 1:
@@ -404,28 +429,27 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                             }.getType();
                             LikeList likeList = gson.fromJson(response, type);
                             if (likeList.getResult() != null && likeList.getResult() != null && likeList.getResult().size() != 0) {
-                                StringBuilder stringBuilder = new StringBuilder();
-                                List<LikeList.ResultBean> result = likeList.getResult();
-                                for (int i = 0; i < result.size(); i++) {
-                                    if (i == result.size() - 1)
-                                        stringBuilder.append(result.get(i).getNickName());
-                                    else
-                                        stringBuilder.append(result.get(i).getNickName()).append("、");
-                                }
-                                mTvDianzanPeople.setText(stringBuilder.toString());
+                                mLlLike.setVisibility(View.VISIBLE);
+                                mLikeList.clear();
+                                mLikeList.addAll(likeList.getResult());
+                                mMyLikeAdapter.notifyDataSetChanged();
+                            } else {
+                                mLlLike.setVisibility(View.GONE);
                             }
+                        } else {
+                            mLlLike.setVisibility(View.GONE);
                         }
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    mTvDianzanPeople.setText("服务器抽风了，无法获取点赞详情");
+                    mLlLike.setVisibility(View.GONE);
                 }
             });
             mQueue.add(request);
         } else {
-            mTvDianzanPeople.setText("网络未连接，无法获取点赞详情");
+            mLlLike.setVisibility(View.GONE);
         }
     }
 
@@ -646,5 +670,44 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
         }
     }
 
+    class MyLikeAdapter extends MyBaseAdapter {
 
+        MyLikeAdapter(List dataSource) {
+            super(dataSource);
+        }
+
+        @Override
+        public int getCount() {
+            return mLikeList.size() <= 6 ? mLikeList.size() : 6;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder viewHolder;
+            if (convertView == null) {
+                convertView = View.inflate(DynamicDetailActivity.this, R.layout.item_like_listview, null);
+                viewHolder = new ViewHolder(convertView);
+                convertView.setTag(viewHolder);
+                AutoUtils.autoSize(convertView);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            LikeList.ResultBean resultBean = mLikeList.get(position);
+            if (position == 5) {
+                viewHolder.mTextView.setText(getString(R.string.ellipsis, resultBean.getNickName()));
+            } else {
+                viewHolder.mTextView.setText(getString(R.string.dunhao, resultBean.getNickName()));
+            }
+            return convertView;
+        }
+
+        class ViewHolder {
+            @Bind(textView)
+            TextView mTextView;
+
+            ViewHolder(View view) {
+                ButterKnife.bind(this, view);
+            }
+        }
+    }
 }

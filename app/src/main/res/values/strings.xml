@@ -134,6 +134,8 @@
     <string name="yiduihuan">已兑换:%1$s</string>
     <string name="k">0K</string>
     <string name="libao">%1$s天礼包</string>
+    <string name="dunhao">%1$s、</string>
+    <string name="ellipsis">%1$s……</string>
 
     <string-array name="month_array">
         <item>一月</item>

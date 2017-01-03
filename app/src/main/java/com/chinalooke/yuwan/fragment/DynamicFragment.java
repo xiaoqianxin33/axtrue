@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -360,6 +361,8 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
     private void addFavour(String s, String avtiveId, final DynamicViewHolder viewHolder, final boolean isLike, final WholeDynamic.ResultBean resultBean) {
 
         String url = Constant.HOST + s + "&activeId=" + avtiveId + "&userId=" + mUserInfo.getUserId() + "&activeType=";
+        Log.e("TAG", url);
+        Log.e("TAG", isLike + "");
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
 
             @Override
@@ -368,16 +371,21 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         boolean success = jsonObject.getBoolean("Success");
+                        String s1 = resultBean.getLikes();
+                        int anInt = Integer.parseInt(s1);
                         if (success) {
-                            if (isLike)
+                            if (isLike) {
+                                resultBean.setLikes((anInt - 1) + "");
                                 mToast.setText("取消点赞成功");
-                            else
+                            } else {
+                                resultBean.setLikes((anInt + 1) + "");
                                 mToast.setText("点赞成功");
-                            resultBean.setIsLoginUserLike(!isLike);
+                            }
+                            resultBean.setLoginUserLike(!isLike);
                             boolean loginUserLike = resultBean.isLoginUserLike();
                             viewHolder.mIvDianzan.setImageResource(loginUserLike ? R.mipmap.dianzanhou : R.mipmap.dianzan);
                             mToast.show();
-
+                            mMyListAdapater.notifyDataSetChanged();
                         } else {
                             String msg = jsonObject.getString("Msg");
                             mToast.setText("点赞失败," + msg);
@@ -541,7 +549,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
             }
 
             if (mUserInfo != null) {
-                final boolean isLoginUserLike = resultBean.isIsLoginUserLike();
+                final boolean isLoginUserLike = resultBean.isLoginUserLike();
                 if (isLoginUserLike)
                     dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzanhou);
                 else
@@ -553,11 +561,9 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                     public void onClick(View v) {
                         if (isLike) {
                             dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
-                            isLike = false;
                             addFavour("delFavour", resultBean.getActiveId(), dynamicViewHolder, isLike, resultBean);
                         } else {
                             dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzanhou);
-                            isLike = true;
                             addFavour("addFavour", resultBean.getActiveId(), dynamicViewHolder, isLike, resultBean);
                         }
                     }

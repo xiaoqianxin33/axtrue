@@ -57,42 +57,41 @@
 
             <include layout="@layout/item_circle_dynamic_listview"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/mid_padding"
+                android:background="@color/line_color"/>
+
             <LinearLayout
                 android:id="@+id/ll_like"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="100px"
                 android:background="@android:color/white"
-                android:orientation="vertical"
-                android:paddingBottom="@dimen/mid_padding"
+                android:orientation="horizontal"
                 android:paddingLeft="24px"
                 android:paddingRight="24px">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/line_color"/>
+
+                <ImageView
+                    android:id="@+id/iv1"
+                    android:layout_width="36px"
+                    android:layout_height="36px"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/dianzanren"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="40px">
+                    android:layout_height="50px"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/small_padding">
 
-                    <ImageView
-                        android:id="@+id/iv1"
-                        android:layout_width="36px"
-                        android:layout_height="36px"
-                        android:src="@mipmap/dianzanren"/>
-
-                    <TextView
-                        android:id="@+id/tv_dianzan_people"
+                    <com.chinalooke.yuwan.view.HorizontalListView
+                        android:id="@+id/like_listView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="8px"
-                        android:layout_toRightOf="@id/iv1"
-                        android:maxLines="1"
-                        android:textColor="#326499"
-                        android:textSize="26px"/>
+                        android:layout_gravity="center_vertical"/>
+
 
                 </RelativeLayout>
 
