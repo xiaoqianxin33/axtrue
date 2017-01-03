@@ -3,7 +3,9 @@ package com.chinalooke.yuwan.view;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -169,7 +171,16 @@ public class ExpandTabView extends LinearLayout implements OnDismissListener {
         }
         int widthPixels = ViewHelper.getDisplayMetrics(mContext).widthPixels;
         popupWindow.setWidth(widthPixels);
-        popupWindow.showAsDropDown(ExpandTabView.this, 0, 0);
+
+        if (Build.VERSION.SDK_INT < 24) {
+            popupWindow.showAsDropDown(this, 0, 0);
+        } else {
+            int[] location = new int[2];
+            getLocationOnScreen(location);
+            int y = location[1];
+            popupWindow.showAtLocation(this, Gravity.NO_GRAVITY, 0, y + getHeight() + 5);
+        }
+
     }
 
     /**

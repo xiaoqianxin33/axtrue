@@ -274,7 +274,7 @@ public class MoreCircleActivity extends AutoLayoutActivity {
             if (!TextUtils.isEmpty(headImg)) {
                 String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, MyUtils.Dp2Px(getApplicationContext()
                         , 80), MyUtils.Dp2Px(getApplicationContext(), 80));
-                Picasso.with(MoreCircleActivity.this).load(loadImageUrl).centerCrop().into(viewHolder.mIvCircleImage);
+                Picasso.with(MoreCircleActivity.this).load(loadImageUrl).into(viewHolder.mIvCircleImage);
             }
             viewHolder.mTvCircleName.setText(resultBean.getGroupName());
             viewHolder.mTvCircleDetails.setText(resultBean.getDetails());

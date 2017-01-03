@@ -393,6 +393,7 @@
     <TextView
         android:id="@+id/tv_exit"
         style="@style/botton_btn"
+        android:text="解散战场"
         android:visibility="gone"/>
 
 

@@ -20,9 +20,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
+import com.chinalooke.yuwan.bean.NetbarAdvertisement;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
-import com.chinalooke.yuwan.bean.NetbarAdvertisement;
 import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LocationUtils;
@@ -36,7 +36,9 @@ import com.zhy.autolayout.utils.AutoUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,8 +147,13 @@ public class NetbarADActivity extends AutoLayoutActivity implements AMapLocation
         String city = aMapLocation.getCity();
         double latitude = aMapLocation.getLatitude();
         double longitude = aMapLocation.getLongitude();
-        String uri = Constant.HOST + "getADList&&pageNo=1&pageSize=5&city=" + city + "&pageNo=" + PAGE_NO + "&pageSize=5"
-                + "&lng=" + longitude + "&lat=" + latitude;
+        String uri = null;
+        try {
+            uri = Constant.HOST + "getADList&&pageNo=1&pageSize=5&city=" + URLEncoder.encode(city, "utf8") + "&pageNo=" + PAGE_NO + "&pageSize=5"
+                    + "&lng=" + longitude + "&lat=" + latitude;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

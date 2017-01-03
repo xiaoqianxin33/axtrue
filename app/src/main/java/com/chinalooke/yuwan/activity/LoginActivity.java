@@ -325,7 +325,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                 LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(userInfo.getResult());//设置userInfo
                 LoginUserInfoUtils.saveObject(LoginActivity.this, LoginUserInfoUtils.KEY, userInfo.getResult());
                 String nickName = userInfo.getResult().getNickName();
-                registerHx(phone,nickName);
+                registerHx(phone, nickName);
                 PushService.subscribe(this, userInfo.getResult().getUserId(), MyMessageActivity.class);
             }
             loginSuccess();//调用登录成功方法
@@ -479,7 +479,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
             mToast.show();
             exitTime = System.currentTimeMillis();
         } else {
-            finish();
+            YuwanApplication.finishAllActivity();
         }
     }
 

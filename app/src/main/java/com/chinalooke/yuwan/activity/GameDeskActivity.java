@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -158,6 +159,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
         mWidthPixels = displayMetrics.widthPixels;
         mToast = YuwanApplication.getToast();
         user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
+        mProgressDialog = DialogUtil.initDialog("", GameDeskActivity.this);
         if (user != null) {
             if (user.getUserType().equals("netbar"))
                 isNetbar = true;
@@ -635,6 +637,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 @Override
                 public void onResponse(String response) {
                     mSubmitDialog.dismiss();
+                    Log.e("TAG", response);
                     if (AnalysisJSON.analysisJson(response)) {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
@@ -666,7 +669,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 }
             });
             mQueue.add(request);
-
         } else {
             mToast.setText("网络未连接，请稍后尝试");
             mToast.show();
@@ -729,7 +731,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
     //退出游戏桌
     private void quitGameDesk() {
         if (NetUtil.is_Network_Available(getApplicationContext())) {
-            mProgressDialog = DialogUtil.initDialog("", GameDeskActivity.this);
             mProgressDialog.show();
             mTvOk.setText("我要参战");
             exitDesk();

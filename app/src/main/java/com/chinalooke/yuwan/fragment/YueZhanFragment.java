@@ -98,6 +98,8 @@ public class YueZhanFragment extends Fragment {
     TextView mTvTimes;
     @Bind(R.id.tv_playerLevel)
     TextView mTvPlayerLevel;
+    @Bind(R.id.tv_rule)
+    TextView mTvRule;
 
     private Toast mToast;
     private LoginUser.ResultBean mUsrInfo;
@@ -328,7 +330,7 @@ public class YueZhanFragment extends Fragment {
         option.maxUsers = 200;
         option.style = EMGroupManager.EMGroupStyle.EMGroupStylePrivateMemberCanInvite;
         try {
-            EMGroup group = EMClient.getInstance().groupManager().createGroup(mChoseGame.getName(), "对战群组", null, null, option);
+            EMGroup group = EMClient.getInstance().groupManager().createGroup(mChoseGame.getName(), "对战群组", new String[0], null, option);
             createDesk(group);
         } catch (HyphenateException e) {
             e.printStackTrace();
@@ -419,8 +421,9 @@ public class YueZhanFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 GameRules.ResultBean resultBean = mGameRulesList.get(position);
                 String content = resultBean.getContent();
-                if (!TextUtils.isEmpty(content))
+                if (!TextUtils.isEmpty(content)) {
                     etRule.setText(content);
+                }
             }
         });
         if (!TextUtils.isEmpty(mRule))
@@ -438,6 +441,8 @@ public class YueZhanFragment extends Fragment {
             public void onClick(View v) {
                 dialog.dismiss();
                 mRule = etRule.getText().toString();
+                if (!TextUtils.isEmpty(mRule))
+                    mTvRule.setText(mRule);
                 KeyboardUtils.hideSoftInput(mMainActivity);
             }
         });

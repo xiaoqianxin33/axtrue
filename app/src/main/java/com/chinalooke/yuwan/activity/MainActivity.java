@@ -51,6 +51,8 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMMessageBody;
 import com.zhy.autolayout.AutoLayoutActivity;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -195,8 +197,13 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
 
     //向服务端更新用户位置
     private void updateUserGPS() {
-        String uri = Constant.HOST + "updateUserGPS&lng=" + mLongitude + "&lat=" + mLatitude + "&userId="
-                + mUserInfo.getUserId() + "&updateTime=" + DateUtils.getCurrentDateTime();
+        String uri = null;
+        try {
+            uri = Constant.HOST + "updateUserGPS&lng=" + mLongitude + "&lat=" + mLatitude + "&userId="
+                    + mUserInfo.getUserId() + "&updateTime=" + URLEncoder.encode(DateUtils.getCurrentDateTime(), "utf8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         StringRequest request = new StringRequest(uri, null, null);
         mQueue.add(request);
     }
@@ -409,7 +416,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         } else {
             ExchangeHelper helper = ExchangeHelper.getHelper(getApplicationContext());
             helper.close();
-            finish();
+            YuwanApplication.finishAllActivity();
         }
     }
 

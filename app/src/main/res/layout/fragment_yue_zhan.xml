@@ -264,6 +264,10 @@
             style="@style/yuezhan_arrow"
             android:src="@mipmap/arrow_right"/>
 
+        <TextView
+            android:id="@+id/tv_rule"
+            style="@style/yuezhan_content"/>
+
     </RelativeLayout>
 
     <TextView
