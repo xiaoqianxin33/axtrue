@@ -117,6 +117,4 @@ public class SplashActivity extends AutoLayoutActivity {
             }
         }
     }
-
-
 }

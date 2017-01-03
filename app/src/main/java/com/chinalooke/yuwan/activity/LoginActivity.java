@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -75,6 +77,16 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     private Toast mToast;
     private ProgressDialog mProgressDialog;
     private long exitTime = 0;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 1) {
+                String token = (String) msg.obj;
+                afterThirdLogin(token);
+            }
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +150,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ShareSDK.stopSDK();
+        ShareSDK.stopSDK(this);
     }
 
     @OnClick({R.id.QQ_login, R.id.weixin_login, R.id.weibo_login, R.id.btn_login_login,
@@ -381,8 +393,11 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     @Override
     public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
         final String token = platform.getDb().getUserId();
+        Message message = mHandler.obtainMessage();
+        message.what = 1;
+        message.obj = token;
+        mHandler.sendMessage(message);
         platform.removeAccount(true);
-        afterThirdLogin(token);
     }
 
     private void afterThirdLogin(final String token) {
