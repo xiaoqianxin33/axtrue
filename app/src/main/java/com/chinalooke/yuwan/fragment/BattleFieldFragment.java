@@ -528,7 +528,8 @@ public class BattleFieldFragment extends Fragment {
                         Advertisement advertisement = mGson.fromJson(response, type);
                         setBanner(advertisement);
                     } else {
-                        mBanner.setVisibility(View.GONE);
+                        if (mBanner != null)
+                            mBanner.setVisibility(View.GONE);
                     }
                 }
             }, null);

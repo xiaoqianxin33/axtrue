@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -371,9 +370,10 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
      * @param name name
      */
     private void disanfangLogin(String name) {
-        Platform platform = ShareSDK.getPlatform(this, name);
-        platform.removeAccount();
+        Platform platform = ShareSDK.getPlatform(name);
+        platform.SSOSetting(false);
         platform.setPlatformActionListener(this);//授权监听
+        platform.authorize();
         platform.showUser(null);
     }
 
@@ -381,6 +381,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     @Override
     public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
         final String token = platform.getDb().getUserId();
+        platform.removeAccount(true);
         afterThirdLogin(token);
     }
 
@@ -389,7 +390,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.e("TAG", response);
                 if (!TextUtils.isEmpty(response)) {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
@@ -430,11 +430,9 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
      */
     private void getUserInfoWithAuth(final String phone1, String auth) {
         String uri = Constant.HOST + "getUserInfoWithAuth&phone=" + phone1 + "&auth=" + auth;
-        Log.e("TAG", uri);
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.e("TAG", response);
                 phone = phone1;
                 analysisJson(response);
                 mProgressDialog.dismiss();
@@ -475,7 +473,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     private void exitApp() {
         // 判断2次点击事件时间
         if ((System.currentTimeMillis() - exitTime) > 2000) {
-            mToast.setText("再按一次退出程序");
+            mToast.setText("再按一次退出雷熊");
             mToast.show();
             exitTime = System.currentTimeMillis();
         } else {

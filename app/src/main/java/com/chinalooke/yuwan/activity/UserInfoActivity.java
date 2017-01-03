@@ -641,6 +641,8 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                                     mUserInfo.setNickName(mName);
                                     EMClient.getInstance().updateCurrentUserNick(mName);
                                 }
+                                if (mStrings != null)
+                                    mUserInfo.setGameId(mStrings);
                                 if (mAge != null)
                                     mUserInfo.setAge(mAge);
                                 if (mAddress != null)

@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,6 +66,8 @@ import com.zhy.autolayout.utils.AutoUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -350,7 +353,11 @@ public class YueZhanFragment extends Fragment {
                     "&playerNum=" + Integer.parseInt(people) + "&gamePay=" + money + "&gameCount=" + times
                     + "&ownerId=" + mUsrInfo.getUserId() + "&roomId=" + group.getGroupId() + "&playerLevel=" + minLevel + "," + maxLevel;
             if (mRule != null) {
-                uri = uri + "&gameRule=" + mRule;
+                try {
+                    uri = uri + "&gameRule=" + URLEncoder.encode(mRule, "utf8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
 
             if (mChoseFriends != null) {
@@ -362,9 +369,17 @@ public class YueZhanFragment extends Fragment {
                         stringBuffer.append(",");
                 }
                 uri = uri + "&userId=" + stringBuffer.toString();
+            } else {
+                uri = uri + "&userId=";
             }
 
-            uri = uri + "&startTime=" + time;
+            try {
+                uri = uri + "&startTime=" + URLEncoder.encode(time, "utf8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+            Log.e("TAG", uri);
             StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {

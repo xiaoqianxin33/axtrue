@@ -171,27 +171,31 @@ public class MyMessageActivity extends AutoLayoutActivity {
             final String content = pushMessage.getContent();
             if (!TextUtils.isEmpty(content))
                 viewHolder.mTvMessage.setText(content);
-            String temp = pushMessage.getTemp();
-            final String[] split = temp.split(",");
-            if (!TextUtils.isEmpty(split[1])) {
-                String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), split[1], 100, 100);
-                Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mRoundedImageView);
+            final String temp = pushMessage.getTemp();
+            String[] strings = new String[0];
+            if (temp.contains(",")) {
+                strings = temp.split(",");
+                if (!TextUtils.isEmpty(strings[1])) {
+                    String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), strings[1], 100, 100);
+                    Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mRoundedImageView);
+                }
             }
             switch (type) {
                 case "userInfo":
                     viewHolder.mBtnReJudge.setText("拒绝");
                     viewHolder.mBtnOk.setText("同意");
 
+                    final String[] finalStrings = strings;
                     viewHolder.mBtnOk.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            addFriendsClick(split[0], pushMessage, 0);
+                            addFriendsClick(finalStrings[0], pushMessage, 0);
                         }
                     });
                     viewHolder.mBtnReJudge.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            addFriendsClick(split[0], pushMessage, 1);
+                            addFriendsClick(finalStrings[0], pushMessage, 1);
                         }
                     });
                     break;
@@ -199,11 +203,12 @@ public class MyMessageActivity extends AutoLayoutActivity {
                 case "joindeskGameDesk":
                     viewHolder.mBtnReJudge.setText("忽略");
                     viewHolder.mBtnOk.setText("加入");
+                    final String[] finalStrings1 = strings;
                     viewHolder.mBtnOk.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             if (NetUtil.is_Network_Available(getApplicationContext())) {
-                                joinDesk(split[0], pushMessage);
+                                joinDesk(finalStrings1[0], pushMessage);
                             } else {
                                 mToast.setText("网络不可用，请检查网络连接");
                                 mToast.show();
@@ -230,7 +235,7 @@ public class MyMessageActivity extends AutoLayoutActivity {
                     viewHolder.mBtnOk.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            loserConfirm(split[0], pushMessage);
+                            loserConfirm(temp, pushMessage);
                         }
                     });
 
@@ -242,7 +247,7 @@ public class MyMessageActivity extends AutoLayoutActivity {
                                 Bundle bundle = new Bundle();
                                 bundle.putSerializable("message", pushMessage);
                                 intent.putExtras(bundle);
-                                intent.putExtra("id", split[0]);
+                                intent.putExtra("id", temp);
                                 startActivity(intent);
                             } else {
                                 mToast.setText("网络不可用，请检查网络连接");
@@ -281,8 +286,8 @@ public class MyMessageActivity extends AutoLayoutActivity {
                                 e.printStackTrace();
                             }
                             Intent intent = new Intent(MyMessageActivity.this, JudgeActivity.class);
-                            intent.putExtra("gameDeskId", split[0]);
-                            intent.putExtra("count", split[1]);
+                            intent.putExtra("gameDeskId", temp);
+                            intent.putExtra("count", temp);
                             startActivity(intent);
                         }
                     });

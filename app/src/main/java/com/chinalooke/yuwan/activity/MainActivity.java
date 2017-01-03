@@ -410,7 +410,7 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
     private void exitApp() {
         // 判断2次点击事件时间
         if ((System.currentTimeMillis() - exitTime) > 2000) {
-            mToast.setText("再按一次退出程序");
+            mToast.setText("再按一次退出雷熊");
             mToast.show();
             exitTime = System.currentTimeMillis();
         } else {

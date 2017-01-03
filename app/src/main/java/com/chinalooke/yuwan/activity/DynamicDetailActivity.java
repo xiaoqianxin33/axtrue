@@ -456,7 +456,8 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 break;
             case R.id.rl_pinglun:
                 COMMENT_TYPE = 0;
-                if (mUserInfo != null)
+                if (mUserInfo != null) {
+                    mEtComment.setHint("");
                     switch (mDynamic_type) {
                         case 0:
                             addComment(null);
@@ -470,7 +471,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                             }
                             break;
                     }
-                else {
+                } else {
                     mToast.setText("需登录才可发表评论");
                     mToast.show();
                 }

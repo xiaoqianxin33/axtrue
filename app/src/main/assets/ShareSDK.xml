@@ -56,12 +56,12 @@
     -->
 
     <ShareSDK
-        AppKey="166ac0d7fd94e"/> <!-- 修改成你在sharesdk后台注册的应用的appkey"-->
+        AppKey="165bc9e024e2c"/> <!-- 修改成你在sharesdk后台注册的应用的appkey"-->
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
     <SinaWeibo
-        AppKey="568898243"
-        AppSecret="38a4f8204cc784f81f9f0daaf31e02e3"
+        AppKey="116120669"
+        AppSecret="8e44e0d86f08b3434aa551d0a8e5dbe3"
         Enable="true"
         Id="1"
         RedirectUrl="http://www.sharesdk.cn"
@@ -69,8 +69,8 @@
         SortId="1"/>
 
     <TencentWeibo
-        AppKey="801307650"
-        AppSecret="ae36f4ee3946e1cbb98d6965b0b2ff5c"
+        AppKey="100371282"
+        AppSecret="aed9b0303e3ed1e27bae87c33761161d"
         Enable="true"
         Id="2"
         RedirectUri="http://sharesdk.cn"
@@ -94,32 +94,32 @@
 		默认值为false。此外，微信收藏不支持此字段。
 	-->
     <Wechat
-        AppId="wxb78ef9dea13c0daf"
-        AppSecret="e1bc8b7f2a9465c8d7a44e8a9e7febf5"
+        AppId="wxb7983bf6ee218004"
+        AppSecret="94f481021a6de2c866baed0cf7817ad5"
         BypassApproval="false"
-        Enable="false"
+        Enable="true"
         Id="4"
         SortId="4"/>
 
     <WechatMoments
-        AppId="wxb78ef9dea13c0daf"
-        AppSecret="e1bc8b7f2a9465c8d7a44e8a9e7febf5"
+        AppId="wxb7983bf6ee218004"
+        AppSecret="94f481021a6de2c866baed0cf7817ad5"
         BypassApproval="false"
         Enable="true"
         Id="5"
         SortId="5"/>
 
     <WechatFavorite
-        AppId="wxb78ef9dea13c0daf"
-        AppSecret="e1bc8b7f2a9465c8d7a44e8a9e7febf5"
+        AppId="wxb7983bf6ee218004"
+        AppSecret="94f481021a6de2c866baed0cf7817ad5"
         Enable="true"
         Id="6"
         SortId="6"/>
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
     <QQ
-        AppId="100371282"
-        AppKey="aed9b0303e3ed1e27bae87c33761161d"
+        AppId="1105926480"
+        AppKey="ESLCfumzitIbuKXs"
         Enable="true"
         Id="7"
         ShareByAppClient="true"
