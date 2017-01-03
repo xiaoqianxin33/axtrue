@@ -140,6 +140,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private Runnable mRunnable;
     private boolean isOwner = false;
     private Gson mGson;
+    private String mNetBarId;
+    private boolean isNetbar = false;
 
 
     @Override
@@ -156,6 +158,10 @@ public class GameDeskActivity extends AutoLayoutActivity {
         mWidthPixels = displayMetrics.widthPixels;
         mToast = YuwanApplication.getToast();
         user = LoginUserInfoUtils.getLoginUserInfoUtils().getUserInfo();
+        if (user != null) {
+            if (user.getUserType().equals("netbar"))
+                isNetbar = true;
+        }
         initData();
         initEvent();
     }
@@ -306,6 +312,11 @@ public class GameDeskActivity extends AutoLayoutActivity {
                         mTvStatus.setText("迎战中");
                     }
                     mTvStatus.setBackgroundResource(R.mipmap.red_round_background);
+                    if (isNetbar) {
+                        if (mNetBarId.equals(user.getUserId())) {
+                            mTvOk.setText("开战");
+                        }
+                    }
                     break;
                 case "doing":
                     mStatus = 1;
@@ -350,7 +361,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private void initData() {
         mGameDesk = (GameDesk.ResultBean) getIntent().getSerializableExtra("gameDesk");
         mGameDeskId = mGameDesk.getGameDeskId();
-
+        mNetBarId = mGameDesk.getNetBarId();
         if (!TextUtils.isEmpty(mGameDeskId)) {
             getGameDeskWithId(mGameDeskId);
         }
@@ -463,7 +474,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 case R.id.tv_ok:
                     switch (mStatus) {
                         case 0:
-                            if (isOwner) {
+                            if (isOwner || isNetbar) {
                                 startGame();
                             } else {
                                 if (isJoin) {

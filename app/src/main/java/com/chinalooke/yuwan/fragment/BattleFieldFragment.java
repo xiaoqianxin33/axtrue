@@ -329,14 +329,12 @@ public class BattleFieldFragment extends Fragment {
 
     private void interItem(int i) {
         GameDesk.ResultBean resultBean = mDeskList.get(i);
-        if (!isNetbar) {
-            Intent intent = new Intent();
-            intent.setClass(mActivity, GameDeskActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("gameDesk", resultBean);
-            intent.putExtras(bundle);
-            startActivity(intent);
-        }
+        Intent intent = new Intent();
+        intent.setClass(mActivity, GameDeskActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("gameDesk", resultBean);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     //判断recycleView是否已经滑到底部
