@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -30,6 +31,9 @@ import com.google.gson.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -92,11 +96,11 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
 
     private void initData() {
         mUserId = getIntent().getStringExtra("userId");
-        mType = getIntent().getIntExtra("type", 0);
-        if (mType == 0) {
-            mAddFriends.setText("添加好友");
-        } else if (mType == 1) {
-            mAddFriends.setText("聊天");
+        if (mUser != null) {
+            mAddFriends.setVisibility(View.VISIBLE);
+            isUserFriend();
+        } else {
+            mAddFriends.setVisibility(View.GONE);
         }
         String uri = Constant.HOST + "getUserInfoWithId&userId=" + mUserId;
         StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
@@ -120,6 +124,43 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
             public void onErrorResponse(VolleyError error) {
                 mToast.setText("网络不佳，无法获取用户资料");
                 mToast.show();
+            }
+        });
+        mQueue.add(request);
+    }
+
+    //判断是否是好友
+    private void isUserFriend() {
+        String url = Constant.HOST + "isUserFriend&userId=" + mUser.getUserId() + "&friendId=" + mUserId;
+        Log.e("TAG", url);
+        final StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.e("TAG", response);
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    boolean success = jsonObject.getBoolean("Success");
+                    if (success) {
+                        boolean result = jsonObject.getBoolean("Result");
+                        if (result) {
+                            mType = 1;
+                            mAddFriends.setText("聊天");
+                        } else {
+                            mType = 0;
+                            mAddFriends.setText("添加好友");
+                        }
+                    } else {
+                        mType = 0;
+                        mAddFriends.setText("添加好友");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
             }
         });
         mQueue.add(request);
