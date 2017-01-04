@@ -180,8 +180,6 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
 
     private void initView() {
         mTvTitle.setText("个人资料");
-        mTvSkip.setText("保存");
-
         String headImg = mUserInfo.getHeadImg();
         if (!TextUtils.isEmpty(headImg)) {
             mPath = headImg;
@@ -200,6 +198,9 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         mLl1.setVisibility(userType.equals("netbar") ? View.GONE : View.VISIBLE);
         mLl2.setVisibility(userType.equals("netbar") ? View.GONE : View.VISIBLE);
         mLl3.setVisibility(userType.equals("netbar") ? View.VISIBLE : View.GONE);
+        if (!isNetbar)
+            mTvSkip.setText("保存");
+
 
         mName = mUserInfo.getNickName();
         if (!TextUtils.isEmpty(mName)) {
@@ -275,15 +276,9 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         pvOptions.show();
     }
 
-    @OnClick({R.id.rl_netbar_address, R.id.rl_name_netbar, R.id.tv_skip, R.id.iv_back, R.id.rl_head_t, R.id.rl_name, R.id.rl_sex, R.id.rl_age, R.id.rl_play_age, R.id.rl_address, R.id.rl_id, R.id.rl_qcode, R.id.rl_slogen})
+    @OnClick({R.id.tv_skip, R.id.iv_back, R.id.rl_head_t, R.id.rl_name, R.id.rl_sex, R.id.rl_age, R.id.rl_play_age, R.id.rl_address, R.id.rl_id, R.id.rl_qcode, R.id.rl_slogen})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.rl_netbar_address:
-                selectLocation();
-                break;
-            case R.id.rl_name_netbar:
-                showEditDialog();
-                break;
             case R.id.tv_skip:
                 updateInfo();
                 break;
@@ -291,7 +286,8 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
                 finish();
                 break;
             case R.id.rl_head_t:
-                req();
+                if (!isNetbar)
+                    req();
                 break;
             case R.id.rl_name:
                 showEditDialog();

@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -783,7 +782,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             public void onResponse(String response) {
                 if (AnalysisJSON.analysisJson(response)) {
                     UserBalance userBalance = mGson.fromJson(response, UserBalance.class);
-                    String score = userBalance.getResult().getScore();
+                    String score = userBalance.getResult().getPayMoney();
                     checkLevel(score, i);
                 } else {
                     mProgressDialog.dismiss();
