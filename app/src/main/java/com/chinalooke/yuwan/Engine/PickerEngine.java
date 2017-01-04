@@ -29,12 +29,12 @@ public class PickerEngine {
             List<LevelList.ResultBean> result = levelList.getResult();
             if (result != null) {
                 for (LevelList.ResultBean resultBean : result) {
-                    list.add(resultBean.getLevelName() + "(最低" + resultBean.getLeast() + ")");
+                    list.add(resultBean.getLeast());
                 }
-                for (int i = 1; i < list.size() + 1; i++) {
+                for (int i = 0; i < list.size() + 1; i++) {
                     ArrayList<String> list1 = new ArrayList<>();
-                    for (int j = i; j <= list.size(); j++) {
-                        list1.add(j + "");
+                    for (int j = i; j < list.size(); j++) {
+                        list1.add(result.get(j).getMax());
                     }
                     list2.add(list1);
                 }

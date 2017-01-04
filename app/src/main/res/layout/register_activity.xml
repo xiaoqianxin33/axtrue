@@ -229,14 +229,14 @@
 
             <ImageView
                 android:id="@+id/iv_license"
-                android:layout_width="144px"
-                android:layout_height="144px"
+                android:layout_width="120px"
+                android:layout_height="120px"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/mid_padding"
                 android:layout_marginRight="@dimen/mid_padding"
                 android:scaleType="centerCrop"
-                android:background="@mipmap/add_license"/>
+                android:src="@mipmap/add_license"/>
 
         </RelativeLayout>
     </LinearLayout>

@@ -144,6 +144,7 @@ public class YueZhanFragment extends Fragment {
     private int minLevel = -1;
     private int maxLevel;
     private MyAdapter mMyAdapter;
+    String[] gameID;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -237,8 +238,6 @@ public class YueZhanFragment extends Fragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
-
-    String[] gameID;
 
     @OnClick({R.id.rl_game_name, R.id.rl_time, R.id.rl_people, R.id.rl_money,
             R.id.tv_skip, R.id.rl_friend, R.id.rl_rule, R.id.rl_times, R.id.rl_playerLevel})

@@ -439,7 +439,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            DynamicViewHolder dynamicViewHolder;
+            final DynamicViewHolder dynamicViewHolder;
             if (convertView == null) {
                 dynamicViewHolder = new DynamicViewHolder();
                 convertView = View.inflate(mContext, R.layout.item_circle_dynamic_listview, null);
@@ -459,7 +459,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                 dynamicViewHolder = (DynamicViewHolder) convertView.getTag();
             }
 
-            Dynamic.ResultBean.ListBean resultBean = (Dynamic.ResultBean.ListBean) mDataSource.get(position);
+            final Dynamic.ResultBean.ListBean resultBean = (Dynamic.ResultBean.ListBean) mDataSource.get(position);
             String headImg = resultBean.getHeadImg();
             if (!TextUtils.isEmpty(headImg)) {
                 String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), headImg, 72, 72);
@@ -491,7 +491,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
             else
                 dynamicViewHolder.mTvPinglun.setText("0");
 
-            boolean isLoginUserLike = resultBean.isLoginUserLike();
+            final boolean isLoginUserLike = resultBean.isLoginUserLike();
             if (isLoginUserLike)
                 dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzanhou);
             else
@@ -504,9 +504,38 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
             String addTime = resultBean.getAddTime();
             if (!TextUtils.isEmpty(addTime))
                 DateUtils.setDynamicTime(addTime, dynamicViewHolder.mTvTime);
+
+            if (mUserInfo != null) {
+                dynamicViewHolder.mRelativeLayout.setOnClickListener(new View.OnClickListener() {
+                    private boolean isLike = isLoginUserLike;
+
+                    @Override
+                    public void onClick(View v) {
+                        if (isLike) {
+                            dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
+                            addFavour("delFavour", resultBean.getActiveId(), dynamicViewHolder, isLike, resultBean);
+                        } else {
+                            dynamicViewHolder.mIvDianzan.setImageResource(R.mipmap.dianzanhou);
+                            addFavour("addFavour", resultBean.getActiveId(), dynamicViewHolder, isLike, resultBean);
+                        }
+                    }
+                });
+            }
+
+            View.OnClickListener listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(CircleDynamicActivity.this, DeskUserInfoActivity.class);
+                    intent.putExtra("type", 1);
+                    intent.putExtra("userId", resultBean.getUserId());
+                    startActivity(intent);
+                }
+            };
+            dynamicViewHolder.mTvName.setOnClickListener(listener);
+            dynamicViewHolder.mRoundedImageView.setOnClickListener(listener);
+
             return convertView;
         }
-
     }
 
     class GridAdapter extends BaseAdapter {
@@ -561,6 +590,59 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
         TextView mTvDianzan;
         ImageView mIvDianzan;
         RelativeLayout mRelativeLayout;
+    }
+
+    private void addFavour(String s, String avtiveId, final DynamicViewHolder viewHolder, final boolean isLike, final Dynamic.ResultBean.ListBean resultBean) {
+
+        String url = Constant.HOST + s + "&activeId=" + avtiveId + "&userId=" + mUserInfo.getUserId() + "&activeType=";
+        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                if (!TextUtils.isEmpty(response)) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("Success");
+                        String s1 = resultBean.getLikes();
+                        int anInt = Integer.parseInt(s1);
+                        if (success) {
+                            if (isLike) {
+                                resultBean.setLikes((anInt - 1) + "");
+                                mToast.setText("取消点赞成功");
+                            } else {
+                                resultBean.setLikes((anInt + 1) + "");
+                                mToast.setText("点赞成功");
+                            }
+                            resultBean.setLoginUserLike(!isLike);
+                            boolean loginUserLike = resultBean.isLoginUserLike();
+                            viewHolder.mIvDianzan.setImageResource(loginUserLike ? R.mipmap.dianzanhou : R.mipmap.dianzan);
+                            mToast.show();
+                            mMyDynamicAdapter.notifyDataSetChanged();
+                        } else {
+                            String msg = jsonObject.getString("Msg");
+                            mToast.setText("点赞失败," + msg);
+                            mToast.show();
+                            boolean loginUserLike = resultBean.isLoginUserLike();
+                            viewHolder.mIvDianzan.setImageResource(loginUserLike ? R.mipmap.dianzanhou : R.mipmap.dianzan);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    mToast.setText("点赞失败");
+                    mToast.show();
+                    viewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mToast.setText("点赞失败");
+                mToast.show();
+                viewHolder.mIvDianzan.setImageResource(R.mipmap.dianzan);
+            }
+        });
+        mQueue.add(request);
     }
 
 }

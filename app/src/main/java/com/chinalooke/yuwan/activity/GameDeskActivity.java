@@ -207,11 +207,12 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
     @Override
     protected void onDestroy() {
-        ButterKnife.unbind(this);
-        if (mHandler != null && mRunnable != null)
-            mHandler.removeCallbacks(mRunnable);
         super.onDestroy();
-
+        ButterKnife.unbind(this);
+        if (mHandler != null && mRunnable != null) {
+            mHandler.removeCallbacks(mRunnable);
+            mHandler = null;
+        }
     }
 
     private void initView() {
@@ -242,7 +243,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 mRight = players.getRight();
                 mRightSize = right.size();
             }
-            mPersonYingzhan.setText(mRight.size() + "/" + mTotalPeople);
+            if (mPersonYingzhan != null)
+                mPersonYingzhan.setText(mRight.size() + "/" + mTotalPeople);
         } else {
             mPersonYuezhan.setText(getString(R.string.battlefield_people, mTotalPeople));
             mPersonYingzhan.setText(getString(R.string.battlefield_people, mTotalPeople));
@@ -275,6 +277,16 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 String cup = mGameDesk.getCup();
                 if (!TextUtils.isEmpty(cup))
                     mTvScore.setText(cup);
+                String netBarId = mGameDesk.getNetBarId();
+                if (!TextUtils.isEmpty(netBarId)) {
+                    if (user.getUserId().equals(netBarId)) {
+                        isOwner = true;
+                        mTvExit.setVisibility(View.VISIBLE);
+                    } else {
+                        mTvExit.setVisibility(View.GONE);
+                        isOwner = false;
+                    }
+                }
             } else {
                 DESK_TYPE = DESK_TYPE_PERSONAL;
                 mOwnerType.setText("个人");
@@ -292,7 +304,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
                         mTvExit.setVisibility(View.GONE);
                         isOwner = false;
                     }
-
                 }
             }
         }
@@ -311,8 +322,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
                         } else {
                             mTvOk.setText("我要参战");
                         }
-                        mTvStatus.setText("迎战中");
                     }
+                    mTvStatus.setText("迎战中");
                     mTvStatus.setBackgroundResource(R.mipmap.red_round_background);
                     if (isNetbar) {
                         if (mNetBarId.equals(user.getUserId())) {
@@ -451,7 +462,18 @@ public class GameDeskActivity extends AutoLayoutActivity {
             lastClickTime = currentTime;
             switch (view.getId()) {
                 case R.id.tv_exit:
-                    closeGameDesk();
+                    MyUtils.showNorDialog(this, "提示", "确定解散该游戏桌吗？", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            closeGameDesk();
+                        }
+                    });
                     break;
                 case R.id.iv_back:
                     finish();
@@ -637,7 +659,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 @Override
                 public void onResponse(String response) {
                     mSubmitDialog.dismiss();
-                    Log.e("TAG", response);
                     if (AnalysisJSON.analysisJson(response)) {
                         try {
                             JSONObject jsonObject = new JSONObject(response);

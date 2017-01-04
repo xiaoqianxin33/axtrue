@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.activity.DeskUserInfoActivity;
 import com.chinalooke.yuwan.activity.DynamicDetailActivity;
 import com.chinalooke.yuwan.activity.ImagePagerActivity;
 import com.chinalooke.yuwan.activity.LoginActivity;
@@ -361,8 +361,6 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
     private void addFavour(String s, String avtiveId, final DynamicViewHolder viewHolder, final boolean isLike, final WholeDynamic.ResultBean resultBean) {
 
         String url = Constant.HOST + s + "&activeId=" + avtiveId + "&userId=" + mUserInfo.getUserId() + "&activeType=";
-        Log.e("TAG", url);
-        Log.e("TAG", isLike + "");
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
 
             @Override
@@ -569,6 +567,18 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                     }
                 });
             }
+
+            View.OnClickListener listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mActivity, DeskUserInfoActivity.class);
+                    intent.putExtra("type", 1);
+                    intent.putExtra("userId", resultBean.getUserId());
+                    startActivity(intent);
+                }
+            };
+            dynamicViewHolder.mTvName.setOnClickListener(listener);
+            dynamicViewHolder.mRoundedImageView.setOnClickListener(listener);
 
             return convertView;
         }

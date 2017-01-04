@@ -39,7 +39,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-//游戏桌玩家资料查看
+//玩家资料查看
 public class DeskUserInfoActivity extends AutoLayoutActivity {
 
     @Bind(R.id.iv_head)

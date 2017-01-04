@@ -453,9 +453,15 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
         }
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_camera, R.id.rl_pinglun, R.id.rl_dianzan})
+    @OnClick({R.id.iv_back, R.id.iv_camera, R.id.rl_pinglun, R.id.rl_dianzan, R.id.roundedImageView, R.id.tv_name})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.roundedImageView:
+                skipToUserInfo();
+                break;
+            case R.id.tv_name:
+                skipToUserInfo();
+                break;
             case R.id.rl_dianzan:
                 if (mUserInfo != null) {
                     switch (mDynamic_type) {
@@ -510,6 +516,13 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                     startActivity(new Intent(this, LoginActivity.class));
                 break;
         }
+    }
+
+    private void skipToUserInfo() {
+        Intent intent = new Intent(this, DeskUserInfoActivity.class);
+        intent.putExtra("type", 1);
+        intent.putExtra("userId", mDynamic.getUserId());
+        startActivity(intent);
     }
 
     //点赞

@@ -173,6 +173,7 @@ public class BattleFieldFragment extends Fragment {
                     refreshLastClickTime = currentTime;
                     isFresh = true;
                     isFoot = false;
+                    isFirst = true;
                     PAGE = 1;
                     getGameDeskListWithStatus();
                     mSr.setRefreshing(false);

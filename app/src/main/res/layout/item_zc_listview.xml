@@ -49,13 +49,6 @@
         android:textSize="30px"/>
 
 
-    <ImageView
-        android:layout_width="25px"
-        android:layout_height="25px"
-        android:layout_marginLeft="275px"
-        android:layout_marginTop="135px"
-        android:src="@mipmap/price_zc"/>
-
     <TextView
         android:id="@+id/tv_price"
         android:layout_width="wrap_content"
@@ -70,7 +63,8 @@
         android:layout_height="25px"
         android:layout_marginLeft="275px"
         android:layout_marginTop="91px"
-        android:src="@mipmap/people_zc"/>
+        android:src="@mipmap/people_zc"
+        android:id="@+id/imageView4"/>
 
     <TextView
         android:id="@+id/tv_people"
@@ -124,5 +118,14 @@
         android:layout_marginTop="180px"
         android:textColor="#ff6645"
         android:textSize="28px"/>
+
+    <ImageView
+        android:layout_width="25px"
+        android:layout_height="25px"
+        android:src="@mipmap/price_zc"
+        android:layout_alignTop="@+id/tv_price"
+        android:layout_alignLeft="@+id/imageView4"
+        android:layout_alignStart="@+id/imageView4"
+        android:id="@+id/imageView5"/>
 
 </RelativeLayout>

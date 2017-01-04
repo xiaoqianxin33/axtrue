@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -415,10 +416,16 @@ public class GameAdFragment extends Fragment {
         final ArrayList<String> paths = new ArrayList<>();
         for (int i = 0; i < mPhotos.size(); i++) {
             Bitmap bitmap = ImageUtils.getBitmap(mPhotos.get(i));
-            Bitmap bitmap1 = ImageUtils.compressByScale(bitmap, 235, 235);
+            Bitmap compressBitmap = ImageEngine.getCompressBitmap(bitmap, mActivity);
+            if (compressBitmap == null) {
+                mToast.setText("当前设置为wifi下才可上传图片，请连接wifi");
+                mToast.show();
+                mProgressDialog.dismiss();
+                return;
+            }
             String fileName = "netbar_ad" + new Date().getTime();
             paths.add(Constant.QINIU_DOMAIN + "/" + fileName);
-            mUploadManager.put(BitmapUtils.toArray(bitmap1), fileName, token, new UpCompletionHandler() {
+            mUploadManager.put(BitmapUtils.toArray(compressBitmap), fileName, token, new UpCompletionHandler() {
                 @Override
                 public void complete(String key, ResponseInfo info, JSONObject response) {
                     if (info.error == null) {
@@ -439,9 +446,10 @@ public class GameAdFragment extends Fragment {
             String s = Arrays.toString(arrString);
             String substring = s.substring(1, s.length() - 1);
             final String replace = substring.replace(" ", "");
-            String url = Constant.HOST + "sendAD&type=1&userId=" + mUser.getUserId() + "&title=" + mTitle +
+            String url = Constant.HOST + "sendAD&type=1&userId=" + mUser.getUserId() + "&title=" + URLEncoder.encode(mTitle, "utf8") +
                     "&gameId=" + mGameId + "&detail=" + URLEncoder.encode(mContent, "UTF-8") + "&startTime=" + URLEncoder.encode(mTime, "UTF-8") + "&maxPeopleNumber=" +
-                    mPeople + "&gameCount=" + mTimes + "&imgs=" + replace + "&playerLevel" + minLevel + "," + maxLevel + "&gamePay=" + mPay + "&cup=" + mCup;
+                    mPeople + "&gameCount=" + mTimes + "&imgs=" + replace + "&playerLevel=" + minLevel + "," + maxLevel + "&gamePay=" + mPay + "&cup=" + mCup;
+            Log.e("TAG", url);
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -458,9 +466,6 @@ public class GameAdFragment extends Fragment {
                             mTvTimes.setText("");
                             mTvPeople.setText("");
                             mGameId = "";
-                            for (int i = 1; i <= mPhotos.size(); i++) {
-                                mPhotosSnpl.removeItem(i);
-                            }
                             mTvTime.setText("");
                         } else {
                             MyUtils.showMsg(mToast, response);

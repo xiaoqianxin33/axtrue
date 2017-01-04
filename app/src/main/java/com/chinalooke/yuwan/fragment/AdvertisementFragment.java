@@ -86,7 +86,7 @@ public class AdvertisementFragment extends Fragment {
         mIvBack.setVisibility(View.GONE);
         mIvArrowHead.setVisibility(View.GONE);
         mTvTitle.setText("广告");
-        mTvSkip.setText("发送");
+        mTvSkip.setText("发布");
 
         mGameAdFragment = new GameAdFragment();
         mPhotoAdFragment = new PhotoAdFragment();

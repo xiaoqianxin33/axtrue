@@ -29,6 +29,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVMobilePhoneVerifyCallback;
+import com.avos.avoscloud.PushService;
 import com.avos.avoscloud.RequestMobileCodeCallback;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.LoginUser;
@@ -125,7 +126,6 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
     private ImgSelConfig mConfig;
     private String mPath;
     private UploadManager mUploadManager;
-    private String mNickName;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,7 +150,6 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         if (!TextUtils.isEmpty(phone)) {
             mphoneRegister.setText(phone);
         }
-
         isNetbar = getIntent().getBooleanExtra("netbar", false);
         mRlRecommend.setVisibility(isNetbar ? View.GONE : View.VISIBLE);
         mRlLicense.setVisibility(isNetbar ? View.VISIBLE : View.GONE);
@@ -244,19 +243,21 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
 
     /**
      * 注册成功跳转页面
+     *
+     * @param result 用户信息
      */
-    private void registerSuccess() {
+    private void registerSuccess(Register.ResultBean result) {
         if (isNetbar) {
             Intent intent = new Intent(this, NetbarInfoActivity.class);
-            intent.putExtra("netbarId", userId);
+            intent.putExtra("netbarId", result.getUserId());
             intent.putExtra("netbarLicense", mPath);
-            intent.putExtra("head", headImg);
-            intent.putExtra("nickName", mNickName);
+            intent.putExtra("head", result.getHeadImg());
+            intent.putExtra("nickName", result.getNickName());
             startActivity(intent);
         } else {
             LoginUser.ResultBean userInfo = new LoginUser.ResultBean();
-            userInfo.setUserId(userId);
-            userInfo.setHeadImg(headImg);
+            userInfo.setUserId(result.getUserId());
+            userInfo.setHeadImg(result.getHeadImg());
             userInfo.setUserType("player");
             try {
                 LoginUserInfoUtils.saveLoginUserInfo(getApplicationContext(),
@@ -264,6 +265,7 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            PushService.subscribe(this, result.getUserId(), MyMessageActivity.class);
             Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
             NetUtil.registerHx(phone, phone);
             Intent intent = new Intent(this, PersonalInfoActivity.class);
@@ -468,9 +470,8 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
                                 Type type = new TypeToken<Register>() {
                                 }.getType();
                                 Register register = gson.fromJson(response, type);
-                                analyzeJson(register.getResult());
                                 //注册成功开始跳转
-                                registerSuccess();
+                                registerSuccess(register.getResult());
                             } else {
                                 try {
                                     JSONObject jsonObject = new JSONObject(response);
@@ -486,7 +487,6 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("TAG", error.getMessage(), error);
                 if (mProgressDialog != null)
                     mProgressDialog.dismiss();
                 mToast.setText("网速不给力啊，换个地方试试");
@@ -496,23 +496,6 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         mQueue.add(stringRequest);
     }
 
-    private void analyzeJson(Register.ResultBean result) {
-        userId = result.getUserId();
-        headImg = result.getHeadImg();
-        mNickName = result.getNickName();
-        if (!isNetbar) {
-            LoginUser.ResultBean resultBean = new LoginUser.ResultBean();
-            resultBean.setUserId(userId);
-            resultBean.setHeadImg(headImg);
-            resultBean.setNickName(mNickName);
-            resultBean.setUserType("player");
-            try {
-                LoginUserInfoUtils.saveLoginUserInfo(getApplicationContext(), LoginUserInfoUtils.KEY, resultBean);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {

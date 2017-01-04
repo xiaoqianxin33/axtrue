@@ -278,6 +278,7 @@ public class WodeFragment extends Fragment {
                             LoginUserInfoUtils.getLoginUserInfoUtils().clearData(mActivity);//清除资料
                             LoginUserInfoUtils.getLoginUserInfoUtils().setUserInfo(null);
                             setCancelDialog();
+                            mRoundedImageView.setImageResource(R.mipmap.placeholder);
                             onResume();
                             ExchangeHelper helper = ExchangeHelper.getHelper(mActivity);
                             try {
