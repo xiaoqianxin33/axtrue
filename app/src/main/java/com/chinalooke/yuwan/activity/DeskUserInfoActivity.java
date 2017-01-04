@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -132,11 +131,9 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
     //判断是否是好友
     private void isUserFriend() {
         String url = Constant.HOST + "isUserFriend&userId=" + mUser.getUserId() + "&friendId=" + mUserId;
-        Log.e("TAG", url);
         final StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.e("TAG", response);
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("Success");

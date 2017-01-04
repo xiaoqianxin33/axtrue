@@ -31,11 +31,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.bean.DeskUserInfo;
 import com.chinalooke.yuwan.bean.GameDesk;
 import com.chinalooke.yuwan.bean.GameDeskDetails;
-import com.chinalooke.yuwan.bean.LevelList;
 import com.chinalooke.yuwan.bean.LoginUser;
-import com.chinalooke.yuwan.bean.UserBalance;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.engine.ImageEngine;
@@ -44,7 +43,6 @@ import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
-import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.chinalooke.yuwan.view.HorizontalListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -774,16 +772,27 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
     }
 
-    //查询余额
+    //检查级别
     private void getUserBalance(final int i) {
-        String url = Constant.HOST + "getUserBalance&userId=" + user.getUserId();
+        String url = Constant.HOST + "getUserInfoWithId&userId=" + user.getUserId();
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (AnalysisJSON.analysisJson(response)) {
-                    UserBalance userBalance = mGson.fromJson(response, UserBalance.class);
-                    String score = userBalance.getResult().getPayMoney();
-                    checkLevel(score, i);
+                    Gson gson = new Gson();
+                    DeskUserInfo deskUserInfo = gson.fromJson(response, DeskUserInfo.class);
+                    String level = deskUserInfo.getResult().getLevel();
+                    String playerLevel = mGameDeskDetails.getResult().getPlayerLevel();
+                    String[] split = playerLevel.split(",");
+                    String min = split[0];
+                    String max = split[1];
+                    if (Integer.parseInt(level) >= Integer.parseInt(min) && Integer.parseInt(level) <= Integer.parseInt(max)) {
+                        sendInternet(i);
+                    } else {
+                        mProgressDialog.dismiss();
+                        mToast.setText("不满足该战场参赛范围，换个战场试试！");
+                        mToast.show();
+                    }
                 } else {
                     mProgressDialog.dismiss();
                     MyUtils.showMsg(mToast, response);
@@ -793,46 +802,11 @@ public class GameDeskActivity extends AutoLayoutActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 mProgressDialog.dismiss();
-                mToast.setText("服务器抽风了，请稍后再试");
+                mToast.setText("服务器抽风了，请稍后重试");
                 mToast.show();
             }
         });
-
         mQueue.add(request);
-    }
-
-    //检查是否符合等级要求
-    private void checkLevel(String score, int i) {
-        String playerLevel = mGameDeskDetails.getResult().getPlayerLevel();
-        String[] split = playerLevel.split(",");
-        String min = split[0];
-        String max = split[1];
-        String least = null;
-        String max1 = null;
-        String level = PreferenceUtils.getPrefString(getApplicationContext(), "level", "");
-        if (!TextUtils.isEmpty(level)) {
-            LevelList levelList = mGson.fromJson(level, LevelList.class);
-            List<LevelList.ResultBean> result = levelList.getResult();
-            for (LevelList.ResultBean resultBean : result) {
-                String levelId = resultBean.getLevelId();
-                if (min.equals(levelId)) {
-                    least = resultBean.getLeast();
-                } else if (max.equals(levelId)) {
-                    max1 = resultBean.getMax();
-                }
-            }
-            if (Integer.parseInt(score) < Integer.parseInt(least) && Integer.parseInt(score) > Integer.parseInt(max1)) {
-                mProgressDialog.dismiss();
-                mToast.setText("不满足该战场参赛范围，换个战场试试！");
-                mToast.show();
-            } else {
-                sendInternet(i);
-            }
-        } else {
-            mProgressDialog.dismiss();
-            mToast.setText("连接失败，请稍后重试");
-            mToast.show();
-        }
     }
 
     class MyLeftAdapter extends BaseAdapter {

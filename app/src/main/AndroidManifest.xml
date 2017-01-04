@@ -290,6 +290,8 @@
         </activity>
         <activity android:name=".activity.ApplyJudgeActivity">
         </activity>
+        <activity android:name=".activity.AppInfoActivity">
+        </activity>
     </application>
 
 </manifest>

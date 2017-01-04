@@ -53,6 +53,7 @@ public class SettingActivity extends AutoLayoutActivity {
                 startActivity(new Intent(this, ImageSettingActivity.class));
                 break;
             case R.id.rl_app:
+                startActivity(new Intent(this, AppInfoActivity.class));
                 break;
             case R.id.rl_help:
                 break;

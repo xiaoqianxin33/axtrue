@@ -83,6 +83,15 @@ public class DeskUserInfo {
         private String userId;
         private String winCount;
         private String sumPlayCount;
+        private String level;
+
+        public String getLevel() {
+            return level;
+        }
+
+        public void setLevel(String level) {
+            this.level = level;
+        }
 
         public String getSumPlayCount() {
             return sumPlayCount;

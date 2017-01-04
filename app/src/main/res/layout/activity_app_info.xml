@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_app_info"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F4F4"
+    tools:context="com.chinalooke.yuwan.activity.AppInfoActivity">
+
+    <include layout="@layout/include_head"/>
+
+    <ImageView
+        android:id="@+id/iv1"
+        android:layout_width="140px"
+        android:layout_height="140px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="160px"
+        android:src="@mipmap/icon_512"/>
+
+    <TextView
+        android:id="@+id/tv_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25px"
+        android:textColor="@color/black_word"
+        android:textSize="@dimen/mid_padding"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_version"
+        android:layout_marginLeft="@dimen/mid_padding"
+        android:layout_marginRight="@dimen/mid_padding"
+        android:layout_marginTop="@dimen/mid_padding"
+        android:background="@drawable/version_shape">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:lineSpacingExtra="2px"
+            android:paddingBottom="12px"
+            android:paddingLeft="12px"
+            android:paddingRight="5px"
+            android:paddingTop="5px"
+            android:text="@string/leixiong1"
+            android:textColor="@color/black_word"
+            android:textSize="@dimen/mid_padding"/>
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60px"
+        android:text="洛阳宇宛网络科技有限公司"
+        android:textColor="@color/shallow_word"
+        android:textSize="28px"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/tv1"
+        android:layout_centerHorizontal="true"
+        android:text="Copyright ©2016-2017"
+        android:textColor="@color/shallow_word"
+        android:textSize="28px"/>
+</RelativeLayout>
