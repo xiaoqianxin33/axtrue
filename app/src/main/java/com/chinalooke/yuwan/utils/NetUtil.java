@@ -44,7 +44,7 @@ public class NetUtil {
             @Override
             public void run() {
                 try {
-                    EMClient.getInstance().createAccount(phone, phone);
+                    EMClient.getInstance().createAccount(phone, "000000");
                     loginHx(phone, s);
                 } catch (HyphenateException e) {
                     e.printStackTrace();
@@ -57,7 +57,7 @@ public class NetUtil {
 
     //登录环信
     public static void loginHx(final String phone, final String nickName) {
-        EMClient.getInstance().login(phone, phone, new EMCallBack() {//回调
+        EMClient.getInstance().login(phone, "000000", new EMCallBack() {//回调
             @Override
             public void onSuccess() {
                 EMClient.getInstance().groupManager().loadAllGroups();

@@ -132,7 +132,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private int mTotalPeople;
     private GameDesk.ResultBean mGameDesk;
     private String mRoomId;
-    private int DESK_TYPE;
     private ProgressDialog mSubmitDialog;
     private boolean isFirst = true;
     private Runnable mRunnable;
@@ -140,6 +139,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private Gson mGson;
     private String mNetBarId;
     private boolean isNetbar = false;
+    private int mType;
 
 
     @Override
@@ -265,10 +265,9 @@ public class GameDeskActivity extends AutoLayoutActivity {
         }
 
         String mOwnerName = mGameDesk.getOwnerName();
-        int DESK_TYPE_PERSONAL = 1;
         if (!TextUtils.isEmpty(mOwnerName)) {
             if ("官方".equals(mOwnerName)) {
-                DESK_TYPE = 0;
+                mType = 0;
                 mOwnerType.setText(mOwnerName);
                 mTvPay.setText("奖金");
                 String cup = mGameDesk.getCup();
@@ -285,7 +284,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     }
                 }
             } else {
-                DESK_TYPE = DESK_TYPE_PERSONAL;
+                mType = 1;
                 mOwnerType.setText("个人");
                 mTvPay.setText("参赛费");
                 String gamePay = mGameDesk.getGamePay();
@@ -333,7 +332,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     mTvExit.setVisibility(View.GONE);
                     mTvStatus.setText("进行中");
                     mTvStatus.setBackgroundResource(R.mipmap.green_round_background);
-                    if (isJoin && DESK_TYPE == DESK_TYPE_PERSONAL) {
+                    if (isJoin) {
                         mTvOk.setVisibility(View.VISIBLE);
                         mTvOk.setText("确认交战结果");
                         setResult();
@@ -650,9 +649,15 @@ public class GameDeskActivity extends AutoLayoutActivity {
         if (NetUtil.is_Network_Available(getApplicationContext())) {
             mSubmitDialog = MyUtils.initDialog("提交结果中", this);
             mSubmitDialog.show();
-            String uri = Constant.HOST + "JudgeWinerForUser&userId=" + user.getUserId() +
-                    "&gameDeskId=" + mGameDeskId;
-            StringRequest request = new StringRequest(uri, new Response.Listener<String>() {
+            String url = null;
+            if (mType == 0)
+                url = Constant.HOST + "JudgeWinerForUser&userId=" + user.getUserId() +
+                        "&gameDeskId=" + mGameDeskId;
+            else if (mType == 1)
+                url = Constant.HOST + "judgeWiner&userId=" + user.getUserId() + "&gameDeskId=" + mGameDeskId
+                        + "&netbarId=" + mGameDesk.getNetBarId() + "&netbarName=" + mGameDesk.getNetBarName()
+                        +"&gameCount=";
+            StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     mSubmitDialog.dismiss();

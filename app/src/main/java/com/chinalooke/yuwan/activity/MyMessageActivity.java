@@ -229,7 +229,7 @@ public class MyMessageActivity extends AutoLayoutActivity {
                         }
                     });
                     break;
-                case "resultGameDesk":
+                case "userGameDesk":
                     viewHolder.mBtnOk.setText("同意");
                     viewHolder.mBtnReJudge.setText("申请重判");
                     viewHolder.mBtnOk.setOnClickListener(new View.OnClickListener() {

@@ -350,7 +350,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
     }
 
@@ -384,7 +383,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
         Platform platform = ShareSDK.getPlatform(name);
         platform.SSOSetting(false);
         platform.setPlatformActionListener(this);//授权监听
-        platform.authorize();
         platform.showUser(null);
     }
 

@@ -15,15 +15,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
-import com.chinalooke.yuwan.config.YuwanApplication;
-import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.bean.DeskUserInfo;
 import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.config.YuwanApplication;
+import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.view.PieChartView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -49,6 +50,8 @@ public class RecordGradeFragment extends Fragment {
     TextView mTvLose;
     @Bind(R.id.tv_run)
     TextView mTvRun;
+    @Bind(R.id.roundedImageView_no)
+    RoundedImageView mRoundedImageViewNo;
     private RequestQueue mQueue;
     private LoginUser.ResultBean mUser;
     private Toast mToast;
@@ -117,7 +120,8 @@ public class RecordGradeFragment extends Fragment {
         easySet(breakCount, mTvRun);
         String sumPlayCount = result.getSumPlayCount();
         easySet(sumPlayCount, mTvTotalFight);
-
+        if (!TextUtils.isEmpty(sumPlayCount))
+            mRoundedImageViewNo.setVisibility(Integer.parseInt(sumPlayCount) == 0 ? View.VISIBLE : View.GONE);
         if (!TextUtils.isEmpty(winCount) && !TextUtils.isEmpty(loseCount) && !TextUtils.isEmpty(breakCount)) {
             List<PieChartView.PieceDataHolder> pieceDataHolders = new ArrayList<>();
             pieceDataHolders.add(new PieChartView.PieceDataHolder(Integer.parseInt(winCount), 0xFFFEC100, ""));

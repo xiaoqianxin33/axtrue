@@ -53,6 +53,16 @@
             android:layout_marginLeft="75px"
             app:circleRadius="130px"/>
 
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/roundedImageView_no"
+            android:layout_width="260px"
+            android:layout_height="260px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="75px"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:src="@mipmap/placeholder"
+            app:riv_oval="true"/>
 
         <ImageView
             android:layout_width="20px"

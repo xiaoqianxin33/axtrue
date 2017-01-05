@@ -77,12 +77,9 @@
             <TextView
                 android:id="@+id/tv_age"
                 style="@style/desk_user_info_text"
+                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="40px"/>
 
-            <TextView
-                android:id="@+id/address"
-                style="@style/desk_user_info_text"
-                android:layout_marginLeft="100px"/>
         </RelativeLayout>
 
     </RelativeLayout>
@@ -138,6 +135,17 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="75px"
             app:circleRadius="130px"/>
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/roundedImageView_no"
+            android:layout_width="260px"
+            android:layout_height="260px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="75px"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/placeholder"
+            android:visibility="gone"
+            app:riv_oval="true"/>
 
 
         <ImageView

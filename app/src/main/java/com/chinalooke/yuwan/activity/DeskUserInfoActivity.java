@@ -51,8 +51,6 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
     TextView mTvName;
     @Bind(R.id.tv_age)
     TextView mTvAge;
-    @Bind(R.id.address)
-    TextView mAddress;
     @Bind(R.id.rl_sex)
     RelativeLayout mRlSex;
     @Bind(R.id.tv_total_fight)
@@ -71,6 +69,8 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
     TextView mTvLocation;
     @Bind(R.id.add_friends)
     TextView mAddFriends;
+    @Bind(R.id.roundedImageView_no)
+    RoundedImageView mRoundedImageViewNo;
     private RequestQueue mQueue;
     private Toast mToast;
     private DeskUserInfo mDeskUserInfo;
@@ -192,9 +192,7 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
 
         String address = result.getAddress();
         if (!TextUtils.isEmpty(address)) {
-            String substring = address.substring(0, 5);
             mTvLocation.setText(address);
-            mAddress.setText(substring);
         }
 
         String winCount = result.getWinCount();
@@ -205,6 +203,8 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
         easySet(breakCount, mTvRun);
         String sumPlayCount = result.getSumPlayCount();
         easySet(sumPlayCount, mTvTotalFight);
+        if (!TextUtils.isEmpty(sumPlayCount))
+            mRoundedImageViewNo.setVisibility(Integer.parseInt(sumPlayCount) == 0 ? View.VISIBLE : View.GONE);
         String phone = result.getPhone();
         if (!TextUtils.isEmpty(phone)) {
             String head = phone.substring(0, 3);
