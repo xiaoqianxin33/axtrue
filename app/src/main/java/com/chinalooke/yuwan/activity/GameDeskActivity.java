@@ -656,7 +656,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             else if (mType == 1)
                 url = Constant.HOST + "judgeWiner&userId=" + user.getUserId() + "&gameDeskId=" + mGameDeskId
                         + "&netbarId=" + mGameDesk.getNetBarId() + "&netbarName=" + mGameDesk.getNetBarName()
-                        + "&gameCount=";
+                        + "&gameCount=" + mGameDeskDetails.getResult().getGameCount();
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
