@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.avos.avoscloud.AVBroadcastReceiver;
 import com.chinalooke.yuwan.R;
+import com.chinalooke.yuwan.activity.GameDeskActivity;
 import com.chinalooke.yuwan.activity.MyMessageActivity;
 import com.chinalooke.yuwan.bean.PushMessage;
 import com.chinalooke.yuwan.db.ExchangeHelper;
@@ -44,7 +45,16 @@ public class MyReceiver extends AVBroadcastReceiver {
                     pushDao.closeLastIterator();
                     boolean leanMessage = PreferenceUtils.getPrefBoolean(context, "leanMessage", true);
                     if (leanMessage) {
-                        Intent intent1 = new Intent(context, MyMessageActivity.class);
+                        Intent intent1 = new Intent();
+                        String type = pushMessage.getType();
+                        if (type.equals("gameDesk")) {
+                            intent1.setClass(context, GameDeskActivity.class);
+                            String temp = pushMessage.getTemp();
+                            String[] split = temp.split(",");
+                            intent1.putExtra("gameDeskId", split[0]);
+                        } else {
+                            intent1.setClass(context, MyMessageActivity.class);
+                        }
                         intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         //PendingIntent主要用来处理即将发生的事,相当于Intent的延时,在这里是用来发送广播通知
                         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);

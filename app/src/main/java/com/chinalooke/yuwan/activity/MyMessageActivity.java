@@ -172,60 +172,23 @@ public class MyMessageActivity extends AutoLayoutActivity {
             if (!TextUtils.isEmpty(content))
                 viewHolder.mTvMessage.setText(content);
             final String temp = pushMessage.getTemp();
-            String[] strings = new String[0];
-            if (temp.contains(",")) {
-                strings = temp.split(",");
-                if (!TextUtils.isEmpty(strings[1])) {
-                    String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), strings[1], 100, 100);
-                    Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mRoundedImageView);
-                }
-            }
+            final String[] split = temp.split(",");
+            String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), split[1], 100, 100);
+            Picasso.with(getApplicationContext()).load(loadImageUrl).into(viewHolder.mRoundedImageView);
             switch (type) {
                 case "userInfo":
                     viewHolder.mBtnReJudge.setText("拒绝");
                     viewHolder.mBtnOk.setText("同意");
-
-                    final String[] finalStrings = strings;
                     viewHolder.mBtnOk.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            addFriendsClick(finalStrings[0], pushMessage, 0);
+                            addFriendsClick(split[0], pushMessage, 0);
                         }
                     });
                     viewHolder.mBtnReJudge.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            addFriendsClick(finalStrings[0], pushMessage, 1);
-                        }
-                    });
-                    break;
-
-                case "joindeskGameDesk":
-                    viewHolder.mBtnReJudge.setText("忽略");
-                    viewHolder.mBtnOk.setText("加入");
-                    final String[] finalStrings1 = strings;
-                    viewHolder.mBtnOk.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (NetUtil.is_Network_Available(getApplicationContext())) {
-                                joinDesk(finalStrings1[0], pushMessage);
-                            } else {
-                                mToast.setText("网络不可用，请检查网络连接");
-                                mToast.show();
-                            }
-                        }
-                    });
-
-                    viewHolder.mBtnReJudge.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            pushMessage.setDone(true);
-                            try {
-                                mPushDao.update(pushMessage);
-                                initData();
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
+                            addFriendsClick(split[0], pushMessage, 1);
                         }
                     });
                     break;
@@ -235,7 +198,7 @@ public class MyMessageActivity extends AutoLayoutActivity {
                     viewHolder.mBtnOk.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            loserConfirm(temp, pushMessage);
+                            loserConfirm(split[0], pushMessage);
                         }
                     });
 
@@ -247,7 +210,7 @@ public class MyMessageActivity extends AutoLayoutActivity {
                                 Bundle bundle = new Bundle();
                                 bundle.putSerializable("message", pushMessage);
                                 intent.putExtras(bundle);
-                                intent.putExtra("id", temp);
+                                intent.putExtra("id", split[0]);
                                 startActivity(intent);
                             } else {
                                 mToast.setText("网络不可用，请检查网络连接");
@@ -258,7 +221,7 @@ public class MyMessageActivity extends AutoLayoutActivity {
                     break;
                 case "gameDesk":
                     viewHolder.mBtnReJudge.setVisibility(View.GONE);
-                    viewHolder.mBtnOk.setText("确定");
+                    viewHolder.mBtnOk.setText("查看");
                     viewHolder.mBtnOk.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -266,6 +229,9 @@ public class MyMessageActivity extends AutoLayoutActivity {
                             try {
                                 mPushDao.update(pushMessage);
                                 initData();
+                                Intent intent = new Intent(MyMessageActivity.this, GameDeskActivity.class);
+                                intent.putExtra("gameDeskId", split[0]);
+                                startActivity(intent);
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
