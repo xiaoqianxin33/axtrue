@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -376,7 +377,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
         }
 
         String gameImage = mGameDesk.getGameImage();
-
         if (!TextUtils.isEmpty(gameImage)) {
             ImageRequest request = new ImageRequest(gameImage, new Response.Listener<Bitmap>() {
                 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -656,7 +656,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             else if (mType == 1)
                 url = Constant.HOST + "judgeWiner&userId=" + user.getUserId() + "&gameDeskId=" + mGameDeskId
                         + "&netbarId=" + mGameDesk.getNetBarId() + "&netbarName=" + mGameDesk.getNetBarName()
-                        +"&gameCount=";
+                        + "&gameCount=";
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -1113,6 +1113,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     //按照游戏桌id取得游戏桌详情
     private void getGameDeskWithId(final String gameDeskId) {
         String url = Constant.HOST + "getGameDeskWithId&gameDeskId=" + gameDeskId;
+        Log.e("TAG", url);
         StringRequest stringRequest = new StringRequest(url,
                 new Response.Listener<String>() {
                     @Override
