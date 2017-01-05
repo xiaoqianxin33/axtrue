@@ -330,11 +330,10 @@ public class BattleFieldFragment extends Fragment {
 
     private void interItem(int i) {
         GameDesk.ResultBean resultBean = mDeskList.get(i);
+        String gameDeskId = resultBean.getGameDeskId();
         Intent intent = new Intent();
         intent.setClass(mActivity, GameDeskActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("gameDesk", resultBean);
-        intent.putExtras(bundle);
+        intent.putExtra("gameDeskId", gameDeskId);
         startActivity(intent);
     }
 

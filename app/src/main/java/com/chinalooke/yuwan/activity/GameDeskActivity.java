@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -33,7 +32,6 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.DeskUserInfo;
-import com.chinalooke.yuwan.bean.GameDesk;
 import com.chinalooke.yuwan.bean.GameDeskDetails;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
@@ -131,7 +129,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private int mLeftSize;
     private int mRightSize;
     private int mTotalPeople;
-    private GameDesk.ResultBean mGameDesk;
+//    private GameDesk.ResultBean mGameDesk;
     private String mRoomId;
     private ProgressDialog mSubmitDialog;
     private boolean isFirst = true;
@@ -216,6 +214,26 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private void initView() {
         isJoin = false;
         GameDeskDetails.ResultBean result = mGameDeskDetails.getResult();
+        String gameImage = result.getGameImage();
+        if (!TextUtils.isEmpty(gameImage)) {
+            ImageRequest request = new ImageRequest(gameImage, new Response.Listener<Bitmap>() {
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onResponse(Bitmap response) {
+                    if (response != null) {
+                        if (mRlImage != null)
+                            mRlImage.setBackground(new BitmapDrawable(getResources(), response));
+                    }
+                }
+            }, mWidthPixels, 390, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+            mQueue.add(request);
+        }
+
         mLeftBeen.clear();
         mRight.clear();
         String peopleNumber = result.getPeopleNumber();
@@ -265,16 +283,16 @@ public class GameDeskActivity extends AutoLayoutActivity {
             }
         }
 
-        String mOwnerName = mGameDesk.getOwnerName();
+        String mOwnerName = result.getOwnerName();
         if (!TextUtils.isEmpty(mOwnerName)) {
             if ("官方".equals(mOwnerName)) {
                 mType = 0;
                 mOwnerType.setText(mOwnerName);
                 mTvPay.setText("奖金");
-                String cup = mGameDesk.getCup();
+                String cup = result.getCup();
                 if (!TextUtils.isEmpty(cup))
                     mTvScore.setText(cup);
-                String netBarId = mGameDesk.getNetBarId();
+                String netBarId = result.getNetbarId();
                 if (!TextUtils.isEmpty(netBarId)) {
                     if (user.getUserId().equals(netBarId)) {
                         isOwner = true;
@@ -288,11 +306,11 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 mType = 1;
                 mOwnerType.setText("个人");
                 mTvPay.setText("参赛费");
-                String gamePay = mGameDesk.getGamePay();
+                String gamePay = result.getGamePay();
                 if (!TextUtils.isEmpty(gamePay))
                     mTvScore.setText(getString(R.string.leixiong_coin, gamePay));
 
-                String ownerId = mGameDesk.getOwnerId();
+                String ownerId = result.getOwnerId();
                 if (!TextUtils.isEmpty(ownerId)) {
                     if (ownerId.equals(user.getUserId())) {
                         mTvExit.setVisibility(View.VISIBLE);
@@ -369,33 +387,10 @@ public class GameDeskActivity extends AutoLayoutActivity {
     }
 
     private void initData() {
-        mGameDesk = (GameDesk.ResultBean) getIntent().getSerializableExtra("gameDesk");
-        mGameDeskId = mGameDesk.getGameDeskId();
-        mNetBarId = mGameDesk.getNetBarId();
+        mGameDeskId = getIntent().getStringExtra("gameDeskId");
         if (!TextUtils.isEmpty(mGameDeskId)) {
             getGameDeskWithId(mGameDeskId);
         }
-
-        String gameImage = mGameDesk.getGameImage();
-        if (!TextUtils.isEmpty(gameImage)) {
-            ImageRequest request = new ImageRequest(gameImage, new Response.Listener<Bitmap>() {
-                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                @Override
-                public void onResponse(Bitmap response) {
-                    if (response != null) {
-                        if (mRlImage != null)
-                            mRlImage.setBackground(new BitmapDrawable(getResources(), response));
-                    }
-                }
-            }, mWidthPixels, 390, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            });
-            mQueue.add(request);
-        }
-
     }
 
     private void setResult() {
@@ -562,7 +557,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private void closeGameDesk() {
         mProgressDialog.setMessage("提交中");
         mProgressDialog.show();
-        String url = Constant.HOST + "closeGameDesk&gameDeskId=" + mGameDesk.getGameDeskId();
+        String url = Constant.HOST + "closeGameDesk&gameDeskId=" + mGameDeskId;
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -605,7 +600,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private void startGame() {
         mProgressDialog.setMessage("提交中");
         mProgressDialog.show();
-        String url = Constant.HOST + "startGame&gameDeskId=" + mGameDesk.getGameDeskId() + "&userId=" + user.getUserId();
+        String url = Constant.HOST + "startGame&gameDeskId=" + mGameDeskId + "&userId=" + user.getUserId();
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -655,7 +650,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                         "&gameDeskId=" + mGameDeskId;
             else if (mType == 1)
                 url = Constant.HOST + "judgeWiner&userId=" + user.getUserId() + "&gameDeskId=" + mGameDeskId
-                        + "&netbarId=" + mGameDesk.getNetBarId() + "&netbarName=" + mGameDesk.getNetBarName()
+                        + "&netbarId=" + mGameDeskDetails.getResult().getNetbarId() + "&netbarName=" + mGameDeskDetails.getResult().getNetBarName()
                         + "&gameCount=" + mGameDeskDetails.getResult().getGameCount();
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
@@ -1002,7 +997,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
      * @param s 判断约战应战方
      */
     private void sendInternet(int s) {
-        String netBarId = mGameDesk.getNetBarId();
+        String netBarId = mGameDeskDetails.getResult().getNetbarId();
         String uri;
         if (TextUtils.isEmpty(netBarId)) {
             uri = Constant.mainUri + "takePartInGameDesk&userId=" + user.getUserId()
@@ -1113,7 +1108,6 @@ public class GameDeskActivity extends AutoLayoutActivity {
     //按照游戏桌id取得游戏桌详情
     private void getGameDeskWithId(final String gameDeskId) {
         String url = Constant.HOST + "getGameDeskWithId&gameDeskId=" + gameDeskId;
-        Log.e("TAG", url);
         StringRequest stringRequest = new StringRequest(url,
                 new Response.Listener<String>() {
                     @Override
@@ -1125,6 +1119,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                             if (gameDesk != null) {
                                 mGameDeskDetails = gameDesk;
                                 mRoomId = mGameDeskDetails.getResult().getRoomId();
+                                mNetBarId = mGameDeskDetails.getResult().getNetbarId();
                                 initView();
                                 isFirst = false;
                             }

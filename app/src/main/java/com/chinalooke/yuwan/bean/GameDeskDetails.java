@@ -96,6 +96,43 @@ public class GameDeskDetails implements Serializable {
         private String startTime;
         private String status;
         private String winer;
+        private String gameImage;
+        private String ownerName;
+        private String cup;
+        private String ownerId;
+
+        public String getOwnerId() {
+            return ownerId;
+        }
+
+        public void setOwnerId(String ownerId) {
+            this.ownerId = ownerId;
+        }
+
+        public String getCup() {
+            return cup;
+        }
+
+        public void setCup(String cup) {
+            this.cup = cup;
+        }
+
+        public String getOwnerName() {
+            return ownerName;
+        }
+
+        public void setOwnerName(String ownerName) {
+            this.ownerName = ownerName;
+        }
+
+        public String getGameImage() {
+            return gameImage;
+        }
+
+        public void setGameImage(String gameImage) {
+            this.gameImage = gameImage;
+        }
+
         private List<WinerForOfficialBean> winerForOfficial;
 
         public String getDetails() {
