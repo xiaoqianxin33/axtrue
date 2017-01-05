@@ -222,7 +222,7 @@ public class MyMessageActivity extends AutoLayoutActivity {
                 case "gameDesk":
                     viewHolder.mBtnReJudge.setVisibility(View.GONE);
                     viewHolder.mBtnOk.setText("查看");
-                    viewHolder.mBtnOk.setOnClickListener(new View.OnClickListener() {
+                    View.OnClickListener gameDeskIdListener = new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             pushMessage.setDone(true);
@@ -236,7 +236,9 @@ public class MyMessageActivity extends AutoLayoutActivity {
                                 e.printStackTrace();
                             }
                         }
-                    });
+                    };
+                    viewHolder.mBtnOk.setOnClickListener(gameDeskIdListener);
+                    viewHolder.mTvMessage.setOnClickListener(gameDeskIdListener);
                     break;
                 case "netbarGameDesk":
                     viewHolder.mBtnReJudge.setVisibility(View.GONE);
