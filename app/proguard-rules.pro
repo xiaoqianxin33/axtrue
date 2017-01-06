@@ -159,6 +159,7 @@
 -keep class com.google.android.gms.** {*;}
 -dontwarn com.squareup.picasso.**
 -keep class com.squareup.picasso.** {*;}
+-keep class com.squareup.picasso.RequestCreator
 -dontwarn okio.**
 
 -keepattributes Signature
@@ -210,7 +211,7 @@
 -dontwarn com.huawei.**
 -keep class com.huawei.**
 
-
+-keep class com.github.** { *; }
 
 #-keep class org.xbill.DNS.** {*;}
 #另外，demo中发送表情的时候使用到反射，需要keep SmileUtils

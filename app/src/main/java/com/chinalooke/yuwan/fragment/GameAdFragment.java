@@ -140,7 +140,6 @@ public class GameAdFragment extends Fragment {
     }
 
     private void initEvent() {
-        mPhotosSnpl.init(mActivity);
         mPhotosSnpl.setDelegate(mActivity);
         mPhotosSnpl.setMaxItemCount(3);
         mActivity.setOnBGAListener(new MainActivity.OnBGAListener() {
@@ -163,7 +162,7 @@ public class GameAdFragment extends Fragment {
 
     private void choicePhotoWrapper() {
         File takePhotoDir = new File(Environment.getExternalStorageDirectory(), "BGAPhotoPickerTakePhoto");
-        startActivityForResult(BGAPhotoPickerActivity.newIntent(mActivity, takePhotoDir, mPhotosSnpl.getMaxItemCount(), mPhotosSnpl.getData(), true), REQUEST_CODE_CHOOSE_PHOTO);
+        startActivityForResult(BGAPhotoPickerActivity.newIntent(mActivity, takePhotoDir, mPhotosSnpl.getMaxItemCount() - mPhotosSnpl.getItemCount(), null, false), REQUEST_CODE_CHOOSE_PHOTO);
     }
 
     @Override

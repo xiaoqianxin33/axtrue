@@ -14,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -42,6 +41,7 @@ import com.chinalooke.yuwan.utils.ImageUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
+import com.chinalooke.yuwan.utils.ViewHelper;
 import com.hyphenate.chat.EMClient;
 import com.lljjcoder.citypickerview.widget.CityPickerView;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -347,10 +347,8 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         });
         dialog.setContentView(inflate);
         dialog.show();
-        WindowManager windowManager = getWindowManager();
-        Display display = windowManager.getDefaultDisplay();
         WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
-        lp.width = display.getWidth(); //设置宽度
+        lp.width = ViewHelper.getDisplayMetrics(getApplicationContext()).widthPixels; //设置宽度
         dialog.getWindow().setAttributes(lp);
     }
 

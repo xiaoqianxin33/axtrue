@@ -254,8 +254,8 @@ public class MyMessageActivity extends AutoLayoutActivity {
                                 e.printStackTrace();
                             }
                             Intent intent = new Intent(MyMessageActivity.this, JudgeActivity.class);
-                            intent.putExtra("gameDeskId", temp);
-                            intent.putExtra("count", temp);
+                            intent.putExtra("gameDeskId", split[0]);
+                            intent.putExtra("count", split[2]);
                             startActivity(intent);
                         }
                     });

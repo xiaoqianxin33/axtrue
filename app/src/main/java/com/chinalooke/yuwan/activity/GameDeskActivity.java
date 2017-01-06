@@ -129,7 +129,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private int mLeftSize;
     private int mRightSize;
     private int mTotalPeople;
-//    private GameDesk.ResultBean mGameDesk;
+    //    private GameDesk.ResultBean mGameDesk;
     private String mRoomId;
     private ProgressDialog mSubmitDialog;
     private boolean isFirst = true;

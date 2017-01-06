@@ -88,8 +88,8 @@ public class ApplyJudgeActivity extends AutoLayoutActivity implements BGASortabl
     }
 
     private void initEvent() {
-        mPhotosSnpl.init(this);
         mPhotosSnpl.setDelegate(this);
+        mPhotosSnpl.setMaxItemCount(9);
     }
 
     private void intData() {
@@ -138,7 +138,7 @@ public class ApplyJudgeActivity extends AutoLayoutActivity implements BGASortabl
             // 拍照后照片的存放目录，改成你自己拍照后要存放照片的目录。如果不传递该参数的话就没有拍照功能
             try {
                 File takePhotoDir = new File(Environment.getExternalStorageDirectory(), "BGAPhotoPickerTakePhoto");
-                startActivityForResult(BGAPhotoPickerActivity.newIntent(this, takePhotoDir, mPhotosSnpl.getMaxItemCount(), mPhotosSnpl.getData(), true), REQUEST_CODE_CHOOSE_PHOTO);
+                startActivityForResult(BGAPhotoPickerActivity.newIntent(this, takePhotoDir, mPhotosSnpl.getMaxItemCount() - mPhotosSnpl.getItemCount(), null, false), REQUEST_CODE_CHOOSE_PHOTO);
             } catch (Exception ignored) {
             }
 
