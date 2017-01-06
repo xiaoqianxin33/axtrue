@@ -487,33 +487,38 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     }
                     break;
                 case R.id.tv_ok:
-                    switch (mStatus) {
-                        case 0:
-                            if (isOwner || isNetbar) {
-                                startGame();
-                            } else {
-                                if (isJoin) {
-                                    showQuitDialog();
+                    if (mGameDeskDetails != null) {
+                        switch (mStatus) {
+                            case 0:
+                                if (isOwner || isNetbar) {
+                                    startGame();
                                 } else {
-                                    showJoinDialog();
+                                    if (isJoin) {
+                                        showQuitDialog();
+                                    } else {
+                                        showJoinDialog();
+                                    }
                                 }
-                            }
-                            break;
-                        case 1:
-                            MyUtils.showNorDialog(GameDeskActivity.this, "提示", "确定提交您为赢家吗？"
-                                    , new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    }, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                            submitWinner();
-                                        }
-                                    });
-                            break;
+                                break;
+                            case 1:
+                                MyUtils.showNorDialog(GameDeskActivity.this, "提示", "确定提交您为赢家吗？"
+                                        , new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        }, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                submitWinner();
+                                            }
+                                        });
+                                break;
+                        }
+                    } else {
+                        mToast.setText("正在获取游戏桌数据，请稍后重试");
+                        mToast.show();
                     }
                     break;
             }
@@ -651,7 +656,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
             else if (mType == 1)
                 url = Constant.HOST + "judgeWiner&userId=" + user.getUserId() + "&gameDeskId=" + mGameDeskId
                         + "&netbarId=" + mGameDeskDetails.getResult().getNetbarId() + "&netbarName=" + mGameDeskDetails.getResult().getNetBarName()
-                        + "&gameCount=" + mGameDeskDetails.getResult().getGameCount();
+                        + "&gameCount=" + mGameDeskDetails.getResult().getNowCount();
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {

@@ -100,6 +100,15 @@ public class GameDeskDetails implements Serializable {
         private String ownerName;
         private String cup;
         private String ownerId;
+        private String nowCount;
+
+        public String getNowCount() {
+            return nowCount;
+        }
+
+        public void setNowCount(String nowCount) {
+            this.nowCount = nowCount;
+        }
 
         public String getOwnerId() {
             return ownerId;
