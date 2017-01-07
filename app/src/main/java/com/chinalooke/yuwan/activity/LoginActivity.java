@@ -15,6 +15,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,6 +72,8 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     TextView mTvTitle;
     @Bind(R.id.tv_skip)
     TextView mTvSkip;
+    @Bind(R.id.rl_load)
+    RelativeLayout mRlLoad;
     private String phone;
     private String passWord;
     private RequestQueue mQueue;
@@ -326,6 +329,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     }
 
     private void analysisJson(String response) {
+        mRlLoad.setVisibility(View.GONE);
         if (AnalysisJSON.analysisJson(response)) {
             Gson gson = new Gson();
             Type type = new TypeToken<LoginUser>() {
@@ -380,6 +384,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
      * @param name name
      */
     private void disanfangLogin(String name) {
+        mRlLoad.setVisibility(View.VISIBLE);
         Platform platform = ShareSDK.getPlatform(name);
         platform.SSOSetting(false);
         platform.setPlatformActionListener(this);//授权监听
@@ -414,6 +419,7 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
                         } else {
                             String msg = jsonObject.getString("Msg");
                             if ("无该签权".equals(msg)) {
+                                mRlLoad.setVisibility(View.GONE);
                                 Intent intent = new Intent(LoginActivity.this, BindPhoneActivity.class);
                                 intent.putExtra("auth", token);
                                 startActivity(intent);
@@ -447,7 +453,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
             public void onResponse(String response) {
                 phone = phone1;
                 analysisJson(response);
-                mProgressDialog.dismiss();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -462,11 +467,13 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     //授权出错
     @Override
     public void onError(Platform platform, int i, Throwable throwable) {
+        mHandler.sendEmptyMessage(0);
     }
 
     //取消授权
     @Override
     public void onCancel(Platform platform, int i) {
+        mHandler.sendEmptyMessage(0);
 
     }
 
