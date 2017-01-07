@@ -421,7 +421,7 @@ public class JudgeActivity extends AutoLayoutActivity {
      * @param rating 玩家名次
      */
     private void submitRating(String userId, String rating) {
-        String url = Constant.HOST + "JudgeWinerForNetbar&netbarId=" + mUser.getUserId() + "&netbarUserId=" + mUser.getUserId()
+        String url = Constant.HOST + "JudgeWinerForNetbar&netbarId=" + mUser.getNetBarId() + "&netbarUserId=" + mUser.getUserId()
                 + "&gameDeskId=" + mGameDeskId + "&gameCount=" + mCount + "&userId=" + userId + "&rating=" + rating;
 
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {

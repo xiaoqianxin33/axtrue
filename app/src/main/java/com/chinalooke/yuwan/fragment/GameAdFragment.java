@@ -445,7 +445,7 @@ public class GameAdFragment extends Fragment {
             String s = Arrays.toString(arrString);
             String substring = s.substring(1, s.length() - 1);
             final String replace = substring.replace(" ", "");
-            String url = Constant.HOST + "sendAD&type=1&userId=" + mUser.getUserId() + "&title=" + URLEncoder.encode(mTitle, "utf8") +
+            String url = Constant.HOST + "sendAD&type=1&userId=" + mUser.getNetBarId() + "&title=" + URLEncoder.encode(mTitle, "utf8") +
                     "&gameId=" + mGameId + "&detail=" + URLEncoder.encode(mContent, "UTF-8") + "&startTime=" + URLEncoder.encode(mTime, "UTF-8") + "&maxPeopleNumber=" +
                     mPeople + "&gameCount=" + mTimes + "&imgs=" + replace + "&playerLevel=" + minLevel + "," + maxLevel + "&gamePay=" + mPay + "&cup=" + mCup;
             Log.e("TAG", url);

@@ -72,7 +72,16 @@ public class LoginUser implements Serializable {
         private String userId;
         private String license;
         private String userType;
+        private String netBarId;
         private String[] gameId;
+
+        public String getNetBarId() {
+            return netBarId;
+        }
+
+        public void setNetBarId(String netBarId) {
+            this.netBarId = netBarId;
+        }
 
         public String getLicense() {
             return license;

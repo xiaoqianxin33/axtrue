@@ -71,6 +71,7 @@ public class HistoryFragment extends Fragment {
     private boolean isFirst = true;
     private View mFoot;
     private boolean isLoading = false;
+    private MyAdapter mMyAdapter;
 
     @Nullable
     @Override
@@ -133,13 +134,12 @@ public class HistoryFragment extends Fragment {
 
     //获得网吧结束的游戏桌
     private void getGameDeskListWithStatus() {
-        String url = Constant.HOST + "getGameDeskListWithStatus&gameStatus=2" + "&pageNo=" + PAGE + "&pageSize=5&netbarId=" + mUser.getUserId();
+        String url = Constant.HOST + "getGameDeskListWithStatus&gameStatus=2" + "&pageNo=" + PAGE + "&pageSize=5&netbarId=" + mUser.getNetBarId();
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (mPbLoad != null)
                     mPbLoad.setVisibility(View.GONE);
-                response = "{Success: true,Result: [{ownerName: \"官方\",cup:\"1:500|2:300\",ownerId: null,winers: null,curPlayNum: \"1\",playerNum: \"5\",winnerTeam: \"\",isUserWin: \"\",gameDeskId: \"141\",gameName: \"守望先锋\",netBarId: \"14\",gameImage: \"http://image.lyyuwan.com/57b575f7d0415.jpeg\",startTime:\"2016-12-31 13:50:12\",netBarName: \"小辣椒\",winers:[{userId:\"1\",rating:\"1\",nickName:\"第一名\",money:\"100\"},{userId:\"1\",rating:\"2\",nickName:\"江飞\",money:\"50\"},{userId:\"1\",rating:\"3\",nickName:\"nice江飞\",money:\"50\"}]}],Msg: \"\"}";
                 if (AnalysisJSON.analysisJson(response)) {
                     if (mTvNone != null)
                         mTvNone.setVisibility(View.GONE);
@@ -151,6 +151,21 @@ public class HistoryFragment extends Fragment {
                             if (isFresh)
                                 mDeskList.clear();
                             mDeskList.addAll(result);
+                            mMyAdapter.notifyDataSetChanged();
+                        } else {
+                            if (isFirst) {
+                                mTvNone.setVisibility(View.VISIBLE);
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    String msg = jsonObject.getString("Msg");
+                                    if (!TextUtils.isEmpty(msg))
+                                        mTvNone.setText(msg);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                mListView.addFooterView(mFoot);
+                            }
                         }
                     }
                     isLoading = false;
@@ -193,6 +208,8 @@ public class HistoryFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+        mMyAdapter = new MyAdapter(mDeskList);
+        mListView.setAdapter(mMyAdapter);
     }
 
     @Override

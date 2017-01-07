@@ -90,7 +90,6 @@ public class BattleFieldFragment extends Fragment {
     @Bind(R.id.expandTabView)
     ExpandTabView expandTabView;
 
-
     private RequestQueue mQueue;
     private int mWidth;
     private List<View> mAdList = new ArrayList<>();
@@ -421,7 +420,7 @@ public class BattleFieldFragment extends Fragment {
     private void getGameDeskListWithStatus() {
         String uri = Constant.HOST + "getGameDeskListWithStatus&gameStatus=" + CURRENT_STATUS + "&pageNo=" + PAGE + "&pageSize=5&keywords=" + KEY_WORDS;
         if (isNetbar)
-            uri = uri + "&netbarId=" + user.getUserId();
+            uri = uri + "&netbarId=" + user.getNetBarId();
         if (NetUtil.is_Network_Available(mActivity)) {
             StringRequest stringRequest = new StringRequest(uri,
                     new Response.Listener<String>() {

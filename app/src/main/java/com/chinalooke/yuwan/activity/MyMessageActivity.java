@@ -260,6 +260,16 @@ public class MyMessageActivity extends AutoLayoutActivity {
                         }
                     });
                     break;
+                case "winnerConfirm":
+                    viewHolder.mBtnReJudge.setVisibility(View.GONE);
+                    viewHolder.mBtnOk.setText("确认");
+                    viewHolder.mBtnOk.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            winnerConfirm(split[0], pushMessage);
+                        }
+                    });
+                    break;
             }
             return convertView;
         }
@@ -282,43 +292,81 @@ public class MyMessageActivity extends AutoLayoutActivity {
         }
     }
 
-    //点击加入游戏桌事件
-    private void joinDesk(String s, final PushMessage pushMessage) {
+    //玩家确认奖金到位
+    private void winnerConfirm(String deskId, final PushMessage pushMessage) {
         mProgressDialog.show();
-        String url = Constant.HOST + "takePartInGameDesk&userId=" + mUser.getUserId() +
-                "&gameDeskId=" + s + "&role=1";
+        String url = Constant.HOST + "winnerConfirm&userId=" + mUser.getUserId() + "&gameDeskId=" + deskId;
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 mProgressDialog.dismiss();
-                if (AnalysisJSON.analysisJson(response)) {
-                    pushMessage.setDone(true);
-                    try {
-                        mPushDao.update(pushMessage);
-                        initData();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                    MyUtils.showDialog(MyMessageActivity.this, "提示", "加入战场成功！", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    boolean success = jsonObject.getBoolean("Success");
+                    if (success) {
+                        boolean result = jsonObject.getBoolean("Result");
+                        if (result) {
+                            pushMessage.setDone(true);
+                            mPushDao.update(pushMessage);
+                            initData();
+                        } else {
+                            MyUtils.showMsg(mToast, response);
                         }
-                    });
-                } else {
-                    MyUtils.showMsg(mToast, response);
+                    } else {
+                        MyUtils.showMsg(mToast, response);
+                    }
+                } catch (JSONException | SQLException e) {
+                    e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 mProgressDialog.dismiss();
-                mToast.setText("服务器抽风了，请稍后再试");
+                mToast.setText("服务器抽风了，请稍后重试");
                 mToast.show();
             }
         });
         mQueue.add(request);
     }
+
+//    //点击加入游戏桌事件
+//    private void joinDesk(String s, final PushMessage pushMessage) {
+//        mProgressDialog.show();
+//        String url = Constant.HOST + "takePartInGameDesk&userId=" + mUser.getUserId() +
+//                "&gameDeskId=" + s + "&role=1";
+//        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                mProgressDialog.dismiss();
+//                if (AnalysisJSON.analysisJson(response)) {
+//                    pushMessage.setDone(true);
+//                    try {
+//                        mPushDao.update(pushMessage);
+//                        initData();
+//                    } catch (SQLException e) {
+//                        e.printStackTrace();
+//                    }
+//                    MyUtils.showDialog(MyMessageActivity.this, "提示", "加入战场成功！", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                } else {
+//                    MyUtils.showMsg(mToast, response);
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                mProgressDialog.dismiss();
+//                mToast.setText("服务器抽风了，请稍后再试");
+//                mToast.show();
+//            }
+//        });
+//        mQueue.add(request);
+//    }
 
     //同意添加好友事件
     private void addFriendsClick(String str, final PushMessage pushMessage, int i) {

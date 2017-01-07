@@ -16,11 +16,9 @@ import android.widget.TextView;
 
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
-import com.chinalooke.yuwan.db.DBManager;
 import com.chinalooke.yuwan.bean.GameMessage;
-import com.chinalooke.yuwan.bean.LoginUser;
+import com.chinalooke.yuwan.db.DBManager;
 import com.chinalooke.yuwan.engine.ImageEngine;
-import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
@@ -127,20 +125,8 @@ public class FrequentlyGameActivity extends AutoLayoutActivity {
         isNetbar = getIntent().getBooleanExtra("isNetbar", false);
         if (isYueZhan || isNetbar) {
             mSavePersonalInfo.setVisibility(View.GONE);
-            if (isYueZhan) {
-                LoginUser.ResultBean userInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
-                assert userInfo != null;
-                String[] gameId = userInfo.getGameId();
-                for (String id : gameId) {
-                    GameMessage.ResultBean resultBean = dbManager.queryById(id);
-                    mResult.add(resultBean);
-                }
-            } else if (isNetbar) {
-                mResult = dbManager.query();
-            }
-        } else {
-            mResult = dbManager.query();
         }
+        mResult = dbManager.query();
         for (int i = 0; i < mResult.size(); i++) {
             GameMessage.ResultBean resultBean = mResult.get(i);
             mHashMap.put(resultBean, "0");

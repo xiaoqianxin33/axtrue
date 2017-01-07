@@ -86,6 +86,8 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
             if (msg.what == 1) {
                 String token = (String) msg.obj;
                 afterThirdLogin(token);
+            } else if (msg.what == 0) {
+                mRlLoad.setVisibility(View.GONE);
             }
         }
     };
@@ -474,7 +476,6 @@ public class LoginActivity extends AutoLayoutActivity implements PlatformActionL
     @Override
     public void onCancel(Platform platform, int i) {
         mHandler.sendEmptyMessage(0);
-
     }
 
     @Override

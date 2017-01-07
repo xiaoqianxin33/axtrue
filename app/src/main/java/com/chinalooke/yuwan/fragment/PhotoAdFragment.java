@@ -178,7 +178,7 @@ public class PhotoAdFragment extends Fragment {
         String substring = s.substring(1, s.length() - 1);
         final String replace = substring.replace(" ", "");
         try {
-            String url = Constant.HOST + "sendAD&type=1&userId=" + mUser.getUserId() + "&title=" + mTitle +
+            String url = Constant.HOST + "sendAD&type=1&userId=" + mUser.getNetBarId() + "&title=" + mTitle +
                     "&detail=" + URLEncoder.encode(mContent, "UTF-8") + "&imgs=" + replace;
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
