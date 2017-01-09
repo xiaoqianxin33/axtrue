@@ -241,11 +241,11 @@ public class WodeFragment extends Fragment {
                 break;
             case R.id.tv_name:
                 if (user == null)
-                    MyUtils.showLoginDialog(mActivity);
+                    startActivity(new Intent(mActivity, LoginActivity.class));
                 break;
             case R.id.roundedImageView:
                 if (user == null)
-                    MyUtils.showLoginDialog(mActivity);
+                    startActivity(new Intent(mActivity, LoginActivity.class));
                 else {
                     startActivity(new Intent(mActivity, UserInfoActivity.class));
                 }

@@ -1,6 +1,7 @@
 package com.chinalooke.yuwan.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 圈子详情实体类
@@ -73,8 +74,7 @@ public class CircleDetail implements Serializable {
         private String ownerId;
         private String userId;
         private String views;
-        // TODO: 2017/1/9 等待服务端修改
-//        private List<GamesBean> games;
+        private List<GamesBean> games;
 
         public String getAddress() {
             return address;
@@ -172,13 +172,13 @@ public class CircleDetail implements Serializable {
             this.views = views;
         }
 
-//        public List<GamesBean> getGames() {
-//            return games;
-//        }
+        public List<GamesBean> getGames() {
+            return games;
+        }
 
-//        public void setGames(List<GamesBean> games) {
-//            this.games = games;
-//        }
+        public void setGames(List<GamesBean> games) {
+            this.games = games;
+        }
 
         public static class GamesBean implements Serializable {
             /**

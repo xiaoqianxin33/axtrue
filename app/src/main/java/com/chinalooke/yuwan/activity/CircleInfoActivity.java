@@ -1,7 +1,10 @@
 package com.chinalooke.yuwan.activity;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -16,6 +19,9 @@ import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
+import com.zhy.autolayout.utils.AutoUtils;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -56,7 +62,7 @@ public class CircleInfoActivity extends AutoLayoutActivity {
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         mCircle = (Circle.ResultBean) getIntent().getSerializableExtra("circle");
         mCircleDetail = (CircleDetail) getIntent().getSerializableExtra("circleDetail");
-//        setGame();
+        setGame();
     }
 
     private void initView() {
@@ -87,31 +93,28 @@ public class CircleInfoActivity extends AutoLayoutActivity {
         String details = mCircle.getDetails();
         if (!TextUtils.isEmpty(details))
             mTvCircleExpalin.setText(details);
-//        setGame();
-
     }
-//
-// TODO: 2017/1/9 等待服务端修改
-//    //设置游戏
-//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-//    private void setGame() {
-//        List<CircleDetail.ResultBean.GamesBean> games = mCircleDetail.getResult().getGames();
-//        if (games != null && games.size() != 0) {
-//            for (CircleDetail.ResultBean.GamesBean gamesBean : games) {
-//                String thumb = gamesBean.getThumb();
-//                if (!TextUtils.isEmpty(thumb)) {
-//                    RoundedImageView imageView = new RoundedImageView(getApplicationContext());
-//                    imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(60, 60));
-//                    imageView.setPaddingRelative(5, 0, 5, 0);
-//                    String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), thumb, 60, 60);
-//                    Picasso.with(this).load(loadImageUrl).into(imageView);
-//                    imageView.setOval(true);
-//                    AutoUtils.autoSize(imageView);
-//                    mLlGame.addView(imageView);
-//                }
-//            }
-//        }
-//    }
+
+    //设置游戏
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void setGame() {
+        List<CircleDetail.ResultBean.GamesBean> games = mCircleDetail.getResult().getGames();
+        if (games != null && games.size() != 0) {
+            for (CircleDetail.ResultBean.GamesBean gamesBean : games) {
+                String thumb = gamesBean.getThumb();
+                if (!TextUtils.isEmpty(thumb)) {
+                    RoundedImageView imageView = new RoundedImageView(getApplicationContext());
+                    imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(60, 60));
+                    imageView.setPaddingRelative(5, 0, 5, 0);
+                    String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), thumb, 60, 60);
+                    Picasso.with(this).load(loadImageUrl).into(imageView);
+                    imageView.setOval(true);
+                    AutoUtils.autoSize(imageView);
+                    mLlGame.addView(imageView);
+                }
+            }
+        }
+    }
 
     //设置头像
     private void setHeadImg(String headImg) {

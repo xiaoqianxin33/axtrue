@@ -158,6 +158,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
         if (user != null) {
             if (user.getUserType().equals("netbar"))
                 isNetbar = true;
+        } else {
+            isNetbar = false;
         }
         initData();
         initEvent();
@@ -264,23 +266,27 @@ public class GameDeskActivity extends AutoLayoutActivity {
             mPersonYuezhan.setText(getString(R.string.battlefield_people, mTotalPeople));
             mPersonYingzhan.setText(getString(R.string.battlefield_people, mTotalPeople));
         }
-        String userId = user.getUserId();
-        for (GameDeskDetails.ResultBean.PlayersBean.LeftBean leftBean : mLeftBeen) {
-            if (userId.equals(leftBean.getUserId())) {
-                isJoin = true;
-                break;
+
+        if (user != null) {
+            String userId = user.getUserId();
+            for (GameDeskDetails.ResultBean.PlayersBean.LeftBean leftBean : mLeftBeen) {
+                if (userId.equals(leftBean.getUserId())) {
+                    isJoin = true;
+                    break;
+                }
+            }
+            for (GameDeskDetails.ResultBean.PlayersBean.RightBean rightBean : mRight) {
+                if (userId.equals(rightBean.getUserId())) {
+                    isJoin = true;
+                    break;
+                }
             }
         }
 
         String details = result.getDetails();
         if (!TextUtils.isEmpty(details))
             mTvRule.setText(details);
-        for (GameDeskDetails.ResultBean.PlayersBean.RightBean rightBean : mRight) {
-            if (userId.equals(rightBean.getUserId())) {
-                isJoin = true;
-                break;
-            }
-        }
+
 
         String mOwnerName = result.getOwnerName();
         if (!TextUtils.isEmpty(mOwnerName)) {
@@ -293,9 +299,14 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     mTvScore.setText(cup);
                 String netBarId = result.getNetbarId();
                 if (!TextUtils.isEmpty(netBarId)) {
-                    if (user.getUserId().equals(netBarId)) {
-                        isOwner = true;
-                        mTvExit.setVisibility(View.VISIBLE);
+                    if (user != null) {
+                        if (user.getUserId().equals(netBarId)) {
+                            isOwner = true;
+                            mTvExit.setVisibility(View.VISIBLE);
+                        } else {
+                            mTvExit.setVisibility(View.GONE);
+                            isOwner = false;
+                        }
                     } else {
                         mTvExit.setVisibility(View.GONE);
                         isOwner = false;
@@ -311,9 +322,14 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
                 String ownerId = result.getOwnerId();
                 if (!TextUtils.isEmpty(ownerId)) {
-                    if (ownerId.equals(user.getUserId())) {
-                        mTvExit.setVisibility(View.VISIBLE);
-                        isOwner = true;
+                    if (user != null) {
+                        if (ownerId.equals(user.getUserId())) {
+                            mTvExit.setVisibility(View.VISIBLE);
+                            isOwner = true;
+                        } else {
+                            mTvExit.setVisibility(View.GONE);
+                            isOwner = false;
+                        }
                     } else {
                         mTvExit.setVisibility(View.GONE);
                         isOwner = false;
@@ -452,18 +468,22 @@ public class GameDeskActivity extends AutoLayoutActivity {
             lastClickTime = currentTime;
             switch (view.getId()) {
                 case R.id.tv_exit:
-                    MyUtils.showNorDialog(this, "提示", "确定解散该游戏桌吗？", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            closeGameDesk();
-                        }
-                    });
+                    if (user != null) {
+                        MyUtils.showNorDialog(this, "提示", "确定解散该游戏桌吗？", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                closeGameDesk();
+                            }
+                        });
+                    } else {
+                        MyUtils.showLoginDialog(this);
+                    }
                     break;
                 case R.id.iv_back:
                     finish();
@@ -486,38 +506,42 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     }
                     break;
                 case R.id.tv_ok:
-                    if (mGameDeskDetails != null) {
-                        switch (mStatus) {
-                            case 0:
-                                if (isOwner || isNetbar) {
-                                    startGame();
-                                } else {
-                                    if (isJoin) {
-                                        showQuitDialog();
+                    if (user != null) {
+                        if (mGameDeskDetails != null) {
+                            switch (mStatus) {
+                                case 0:
+                                    if (isOwner || isNetbar) {
+                                        startGame();
                                     } else {
-                                        showJoinDialog();
+                                        if (isJoin) {
+                                            showQuitDialog();
+                                        } else {
+                                            showJoinDialog();
+                                        }
                                     }
-                                }
-                                break;
-                            case 1:
-                                MyUtils.showNorDialog(GameDeskActivity.this, "提示", "确定提交您为赢家吗？"
-                                        , new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                            }
-                                        }, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                                submitWinner();
-                                            }
-                                        });
-                                break;
+                                    break;
+                                case 1:
+                                    MyUtils.showNorDialog(GameDeskActivity.this, "提示", "确定提交您为赢家吗？"
+                                            , new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            }, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                    submitWinner();
+                                                }
+                                            });
+                                    break;
+                            }
+                        } else {
+                            mToast.setText("正在获取游戏桌数据，请稍后重试");
+                            mToast.show();
                         }
                     } else {
-                        mToast.setText("正在获取游戏桌数据，请稍后重试");
-                        mToast.show();
+                        MyUtils.showLoginDialog(this);
                     }
                     break;
             }

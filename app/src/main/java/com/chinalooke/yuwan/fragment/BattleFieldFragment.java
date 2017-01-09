@@ -201,11 +201,7 @@ public class BattleFieldFragment extends Fragment {
                 long currentTime = Calendar.getInstance().getTimeInMillis();
                 if (currentTime - itemLastClickTime > 2000) {
                     itemLastClickTime = currentTime;
-                    if (user == null) {
-                        MyUtils.showLoginDialog(mActivity);
-                    } else {
-                        interItem(i);
-                    }
+                    interItem(i);
                 }
             }
         });
@@ -354,7 +350,7 @@ public class BattleFieldFragment extends Fragment {
         mViewMiddle = new ViewMiddle(mActivity);
         mViewRight = new ViewRight(mActivity);
         getGameTypeList();
-        initVaule();
+        initValue();
     }
 
     //查询所有游戏分类
@@ -383,7 +379,7 @@ public class BattleFieldFragment extends Fragment {
         mQueue.add(request);
     }
 
-    private void initVaule() {
+    private void initValue() {
         mViewArray.add(mViewLeft);
         mViewArray.add(mViewRight);
         mViewArray.add(mViewMiddle);
