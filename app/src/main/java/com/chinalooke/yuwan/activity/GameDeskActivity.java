@@ -33,6 +33,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.DeskUserInfo;
 import com.chinalooke.yuwan.bean.GameDeskDetails;
+import com.chinalooke.yuwan.bean.LevelList;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
@@ -42,6 +43,7 @@ import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
+import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.chinalooke.yuwan.view.HorizontalListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -111,6 +113,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
     ImageView mIvArrow;
     @Bind(R.id.tv_exit)
     TextView mTvExit;
+    @Bind(R.id.tv_score_area)
+    TextView mTvScoreArea;
 
     private List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> mLeftBeen = new ArrayList<>();
     private List<GameDeskDetails.ResultBean.PlayersBean.RightBean> mRight = new ArrayList<>();
@@ -137,7 +141,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
     private Gson mGson;
     private String mNetBarId;
     private boolean isNetbar = false;
-    private int mType;
+    private int mType = 1;
 
 
     @Override
@@ -287,9 +291,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
         if (!TextUtils.isEmpty(details))
             mTvRule.setText(details);
 
-
         String mOwnerName = result.getOwnerName();
-        if (!TextUtils.isEmpty(mOwnerName)) {
+        if (mOwnerName != null) {
             if ("官方".equals(mOwnerName)) {
                 mType = 0;
                 mOwnerType.setText(mOwnerName);
@@ -336,6 +339,33 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     }
                 }
             }
+
+        }
+
+        String playerLevel = result.getPlayerLevel();
+        if (!TextUtils.isEmpty(playerLevel)) {
+            String[] split = playerLevel.split(",");
+            String min = split[0];
+            String max = split[1];
+            String least = null;
+            String max1 = null;
+            String level = PreferenceUtils.getPrefString(getApplicationContext(), "level", "");
+            if (!TextUtils.isEmpty(level)) {
+                Gson gson = new Gson();
+                LevelList levelList = gson.fromJson(level, LevelList.class);
+                List<LevelList.ResultBean> result1 = levelList.getResult();
+                if (result1 != null) {
+                    for (LevelList.ResultBean resultBean : result1) {
+                        String levelName = resultBean.getLevelName();
+                        if (levelName.equals(min)) {
+                            least = resultBean.getLeast();
+                        } else if (levelName.equals(max)) {
+                            max1 = resultBean.getMax();
+                        }
+                    }
+                }
+            }
+            mTvScoreArea.setText(least + "至" + max1);
         }
 
         mTvChat.setEnabled(isJoin);
@@ -368,7 +398,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                     mTvStatus.setBackgroundResource(R.mipmap.green_round_background);
                     if (isJoin) {
                         mTvOk.setVisibility(View.VISIBLE);
-                        mTvOk.setText("确认交战结果");
+                        mTvOk.setText("提交赢家");
                         setResult();
                     } else {
                         mTvOk.setVisibility(View.GONE);
@@ -521,7 +551,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                                     }
                                     break;
                                 case 1:
-                                    MyUtils.showNorDialog(GameDeskActivity.this, "提示", "确定提交您为赢家吗？"
+                                    MyUtils.showNorDialog(GameDeskActivity.this, "确认是你赢了吗？", "赢家确认赢后，对方战队一人会收到推送消息确认交战结果，确认后，获胜方赢得奖励！"
                                             , new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
@@ -673,10 +703,10 @@ public class GameDeskActivity extends AutoLayoutActivity {
             mSubmitDialog = MyUtils.initDialog("提交结果中", this);
             mSubmitDialog.show();
             String url = null;
-            if (mType == 0)
+            if (mType == 1)
                 url = Constant.HOST + "JudgeWinerForUser&userId=" + user.getUserId() +
                         "&gameDeskId=" + mGameDeskId;
-            else if (mType == 1)
+            else if (mType == 0)
                 url = Constant.HOST + "judgeWiner&userId=" + user.getUserId() + "&gameDeskId=" + mGameDeskId
                         + "&netbarId=" + mGameDeskDetails.getResult().getNetbarId() + "&netbarName=" + mGameDeskDetails.getResult().getNetBarName()
                         + "&gameCount=" + mGameDeskDetails.getResult().getNowCount();

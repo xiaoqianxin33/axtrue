@@ -154,6 +154,7 @@ public class ChosePayActivity extends AutoLayoutActivity {
                 assert result != null;
                 switch (result) {
                     case "success":
+                        // TODO: 2017/1/9 做一个支付成功页面
                         mToast.setText("支付成功");
                         mToast.show();
                         finish();
@@ -179,13 +180,5 @@ public class ChosePayActivity extends AutoLayoutActivity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
-//    //保存账单
-//    private void savePayInfo() {
-//        String url = Constant.HOST + "savePayInfo&payTime=" + DateUtils.getCurrentDateTime() + "&payMoney="
-//                + mResultBean.getMoney() + "&userId" + mUserId;
-//        StringRequest request = new StringRequest(url, null, null);
-//        mQueue.add(request);
-//    }
 
 }

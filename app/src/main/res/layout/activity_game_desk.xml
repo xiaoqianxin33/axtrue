@@ -336,6 +336,40 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/rl_score"
+                    android:layout_width="match_parent"
+                    android:layout_height="80px">
+
+
+                    <ImageView
+                        android:layout_width="@dimen/small_padding"
+                        android:layout_height="@dimen/small_padding"
+                        android:layout_marginLeft="30px"
+                        android:layout_marginTop="47px"
+                        android:src="@mipmap/game_desk_quan"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="70px"
+                        android:layout_marginTop="42px"
+                        android:text="积分范围"
+                        android:textColor="#fecc2c"
+                        android:textSize="30px"/>
+
+                    <TextView
+                        android:id="@+id/tv_score_area"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="230px"
+                        android:layout_marginRight="56px"
+                        android:layout_marginTop="40px"
+                        android:lineSpacingExtra="3dp"
+                        android:textColor="#848789"
+                        android:textSize="30px"/>
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:id="@+id/rl_rule"
                     android:layout_width="match_parent"
                     android:layout_height="120px">
@@ -368,6 +402,7 @@
                         android:textColor="#848789"
                         android:textSize="30px"/>
                 </RelativeLayout>
+
 
                 <ImageView
                     android:id="@+id/iv_arrow"
