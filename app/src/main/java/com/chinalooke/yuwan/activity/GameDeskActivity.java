@@ -251,7 +251,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
         if (mTvFightNumber != null)
             mTvFightNumber.setText(mTotalPeople + "VS" + mTotalPeople);
         GameDeskDetails.ResultBean.PlayersBean players = result.getPlayers();
-        if (players != null) {
+        if (players != null && mPersonYuezhan != null) {
             List<GameDeskDetails.ResultBean.PlayersBean.LeftBean> left = players.getLeft();
             if (left != null) {
                 mLeftBeen = players.getLeft();
@@ -288,11 +288,11 @@ public class GameDeskActivity extends AutoLayoutActivity {
         }
 
         String details = result.getDetails();
-        if (!TextUtils.isEmpty(details))
+        if (!TextUtils.isEmpty(details) && mTvRule != null)
             mTvRule.setText(details);
 
         String mOwnerName = result.getOwnerName();
-        if (mOwnerName != null) {
+        if (mOwnerName != null && mTvPay != null && mOwnerType != null && mTvScore != null) {
             if ("官方".equals(mOwnerName)) {
                 mType = 0;
                 mOwnerType.setText(mOwnerName);
@@ -343,7 +343,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
         }
 
         String playerLevel = result.getPlayerLevel();
-        if (!TextUtils.isEmpty(playerLevel)) {
+        if (!TextUtils.isEmpty(playerLevel) && mTvScoreArea != null) {
             String[] split = playerLevel.split(",");
             String min = split[0];
             String max = split[1];
@@ -710,6 +710,7 @@ public class GameDeskActivity extends AutoLayoutActivity {
                 url = Constant.HOST + "judgeWiner&userId=" + user.getUserId() + "&gameDeskId=" + mGameDeskId
                         + "&netbarId=" + mGameDeskDetails.getResult().getNetbarId() + "&netbarName=" + mGameDeskDetails.getResult().getNetBarName()
                         + "&gameCount=" + mGameDeskDetails.getResult().getNowCount();
+
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
