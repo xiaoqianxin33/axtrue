@@ -166,13 +166,11 @@ public class ViewMiddle extends LinearLayout implements ViewBaseAction {
 
     @Override
     public void hide() {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void show() {
-        // TODO Auto-generated method stub
 
     }
 }

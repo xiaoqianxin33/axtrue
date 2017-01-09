@@ -31,7 +31,6 @@ import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.DeskUserInfoActivity;
 import com.chinalooke.yuwan.activity.DynamicDetailActivity;
 import com.chinalooke.yuwan.activity.ImagePagerActivity;
-import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.NetbarADActivity;
 import com.chinalooke.yuwan.activity.SendDynamicActivity;
@@ -46,6 +45,7 @@ import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LocationUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
+import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
 import com.chinalooke.yuwan.utils.ViewHelper;
 import com.chinalooke.yuwan.view.NoScrollGridView;
@@ -429,7 +429,7 @@ public class DynamicFragment extends Fragment implements AMapLocationListener {
                 if (mUserInfo != null)
                     startActivity(new Intent(mActivity, SendDynamicActivity.class));
                 else
-                    startActivity(new Intent(mActivity, LoginActivity.class));
+                    MyUtils.showLoginDialog(mActivity);
                 break;
         }
     }

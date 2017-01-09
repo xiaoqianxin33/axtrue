@@ -35,7 +35,6 @@ import com.bigkoo.pickerview.OptionsPickerView;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.AddFriendActivity;
 import com.chinalooke.yuwan.activity.FrequentlyGameActivity;
-import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.PersonalInfoActivity;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
@@ -243,7 +242,7 @@ public class YueZhanFragment extends Fragment {
             R.id.tv_skip, R.id.rl_friend, R.id.rl_rule, R.id.rl_times, R.id.rl_playerLevel})
     public void onClick(View view) {
         if (mUsrInfo == null) {
-            startActivity(new Intent(mMainActivity, LoginActivity.class));
+            MyUtils.showLoginDialog(mMainActivity);
         } else {
             switch (view.getId()) {
                 case R.id.rl_playerLevel:

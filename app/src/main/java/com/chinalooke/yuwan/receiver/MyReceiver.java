@@ -14,6 +14,7 @@ import android.util.Log;
 import com.avos.avoscloud.AVBroadcastReceiver;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.GameDeskActivity;
+import com.chinalooke.yuwan.activity.JudgeActivity;
 import com.chinalooke.yuwan.activity.MyMessageActivity;
 import com.chinalooke.yuwan.bean.PushMessage;
 import com.chinalooke.yuwan.db.ExchangeHelper;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+//推送消息广播接收者
 public class MyReceiver extends AVBroadcastReceiver {
 
     @Override
@@ -47,13 +49,25 @@ public class MyReceiver extends AVBroadcastReceiver {
                     if (leanMessage) {
                         Intent intent1 = new Intent();
                         String type = pushMessage.getType();
-                        if (type.equals("gameDesk")) {
-                            intent1.setClass(context, GameDeskActivity.class);
-                            String temp = pushMessage.getTemp();
-                            String[] split = temp.split(",");
-                            intent1.putExtra("gameDeskId", split[0]);
-                        } else {
-                            intent1.setClass(context, MyMessageActivity.class);
+                        switch (type) {
+                            case "gameDesk": {
+                                intent1.setClass(context, GameDeskActivity.class);
+                                String temp = pushMessage.getTemp();
+                                String[] split = temp.split(",");
+                                intent1.putExtra("gameDeskId", split[0]);
+                                break;
+                            }
+                            case "netbarGameDesk": {
+                                intent1.setClass(context, JudgeActivity.class);
+                                String temp = pushMessage.getTemp();
+                                String[] split = temp.split(",");
+                                intent.putExtra("gameDeskId", split[0]);
+                                intent.putExtra("count", split[2]);
+                                break;
+                            }
+                            default:
+                                intent1.setClass(context, MyMessageActivity.class);
+                                break;
                         }
                         intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         //PendingIntent主要用来处理即将发生的事,相当于Intent的延时,在这里是用来发送广播通知

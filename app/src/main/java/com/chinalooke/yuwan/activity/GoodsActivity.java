@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -178,8 +177,9 @@ public class GoodsActivity extends AutoLayoutActivity {
             case R.id.tv_ok:
                 if (mUser != null) {
                     showConfirmDialog();
-                } else
-                    startActivity(new Intent(this, LoginActivity.class));
+                } else {
+                    MyUtils.showLoginDialog(this);
+                }
                 break;
         }
     }

@@ -26,7 +26,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.GameDeskActivity;
-import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.QRCodeActivity;
 import com.chinalooke.yuwan.activity.SearchActivity;
@@ -203,8 +202,7 @@ public class BattleFieldFragment extends Fragment {
                 if (currentTime - itemLastClickTime > 2000) {
                     itemLastClickTime = currentTime;
                     if (user == null) {
-                        startActivity(new Intent(mActivity, LoginActivity.class));
-                        mActivity.finish();
+                        MyUtils.showLoginDialog(mActivity);
                     } else {
                         interItem(i);
                     }

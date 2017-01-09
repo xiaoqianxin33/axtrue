@@ -72,19 +72,16 @@ public class CityPicker extends LinearLayout {
 		super(context, attrs);
 		this.context = context;
 		getaddressinfo();
-		// TODO Auto-generated constructor stub
 	}
 
 	public CityPicker(Context context) {
 		super(context);
 		this.context = context;
 		getaddressinfo();
-		// TODO Auto-generated constructor stub
 	}
 
 	// 获取城市信息
 	private void getaddressinfo() {
-		// TODO Auto-generated method stub
 		// 读取城市信息string
 		JSONParser parser = new JSONParser();
 		String area_str = FileUtil.readAssets(context, "area.json");
@@ -181,7 +178,6 @@ public class CityPicker extends LinearLayout {
 
 			@Override
 			public void endSelect(int id, String text) {
-				// TODO Auto-generated method stub
 				System.out.println("id-->" + id + "Text----->" + text);
 				if (text.equals("") || text == null)
 					return;
@@ -217,7 +213,6 @@ public class CityPicker extends LinearLayout {
 
 			@Override
 			public void selecting(int id, String text) {
-				// TODO Auto-generated method stub
 			}
 		});
 		
@@ -227,7 +222,6 @@ public class CityPicker extends LinearLayout {
 			@Override
 			public void endSelect(int id, String text) {
 				System.out.println("id-->" + id + "Text----->" + text);
-				// TODO Auto-generated method stub
 				if (text.equals("") || text == null)
 					return;
 				if (temCityIndex != id) {
@@ -258,7 +252,6 @@ public class CityPicker extends LinearLayout {
 
 			@Override
 			public void selecting(int id, String text) {
-				// TODO Auto-generated method stub
 				System.out.println("id====>" + id + "Text======>" + text);
 			}
 		});
@@ -266,7 +259,6 @@ public class CityPicker extends LinearLayout {
 
 			@Override
 			public void endSelect(int id, String text) {
-				// TODO Auto-generated method stub
 				System.out.println("id-->" + id + "Text----->" + text);
 				if (text.equals("") || text == null)
 					return;
@@ -297,7 +289,6 @@ public class CityPicker extends LinearLayout {
 
 			@Override
 			public void selecting(int id, String text) {
-				// TODO Auto-generated method stub
 				System.out.println("id===>" + id + "Text=====>" + text);
 			}
 		});
@@ -308,7 +299,6 @@ public class CityPicker extends LinearLayout {
 
 		@Override
 		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case REFRESH_VIEW:

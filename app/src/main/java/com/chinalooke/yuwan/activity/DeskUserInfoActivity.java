@@ -1,6 +1,5 @@
 package com.chinalooke.yuwan.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -187,6 +186,8 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
         String age = result.getAge();
         if (!TextUtils.isEmpty(age))
             mTvAge.setText(getString(R.string.age, age));
+        else
+            mTvAge.setText(getString(R.string.age, "0"));
 
         mPhone = result.getPhone();
 
@@ -250,18 +251,7 @@ public class DeskUserInfoActivity extends AutoLayoutActivity {
                         }
                     }
                 } else {
-                    MyUtils.showCustomDialog(DeskUserInfoActivity.this, "登录提示", "该功能需要登录，现在去登录吗？", "不了", "去登录", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            startActivity(new Intent(DeskUserInfoActivity.this, LoginActivity.class));
-                        }
-                    });
+                    MyUtils.showLoginDialog(this);
                 }
                 break;
 

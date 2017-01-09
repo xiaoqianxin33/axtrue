@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.Toast;
+
+import com.chinalooke.yuwan.activity.LoginActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -162,5 +165,25 @@ public class MyUtils {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void showLoginDialog(final Activity context) {
+
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+        builder.setTitle("提示");
+        builder.setMessage("该功能需要登录才可使用，现在就登录吗？");
+        builder.setNegativeButton("不了", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("好的", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                context.startActivity(new Intent(context, LoginActivity.class));
+            }
+        });
+        builder.show();
     }
 }

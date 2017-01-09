@@ -39,7 +39,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.CircleDynamicActivity;
 import com.chinalooke.yuwan.activity.CreateCircleActivity;
-import com.chinalooke.yuwan.activity.LoginActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
 import com.chinalooke.yuwan.activity.MoreCircleActivity;
 import com.chinalooke.yuwan.bean.Circle;
@@ -376,8 +375,7 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
                     if (mUserInfo != null)
                         startActivity(new Intent(getActivity(), CreateCircleActivity.class));
                     else {
-                        startActivity(new Intent(getActivity(), LoginActivity.class));
-                        mActivity.finish();
+                        MyUtils.showLoginDialog(mActivity);
                     }
                     break;
             }

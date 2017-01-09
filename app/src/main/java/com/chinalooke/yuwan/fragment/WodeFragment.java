@@ -41,6 +41,7 @@ import com.chinalooke.yuwan.db.ExchangeHelper;
 import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.DialogUtil;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
+import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.ViewHelper;
 import com.chinalooke.yuwan.view.MyScrollView;
 import com.hyphenate.EMCallBack;
@@ -165,7 +166,7 @@ public class WodeFragment extends Fragment {
                 if (user != null)
                     startActivity(new Intent(mActivity, SignInActivity.class));
                 else
-                    startActivity(new Intent(mActivity, LoginActivity.class));
+                    MyUtils.showLoginDialog(mActivity);
             }
         });
     }
@@ -190,7 +191,7 @@ public class WodeFragment extends Fragment {
                         startActivity(intent);
                     }
                 } else
-                    startActivity(new Intent(mActivity, LoginActivity.class));
+                    MyUtils.showLoginDialog(mActivity);
                 break;
             case R.id.rl_message:
                 if (user != null) {
@@ -200,25 +201,25 @@ public class WodeFragment extends Fragment {
                         startActivity(new Intent(mActivity, MyMessageActivity.class));
                     }
                 } else
-                    startActivity(new Intent(mActivity, LoginActivity.class));
+                    MyUtils.showLoginDialog(mActivity);
                 break;
             case R.id.rl_setting:
                 if (user != null)
                     startActivity(new Intent(mActivity, SettingActivity.class));
                 else
-                    startActivity(new Intent(mActivity, LoginActivity.class));
+                    MyUtils.showLoginDialog(mActivity);
                 break;
             case R.id.rl_balance:
                 if (user != null)
                     startActivity(new Intent(mActivity, MyBalanceActivity.class));
                 else
-                    startActivity(new Intent(mActivity, LoginActivity.class));
+                    MyUtils.showLoginDialog(mActivity);
                 break;
             case R.id.rl_record:
                 if (user != null)
                     startActivity(new Intent(mActivity, RecordActivity.class));
                 else
-                    startActivity(new Intent(mActivity, LoginActivity.class));
+                    MyUtils.showLoginDialog(mActivity);
                 break;
             case R.id.rl_shop:
                 startActivity(new Intent(mActivity, ShopActivity.class));
@@ -227,7 +228,7 @@ public class WodeFragment extends Fragment {
                 if (user != null)
                     startActivity(new Intent(mActivity, FriendsActivity.class));
                 else
-                    startActivity(new Intent(mActivity, LoginActivity.class));
+                    MyUtils.showLoginDialog(mActivity);
                 break;
             case R.id.rl_info:
                 if (user != null) {
@@ -240,11 +241,11 @@ public class WodeFragment extends Fragment {
                 break;
             case R.id.tv_name:
                 if (user == null)
-                    startActivity(new Intent(mActivity, LoginActivity.class));
+                    MyUtils.showLoginDialog(mActivity);
                 break;
             case R.id.roundedImageView:
                 if (user == null)
-                    startActivity(new Intent(mActivity, LoginActivity.class));
+                    MyUtils.showLoginDialog(mActivity);
                 else {
                     startActivity(new Intent(mActivity, UserInfoActivity.class));
                 }

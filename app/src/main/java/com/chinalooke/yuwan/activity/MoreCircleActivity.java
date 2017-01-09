@@ -236,7 +236,7 @@ public class MoreCircleActivity extends AutoLayoutActivity {
                 if (mUserInfo != null)
                     startActivity(new Intent(this, CreateCircleActivity.class));
                 else
-                    startActivity(new Intent(this, LoginActivity.class));
+                    MyUtils.showLoginDialog(this);
                 break;
         }
     }

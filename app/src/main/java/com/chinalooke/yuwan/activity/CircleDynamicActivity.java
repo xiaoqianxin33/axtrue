@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -237,7 +238,6 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
             } else {
                 url = Constant.HOST + "getGroupWIthId&groupId=" + mCircle.getGroupId() + "&userId=";
             }
-
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -270,11 +270,13 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                 public void onResponse(String response) {
                     mPbLoad.setVisibility(View.GONE);
                     try {
+                        Log.e("TAG", response);
                         JSONObject jsonObject = new JSONObject(response);
                         boolean success = jsonObject.getBoolean("Success");
                         if (success) {
                             Object result = jsonObject.get("Result");
                             String s = result.toString();
+                            Log.e("TAG", s);
                             if (s.substring(0, 1).equals("{")) {
                                 Gson gson = new Gson();
                                 Type type = new TypeToken<Dynamic>() {
@@ -341,8 +343,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                 break;
             case R.id.iv_camera:
                 if (mUserInfo == null) {
-                    startActivity(new Intent(this, LoginActivity.class));
-                    finish();
+                    MyUtils.showLoginDialog(this);
                     return;
                 } else {
                     if (mUserJoin) {
@@ -368,8 +369,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                     if (mUserInfo != null) {
                         joinCircle();
                     } else {
-                        startActivity(new Intent(this, LoginActivity.class));
-                        finish();
+                        MyUtils.showLoginDialog(this);
                     }
                 }
                 break;

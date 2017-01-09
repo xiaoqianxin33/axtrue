@@ -513,7 +513,7 @@ public class DynamicDetailActivity extends AutoLayoutActivity {
                 if (mUserInfo != null)
                     startActivity(new Intent(this, SendDynamicActivity.class));
                 else
-                    startActivity(new Intent(this, LoginActivity.class));
+                    MyUtils.showLoginDialog(this);
                 break;
         }
     }

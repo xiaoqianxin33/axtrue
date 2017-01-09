@@ -79,27 +79,23 @@ public class ScrollerNumberPicker extends View {
 	public ScrollerNumberPicker(Context context, AttributeSet attrs,
 			int defStyle) {
 		super(context, attrs, defStyle);
-		// TODO Auto-generated constructor stub
 		init(context, attrs);
 		initData();
 	}
 
 	public ScrollerNumberPicker(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
 		init(context, attrs);
 		initData();
 	}
 
 	public ScrollerNumberPicker(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
 		initData();
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		// TODO Auto-generated method stub
 
 		if (!isEnable)
 			return true;
@@ -137,7 +133,6 @@ public class ScrollerNumberPicker extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		// TODO Auto-generated method stub
 		super.onDraw(canvas);
 
 		drawLine(canvas);
@@ -153,7 +148,7 @@ public class ScrollerNumberPicker extends View {
 				itemObject.drawSelf(canvas);
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 
 	}
@@ -161,13 +156,11 @@ public class ScrollerNumberPicker extends View {
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right,
 			int bottom) {
-		// TODO Auto-generated method stub
 		super.onLayout(changed, left, top, right, bottom);
 	}
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		// TODO Auto-generated method stub
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		controlWidth = getWidth();
 		if (controlWidth != 0) {
@@ -185,13 +178,11 @@ public class ScrollerNumberPicker extends View {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				int distence = 0;
 				while (distence < unitHeight * MOVE_NUMBER) {
 					try {
 						Thread.sleep(5);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					actionThreadMove(move > 0 ? distence : distence * (-1));
@@ -322,7 +313,6 @@ public class ScrollerNumberPicker extends View {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				// 判断政府
 				int m = move > 0 ? move : move * (-1);
 				int i = move > 0 ? 1 : (-1);
@@ -340,7 +330,6 @@ public class ScrollerNumberPicker extends View {
 						try {
 							Thread.sleep(2);
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						break;
@@ -354,7 +343,6 @@ public class ScrollerNumberPicker extends View {
 					try {
 						Thread.sleep(2);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -582,7 +570,6 @@ public class ScrollerNumberPicker extends View {
 
 		@Override
 		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case REFRESH_VIEW:
