@@ -12,15 +12,16 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MainPagerAdapter;
 import com.chinalooke.yuwan.bean.Account;
+import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.fragment.AccountIncomeFragment;
 import com.chinalooke.yuwan.fragment.AccountPayFragment;
 import com.chinalooke.yuwan.fragment.AccountWholeFragment;
-import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -211,5 +212,17 @@ public class AccountDetailActivity extends AutoLayoutActivity {
     @OnClick(R.id.iv_back)
     public void onClick() {
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

@@ -32,6 +32,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.avos.avoscloud.AVAnalytics;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
@@ -589,5 +590,17 @@ public class JudgeActivity extends AutoLayoutActivity {
             }
         });
         optionsPickerView.show();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

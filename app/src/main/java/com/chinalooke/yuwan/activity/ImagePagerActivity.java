@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.fragment.ImageDetailFragment;
 import com.chinalooke.yuwan.view.HackyViewPager;
@@ -76,7 +77,6 @@ public class ImagePagerActivity extends AutoLayoutActivity {
         mPager.setCurrentItem(pagerPosition);
     }
 
-
     private class ImagePagerAdapter extends FragmentStatePagerAdapter {
 
         ArrayList<String> fileList;
@@ -97,5 +97,17 @@ public class ImagePagerActivity extends AutoLayoutActivity {
             return ImageDetailFragment.newInstance(url);
         }
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

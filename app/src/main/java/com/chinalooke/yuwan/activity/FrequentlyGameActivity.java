@@ -14,6 +14,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.bean.GameMessage;
@@ -204,5 +205,17 @@ public class FrequentlyGameActivity extends AutoLayoutActivity {
         intent.putExtra("list", (Serializable) mChose);
         setResult(1, intent);
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

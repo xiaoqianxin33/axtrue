@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MainPagerAdapter;
 import com.chinalooke.yuwan.fragment.CreateInterestCircleFragment;
@@ -130,5 +131,17 @@ public class CreateCircleActivity extends AutoLayoutActivity {
             mCreateInterestCircleFragment.setHead(s);
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

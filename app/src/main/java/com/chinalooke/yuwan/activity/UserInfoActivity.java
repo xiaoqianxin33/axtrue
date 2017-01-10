@@ -27,6 +27,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.avos.avoscloud.AVAnalytics;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.GameMessage;
@@ -176,6 +177,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
     protected void onResume() {
         super.onResume();
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
+        AVAnalytics.onResume(this);
     }
 
     private void initView() {
@@ -668,6 +670,12 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
             }
         });
         mQueue.add(request);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
     }
 
 }

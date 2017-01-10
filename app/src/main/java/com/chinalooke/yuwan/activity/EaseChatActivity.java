@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.ui.EaseChatFragment;
@@ -35,5 +36,17 @@ public class EaseChatActivity extends AppCompatActivity {
     private void initData() {
         mUserId = getIntent().getStringExtra("userId");
         mNickName = getIntent().getStringExtra("nickName");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

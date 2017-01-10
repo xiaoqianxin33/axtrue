@@ -27,6 +27,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVMobilePhoneVerifyCallback;
 import com.avos.avoscloud.PushService;
@@ -496,7 +497,6 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         mQueue.add(stringRequest);
     }
 
-
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         if (requestCode == RC_ACCESS_FINE_LOCATION)
@@ -524,5 +524,17 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         }
 
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

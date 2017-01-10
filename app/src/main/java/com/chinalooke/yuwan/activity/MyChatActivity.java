@@ -3,6 +3,7 @@ package com.chinalooke.yuwan.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.easeui.ui.EaseConversationListFragment;
@@ -33,4 +34,15 @@ public class MyChatActivity extends AutoLayoutActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
+    }
 }

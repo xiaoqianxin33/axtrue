@@ -25,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.avos.avoscloud.AVAnalytics;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.GameMessage;
@@ -489,5 +490,17 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
                 mStrings[i] = mChose.get(i).getGameId();
             }
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

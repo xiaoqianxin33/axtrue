@@ -16,6 +16,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.bean.LoginUser;
@@ -330,44 +331,6 @@ public class MyMessageActivity extends AutoLayoutActivity {
         mQueue.add(request);
     }
 
-//    //点击加入游戏桌事件
-//    private void joinDesk(String s, final PushMessage pushMessage) {
-//        mProgressDialog.show();
-//        String url = Constant.HOST + "takePartInGameDesk&userId=" + mUser.getUserId() +
-//                "&gameDeskId=" + s + "&role=1";
-//        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                mProgressDialog.dismiss();
-//                if (AnalysisJSON.analysisJson(response)) {
-//                    pushMessage.setDone(true);
-//                    try {
-//                        mPushDao.update(pushMessage);
-//                        initData();
-//                    } catch (SQLException e) {
-//                        e.printStackTrace();
-//                    }
-//                    MyUtils.showDialog(MyMessageActivity.this, "提示", "加入战场成功！", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//                        }
-//                    });
-//                } else {
-//                    MyUtils.showMsg(mToast, response);
-//                }
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                mProgressDialog.dismiss();
-//                mToast.setText("服务器抽风了，请稍后再试");
-//                mToast.show();
-//            }
-//        });
-//        mQueue.add(request);
-//    }
-
     //同意添加好友事件
     private void addFriendsClick(String str, final PushMessage pushMessage, int i) {
         mProgressDialog.show();
@@ -458,5 +421,17 @@ public class MyMessageActivity extends AutoLayoutActivity {
     protected void onRestart() {
         super.onRestart();
         initData();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

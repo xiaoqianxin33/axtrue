@@ -30,6 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.DeskUserInfo;
 import com.chinalooke.yuwan.bean.GameDeskDetails;
@@ -208,12 +209,12 @@ public class GameDeskActivity extends AutoLayoutActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         ButterKnife.unbind(this);
         if (mHandler != null && mRunnable != null) {
             mHandler.removeCallbacks(mRunnable);
             mHandler = null;
         }
+        super.onDestroy();
     }
 
     private void initView() {
@@ -1179,7 +1180,8 @@ public class GameDeskActivity extends AutoLayoutActivity {
                                 mGameDeskDetails = gameDesk;
                                 mRoomId = mGameDeskDetails.getResult().getRoomId();
                                 mNetBarId = mGameDeskDetails.getResult().getNetbarId();
-                                initView();
+                                if (mHandler != null)
+                                    initView();
                                 isFirst = false;
                             }
                         } else {
@@ -1202,5 +1204,17 @@ public class GameDeskActivity extends AutoLayoutActivity {
             }
         });
         mQueue.add(stringRequest);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

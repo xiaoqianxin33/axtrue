@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.hyphenate.easeui.widget.EaseSwitchButton;
@@ -108,5 +109,17 @@ public class ImageSettingActivity extends AutoLayoutActivity {
         mLoad_image = i;
         setLoad(i);
         PreferenceUtils.setPrefInt(getApplicationContext(), "load_image", i);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

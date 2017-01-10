@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.utils.DataCleanManager;
 import com.zhy.autolayout.AutoLayoutActivity;
@@ -62,5 +63,17 @@ public class SettingActivity extends AutoLayoutActivity {
                 mTvCache.setText(getString(R.string.k));
                 break;
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

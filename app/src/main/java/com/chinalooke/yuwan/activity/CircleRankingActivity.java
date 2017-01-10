@@ -22,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.bean.CircleRanking;
@@ -450,5 +451,17 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
         oks.setSiteUrl("http://sharesdk.cn");
         // 启动分享GUI
         oks.show(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

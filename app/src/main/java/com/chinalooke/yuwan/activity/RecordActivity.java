@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MainPagerAdapter;
 import com.chinalooke.yuwan.fragment.RecordDetailFragment;
@@ -110,5 +111,17 @@ public class RecordActivity extends AutoLayoutActivity {
                 mLlTitle.setBackgroundResource(R.mipmap.wode_circle_right);
                 break;
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

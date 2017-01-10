@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 
 import butterknife.ButterKnife;
@@ -46,5 +47,17 @@ public class QRCodeActivity extends AppCompatActivity implements QRCodeView.Dele
     @OnClick(R.id.iv_wirte_back)
     public void onClick() {
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

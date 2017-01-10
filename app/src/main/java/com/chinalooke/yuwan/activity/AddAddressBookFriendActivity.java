@@ -12,6 +12,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.SortAddFriendsAdapter;
 import com.chinalooke.yuwan.bean.NearbyPeople;
@@ -174,6 +175,18 @@ public class AddAddressBookFriendActivity extends AutoLayoutActivity {
     @OnClick(R.id.iv_back)
     public void onClick() {
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 
 }

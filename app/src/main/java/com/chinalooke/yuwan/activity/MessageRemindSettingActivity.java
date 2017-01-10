@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.hyphenate.easeui.widget.EaseSwitchButton;
@@ -76,5 +77,17 @@ public class MessageRemindSettingActivity extends AutoLayoutActivity {
 
                 break;
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

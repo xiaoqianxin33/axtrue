@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.Circle;
 import com.chinalooke.yuwan.bean.CircleDetail;
@@ -62,7 +63,8 @@ public class CircleInfoActivity extends AutoLayoutActivity {
         mUserInfo = (LoginUser.ResultBean) LoginUserInfoUtils.readObject(getApplicationContext(), LoginUserInfoUtils.KEY);
         mCircle = (Circle.ResultBean) getIntent().getSerializableExtra("circle");
         mCircleDetail = (CircleDetail) getIntent().getSerializableExtra("circleDetail");
-        setGame();
+        if (mCircleDetail != null)
+            setGame();
     }
 
     private void initView() {
@@ -98,19 +100,22 @@ public class CircleInfoActivity extends AutoLayoutActivity {
     //设置游戏
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void setGame() {
-        List<CircleDetail.ResultBean.GamesBean> games = mCircleDetail.getResult().getGames();
-        if (games != null && games.size() != 0) {
-            for (CircleDetail.ResultBean.GamesBean gamesBean : games) {
-                String thumb = gamesBean.getThumb();
-                if (!TextUtils.isEmpty(thumb)) {
-                    RoundedImageView imageView = new RoundedImageView(getApplicationContext());
-                    imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(60, 60));
-                    imageView.setPaddingRelative(5, 0, 5, 0);
-                    String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), thumb, 60, 60);
-                    Picasso.with(this).load(loadImageUrl).into(imageView);
-                    imageView.setOval(true);
-                    AutoUtils.autoSize(imageView);
-                    mLlGame.addView(imageView);
+        CircleDetail.ResultBean result = mCircleDetail.getResult();
+        if (result != null) {
+            List<CircleDetail.ResultBean.GamesBean> games = mCircleDetail.getResult().getGames();
+            if (games != null && games.size() != 0) {
+                for (CircleDetail.ResultBean.GamesBean gamesBean : games) {
+                    String thumb = gamesBean.getThumb();
+                    if (!TextUtils.isEmpty(thumb)) {
+                        RoundedImageView imageView = new RoundedImageView(getApplicationContext());
+                        imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(60, 60));
+                        imageView.setPaddingRelative(5, 0, 5, 0);
+                        String loadImageUrl = ImageEngine.getLoadImageUrl(getApplicationContext(), thumb, 60, 60);
+                        Picasso.with(this).load(loadImageUrl).into(imageView);
+                        imageView.setOval(true);
+                        AutoUtils.autoSize(imageView);
+                        mLlGame.addView(imageView);
+                    }
                 }
             }
         }
@@ -136,5 +141,17 @@ public class CircleInfoActivity extends AutoLayoutActivity {
                 startActivity(intent);
                 break;
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

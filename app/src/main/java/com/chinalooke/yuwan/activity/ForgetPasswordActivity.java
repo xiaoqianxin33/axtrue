@@ -15,6 +15,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVMobilePhoneVerifyCallback;
 import com.avos.avoscloud.RequestMobileCodeCallback;
@@ -232,5 +233,17 @@ public class ForgetPasswordActivity extends AutoLayoutActivity {
             mgetVerificationCode.setBackgroundResource(R.drawable.btn_get_verification_corners_bg);
             mgetVerificationCode.setClickable(true);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

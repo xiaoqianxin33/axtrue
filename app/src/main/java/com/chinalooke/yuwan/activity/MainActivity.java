@@ -28,6 +28,7 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationListener;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
@@ -435,4 +436,15 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
+    }
 }

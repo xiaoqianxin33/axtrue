@@ -15,6 +15,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.ExchangeLevels;
 import com.chinalooke.yuwan.config.YuwanApplication;
@@ -46,7 +47,6 @@ public class ChosePayActivity extends AutoLayoutActivity {
     private String mUserId;
     private int mPayMoney;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +56,6 @@ public class ChosePayActivity extends AutoLayoutActivity {
         mToast = YuwanApplication.getToast();
         initData();
     }
-
 
     private void initData() {
         mResultBean = (ExchangeLevels.ResultBean) getIntent().getSerializableExtra("pay");
@@ -179,6 +178,18 @@ public class ChosePayActivity extends AutoLayoutActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 
 }

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.engine.ImageEngine;
@@ -66,5 +67,17 @@ public class MyQRCodeActivity extends AutoLayoutActivity {
     @OnClick(R.id.iv_back)
     public void onClick() {
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

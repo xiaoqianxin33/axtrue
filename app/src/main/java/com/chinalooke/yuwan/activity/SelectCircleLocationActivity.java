@@ -29,6 +29,7 @@ import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.adapter.MyBaseAdapter;
 import com.chinalooke.yuwan.utils.LocationUtils;
@@ -90,6 +91,7 @@ public class SelectCircleLocationActivity extends AutoLayoutActivity implements 
     protected void onResume() {
         super.onResume();
         mMapView.onResume();
+        AVAnalytics.onResume(this);
     }
 
     @Override
@@ -105,6 +107,7 @@ public class SelectCircleLocationActivity extends AutoLayoutActivity implements 
         super.onPause();
         //在activity执行onPause时执行mMapView.onPause ()，实现地图生命周期管理
         mMapView.onPause();
+        AVAnalytics.onPause(this);
     }
 
     @Override
@@ -168,7 +171,6 @@ public class SelectCircleLocationActivity extends AutoLayoutActivity implements 
     public void onClick() {
         finish();
     }
-
 
     @Override
     public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int i) {
@@ -251,4 +253,5 @@ public class SelectCircleLocationActivity extends AutoLayoutActivity implements 
             ButterKnife.bind(this, view);
         }
     }
+
 }

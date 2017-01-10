@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.chinalooke.yuwan.R;
 import com.zhy.autolayout.AutoLayoutActivity;
 
@@ -105,5 +106,17 @@ public class AddFriendsActivity extends AutoLayoutActivity implements EasyPermis
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AVAnalytics.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AVAnalytics.onResume(this);
     }
 }

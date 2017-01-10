@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
@@ -86,7 +87,7 @@ public class YuwanApplication extends Application {
         MultiDex.install(this);
         //leanCould初始化
         AVOSCloud.initialize(this, "ArJkPnYSMCv1MTpGOPU3aHLU-gzGzoHsz", "MlCdUI4iB1jucLGs0GIuTwyL");
-
+        AVAnalytics.enableCrashReport(this, true);
         //七牛初始化
         Configuration config = new Configuration.Builder().zone(Zone.zone1).build();
         mUploadManager = new UploadManager(config);
