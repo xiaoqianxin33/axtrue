@@ -61,7 +61,6 @@ public class ExchangeHelper extends OrmLiteSqliteOpenHelper {
                     instance = new ExchangeHelper(context);
             }
         }
-
         return instance;
     }
 

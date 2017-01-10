@@ -20,6 +20,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -105,6 +106,8 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
     RelativeLayout mRlLicense;
     @Bind(R.id.iv_license)
     ImageView mIvLicense;
+    @Bind(R.id.tv_title)
+    TextView mTvTitle;
     //验证码
     CheckBox mcheckUserPro;
 
@@ -154,7 +157,9 @@ public class RegisterActivity extends AutoLayoutActivity implements CompoundButt
         isNetbar = getIntent().getBooleanExtra("netbar", false);
         mRlRecommend.setVisibility(isNetbar ? View.GONE : View.VISIBLE);
         mRlLicense.setVisibility(isNetbar ? View.VISIBLE : View.GONE);
-
+        if (isNetbar) {
+            mTvTitle.setText("网吧加盟");
+        }
     }
 
     @Override

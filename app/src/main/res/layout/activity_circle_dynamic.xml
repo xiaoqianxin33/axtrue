@@ -102,10 +102,12 @@
 
                 <TextView
                     android:id="@+id/tv_paihang"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="123px"
+                    android:layout_height="57px"
                     android:layout_gravity="center"
+                    android:gravity="center"
                     android:text="排行榜"
+                    android:background="@drawable/ranking_backgroud"
                     android:textColor="@android:color/white"
                     android:textSize="30px"/>
 

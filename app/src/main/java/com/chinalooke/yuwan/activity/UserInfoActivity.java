@@ -532,7 +532,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    //更新资料
+    //上传头像
     private void updateInfo() {
         if (NetUtil.is_Network_Available(getApplicationContext())) {
             mProgressDialog = MyUtils.initDialog("保存中", this);
@@ -566,6 +566,7 @@ public class UserInfoActivity extends AutoLayoutActivity implements EasyPermissi
         }
     }
 
+    //更新资料
     private void update() {
         String url = Constant.HOST + "updateUserInfo&userId=" + mUserInfo.getUserId() + "&headImg=" + mPath;
         if (mAddress != null)

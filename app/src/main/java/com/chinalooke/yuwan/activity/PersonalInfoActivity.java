@@ -2,6 +2,7 @@ package com.chinalooke.yuwan.activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,7 +11,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -30,12 +30,10 @@ import com.bigkoo.pickerview.OptionsPickerView;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.bean.GameMessage;
 import com.chinalooke.yuwan.bean.LoginUser;
-import com.chinalooke.yuwan.bean.ResultDatas;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.db.DBManager;
 import com.chinalooke.yuwan.engine.ImageEngine;
-import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.hyphenate.chat.EMClient;
@@ -44,6 +42,9 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.zhy.autolayout.AutoLayoutActivity;
 import com.zhy.autolayout.utils.AutoUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -90,6 +91,7 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
     RequestQueue mQueue;
     private Toast mToast;
     private String[] mStrings;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,7 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
         ButterKnife.bind(this);
         mQueue = Volley.newRequestQueue(this);
         mToast = YuwanApplication.getToast();
+        mProgressDialog = MyUtils.initDialog("保存中", this);
         initView();
         initData();
     }
@@ -180,6 +183,7 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
             //保存
             case R.id.btn_enter:
                 if (savePersonalInfo()) {
+                    mProgressDialog.show();
                     submitSaveInfo();
                 }
                 break;
@@ -285,11 +289,10 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
 
         if (!TextUtils.isEmpty(sexPersonalInfo)) {
             userInfo.setSex(sexPersonalInfo);
-            try {
-                updateUserInfo = updateUserInfo + "&sex=" + URLEncoder.encode(sexPersonalInfo, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            if (sexPersonalInfo.equals("男"))
+                updateUserInfo = updateUserInfo + "&sex=1";
+            else
+                updateUserInfo = updateUserInfo + "&sex=0";
         }
 
         if (!TextUtils.isEmpty(address) && !"点击获取位置".equals(address)) {
@@ -332,21 +335,25 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
                     @Override
                     public void onResponse(String response) {
                         //解析数据
+                        mProgressDialog.dismiss();
                         if (response != null) {
-                            ResultDatas result = AnalysisJSON.getAnalysisJSON().AnalysisJSONResult(response);
-                            if (result != null) {
-                                if ("true".equals(result.getResult())) {
-                                    Log.d("TAG", "保存成功");
-                                    setSaveDialog("保存成功");
-                                    if (!TextUtils.isEmpty(name))
-                                        EMClient.getInstance().updateCurrentUserNick(name);
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                boolean success = jsonObject.getBoolean("Success");
+                                if (success) {
+                                    boolean result = jsonObject.getBoolean("Result");
+                                    if (result) {
+                                        setSaveDialog("保存成功");
+                                        if (!TextUtils.isEmpty(name))
+                                            EMClient.getInstance().updateCurrentUserNick(name);
+                                    } else {
+                                        MyUtils.showMsg(mToast, response);
+                                    }
                                 } else {
-                                    Log.d("TAG", "false");
-                                    setSaveDialog("保存失败");
+                                    MyUtils.showMsg(mToast, response);
                                 }
-                            } else {
-                                Log.d("TAG", "result");
-                                setSaveDialog("保存失败");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
                     }
@@ -354,7 +361,9 @@ public class PersonalInfoActivity extends AutoLayoutActivity implements AdapterV
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                setSaveDialog("保存失败");
+                mProgressDialog.dismiss();
+                mToast.setText("服务器抽风了，请重试");
+                mToast.show();
             }
         });
         mQueue.add(stringRequest);
