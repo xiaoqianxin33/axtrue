@@ -115,6 +115,7 @@ public class BattleFieldFragment extends Fragment {
     private boolean isNetbar = false;
     private boolean isFoot = false;
     private boolean isLoading = false;
+    private String mCity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -140,9 +141,6 @@ public class BattleFieldFragment extends Fragment {
         if (isNetbar) {
             isFirst = true;
             mDeskList.clear();
-            getGameDeskListWithStatus();
-        } else {
-            getGameDeskListWithStatus();
         }
     }
 
@@ -173,7 +171,7 @@ public class BattleFieldFragment extends Fragment {
                     isFoot = false;
                     isFirst = true;
                     PAGE = 1;
-                    getGameDeskListWithStatus();
+                    getGameDeskListWithStatus(mCity);
                     mSr.setRefreshing(false);
                 } else {
                     mSr.setRefreshing(false);
@@ -233,7 +231,7 @@ public class BattleFieldFragment extends Fragment {
                 CURRENT_TYPE = position;
                 PAGE = 1;
                 mDeskList.clear();
-                getGameDeskListWithStatus();
+                getGameDeskListWithStatus(mCity);
             }
         });
 
@@ -246,7 +244,7 @@ public class BattleFieldFragment extends Fragment {
                 mDeskList.clear();
                 PAGE = 1;
                 isFirst = true;
-                getGameDeskListWithStatus();
+                getGameDeskListWithStatus(mCity);
             }
         });
 
@@ -272,7 +270,7 @@ public class BattleFieldFragment extends Fragment {
                     mDeskList.clear();
                     PAGE = 1;
                     isFirst = true;
-                    getGameDeskListWithStatus();
+                    getGameDeskListWithStatus(mCity);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -318,7 +316,7 @@ public class BattleFieldFragment extends Fragment {
 
     private void loadMore() {
         PAGE++;
-        getGameDeskListWithStatus();
+        getGameDeskListWithStatus(mCity);
     }
 
     private void interItem(int i) {
@@ -411,8 +409,14 @@ public class BattleFieldFragment extends Fragment {
     }
 
     //按状态取游戏桌列表
-    private void getGameDeskListWithStatus() {
-        String uri = Constant.HOST + "getGameDeskListWithStatus&gameStatus=" + CURRENT_STATUS + "&pageNo=" + PAGE + "&pageSize=5&keywords=" + KEY_WORDS;
+    public void getGameDeskListWithStatus(String city) {
+        mCity = city;
+        String uri = null;
+        try {
+            uri = Constant.GETGAMEDESKLISTWITHSTATUS + "&city=" + URLEncoder.encode(city, "utf8") + CURRENT_STATUS + "&pageNo=" + PAGE + "&pageSize=5&keywords=" + KEY_WORDS;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         if (isNetbar)
             uri = uri + "&netbarId=" + user.getNetBarId();
         if (NetUtil.is_Network_Available(mActivity)) {

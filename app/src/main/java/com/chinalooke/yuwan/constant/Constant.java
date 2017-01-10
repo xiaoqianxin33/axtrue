@@ -38,5 +38,8 @@ public class Constant {
     public static String QINIU_DOMAIN = "http://image.lyyuwan.com";
     public static int USER_TYPE = 0;
 
+    public static String GETGAMEDESKLISTWITHSTATUS = Constant.HOST + "getGameDeskListWithStatus&gameStatus=";
+
+    public static String ADDGAMEDESK = Constant.HOST + "addGameDesk&gameId=";
 
 }

@@ -30,6 +30,7 @@ import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
+import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.chinalooke.yuwan.view.NoSlidingListView;
 import com.google.gson.Gson;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -39,6 +40,8 @@ import com.zhy.autolayout.utils.AutoUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -129,9 +132,14 @@ public class RecordDetailFragment extends Fragment {
 
     private void initData() {
         if (NetUtil.is_Network_Available(mActivity)) {
-            String url = Constant.HOST + "getGameDeskListWithStatus&gameStatus=2&keywords=&userId="
-                    + mUser.getUserId() + "&pageNo=" + PAGE_NO + "&pageSize=8";
-            Log.e("TAG", url);
+            String city = PreferenceUtils.getPrefString(mActivity, "city", "洛阳");
+            String url = null;
+            try {
+                url = Constant.HOST + "getGameDeskListWithStatus&gameStatus=2&keywords=&userId="
+                        + mUser.getUserId() + "&pageNo=" + PAGE_NO + "&pageSize=8" + "&city=" + URLEncoder.encode(city, "utf8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -291,7 +299,7 @@ public class RecordDetailFragment extends Fragment {
 
             GameDesk.ResultBean resultBean = (GameDesk.ResultBean) mDataSource.get(position);
             String headImg = mUser.getHeadImg();
-            if (!TextUtils.isEmpty(headImg)){
+            if (!TextUtils.isEmpty(headImg)) {
                 String loadImageUrl = ImageEngine.getLoadImageUrl(mActivity, headImg, 60, 60);
                 Picasso.with(mActivity).load(loadImageUrl).into(viewHolder.mRoundedImageView);
             }

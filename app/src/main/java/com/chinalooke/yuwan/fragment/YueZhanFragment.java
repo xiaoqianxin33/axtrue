@@ -53,6 +53,7 @@ import com.chinalooke.yuwan.utils.KeyboardUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
 import com.chinalooke.yuwan.utils.NetUtil;
+import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.google.gson.Gson;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
@@ -347,9 +348,15 @@ public class YueZhanFragment extends Fragment {
             String people = mTvPeople.getText().toString();
             String money = mTvMoney.getText().toString();
             String times = mTvTimes.getText().toString();
-            String uri = Constant.HOST + "addGameDesk&gameId=" + mGameId +
-                    "&playerNum=" + Integer.parseInt(people) + "&gamePay=" + money + "&gameCount=" + times
-                    + "&ownerId=" + mUsrInfo.getUserId() + "&roomId=" + group.getGroupId() + "&playerLevel=" + minLevel + "," + maxLevel;
+            String city = PreferenceUtils.getPrefString(mMainActivity, "city", "洛阳");
+            String uri = null;
+            try {
+                uri = Constant.ADDGAMEDESK + mGameId +
+                        "&playerNum=" + Integer.parseInt(people) + "&gamePay=" + money + "&gameCount=" + times + "&city=" + URLEncoder.encode(city, "utf8")
+                        + "&ownerId=" + mUsrInfo.getUserId() + "&roomId=" + group.getGroupId() + "&playerLevel=" + minLevel + "," + maxLevel;
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             if (mRule != null) {
                 try {
                     uri = uri + "&gameRule=" + URLEncoder.encode(mRule, "utf8");

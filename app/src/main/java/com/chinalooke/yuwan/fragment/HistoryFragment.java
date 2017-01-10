@@ -29,6 +29,7 @@ import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.AnalysisJSON;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
+import com.chinalooke.yuwan.utils.PreferenceUtils;
 import com.google.gson.Gson;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
@@ -37,6 +38,8 @@ import com.zhy.autolayout.utils.AutoUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,7 +137,14 @@ public class HistoryFragment extends Fragment {
 
     //获得网吧结束的游戏桌
     private void getGameDeskListWithStatus() {
-        String url = Constant.HOST + "getGameDeskListWithStatus&gameStatus=2" + "&pageNo=" + PAGE + "&pageSize=5&netbarId=" + mUser.getNetBarId();
+        String city = PreferenceUtils.getPrefString(mActivity, "city", "洛阳");
+        String url = null;
+        try {
+            url = Constant.HOST + "getGameDeskListWithStatus&gameStatus=2" + "&pageNo=" + PAGE + "&pageSize=5&netbarId=" + mUser.getNetBarId()
+                    +"&city="+ URLEncoder.encode(city,"utf8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

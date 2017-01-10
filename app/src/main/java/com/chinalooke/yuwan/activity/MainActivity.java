@@ -189,6 +189,9 @@ public class MainActivity extends AutoLayoutActivity implements AMapLocationList
                 mLatitude = aMapLocation.getLatitude();
                 PreferenceUtils.setPrefString(getApplicationContext(), "latitude", mLatitude + "");
                 mBattleFieldFragment.getADListWithGPS();
+                String city = aMapLocation.getCity();
+                PreferenceUtils.setPrefString(getApplicationContext(), "city", city);
+                mBattleFieldFragment.getGameDeskListWithStatus(city);
                 if (mUserInfo != null)
                     updateUserGPS();
             }
