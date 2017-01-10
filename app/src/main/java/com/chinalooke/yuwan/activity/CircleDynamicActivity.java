@@ -452,7 +452,7 @@ public class CircleDynamicActivity extends AutoLayoutActivity {
                 dynamicViewHolder.mGridView = (GridView) convertView.findViewById(R.id.gridView);
                 dynamicViewHolder.mIvDianzan = (ImageView) convertView.findViewById(R.id.iv_dianzan);
                 dynamicViewHolder.mRoundedImageView = (RoundedImageView) convertView.findViewById(R.id.roundedImageView);
-                dynamicViewHolder.mRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.rl_pinglun);
+                dynamicViewHolder.mRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.rl_dianzan);
                 convertView.setTag(dynamicViewHolder);
                 AutoUtils.autoSize(convertView);
             } else {

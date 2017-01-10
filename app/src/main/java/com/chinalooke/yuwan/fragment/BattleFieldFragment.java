@@ -152,14 +152,6 @@ public class BattleFieldFragment extends Fragment {
     }
 
     private void initEvent() {
-//        //banner的item点击事件
-//        mBanner.setOnItemClickListener(new BGABanner.OnItemClickListener() {
-//            @Override
-//            public void onBannerItemClick(BGABanner banner, View view, Object model, int position) {
-//                Advertisement.ResultBean resultBean = mShowAd.get(position);
-//            }
-//        });
-
         //swipeRefreshLayout下拉刷新事件
         mSr.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -353,7 +345,6 @@ public class BattleFieldFragment extends Fragment {
 
     //查询所有游戏分类
     private void getGameTypeList() {
-
         String url = Constant.HOST + "getGameTypeList";
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
@@ -413,7 +404,7 @@ public class BattleFieldFragment extends Fragment {
         mCity = city;
         String uri = null;
         try {
-            uri = Constant.GETGAMEDESKLISTWITHSTATUS + "&city=" + URLEncoder.encode(city, "utf8") + CURRENT_STATUS + "&pageNo=" + PAGE + "&pageSize=5&keywords=" + KEY_WORDS;
+            uri = Constant.GETGAMEDESKLISTWITHSTATUS + CURRENT_STATUS + "&city=" + URLEncoder.encode(city, "utf8") + "&pageNo=" + PAGE + "&pageSize=5&keywords=" + KEY_WORDS;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

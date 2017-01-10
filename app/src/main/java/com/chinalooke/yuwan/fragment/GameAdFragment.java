@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +23,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bigkoo.pickerview.OptionsPickerView;
-import com.chinalooke.yuwan.engine.ImageEngine;
-import com.chinalooke.yuwan.engine.PickerEngine;
 import com.chinalooke.yuwan.R;
 import com.chinalooke.yuwan.activity.FrequentlyGameActivity;
 import com.chinalooke.yuwan.activity.MainActivity;
@@ -33,6 +30,8 @@ import com.chinalooke.yuwan.bean.GameMessage;
 import com.chinalooke.yuwan.bean.LoginUser;
 import com.chinalooke.yuwan.config.YuwanApplication;
 import com.chinalooke.yuwan.constant.Constant;
+import com.chinalooke.yuwan.engine.ImageEngine;
+import com.chinalooke.yuwan.engine.PickerEngine;
 import com.chinalooke.yuwan.utils.Auth;
 import com.chinalooke.yuwan.utils.BitmapUtils;
 import com.chinalooke.yuwan.utils.DateUtils;
@@ -448,7 +447,6 @@ public class GameAdFragment extends Fragment {
             String url = Constant.HOST + "sendAD&type=1&userId=" + mUser.getNetBarId() + "&title=" + URLEncoder.encode(mTitle, "utf8") +
                     "&gameId=" + mGameId + "&detail=" + URLEncoder.encode(mContent, "UTF-8") + "&startTime=" + URLEncoder.encode(mTime, "UTF-8") + "&maxPeopleNumber=" +
                     mPeople + "&gameCount=" + mTimes + "&imgs=" + replace + "&playerLevel=" + minLevel + "," + maxLevel + "&gamePay=" + mPay + "&cup=" + mCup;
-            Log.e("TAG", url);
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
