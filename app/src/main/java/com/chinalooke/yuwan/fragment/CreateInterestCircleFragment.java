@@ -45,6 +45,7 @@ import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.Auth;
 import com.chinalooke.yuwan.utils.BitmapUtils;
+import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.ImageUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -252,7 +253,7 @@ public class CreateInterestCircleFragment extends Fragment implements EasyPermis
                     try {
                         uri = Constant.HOST + "addGroup&userId=" + mUser.getUserId() + "&lng=" + longitude + "&lat="
                                 + latitude + "&gameIds=" + mStrings + "&groupName=" + URLEncoder.encode(mCircleName, "utf8")
-                                + "&slogan=" + mRule + "&head=" + Constant.QINIU_DOMAIN + "/" + fileName;
+                                + "&slogan=" + mRule + "&head=" + Constant.QINIU_DOMAIN + "/" + fileName + "&createTime=" + URLEncoder.encode(DateUtils.getCurrentDateTime(), "utf8");
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }

@@ -305,7 +305,8 @@ public class CircleNormalFragment extends Fragment implements AMapLocationListen
             @Override
             public void onResponse(String response) {
                 if (AnalysisJSON.analysisJson(response)) {
-                    mBanner.setVisibility(View.VISIBLE);
+                    if (mBanner != null)
+                        mBanner.setVisibility(View.VISIBLE);
                     Gson gson = new Gson();
                     CircleAD circleAD = gson.fromJson(response, CircleAD.class);
                     List<CircleAD.ResultBean> result = circleAD.getResult();

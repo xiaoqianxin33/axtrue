@@ -42,6 +42,7 @@ import com.chinalooke.yuwan.constant.Constant;
 import com.chinalooke.yuwan.engine.ImageEngine;
 import com.chinalooke.yuwan.utils.Auth;
 import com.chinalooke.yuwan.utils.BitmapUtils;
+import com.chinalooke.yuwan.utils.DateUtils;
 import com.chinalooke.yuwan.utils.ImageUtils;
 import com.chinalooke.yuwan.utils.LoginUserInfoUtils;
 import com.chinalooke.yuwan.utils.MyUtils;
@@ -215,7 +216,6 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
                 mToast.show();
             }
         });
-
         mQueue.add(request);
     }
 
@@ -363,8 +363,8 @@ public class CreateLocationCircleFragment extends Fragment implements EasyPermis
                     String uri = null;
                     try {
                         uri = Constant.HOST + "addGroup&userId=" + mUser.getUserId() + "&lng=" + longitude + "&lat="
-                                + latitude + "&address=" + URLEncoder.encode(mCircleAddress,"utf8") + "&groupName=" + URLEncoder.encode(mCircleName,"utf8")
-                                + "&slogan=" + URLEncoder.encode(mRule,"utf8") + "&head=" + Constant.QINIU_DOMAIN + "/" + fileName;
+                                + latitude + "&address=" + URLEncoder.encode(mCircleAddress, "utf8") + "&groupName=" + URLEncoder.encode(mCircleName, "utf8")
+                                + "&slogan=" + URLEncoder.encode(mRule, "utf8") + "&head=" + Constant.QINIU_DOMAIN + "/" + fileName + "&createTime=" + URLEncoder.encode(DateUtils.getCurrentDateTime(), "utf8");
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }

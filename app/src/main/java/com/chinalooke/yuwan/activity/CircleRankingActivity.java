@@ -80,6 +80,8 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
     ProgressBar mPbLoad;
     @Bind(R.id.tv_none)
     TextView mTvNone;
+    @Bind(R.id.iv_arrow)
+    ImageView mIvArrow;
     private LoginUser.ResultBean mUserInfo;
     private int RANKING_TYPE;
     private int PAGE_NO;
@@ -143,7 +145,8 @@ public class CircleRankingActivity extends AutoLayoutActivity implements AMapLoc
             if (!TextUtils.isEmpty(nickName))
                 mTvName.setText(nickName);
         }
-
+        mTvCity.setVisibility(RANKING_TYPE == 1 ? View.GONE : View.VISIBLE);
+        mIvArrow.setVisibility(RANKING_TYPE == 1 ? View.GONE : View.VISIBLE);
         AMapLocation aMapLocation = LocationUtils.getAMapLocation();
         if (aMapLocation != null) {
             mRankings.clear();
