@@ -58,6 +58,15 @@ public class Account {
         private String payType;
         private String balance;
         private String remark;
+        private String gameDeskId;
+
+        public String getGameDeskId() {
+            return gameDeskId;
+        }
+
+        public void setGameDeskId(String gameDeskId) {
+            this.gameDeskId = gameDeskId;
+        }
 
         public String getType() {
             return type;
