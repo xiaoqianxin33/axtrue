@@ -54,8 +54,34 @@ public class Account {
 
         private String createTime;
         private String money;
-        private String moneyType;
+        private String type;
         private String payType;
+        private String balance;
+        private String remark;
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getRemark() {
+            return remark;
+        }
+
+        public void setRemark(String remark) {
+            this.remark = remark;
+        }
+
+        public String getBalance() {
+            return balance;
+        }
+
+        public void setBalance(String balance) {
+            this.balance = balance;
+        }
 
         public String getCreateTime() {
             return createTime;
@@ -73,13 +99,6 @@ public class Account {
             this.money = money;
         }
 
-        public String getMoneyType() {
-            return moneyType;
-        }
-
-        public void setMoneyType(String moneyType) {
-            this.moneyType = moneyType;
-        }
 
         public String getPayType() {
             return payType;

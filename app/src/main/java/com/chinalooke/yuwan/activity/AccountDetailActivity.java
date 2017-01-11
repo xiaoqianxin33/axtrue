@@ -166,10 +166,10 @@ public class AccountDetailActivity extends AutoLayoutActivity {
     //分类list
     private void classifyList(List<Account.ResultBean> result) {
         for (Account.ResultBean resultBean : result) {
-            String moneyType = resultBean.getMoneyType();
-            if ("pay".equals(moneyType) || "recharge".equals(moneyType)) {
+            String moneyType = resultBean.getType();
+            if ("pay".equals(moneyType)) {
                 mPayList.add(resultBean);
-            } else if ("income".equals(moneyType)) {
+            } else {
                 mIncomeList.add(resultBean);
             }
         }

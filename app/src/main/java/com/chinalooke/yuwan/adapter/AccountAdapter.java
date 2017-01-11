@@ -50,22 +50,32 @@ public class AccountAdapter extends MyBaseAdapter {
         if (!TextUtils.isEmpty(createTime))
             viewHolder.mTvTime.setText(createTime);
 
-        String moneyType = resultBean.getMoneyType();
+        String moneyType = resultBean.getType();
         String money = resultBean.getMoney();
-        switch (moneyType) {
-            case "income":
-                viewHolder.mTvMoney.setText("+" + money);
-                viewHolder.mTvType.setText("虚拟币收入");
-                break;
-            case "pay":
-                viewHolder.mTvMoney.setText("-" + money);
-                viewHolder.mTvType.setText("虚拟币支出");
-                break;
-            case "recharge":
-                viewHolder.mTvMoney.setText("-" + money);
-                viewHolder.mTvType.setText("充值够买虚拟币");
-                break;
+        String balance = resultBean.getBalance();
+        if (!TextUtils.isEmpty(balance)) {
+            viewHolder.mTvBalance.setText("余额： " + balance);
         }
+        if (!TextUtils.isEmpty(moneyType) && !TextUtils.isEmpty(money)) {
+            switch (moneyType) {
+                case "income":
+                    viewHolder.mTvMoney.setText("+" + money);
+                    break;
+                case "pay":
+                    viewHolder.mTvMoney.setText("-" + money);
+                    break;
+                case "recharge":
+                    viewHolder.mTvMoney.setText("+" + money);
+                    break;
+                case "prize":
+                    viewHolder.mTvMoney.setText("+" + money);
+                    break;
+            }
+        }
+
+        String remark = resultBean.getRemark();
+        if (!TextUtils.isEmpty(remark))
+            viewHolder.mTvType.setText(remark);
 
         return convertView;
     }
@@ -77,6 +87,8 @@ public class AccountAdapter extends MyBaseAdapter {
         TextView mTvTime;
         @Bind(R.id.tv_money)
         TextView mTvMoney;
+        @Bind(R.id.tv_balance)
+        TextView mTvBalance;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
