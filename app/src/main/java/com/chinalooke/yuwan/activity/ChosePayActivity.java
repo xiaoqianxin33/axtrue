@@ -46,6 +46,7 @@ public class ChosePayActivity extends AutoLayoutActivity {
     private Toast mToast;
     private String mUserId;
     private int mPayMoney;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
